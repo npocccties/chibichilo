@@ -80,11 +80,6 @@ function Edit(props: { id: string; preview?: string }) {
         onClose={closePreviewHandler}
         video={previewVideo}
       />
-      <PreviewContentsDialog
-        open={props.preview === "all"}
-        onClose={closePreviewHandler}
-        contents={contents}
-      />
     </div>
   );
 }
@@ -106,7 +101,7 @@ function New(props: { preview?: string }) {
     <div>
       <NewContents contents={contents} videos={videos} />
       <PreviewDialog
-        open={Boolean(props.preview)}
+        open={Boolean(props.preview) && props.preview !== "all"}
         onClose={closePreviewHandler}
         video={previewVideo}
       />

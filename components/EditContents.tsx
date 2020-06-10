@@ -12,6 +12,7 @@ import { useRouter } from "./router";
 import { AddVideosButton } from "./contents/AddVideosButton";
 import { Videos } from "./video";
 import { VideosRow } from "./contents/VideosSelectorTable";
+import { PreviewContentsDialog } from "./contents/PreviewContentsDialog";
 
 export function EditContents(props: { contents: Contents; videos: Videos }) {
   const [contents, setContents] = useState<Contents>(props.contents);
@@ -60,6 +61,15 @@ export function EditContents(props: { contents: Contents; videos: Videos }) {
         id: router.query.id,
         action: router.query.action,
         preview: "all",
+      },
+    });
+  }, [router]);
+  const closePreviewHandler = useCallback(() => {
+    router.push({
+      pathname: "/contents",
+      query: {
+        id: router.query.id,
+        action: router.query.action,
       },
     });
   }, [router]);
@@ -210,6 +220,11 @@ export function EditContents(props: { contents: Contents; videos: Videos }) {
           保存して学習コンテンツ一覧に戻る
         </Button>
       </Box>
+      <PreviewContentsDialog
+        open={router.query.preview === "all"}
+        onClose={closePreviewHandler}
+        contents={contents}
+      />
     </form>
   );
 }
