@@ -1,3 +1,4 @@
+import React from "react";
 import {
   DragDropContext,
   DropResult,
@@ -8,7 +9,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DragHandleIcon from "@material-ui/icons/DragHandle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -69,6 +69,17 @@ function DraggableVideo(props: {
     variant: "popover",
     popupId: "DraggableVideoMenu",
   });
+  const router = useRouter();
+  const previewHandler = React.useCallback(() => {
+    router.push({
+      pathname: "/contents",
+      query: {
+        id: router.query.id,
+        action: router.query.action,
+        preview: props.video.id,
+      },
+    });
+  }, [props.video, router]);
 
   return (
     <Draggable draggableId={props.draggableId} index={props.index}>
@@ -80,13 +91,20 @@ function DraggableVideo(props: {
           <ListItemText
             primary={props.video.title}
             secondary={`#${props.video.id}`}
+            onClick={previewHandler}
+            style={{
+              cursor: "pointer",
+            }}
           />
-          <ListItemSecondaryAction {...bindTrigger(popupState)}>
-            <IconButton edge="end" aria-label="more">
+          <ListItemIcon>
+            <IconButton
+              edge="end"
+              aria-label="more"
+              {...bindTrigger(popupState)}
+            >
               <MoreVertIcon />
             </IconButton>
-          </ListItemSecondaryAction>
-          {/* FIXME: Warning: Failed prop type: Material-UI */}
+          </ListItemIcon>
           <VideoMoreMenu
             popupState={popupState}
             video={props.video}
