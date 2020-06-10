@@ -41,3 +41,20 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 | `NEXT_PUBLIC_SUBTITLE_STORE_PATH` | 字幕ファイルの保存先の URL のパス |
 | `NEXT_PUBLIC_LMS_URL`             | 学習管理システムの URL            |
 | `NEXT_PUBLIC_BASE_PATH`           | 静的コンテンツの URL のベースとなるパス |
+
+## フロントエンド周りのビルド
+
+### 前提条件
+
+2020-06-10 現在、以下の環境でビルドを確認。
+
+- Node.js v14.3.0
+- Yarn 1.22.4
+
+### ビルド
+
+以下のコマンドを実行。
+
+```sh
+yarn && yarn build
+```
