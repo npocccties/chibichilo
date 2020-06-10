@@ -7,7 +7,6 @@ import { useLmsInstructor } from "components/session";
 import { VideosTable } from "components/VideosTable";
 import { ShowVideo } from "components/ShowVideo";
 import { EditVideo } from "components/EditVideo";
-import { NewVideo } from "components/NewVideo";
 
 type Query = { id?: string; action?: "edit" | "new"; preview?: string };
 
@@ -42,14 +41,11 @@ function Show(props: { id: string }) {
   const video = useVideo(Number(props.id));
   return <ShowVideo {...video} />;
 }
-function Edit(props: { id: string }) {
+function Edit(props: { id?: string }) {
   const video = useVideo(Number(props.id));
   return <EditVideo video={video} />;
 }
-function New() {
-  const video = useVideo();
-  return <NewVideo video={video} />;
-}
+const New = Edit;
 
 function Router() {
   useLmsInstructor();

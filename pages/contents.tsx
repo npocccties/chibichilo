@@ -54,11 +54,9 @@ function Index(props: { preview?: string }) {
 function Show(props: { id: string }) {
   const session = useLmsSession();
   const contents = useContents(Number(props.id));
-  const setTitle = useAppTitle();
-  if (isLmsInstructor(session)) {
-    setTitle("学習コンテンツ管理");
-  } else {
-    setTitle(contents.title || "学習コンテンツ");
+  const appTitle = useAppTitle();
+  if (!isLmsInstructor(session) && contents.title) {
+    appTitle(contents.title);
   }
   return <ShowContents contents={contents} />;
 }
