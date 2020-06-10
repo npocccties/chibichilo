@@ -12,8 +12,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import IconButton from "@material-ui/core/IconButton";
 import DragHandleIcon from "@material-ui/icons/DragHandle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import EditIcon from "@material-ui/icons/Edit";
+import TitleIcon from "@material-ui/icons/Title";
 import CloseIcon from "@material-ui/icons/Close";
 import { Menu, MenuItems } from "./Menu";
 import {
@@ -130,21 +130,22 @@ function VideoMoreMenu(props: {
   const router = useRouter();
   const menuItems: MenuItems = [
     {
-      label: "確認する",
-      icon: <PlayArrowIcon />,
+      label: "ビデオを編集する",
+      icon: <EditIcon />,
       onClick() {
         router.push({
           pathname: "/contents",
           query: {
-            ...router.query,
-            preview: props.video.id,
+            id: router.query.id,
+            action: router.query.action,
+            video: props.video.id,
           },
         });
       },
     },
     {
       label: "タイトルを変更する",
-      icon: <EditIcon />,
+      icon: <TitleIcon />,
       onClick() {
         props.onTitleEdit();
       },

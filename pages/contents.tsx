@@ -3,7 +3,6 @@ import { useContentsIndex } from "components/contents";
 import { ContentsTable } from "components/ContentsTable";
 import { ShowContents } from "components/ShowContents";
 import { EditContents } from "components/EditContents";
-import { NewContents } from "components/NewContents";
 import { useRouter } from "components/router";
 import { useAppTitle } from "components/state";
 import { useContents } from "components/contents";
@@ -13,10 +12,16 @@ import {
   useLmsInstructor,
   isLmsInstructor,
 } from "components/session";
+import { EditVideoDialog } from "components/contents/EditVideoDialog";
 import { PreviewContentsDialog } from "components/contents/PreviewContentsDialog";
 import { PreviewDialog } from "components/video/PreviewDialog";
 
-type Query = { id?: string; action?: "edit" | "new"; preview?: string };
+type Query = {
+  id?: string;
+  action?: "edit" | "new";
+  preview?: string;
+  video?: string;
+};
 
 function Index(props: { preview?: string }) {
   useLmsInstructor();
@@ -57,11 +62,13 @@ function Show(props: { id: string }) {
   }
   return <ShowContents contents={contents} />;
 }
-function Edit(props: { id: string; preview?: string }) {
+function Edit(props: { id?: string; preview?: string; video?: string }) {
   useLmsInstructor();
   const contents = useContents(Number(props.id));
   const videos = useVideos();
-  const previewVideo = useVideo(Number(props.preview));
+  const editOrPreviewVideo = useVideo(
+    Number(props.video) || Number(props.preview)
+  );
   const router = useRouter();
   const closePreviewHandler = React.useCallback(() => {
     router.push({
@@ -72,42 +79,28 @@ function Edit(props: { id: string; preview?: string }) {
       },
     });
   }, [router]);
+
   return (
     <div>
       <EditContents contents={contents} videos={videos} />
       <PreviewDialog
-        open={Boolean(props.preview) && props.preview !== "all"}
+        open={
+          !Boolean(props.video) &&
+          Boolean(props.preview) &&
+          props.preview !== "all"
+        }
         onClose={closePreviewHandler}
-        video={previewVideo}
+        video={editOrPreviewVideo}
+      />
+      <EditVideoDialog
+        open={Boolean(props.video)}
+        onClose={closePreviewHandler}
+        video={editOrPreviewVideo}
       />
     </div>
   );
 }
-function New(props: { preview?: string }) {
-  useLmsInstructor();
-  const contents = useContents();
-  const videos = useVideos();
-  const previewVideo = useVideo(Number(props.preview));
-  const router = useRouter();
-  const closePreviewHandler = React.useCallback(() => {
-    router.push({
-      pathname: "/contents",
-      query: {
-        action: router.query.action,
-      },
-    });
-  }, [router]);
-  return (
-    <div>
-      <NewContents contents={contents} videos={videos} />
-      <PreviewDialog
-        open={Boolean(props.preview) && props.preview !== "all"}
-        onClose={closePreviewHandler}
-        video={previewVideo}
-      />
-    </div>
-  );
-}
+const New = Edit;
 
 function Router() {
   const router = useRouter();
@@ -120,7 +113,7 @@ function Router() {
       default:
         return <Index preview={query.preview} />;
       case "new":
-        return <New preview={query.preview} />;
+        return <New preview={query.preview} video={query.video} />;
     }
   }
 
@@ -128,7 +121,7 @@ function Router() {
     default:
       return <Show id={query.id} />;
     case "edit":
-      return <Edit id={query.id} preview={query.preview} />;
+      return <Edit id={query.id} preview={query.preview} video={query.video} />;
   }
 }
 

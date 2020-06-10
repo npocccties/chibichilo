@@ -81,8 +81,9 @@ const initialVideo: Video = {
   subtitles: [],
   state: "pending",
 };
-const fetchVideo = makeFetcher(async (_: typeof key, id: number) => {
-  if (id == null) return (await fetchInitialVideo()) || initialVideo;
+const fetchVideo = makeFetcher(async (_: typeof key, id?: number) => {
+  if (id == null || !Number.isFinite(id))
+    return (await fetchInitialVideo()) || initialVideo;
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_edit.php`;
   const req: ShowVideoRequest = {
     microcontent_id: id.toString(),

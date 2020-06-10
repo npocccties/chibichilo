@@ -68,8 +68,9 @@ const initialContents: Contents = {
   videos: [],
   state: "pending",
 };
-const fetchContents = makeFetcher(async (_: typeof key, id: number) => {
+const fetchContents = makeFetcher(async (_: typeof key, id?: number) => {
   if (id == null) return initialContents;
+  if (!Number.isFinite(id)) return initialContents;
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/list_content_view.php`;
   const req: ShowContentsRequest = {
     content_id: id.toString(),
