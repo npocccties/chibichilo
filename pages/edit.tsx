@@ -16,7 +16,7 @@ function Edit() {
     router.push("/edit");
   }, [router]);
   const previewContents = useContents(Number(router.query.preview));
-  useAppTitle()("学習管理システム連携");
+  useAppTitle()("LMS 連携");
   switch (contentsIndex.state) {
     case "failure":
       return <div>failed to load</div>;
@@ -26,7 +26,7 @@ function Edit() {
   return (
     <div>
       <Alert severity="info">
-        選択したコンテンツを学習管理システムに紐付けます。紐付ける学習コンテンツの右のリンクアイコン{" "}
+        選択したコンテンツを LMS (学習管理システム) に紐付けます。紐付ける学習コンテンツの右のリンクアイコン{" "}
         <LinkIcon style={{ verticalAlign: "middle" }} />{" "}
         をクリックしてください。
       </Alert>
