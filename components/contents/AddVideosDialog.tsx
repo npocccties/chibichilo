@@ -1,4 +1,6 @@
 import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
 import { Videos } from "components/video";
 import { useState, useEffect, useCallback } from "react";
 import { VideosSelectorTable, VideosRow } from "./VideosSelectorTable";
@@ -40,6 +42,9 @@ export function AddVideosDialog(props: Props) {
       maxWidth="lg"
     >
       <VideosSelectorTable rows={rows} onSelect={handleSelect} />
+      <DialogActions>
+        <Button onClick={handleClose}>キャンセル</Button>
+      </DialogActions>
     </Dialog>
   );
 }
