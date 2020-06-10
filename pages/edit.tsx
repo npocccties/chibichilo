@@ -26,7 +26,8 @@ function Edit() {
   return (
     <div>
       <Alert severity="info">
-        選択したコンテンツを LMS (学習管理システム) に紐付けます。紐付ける学習コンテンツの右のリンクアイコン{" "}
+        選択したコンテンツを LMS (学習管理システム)
+        に紐付けます。紐付ける学習コンテンツの右のリンクアイコン{" "}
         <LinkIcon style={{ verticalAlign: "middle" }} />{" "}
         をクリックしてください。
       </Alert>
