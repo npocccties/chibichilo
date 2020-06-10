@@ -36,6 +36,8 @@ export function AddVideosDialog(props: Props) {
       onClose={handleClose}
       aria-labelledby="simple-dialog-title"
       open={open}
+      fullWidth
+      maxWidth="lg"
     >
       <VideosSelectorTable rows={rows} onSelect={handleSelect} />
     </Dialog>
