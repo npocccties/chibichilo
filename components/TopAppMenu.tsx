@@ -49,7 +49,7 @@ const menuItems: AppMenu = [
   },
   "divider",
   {
-    title: "学習管理システム連携",
+    title: "LMS 連携",
     icon: <LinkIcon />,
     href: "/edit",
   },
