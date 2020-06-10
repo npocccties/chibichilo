@@ -31,18 +31,9 @@ const parseVideoId = (youtubeUrlOrVideoId: string) => {
 };
 
 export function EditVideo(props: { video: Video }) {
-  const [video, setVideo] = useState<Video>(props.video);
-  useEffect(() => {
-    if (props.video.state === "success") setVideo(props.video);
-  }, [props.video]);
   const router = useRouter();
-  const { showMessage } = useSnackbar();
-  const saveHandler = useCallback(async () => {
-    if (video.id) {
-      await updateVideo(video as Required<Video>);
-    } else {
-      const id = await createVideo(video);
-      if (!id) return;
+  const saveHandler = useCallback(
+    (id: number) => {
       router.replace({
         pathname: "/videos",
         query: {
@@ -50,19 +41,57 @@ export function EditVideo(props: { video: Video }) {
           action: "edit",
         },
       });
+      router.push("/videos");
+    },
+    [router]
+  );
+  const cancelHandler = useCallback(() => {
+    router.push("/videos");
+  }, [router]);
+
+  return (
+    <EditVideoForm
+      video={props.video}
+      onSave={saveHandler}
+      onCancel={cancelHandler}
+      saveActionLabel="保存してビデオ一覧に戻る"
+      cancelActionLabel="保存せずビデオ一覧に戻る"
+    />
+  );
+}
+
+export function EditVideoForm(props: {
+  video: Video;
+  onSave: (id: number) => void;
+  onCancel: () => void;
+  saveActionLabel: string;
+  cancelActionLabel: string;
+}) {
+  const [video, setVideo] = useState<Video>(props.video);
+  useEffect(() => {
+    if (props.video.state === "success") setVideo(props.video);
+  }, [props.video]);
+  const { showMessage } = useSnackbar();
+  const saveHandler = useCallback(async () => {
+    let id = video.id;
+    if (id) {
+      await updateVideo(video as Required<Video>);
+    } else {
+      id = await createVideo(video);
     }
+    if (!id) return;
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
     }
     showMessage(`保存しました`);
-    router.push("/videos");
-  }, [video, showMessage, router]);
-  const closeHandler = useCallback(() => {
+    props.onSave(id);
+  }, [video, showMessage, props.onSave]);
+  const cancelHandler = useCallback(() => {
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
     }
-    router.push("/videos");
-  }, [router]);
+    props.onCancel();
+  }, [props.onCancel]);
 
   const edit = useCallback(
     (dispatch: (v: Video) => Video) => {
@@ -323,11 +352,11 @@ export function EditVideo(props: { video: Video }) {
           variant="contained"
           size="large"
           startIcon={<CloseIcon />}
-          onClick={closeHandler}
+          onClick={cancelHandler}
           fullWidth
           style={{ margin: 16 }}
         >
-          保存せずビデオ一覧に戻る
+          {props.cancelActionLabel}
         </Button>
         <Button
           type="submit"
@@ -338,7 +367,7 @@ export function EditVideo(props: { video: Video }) {
           fullWidth
           style={{ margin: 16 }}
         >
-          保存してビデオ一覧に戻る
+          {props.saveActionLabel}
         </Button>
       </Box>
     </form>
