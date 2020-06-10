@@ -28,7 +28,7 @@ const menuItems: AppMenu = [
   },
   "divider",
   {
-    title: "学習コンテンツを作成する",
+    title: "学習コンテンツの作成",
     icon: <LibraryAddIcon />,
     href: {
       pathname: "/contents",
@@ -38,7 +38,7 @@ const menuItems: AppMenu = [
     },
   },
   {
-    title: "ビデオを追加する",
+    title: "ビデオの追加",
     icon: <AddCircleIcon />,
     href: {
       pathname: "/videos",

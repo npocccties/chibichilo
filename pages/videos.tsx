@@ -55,15 +55,17 @@ function Router() {
   useLmsInstructor();
   const router = useRouter();
   const query: Query = router.query;
-
-  useAppTitle()("ビデオ管理");
+  const appTitle = useAppTitle();
+  appTitle("ビデオ管理");
 
   if (!query.id) {
     switch (query.action) {
       default:
         return <Index preview={query.preview} />;
-      case "new":
+      case "new": {
+        appTitle("ビデオの追加");
         return <New />;
+      }
     }
   }
 

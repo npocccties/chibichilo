@@ -105,15 +105,17 @@ const New = Edit;
 function Router() {
   const router = useRouter();
   const query: Query = router.query;
-
-  useAppTitle()("学習コンテンツ管理");
+  const appTitle = useAppTitle();
+  appTitle("学習コンテンツ管理");
 
   if (!query.id) {
     switch (query.action) {
       default:
         return <Index preview={query.preview} />;
-      case "new":
+      case "new": {
+        appTitle("学習コンテンツの作成");
         return <New preview={query.preview} video={query.video} />;
+      }
     }
   }
 
