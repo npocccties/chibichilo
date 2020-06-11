@@ -58,3 +58,11 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 ```sh
 yarn && yarn build
 ```
+
+### Storybook
+
+いくつかの UI をブラウザで確認するには `yarn` 実行後、以下のコマンドを実行。
+
+```sh
+yarn storybook
+```
