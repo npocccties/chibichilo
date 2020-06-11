@@ -1,4 +1,4 @@
-import { postForm, textFetcher } from "components/api";
+import { postForm, textFetcher } from "../api";
 
 export type Subtitle = {
   id?: number;
