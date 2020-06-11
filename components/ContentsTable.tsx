@@ -4,6 +4,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import LibraryAdd from "@material-ui/icons/LibraryAdd";
 import LinkIcon from "@material-ui/icons/Link";
 import { Column } from "material-table";
+import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
 import { registContents, SessionResponse } from "./api";
 import { useRouter } from "./router";
@@ -46,17 +47,23 @@ export function ContentsTable(props: ContentsIndex) {
     },
     [router]
   );
+  const confirm = useConfirm();
   const { showMessage } = useSnackbar();
   const destroyHandler = useCallback(
     async (event: MouseEvent, row: ContentsRow | ContentsRow[]) => {
       event.preventDefault();
       const contents = Array.isArray(row) ? row[0] : row;
-      const res = confirm(`「${contents.title}」を削除しますか？`);
-      if (!res) return;
-      await destroyContents(contents.id);
-      showMessage(`「${contents.title}」を削除しました`);
+      try {
+        await confirm({
+          title: `「${contents.title}」を削除しますか？`,
+          cancellationText: "キャンセル",
+          confirmationText: "OK",
+        });
+        await destroyContents(contents.id);
+        showMessage(`「${contents.title}」を削除しました`);
+      } catch {}
     },
-    [showMessage]
+    [showMessage, confirm]
   );
   const previewHandler = useCallback(
     (_: any, row?: ContentsRow) => {

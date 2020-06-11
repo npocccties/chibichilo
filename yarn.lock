@@ -6381,6 +6381,11 @@ material-table@^1.58.2:
     react-beautiful-dnd "11.0.3"
     react-double-scrollbar "0.0.15"
 
+material-ui-confirm@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-2.0.5.tgz#68768350273a87c9cbb3a69af3e8373908093ad0"
+  integrity sha512-6onrOwNKOtNn03at7AJGGfrEowH+YUbrwV1s+xgp2wPKKz8OBaXNZfRN2Y0DrYqxPO6mMhwH7bcx0oSguQCXbA==
+
 material-ui-popup-state@^1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/material-ui-popup-state/-/material-ui-popup-state-1.5.4.tgz#56cf7f7f8016a07057cfc45f8e58893258cbfed2"

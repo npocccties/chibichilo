@@ -6,6 +6,7 @@ import { Table } from "./Table";
 import { MouseEvent, useCallback } from "react";
 import { Column } from "material-table";
 import { Videos, destroyVideo } from "./video";
+import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
 import { SessionResponse } from "./api";
 import { useLmsInstructor } from "./session";
@@ -46,17 +47,23 @@ export function VideosTable(props: Videos) {
     },
     [router]
   );
+  const confirm = useConfirm();
   const { showMessage } = useSnackbar();
   const destroyHandler = useCallback(
     async (event: MouseEvent, row: VideosRow | VideosRow[]) => {
       event.preventDefault();
       const contents = Array.isArray(row) ? row[0] : row;
-      const res = confirm(`「${contents.title}」を削除しますか？`);
-      if (!res) return;
-      await destroyVideo(contents.id);
-      showMessage(`「${contents.title}」を削除しました`);
+      try {
+        await confirm({
+          title: `「${contents.title}」を削除しますか？`,
+          cancellationText: "キャンセル",
+          confirmationText: "OK",
+        });
+        await destroyVideo(contents.id);
+        showMessage(`「${contents.title}」を削除しました`);
+      } catch {}
     },
-    [showMessage]
+    [showMessage, confirm]
   );
   const previewHandler = useCallback(
     (_: any, row?: VideosRow) => {

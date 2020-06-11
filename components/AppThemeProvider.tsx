@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
 import { ReactNode, useMemo } from "react";
 import { usePopupState, bindTrigger } from "material-ui-popup-state/hooks";
+import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "material-ui-snackbar-provider";
 import Head from "next/head";
 import { TopAppMenu } from "./TopAppMenu";
@@ -69,12 +70,14 @@ export const AppThemeProvider = (props: { children: ReactNode }) => {
         <title>{title}</title>
       </Head>
       <CssBaseline />
-      <SnackbarProvider SnackbarProps={{ autoHideDuration: 5e3 }}>
-        {isInstructor && <TopAppBar title={title} />}
-        <Box pt={isInstructor ? 12 : 0} component={Container}>
-          {props.children}
-        </Box>
-      </SnackbarProvider>
+      <ConfirmProvider>
+        <SnackbarProvider SnackbarProps={{ autoHideDuration: 5e3 }}>
+          {isInstructor && <TopAppBar title={title} />}
+          <Box pt={isInstructor ? 12 : 0} component={Container}>
+            {props.children}
+          </Box>
+        </SnackbarProvider>
+      </ConfirmProvider>
     </ThemeProvider>
   );
 };

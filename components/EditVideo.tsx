@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, FormEvent } from "react";
+import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
 import { produce } from "immer";
 import ISO6391 from "iso-639-1";
@@ -176,12 +177,17 @@ export function EditVideoForm(props: {
     },
     [setSubtitleLang]
   );
+
+  const confirm = useConfirm();
   const destroySubtitleHandler = useCallback(
     (lang: string, id?: number) => async (_: MouseEvent) => {
       if (!id) return;
-      // TODO: confirm やめたい
-      if (!confirm(`字幕「${lang}」を削除します。よろしいですか？`)) return;
       try {
+        await confirm({
+          title: `字幕「${lang}」を削除します。よろしいですか？`,
+          cancellationText: "キャンセル",
+          confirmationText: "OK",
+        });
         await destroySubtitle(id);
         const videoDispatch = (video: Video) =>
           produce(video, (draft) => {
@@ -190,7 +196,7 @@ export function EditVideoForm(props: {
         edit(videoDispatch);
       } catch {}
     },
-    [edit]
+    [edit, confirm]
   );
 
   return (
