@@ -100,15 +100,14 @@ export function ContentsTable(props: ContentsIndex) {
   return (
     <Table
       title="学習コンテンツ一覧"
-      columns={
-        [
-          { title: "#", field: "id", width: "4rem" },
-          {
-            title: "名称",
-            field: "title",
-          },
-        ] as Column<ContentsRow>[]
-      }
+      columns={[
+        { title: "#", field: "id", width: "4rem" } as Column<ContentsRow>,
+        {
+          title: "名称",
+          field: "title",
+          width: "auto",
+        } as Column<ContentsRow>,
+      ]}
       actions={[
         editAction,
         destroyAction,
@@ -189,15 +188,18 @@ export function ContentsSelectorTable(props: ContentsIndex) {
   return (
     <Table
       title="学習コンテンツ一覧"
-      columns={
-        [
-          { title: "#", field: "id", width: "4rem" },
-          {
-            title: "名称",
-            field: "title",
-          },
-        ] as Column<ContentsRow>[]
-      }
+      columns={[
+        {
+          title: "#",
+          field: "id",
+          width: "4rem",
+        } as Column<ContentsRow>,
+        {
+          title: "名称",
+          field: "title",
+          width: "auto",
+        } as Column<ContentsRow>,
+      ]}
       actions={[linkAction]}
       options={{
         actionsColumnIndex: -1,

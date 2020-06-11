@@ -47,20 +47,19 @@ export function VideosSelectorTable(props: {
     <Table
       tableRef={tableRef}
       title="ビデオ一覧"
-      columns={
-        [
-          { title: "#", field: "id", width: "4rem" },
-          {
-            title: "名称",
-            field: "title",
-            width: "20%",
-          },
-          {
-            title: "概要",
-            field: "description",
-          },
-        ] as Column<VideosRow>[]
-      }
+      columns={[
+        { title: "#", field: "id", width: "4rem" } as Column<VideosRow>,
+        {
+          title: "名称",
+          field: "title",
+          width: "20%",
+        } as Column<VideosRow>,
+        {
+          title: "概要",
+          field: "description",
+          width: "auto",
+        } as Column<VideosRow>,
+      ]}
       actions={[
         {
           tooltip: "選択されたビデオを追加します",
