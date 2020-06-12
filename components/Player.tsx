@@ -28,6 +28,7 @@ export function Player(props: PlayerProps) {
           // FIXME: https://github.com/videojs/videojs-youtube/issues/562
           pictureInPictureToggle: false,
         },
+        playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
       } as VideoJsPlayerOptions),
     [props.youtubeVideoId, props.autoplay]
   );
