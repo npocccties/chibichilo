@@ -9,6 +9,7 @@ import { PopupState, bindMenu } from "material-ui-popup-state/hooks";
 type MenuItemSchema = {
   label: string;
   icon?: JSX.Element;
+  disabled?: boolean;
   onClick: (event: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void;
 };
 
@@ -26,6 +27,7 @@ export function Menu(props: { popupState: PopupState; items: MenuItems }) {
               props.popupState.close();
               item.onClick(...args);
             }}
+            disabled={item.disabled}
           >
             {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
             <Typography variant="inherit">{item.label}</Typography>

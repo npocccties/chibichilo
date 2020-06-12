@@ -12,15 +12,16 @@ import { mutate } from "swr";
 const key = "/api/contents";
 
 type VideoId = number; // NOTE: Video.id
+type UserId = string; // NOTE: セッションに含まれる利用者のID
 type ContentsSchema = {
   id?: number;
   title: string;
   videos: Array<{
     id: VideoId;
     title: string;
+    creator: UserId;
   }>;
 };
-type UserId = string; // NOTE: セッションに含まれる利用者のID
 type ContentsIndexSchema = {
   contents: Array<{
     id: number;
@@ -86,9 +87,10 @@ const fetchContents = makeFetcher(async (_: typeof key, id?: number) => {
 function showContentsHandler(res: ShowContentsResponse): ContentsSchema {
   return {
     title: res.title,
-    videos: res.contents.map(({ id, cname }) => ({
+    videos: res.contents.map(({ id, cname, createdby }) => ({
       id: Number(id),
       title: cname,
+      creator: createdby,
     })),
   };
 }
@@ -100,6 +102,7 @@ type ShowContentsResponse = {
   contents: Array<{
     id: string;
     cname: string;
+    createdby: string;
   }>;
 };
 export const useContents = (id?: number) =>

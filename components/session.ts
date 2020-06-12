@@ -3,6 +3,10 @@ import { useSession, SessionResponse } from "./api";
 const lmsUrl = process.env.NEXT_PUBLIC_LMS_URL || "";
 
 export function useLmsSession(): SessionResponse | undefined {
+  // TODO: for development
+  if (process.env.NODE_ENV === "development")
+    return { id: "user5", role: "instructor" };
+
   const { data, error } = useSession();
   if (error) {
     redirectToLms();

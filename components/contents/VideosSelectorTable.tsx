@@ -8,6 +8,7 @@ export type VideosRow = {
   id: number;
   title: string;
   description: string;
+  creator: string;
 };
 
 export type VideosSelector = typeof VideosSelectorTable;

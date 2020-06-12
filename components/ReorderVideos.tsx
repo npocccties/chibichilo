@@ -23,9 +23,18 @@ import {
   PopupState,
 } from "material-ui-popup-state/hooks";
 import { useRouter } from "./router";
+import { SessionResponse } from "./api";
+import { useLmsSession } from "./session";
+
+function editable(video: { creator: string }, session?: SessionResponse) {
+  return (
+    session &&
+    (session.role === "administrator" || video.creator === session.id)
+  );
+}
 
 export function ReorderVideos(props: {
-  videos: Array<{ id: number; title: string }>;
+  videos: Array<{ id: number; title: string; creator: string }>;
   onVideoDragEnd: (source: number, destination: number) => void;
   onEditVideoTitle: (index: number, title: string) => void;
   onDeleteVideo: (index: number) => void;
@@ -62,7 +71,7 @@ export function ReorderVideos(props: {
 function DraggableVideo(props: {
   index: number;
   draggableId: string;
-  video: { id: number; title: string };
+  video: { id: number; title: string; creator: string };
   onEditVideoTitle: (index: number, title: string) => void;
   onDeleteVideo: (index: number) => void;
 }) {
@@ -169,15 +178,18 @@ function DraggableVideo(props: {
 
 function VideoMoreMenu(props: {
   popupState: PopupState;
-  video: { id: number };
+  video: { id: number; creator: string };
   onDelete: () => void;
   onTitleEdit: () => void;
 }) {
+  const session = useLmsSession();
   const router = useRouter();
+  const disabled = !editable(props.video, session);
   const menuItems: MenuItems = [
     {
-      label: "ビデオを編集する",
+      label: disabled ? "権限がありません" : "ビデオを編集する",
       icon: <EditIcon />,
+      disabled,
       onClick() {
         router.push({
           pathname: "/contents",

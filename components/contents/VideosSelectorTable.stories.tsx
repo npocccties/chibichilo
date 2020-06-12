@@ -8,6 +8,7 @@ export const Basic = () => {
         id,
         title: `Sample video ${id}`,
         description: `Sample description ${id}`,
+        creator: `user${id}`,
       }))}
       onSelect={(rows) => alert("DEBUG:\n" + JSON.stringify(rows))}
     />

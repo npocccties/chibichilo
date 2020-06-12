@@ -7,6 +7,7 @@ const video: Video = {
   title: "Sample Video",
   description: "Sample Description",
   youtubeVideoId: "3yfen-t49eI",
+  creator: "user",
   subtitles: [{ lang: "en", file: new File([], "sample_file.vtt") }],
   skills: [1, 2, 3].map((id) => ({ id, has: id === 3, name: `skill ${id}` })),
   tasks: [1, 2, 3].map((id) => ({ id, has: id === 2, name: `task ${id}` })),

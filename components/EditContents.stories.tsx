@@ -18,7 +18,11 @@ export const Basic = () => {
       contents={{
         id: 42,
         title: "Contents title",
-        videos: [2, 5, 7, 9].map((id) => ({ id, title: `Sample video ${id}` })),
+        videos: [2, 5, 7, 9].map((id) => ({
+          id,
+          title: `Sample video ${id}`,
+          creator: `user${id}`,
+        })),
         state: "success",
       }}
       videos={videos}
@@ -47,6 +51,7 @@ export const ManyVideos = () => {
         videos: [2, 5, 7, 9, 12, 3, 13, 11, 1, 42, 3, 9].map((id) => ({
           id,
           title: `Sample video ${id}`,
+          creator: `user${id}`,
         })),
         state: "success",
       }}
@@ -64,6 +69,7 @@ export const WithLongTitle = () => {
         videos: [2, 5, 7, 9].map((id) => ({
           id,
           title: `Sample video ${id} `.repeat(30),
+          creator: `user${id}`,
         })),
         state: "success",
       }}

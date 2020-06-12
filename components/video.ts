@@ -16,18 +16,19 @@ import { mutate } from "swr";
 const key = "/api/video";
 
 type YouTubeVideoId = string;
+type UserId = string; // NOTE: セッションに含まれる利用者のID
 export type VideoSchema = {
   id?: number;
   title: string;
   description: string;
   youtubeVideoId: YouTubeVideoId;
+  creator: UserId;
   skills: Skill[];
   tasks: Task[];
   levels: Level[];
   subtitles: Subtitle[];
 };
 
-type UserId = string; // NOTE: セッションに含まれる利用者のID
 type VideosSchema = {
   videos: Array<{
     id: number;
@@ -75,6 +76,7 @@ const initialVideo: Video = {
   title: "",
   description: "",
   youtubeVideoId: "",
+  creator: "",
   skills: [],
   tasks: [],
   levels: [],
@@ -108,6 +110,7 @@ function showVideoHandler(
     title: res.title,
     description: res.description,
     youtubeVideoId: res.video,
+    creator: res.createdby,
     skills: res.skills.map(({ id, name, checked }) => ({
       id: Number(id),
       name,
@@ -157,6 +160,7 @@ type ShowVideoResponse = {
   title: string;
   video: YouTubeVideoId;
   description: string;
+  createdby: string;
   subtitles: Array<{ id: string; cname: string }>; // NOTE: `{id}_{cname}.vtt` cname as langcode
   skills: Array<{ id: string; name: string; checked: "" | "checked" }>;
   tasks: Array<{ id: string; name: string; checked: "" | "checked" }>;

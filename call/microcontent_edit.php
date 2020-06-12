@@ -12,7 +12,7 @@ $microcontent_id = $_POST['microcontent_id'];
 
 // NOTE: read mc_microcontent
 $sth = $db->prepare(<<<'SQL'
-  SELECT name, video, description FROM mc_microcontent
+  SELECT name, video, description, createdby FROM mc_microcontent
   WHERE
     id=? AND deleted=0
 SQL);
@@ -26,6 +26,7 @@ if (!$row) return;
 $content_name = $row['name'];
 $content_video = $row['video'];
 $content_description = $row['description'];
+$content_createdby = $row['createdby'];
 
 // NOTE: read mc_subtitle
 $sth = $db->prepare(<<<'SQL'
@@ -129,6 +130,6 @@ foreach ($sth as $row) {
   }
 }
 
-$arr = array('title' => $content_name, 'video' => $content_video, 'description' => $content_description, 'subtitles' => $subtitles, 'skills' => $skills, 'tasks' => $tasks, 'levels' => $levels);
+$arr = array('title' => $content_name, 'video' => $content_video, 'description' => $content_description, 'createdby' => $content_createdby, 'subtitles' => $subtitles, 'skills' => $skills, 'tasks' => $tasks, 'levels' => $levels);
 header('Content-Type: application/json');
 echo json_encode($arr);

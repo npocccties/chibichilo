@@ -40,6 +40,18 @@ foreach ($sth as $row) {
   $toc = array();
   $toc['id'] = $row['microcontentid'];
   $toc['cname'] = $row['name'];
+
+  // NOTE: read mc_microcontent
+  $sth_mc = $db->prepare(<<<'SQL'
+    SELECT name, video, description, createdby FROM mc_microcontent
+    WHERE
+      id=? AND deleted=0
+  SQL);
+
+  $sth_mc->execute([$toc['id']]);
+  $mc = $sth_mc->fetch();
+  $toc['createdby'] = $mc && $mc['createdby'] ? $mc['createdby'] : "";
+
   array_push($tocs, $toc);
 }
 

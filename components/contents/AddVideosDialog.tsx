@@ -23,10 +23,11 @@ export function AddVideosDialog(props: Props) {
   const handleSelect = useCallback(
     (selected: VideosRow[]) => {
       onClose(
-        selected.map(({ id, title, description }) => ({
+        selected.map(({ id, title, description, creator }) => ({
           id,
           title,
           description,
+          creator,
         }))
       );
     },
