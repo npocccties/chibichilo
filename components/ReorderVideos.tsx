@@ -9,6 +9,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import DragHandleIcon from "@material-ui/icons/DragHandle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -26,7 +27,7 @@ import { useRouter } from "./router";
 export function ReorderVideos(props: {
   videos: Array<{ id: number; title: string }>;
   onVideoDragEnd: (source: number, destination: number) => void;
-  onEditVideo: (index: number) => void;
+  onEditVideoTitle: (index: number, title: string) => void;
   onDeleteVideo: (index: number) => void;
 }) {
   function onDragEnd({ source, destination }: DropResult) {
@@ -46,7 +47,7 @@ export function ReorderVideos(props: {
                 draggableId={`${index}#${video.id}`}
                 key={`${index}#${video.id}`}
                 video={video}
-                onEditVideo={props.onEditVideo}
+                onEditVideoTitle={props.onEditVideoTitle}
                 onDeleteVideo={props.onDeleteVideo}
               />
             ))}
@@ -62,7 +63,7 @@ function DraggableVideo(props: {
   index: number;
   draggableId: string;
   video: { id: number; title: string };
-  onEditVideo: (index: number) => void;
+  onEditVideoTitle: (index: number, title: string) => void;
   onDeleteVideo: (index: number) => void;
 }) {
   const popupState = usePopupState({
@@ -80,6 +81,20 @@ function DraggableVideo(props: {
       },
     });
   }, [props.video, router]);
+  const editVideoTitleHandler = React.useCallback(
+    (
+      event: React.KeyboardEvent<HTMLElement> | React.FocusEvent<HTMLElement>
+    ) => {
+      const title = (event.target as HTMLInputElement).value;
+      // NOTE: 文字列中に含まれる " " 以外のホワイトスペースを許容しない
+      const validTitle = title.replace(/\s/g, " ").trim();
+      if (validTitle) props.onEditVideoTitle(props.index, title);
+    },
+    [props.onEditVideoTitle, props.index]
+  );
+  const [editableTitle, setEditableTitle] = React.useState(false);
+  // NOTE: focus() 目的
+  const inputTitleRef = React.useRef(document.createElement("input"));
 
   return (
     <Draggable draggableId={props.draggableId} index={props.index}>
@@ -88,11 +103,34 @@ function DraggableVideo(props: {
           <ListItemIcon {...provided.dragHandleProps}>
             <DragHandleIcon />
           </ListItemIcon>
+          <TextField
+            inputRef={inputTitleRef}
+            label="タイトル"
+            fullWidth
+            color="secondary"
+            defaultValue={props.video.title}
+            onKeyDown={(e) => {
+              // NOTE: submit 抑制目的
+              if (e.which === "\r".charCodeAt(0)) e.preventDefault();
+            }}
+            onKeyUp={(e) => {
+              editVideoTitleHandler(e);
+              if (e.which === "\r".charCodeAt(0)) setEditableTitle(false);
+            }}
+            onBlur={(e) => {
+              editVideoTitleHandler(e);
+              setEditableTitle(false);
+            }}
+            // NOTE: DraggableChildrenFn のなかで mount し直しても反映されないので style 使う
+            style={{ display: editableTitle ? "unset" : "none" }}
+          />
           <ListItemText
             primary={props.video.title}
             secondary={`#${props.video.id}`}
             onClick={previewHandler}
             style={{
+              // NOTE: DraggableChildrenFn のなかで mount し直しても反映されないので style 使う
+              display: editableTitle ? "none" : "unset",
               cursor: "pointer",
             }}
           />
@@ -109,7 +147,9 @@ function DraggableVideo(props: {
             popupState={popupState}
             video={props.video}
             onTitleEdit={() => {
-              props.onEditVideo(props.index);
+              setEditableTitle(true);
+              // NOTE: focus() だと反応しないので setTimeout() 使う
+              setTimeout(() => inputTitleRef.current.focus());
             }}
             onDelete={() => {
               props.onDeleteVideo(props.index);

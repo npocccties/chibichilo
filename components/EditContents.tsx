@@ -145,17 +145,6 @@ export function EditContents(props: { contents: Contents; videos: Videos }) {
     },
     [editContents]
   );
-  const editVideoTitleHandler = useCallback(
-    (index: number) => {
-      // TODO: promptは標準ではないので他の何らかのインタラクティブな入力方法に変更したい
-      const title = prompt(
-        "新しいタイトルを入力して下さい",
-        contents.videos[index].title
-      );
-      title && editVideoTitle(index, title);
-    },
-    [editVideoTitle]
-  );
 
   return (
     <form onSubmit={submitHandler}>
@@ -187,7 +176,7 @@ export function EditContents(props: { contents: Contents; videos: Videos }) {
       <ReorderVideos
         videos={contents.videos}
         onVideoDragEnd={reorderVideo}
-        onEditVideo={editVideoTitleHandler}
+        onEditVideoTitle={editVideoTitle}
         onDeleteVideo={deleteVideo}
       />
       <Box mt={2} mb={4} textAlign="center">
