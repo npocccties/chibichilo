@@ -11,19 +11,24 @@ export type PlayerProps = {
 };
 
 export function Player(props: PlayerProps) {
-  const options: VideoJsPlayerOptions = React.useMemo(
-    () => ({
-      techOrder: ["youtube"],
-      sources: [
-        {
-          type: "video/youtube",
-          src: `watch?v=${props.youtubeVideoId}`,
+  const options = React.useMemo(
+    () =>
+      ({
+        techOrder: ["youtube"],
+        sources: [
+          {
+            type: "video/youtube",
+            src: `watch?v=${props.youtubeVideoId}`,
+          },
+        ],
+        controls: true,
+        fluid: true,
+        autoplay: props.autoplay,
+        controlBar: {
+          // FIXME: https://github.com/videojs/videojs-youtube/issues/562
+          pictureInPictureToggle: false,
         },
-      ],
-      controls: true,
-      fluid: true,
-      autoplay: props.autoplay,
-    }),
+      } as VideoJsPlayerOptions),
     [props.youtubeVideoId, props.autoplay]
   );
   const tracks = React.useMemo(() => props.subtitles.map(track), [
