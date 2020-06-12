@@ -133,6 +133,12 @@ function DraggableVideo(props: {
               display: editableTitle ? "none" : "unset",
               cursor: "pointer",
             }}
+            primaryTypographyProps={{
+              style: {
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              },
+            }}
           />
           <ListItemIcon>
             <IconButton

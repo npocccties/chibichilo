@@ -54,3 +54,20 @@ export const ManyVideos = () => {
     />
   );
 };
+
+export const WithLongTitle = () => {
+  return (
+    <EditContents
+      contents={{
+        id: 42,
+        title: "Contents title ".repeat(10),
+        videos: [2, 5, 7, 9].map((id) => ({
+          id,
+          title: `Sample video ${id} `.repeat(30),
+        })),
+        state: "success",
+      }}
+      videos={videos}
+    />
+  );
+};
