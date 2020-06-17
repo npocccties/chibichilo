@@ -11,6 +11,8 @@ export type SessionResponse = {
   id: string;
   role: "administrator" | "instructor" | "";
   contents?: number;
+  lmsResource: string;
+  lmsCourse: string;
 };
 
 export function jsonFetcher(input: RequestInfo, init?: RequestInit) {

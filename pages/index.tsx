@@ -4,6 +4,7 @@ import {
   isLmsInstructor,
 } from "components/session";
 import { useRouter, Link } from "components/router";
+import { saveSessionInStorage } from "components/session";
 import { useSnackbar } from "material-ui-snackbar-provider";
 
 export default function () {
@@ -12,6 +13,13 @@ export default function () {
   const { showMessage } = useSnackbar();
 
   if (!session) return <div>Loading...</div>;
+
+  const nonce = router.query.nonce;
+  saveSessionInStorage({
+    ...session,
+    nonce: Array.isArray(nonce) ? nonce[0] : nonce,
+  });
+
   if (session.contents) {
     const href = {
       pathname: "/contents",

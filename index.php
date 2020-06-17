@@ -7,4 +7,5 @@ if (!$context->valid) {
   return;
 }
 
-header("Location: v1");
+$nonce = urlencode($_POST["oauth_nonce"]);
+header("Location: v1?nonce={$nonce}");

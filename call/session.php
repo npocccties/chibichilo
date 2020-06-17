@@ -29,5 +29,7 @@ echo json_encode([
     :($context->isInstructor()
       ? 'instructor'
       : ''),
-  'contents' => $contentid
+  'contents' => $contentid,
+  'lmsResource' => $context->getResourceKey(),
+  'lmsCourse' => $context->getCourseKey()
 ]);

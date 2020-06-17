@@ -1,5 +1,6 @@
 import { VideoJsPlayer } from "video.js";
 import { postForm } from "./api";
+import { loadSessionInStorage } from "./session";
 
 const sendLogPath = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/log.php`;
 
@@ -10,12 +11,17 @@ function sendLog(eventType: EventType, player: VideoJsPlayer, detail?: string) {
   const youtubeVideoId =
     new URLSearchParams(youtubeQuery).get("v") ?? undefined;
   const currentTime = player?.currentTime();
+  const session = loadSessionInStorage();
   const req: Request = {
     event: eventType,
     detail,
     file: youtubeVideoId,
     query: youtubeQuery,
     current: currentTime?.toString(),
+    rid: session?.lmsResource,
+    uid: session?.id,
+    cid: session?.lmsCourse,
+    nonce: session?.nonce,
   };
   return fetch(sendLogPath, postForm(req));
 }
@@ -42,6 +48,10 @@ type Request = {
   file?: string; // NOTE: YouTube Video ID
   query?: string; // NOTE: `v={YouTube Video ID}`
   current?: string;
+  rid?: string;
+  uid?: string;
+  cid?: string;
+  nonce?: string;
 };
 
 export function sendVideoId(player: VideoJsPlayer, id?: number) {
