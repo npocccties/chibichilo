@@ -185,4 +185,5 @@ $lang = [
     ['code' => 'zh', 'name' => 'Chinese'],
     ['code' => 'zu', 'name' => 'Zulu']
 ];
+return $lang;
 ?>
