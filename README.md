@@ -1,11 +1,13 @@
-# butterfly
+# GakuNinLMS-LTI-MC
 
-## 設定ファイル
+GakuNinLMS-LTI-MC, utilizing LTI, is a system that can create and browse learning contents using micro contents.
 
-各種サービスへの接続情報など config.php によって設定する。
-config.php.sample を参考にして config.php を配置し適宜書き換える必要がある。
+## Settng File
 
-コマンド:
+Set the connection information to various services using config.php.
+Refer to config.php.sample and place config.php which requires rewriting when necessary.
+
+Command:
 
 ```sh
 cp config.php.sample config.php
@@ -13,47 +15,53 @@ cp config.php.sample config.php
 
 config.php:
 
-| 定数              | 型         | 説明                        |
-| ----------------- | ---------- | --------------------------- |
-| `OAUTH_CONSUMERS` | consumer[] | consumer オブジェクトの配列 |
-| `DB_HOST`         | string     | RDB ホスト名                |
-| `DB_USERNAME`     | string     | RDB ユーザー名              |
-| `DB_PASSWORD`     | string     | RDB ユーザーのパスワード    |
-| `DB_DATABASE`     | string     | RDB のデータベース名        |
+| Const             | type       | Explanation                                    |
+| ----------------- | ---------- | ---------------------------------------------  |
+| `OAUTH_CONSUMERS` | consumer[] | consumer array of objects                      |
+| `DB_HOST`         | string     | RDB Host name                                  |
+| `DB_USERNAME`     | string     | RDB Username                                   |
+| `DB_PASSWORD`     | string     | RDB User password                              |
+| `DB_DATABASE`     | string     | RDB Database name                              |
+| `WOWZA_URL`       | string     | WOWZA Host name                                |
+| `WOWZA_PATH`      | string     | WOWZA Content path                             |
+| `WOWZA_SECRET`    | string     | WOWZA SecureToken Shared Secret                |
+| `WOWZA_TOKEN`     | string     | WOWZA SecureToken Hash Query Parameter Prefix  |
+| `WOWZA_START`     | int        | WOWZA SecureToken starttime                    |
+| `WOWZA_END`       | int        | WOWZA SecureToken endtime                      |
 
-consumer オブジェクト: OAuth の認証情報の連想配列
+consumer object: Associative array of authentication information of OAuth
 
-| キー                 | 値                 | 型     |
+| Key                  | Value              | Type   |
 | -------------------- | ------------------ | ------ |
 | `oauth_consumer_key` | OAuth Consumer Key | string |
 | `oauth_signature`    | OAuth Signature    | string |
 
-## 環境変数
+## Environment variable
 
-フロントエンド周りの静的コンテンツは環境変数を与えた後 `yarn build` コマンドを実行して生成する。
-API の接続先の情報を変更する場合 .env を適宜書き換える必要がある。
+Static contents around the front end are created by executing the `yarn build` command after giving environment variables.
+When changing the information of the connection destination of API, .env must be rewritten appropriately.
 
 .env:
 
-| 環境変数                          | 説明                                    |
+| Environment variable              | Explanation                             |
 | --------------------------------- | --------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_PATH`       | API の URL のベースとなるパス           |
-| `NEXT_PUBLIC_SUBTITLE_STORE_PATH` | 字幕ファイルの保存先の URL のパス       |
-| `NEXT_PUBLIC_LMS_URL`             | 学習管理システムの URL                  |
-| `NEXT_PUBLIC_BASE_PATH`           | 静的コンテンツの URL のベースとなるパス |
+| `NEXT_PUBLIC_API_BASE_PATH`       | Base path for API URLs                  |
+| `NEXT_PUBLIC_SUBTITLE_STORE_PATH` | URL path for saved subtitle files       |
+| `NEXT_PUBLIC_LMS_URL`             | Learning management system URL          |
+| `NEXT_PUBLIC_BASE_PATH`           | Base path for static content URLs       |
 
-## フロントエンド周りのビルド
+## Build front-ends
 
-### 前提条件
+### Prerequisites
 
-2020-06-10 現在、以下の環境でビルドを確認。
+As of 2020-06-10, confirm the build in the following environment.
 
 - Node.js v14.3.0
 - Yarn 1.22.4
 
-### ビルド
+### Build
 
-以下のコマンドを実行。
+Execute the following command.
 
 ```sh
 yarn && yarn build
@@ -61,7 +69,7 @@ yarn && yarn build
 
 ### Storybook
 
-いくつかの UI をブラウザで確認するには `yarn` 実行後、以下のコマンドを実行。
+To confirm some UI on the browser, execute the following command after executing `yarn`.
 
 ```sh
 yarn storybook
