@@ -1,0 +1,18 @@
+<?php
+namespace Config;
+
+const OAUTH_CONSUMERS = [
+    ['oauth_consumer_key' => 'key', 'oauth_signature' => 'signature']
+];
+
+const DB_HOST = 'localhost';
+const DB_USERNAME = 'username';
+const DB_PASSWORD = 'passowrd';
+const DB_DATABASE = 'db';
+
+const WOWZA_URL = 'url';
+const WOWZA_PATH = 'path';
+const WOWZA_SECRET = 'secret';
+const WOWZA_TOKEN = 'token';
+const WOWZA_START = 'starttime';
+const WOWZA_END = 'endtime';
