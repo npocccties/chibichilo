@@ -1,0 +1,51 @@
+name: build
+on: pull_request
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ github.sha }}
+      - uses: actions/checkout@v2
+      - id: yarn_cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn_cache.outputs.dir }}
+          key: yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: yarn-
+      - run: yarn
+  lint:
+    needs: install
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ github.sha }}
+      - run: yarn lint
+  format:
+    needs: install
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ github.sha }}
+      - run: yarn format
+      - name: The working tree is clean.
+        run: "[[ -z $(git status --porcelain) ]]"
+  build:
+    needs: install
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ github.sha }}
+      - run: yarn build
