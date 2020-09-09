@@ -17,16 +17,6 @@ jobs:
           key: yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: yarn-
       - run: yarn
-  lint:
-    needs: install
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/cache@v1
-        with:
-          path: ${{ github.workspace }}
-          key: ${{ github.sha }}
-      - run: yarn lint
   format:
     needs: install
     runs-on: ubuntu-latest
@@ -37,10 +27,24 @@ jobs:
           path: ${{ github.workspace }}
           key: ${{ github.sha }}
       - run: yarn format
-      - name: The working tree is clean.
-        run: "[[ -z $(git status --porcelain) ]]"
+      - id: git_status
+        run: echo "::set-output name=mod::$(git status --porcelain)"
+      - if: steps.git_status.outputs.mod != ''
+        run: |
+          git -c "user.name=bot" -c "user.email=bot@example" commit -a -m "bot: format"
+          git push origin HEAD
+  lint:
+    needs: [install, format]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ github.sha }}
+      - run: yarn lint
   build:
-    needs: install
+    needs: [install, format]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
