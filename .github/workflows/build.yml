@@ -20,7 +20,6 @@ jobs:
   format:
     needs: install
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/cache@v1
         with:
@@ -33,20 +32,9 @@ jobs:
         run: |
           git -c "user.name=bot" -c "user.email=bot@example" commit -a -m "bot: format"
           git push origin HEAD
-  lint:
-    needs: [install, format]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/cache@v1
-        with:
-          path: ${{ github.workspace }}
-          key: ${{ github.sha }}
-      - run: yarn lint
   build:
     needs: [install, format]
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/cache@v1
         with:
