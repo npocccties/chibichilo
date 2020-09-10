@@ -20,8 +20,8 @@ addDecorator((story) => (
       <CssBaseline />
       <ConfirmProvider>
         <SnackbarProvider SnackbarProps={{ autoHideDuration: 5e3 }}>
-        <Container>{story()}</Container>
-      </SnackbarProvider>
+          <Container>{story()}</Container>
+        </SnackbarProvider>
       </ConfirmProvider>
     </ThemeProvider>
   </StateProvider>
