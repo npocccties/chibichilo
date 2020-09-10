@@ -20,8 +20,6 @@ $arr = json_decode($json, true);
 $title = $arr['title'];
 $type = $arr['type'];
 $src = $arr['src'];
-// TODO: プロパティ video は非推奨で type, src に移行
-$video = $arr['video'];
 $description = $arr['description'];
 $skill = $arr['skill'];
 $task = $arr['task'];

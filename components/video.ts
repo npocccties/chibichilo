@@ -180,7 +180,8 @@ export async function createVideo(
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_create.php`;
   const req: CreateVideoRequest = {
     title: video.title,
-    video: video.youtubeVideoId,
+    type: "youtube",
+    src: video.youtubeVideoId,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
@@ -213,7 +214,8 @@ export async function createVideo(
 }
 type CreateVideoRequest = {
   title: string;
-  video: YouTubeVideoId;
+  type: "youtube";
+  src: YouTubeVideoId;
   description: string;
   subtitles: Subtitle[];
   skill: string[];
@@ -226,7 +228,8 @@ export async function updateVideo(video: Required<VideoSchema>) {
   const req: UpdateVideoRequest = {
     id: video.id,
     title: video.title,
-    video: video.youtubeVideoId,
+    type: "youtube",
+    src: video.youtubeVideoId,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
