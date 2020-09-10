@@ -10,11 +10,20 @@ $db = require(__DIR__.'/../database.php');
 
 $microcontent_id = $_POST['microcontent_id'];
 
-// NOTE: read mc_microcontent
+// NOTE: read mc_microcontent with video
+// FIXME: mc_microcontent.video カラムは非推奨だが稼働中の環境に存在してしまっている
 $sth = $db->prepare(<<<'SQL'
-  SELECT name, video, description, createdby FROM mc_microcontent
+  SELECT
+    mc_microcontent.name,
+    mc_microcontent.video,
+    mc_microcontent.description,
+    mc_microcontent.createdby,
+    video.type,
+    video.src
+  FROM
+    mc_microcontent LEFT JOIN video ON (mc_microcontent.id=video.mc_microcontent_id)
   WHERE
-    id=? AND deleted=0
+    mc_microcontent.id=? AND mc_microcontent.deleted=0
 SQL);
 
 $sth->execute([$microcontent_id]);
@@ -24,7 +33,9 @@ $row = $sth->fetch();
 if (!$row) return;
 
 $content_name = $row['name'];
-$content_video = $row['video'];
+$content_type = $row['type'] ?? 'youtube';
+// FIXME: mc_microcontent.video カラムは非推奨だが稼働中の環境に存在してしまっている
+$content_src = $row['src'] ?? $row['video'];
 $content_description = $row['description'];
 $content_createdby = $row['createdby'];
 
@@ -130,6 +141,17 @@ foreach ($sth as $row) {
   }
 }
 
-$arr = array('title' => $content_name, 'video' => $content_video, 'description' => $content_description, 'createdby' => $content_createdby, 'subtitles' => $subtitles, 'skills' => $skills, 'tasks' => $tasks, 'levels' => $levels);
 header('Content-Type: application/json');
-echo json_encode($arr);
+echo json_encode([
+  'title' => $content_name,
+  'type' => $content_type,
+  'src' => $content_src,
+  // TODO: プロパティ video は非推奨で type, src に移行
+  'video' => $content_src,
+  'description' => $content_description,
+  'createdby' => $content_createdby,
+  'subtitles' => $subtitles,
+  'skills' => $skills,
+  'tasks' => $tasks,
+  'levels' => $levels
+]);

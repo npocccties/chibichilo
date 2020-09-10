@@ -18,6 +18,9 @@ $time = time();
 $json = file_get_contents('php://input');
 $arr = json_decode($json, true);
 $title = $arr['title'];
+$type = $arr['type'];
+$src = $arr['src'];
+// TODO: プロパティ video は非推奨で type, src に移行
 $video = $arr['video'];
 $description = $arr['description'];
 $skill = $arr['skill'];
@@ -25,20 +28,42 @@ $task = $arr['task'];
 $level = $arr['level'];
 $microcontentid = $arr['id'];
 
-$db->prepare(<<<'SQL'
-  UPDATE mc_microcontent
-  SET
-    name=:title, video=:video, description=:description, timemodified=:time, modifiedby=:uid
-  WHERE
-    id=:microcontentid
-SQL)->execute([
-  ':title' => $title,
-  ':video' => $video,
-  ':description' => $description,
-  ':time' => $time,
-  ':uid' => $uid,
-  ':microcontentid' => $microcontentid
-]);
+try {
+  $db->beginTransaction();
+
+  $db->prepare(<<<'SQL'
+    UPDATE mc_microcontent
+    SET
+      name=:title, description=:description, timemodified=:time, modifiedby=:uid
+    WHERE
+      id=:microcontentid
+  SQL)->execute([
+    ':title' => $title,
+    ':description' => $description,
+    ':time' => $time,
+    ':uid' => $uid,
+    ':microcontentid' => $microcontentid
+  ]);
+
+  // NOTE: ON DUPLICATE KEY UPDATE はMySQLのみ
+  $db->prepare(<<<'SQL'
+    INSERT video
+      (mc_microcontent_id, type, src)
+    VALUES
+      (:id, :type, :src)
+    ON DUPLICATE KEY UPDATE
+      type=VALUES(type), src=VALUES(src);
+  SQL)->execute([
+    ':id' => $microcontentid,
+    ':type' => $type,
+    ':src' => $src
+  ]);
+
+  $db->commit();
+} catch (PDOException $e) {
+  $db->rollBack();
+  throw $e;
+}
 
 $db->prepare(<<<'SQL'
   DELETE FROM mc_microcontent_skill

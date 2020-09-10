@@ -23,6 +23,10 @@ if (!$context->isAdministrator() && video_createdby($db, $microcontentid) !== $c
 }
 
 $db->prepare(<<<'SQL'
+  DELETE FROM video WHERE mc_microcontent_id=?
+SQL)->execute([$microcontentid]);
+
+$db->prepare(<<<'SQL'
   UPDATE mc_microcontent
   SET
     timemodified=:time, modifiedby=:uid, deleted=1

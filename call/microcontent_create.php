@@ -18,26 +18,49 @@ $time = time();
 $json = file_get_contents('php://input');
 $arr = json_decode($json, true);
 $title = $arr['title'];
+$type = $arr['type'];
+$src = $arr['src'];
+// TODO: プロパティ video は非推奨で type, src に移行
 $video = $arr['video'];
 $description = $arr['description'];
 $skill = $arr['skill'];
 $task = $arr['task'];
 $level = $arr['level'];
 
-$db->prepare(<<<'SQL'
-  INSERT INTO mc_microcontent
-    (name, video, description, timecreated, timemodified, createdby, modifiedby)
-  VALUES
-    (:title, :video, :description, :time, :time, :uid, :uid)
-SQL)->execute([
-  ':title' => $title,
-  ':video' => $video,
-  ':description' => $description,
-  ':time' => $time,
-  ':uid' => $uid
-]);
+try {
+  $db->beginTransaction();
 
-$microcontentid = $db->lastInsertId();
+  // FIXME: mc_microcontent.video カラムは非推奨だが存在してしまっている
+  $db->prepare(<<<'SQL'
+    INSERT INTO mc_microcontent
+      (name, video, description, timecreated, timemodified, createdby, modifiedby)
+    VALUES
+      (:title, '', :description, :time, :time, :uid, :uid)
+  SQL)->execute([
+    ':title' => $title,
+    ':description' => $description,
+    ':time' => $time,
+    ':uid' => $uid
+  ]);
+
+  $microcontentid = $db->lastInsertId();
+
+  $db->prepare(<<<'SQL'
+    INSERT video
+      (mc_microcontent_id, type, src)
+    VALUES
+      (:id, :type, :src)
+  SQL)->execute([
+    ':id' => $microcontentid,
+    ':type' => $type,
+    ':src' => $src
+  ]);
+
+  $db->commit();
+} catch (PDOException $e) {
+  $db->rollBack();
+  throw $e;
+}
 
 foreach ($skill as $row) {
   $db->prepare(<<<'SQL'
