@@ -1,12 +1,8 @@
-export default { title: "VideoUrlField" };
+export default { title: "VideoLocationField" };
 import { useState } from "react";
-import {
-  VideoLocationField,
-  VideoLocation,
-} from "./VideoLocationField";
+import { VideoLocationField, VideoLocation } from "./VideoLocationField";
 
 export function Basic() {
-  const name = "VideoUrlField";
   const [location, setLocation] = useState<VideoLocation>({
     type: "youtube",
     src: "3yfen-t49eI",
@@ -14,7 +10,5 @@ export function Basic() {
 
   console.log(location);
 
-  return (
-    <VideoLocationField name={name} location={location} setLocation={setLocation} />
-  );
+  return <VideoLocationField location={location} setLocation={setLocation} />;
 }

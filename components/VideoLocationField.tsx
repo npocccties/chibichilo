@@ -75,7 +75,7 @@ function useKeyDownHandler(dispatch: Dispatch<SetStateAction<VideoLocation>>) {
 }
 
 export function VideoLocationField(props: {
-  name: string;
+  name?: string;
   location: VideoLocation;
   setLocation: Dispatch<SetStateAction<VideoLocation>>;
 }) {
@@ -84,7 +84,7 @@ export function VideoLocationField(props: {
 
   return (
     <TextField
-      name={props.name}
+      name={props.name ?? "VideoLocationField"}
       label={label[props.location.type]}
       value={props.location.src}
       variant="filled"

@@ -229,7 +229,6 @@ export function EditVideoForm(props: {
           />
         </Box>
         <VideoLocationField
-          name="VideoLocationField"
           location={{ type: video.type, src: video.src }}
           setLocation={locationFieldHandler}
         />
