@@ -59,7 +59,7 @@ function build_query(string $src): string {
 
 function build(string $src): string {
   $query = build_query($src);
-  return WOWZA_BASE_URL."/{$src}?{$query}";
+  return WOWZA_BASE_URL."/{$src}/playlist.m3u8?{$query}";
 }
 
 header('Content-Type: application/json');
