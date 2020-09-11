@@ -5,11 +5,13 @@ import { Subtitle } from "./video/subtitle";
 import { VideoJsPlayerOptions } from "video.js";
 
 export type PlayerProps = {
-  youtubeVideoId: string;
+  type: "youtube" | "wowza" | "vimeo";
+  src: string;
   subtitles: Subtitle[];
   autoplay?: boolean;
 };
 
+/** TODO: Wowza, Vimeo未対応 */
 export function Player(props: PlayerProps) {
   const options = React.useMemo(
     () =>
@@ -18,7 +20,7 @@ export function Player(props: PlayerProps) {
         sources: [
           {
             type: "video/youtube",
-            src: `watch?v=${props.youtubeVideoId}`,
+            src: `watch?v=${props.src}`,
           },
         ],
         controls: true,
@@ -30,7 +32,7 @@ export function Player(props: PlayerProps) {
         },
         playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
       } as VideoJsPlayerOptions),
-    [props.youtubeVideoId, props.autoplay]
+    [props.src, props.autoplay]
   );
   const tracks = React.useMemo(() => props.subtitles.map(track), [
     props.subtitles,

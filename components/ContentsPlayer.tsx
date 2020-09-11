@@ -65,8 +65,8 @@ export function ContentsPlayer(props: {
   React.useEffect(() => {
     if (props.playlist.length === 0) return;
     const index = 0;
-    const { youtubeVideoId, subtitles } = props.playlist[index];
-    setPlayerState({ index, youtubeVideoId, subtitles, autoplay: true });
+    const { type, src, subtitles } = props.playlist[index];
+    setPlayerState({ index, type, src, subtitles, autoplay: true });
   }, [setPlayerState, props.playlist]);
   const endedHandler = React.useCallback(() => {
     setPlayerState((prev) => {

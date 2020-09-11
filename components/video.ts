@@ -15,13 +15,13 @@ import { mutate } from "swr";
 
 const key = "/api/video";
 
-type YouTubeVideoId = string;
 type UserId = string; // NOTE: セッションに含まれる利用者のID
 export type VideoSchema = {
   id?: number;
   title: string;
   description: string;
-  youtubeVideoId: YouTubeVideoId;
+  type: "youtube" | "wowza";
+  src: string;
   creator: UserId;
   skills: Skill[];
   tasks: Task[];
@@ -75,7 +75,8 @@ export const useVideos = () => useApi(key, fetchVideos, initialVideos);
 const initialVideo: Video = {
   title: "",
   description: "",
-  youtubeVideoId: "",
+  type: "wowza",
+  src: "",
   creator: "",
   skills: [],
   tasks: [],
@@ -109,7 +110,8 @@ function showVideoHandler(
   return (res) => ({
     title: res.title,
     description: res.description,
-    youtubeVideoId: res.video,
+    type: res.type,
+    src: res.src,
     creator: res.createdby,
     skills: res.skills.map(({ id, name, checked }) => ({
       id: Number(id),
@@ -158,7 +160,8 @@ type ShowVideoRequest = {
 };
 type ShowVideoResponse = {
   title: string;
-  video: YouTubeVideoId;
+  type: VideoSchema["type"];
+  src: VideoSchema["src"];
   description: string;
   createdby: string;
   subtitles: Array<{ id: string; cname: string }>; // NOTE: `{id}_{cname}.vtt` cname as langcode
@@ -180,8 +183,8 @@ export async function createVideo(
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_create.php`;
   const req: CreateVideoRequest = {
     title: video.title,
-    type: "youtube",
-    src: video.youtubeVideoId,
+    type: video.type,
+    src: video.src,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
@@ -214,8 +217,8 @@ export async function createVideo(
 }
 type CreateVideoRequest = {
   title: string;
-  type: "youtube";
-  src: YouTubeVideoId;
+  type: VideoSchema["type"];
+  src: VideoSchema["src"];
   description: string;
   subtitles: Subtitle[];
   skill: string[];
@@ -228,8 +231,8 @@ export async function updateVideo(video: Required<VideoSchema>) {
   const req: UpdateVideoRequest = {
     id: video.id,
     title: video.title,
-    type: "youtube",
-    src: video.youtubeVideoId,
+    type: video.type,
+    src: video.src,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),

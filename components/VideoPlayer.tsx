@@ -10,7 +10,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
   return (
     <div>
       <Player
-        youtubeVideoId={props.youtubeVideoId}
+        type={props.type}
+        src={props.src}
         subtitles={props.subtitles}
         autoplay={props.autoplay}
       />
