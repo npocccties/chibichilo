@@ -1,11 +1,22 @@
 import React from "react";
-import videojs, { VideoJsPlayer } from "video.js";
+import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "videojs-youtube";
 import "videojs-seek-buttons";
 import { useAppState, useAppPlayer } from "./state";
 
+const defaultOptions: VideoJsPlayerOptions = {
+  controls: true,
+  fluid: true,
+  controlBar: {
+    // FIXME: https://github.com/videojs/videojs-youtube/issues/562
+    // @ts-expect-error
+    pictureInPictureToggle: false,
+  },
+  playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+};
+
 export function VideoJs(props: {
-  options: videojs.PlayerOptions;
+  options: VideoJsPlayerOptions;
   tracks?: videojs.TextTrackOptions[];
 }) {
   const ref = React.useRef(document.createElement("div"));
@@ -14,7 +25,7 @@ export function VideoJs(props: {
     const element = document.createElement("video-js");
     element.classList.add("vjs-big-play-centered");
     ref.current.appendChild(element);
-    const player = videojs(element, props.options);
+    const player = videojs(element, { ...defaultOptions, ...props.options });
     // @ts-ignore
     player.seekButtons({
       forward: 15,

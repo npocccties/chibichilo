@@ -1,3 +1,4 @@
+import ISO6391 from "iso-639-1";
 import { postForm, textFetcher } from "../api";
 
 export type Subtitle = {
@@ -32,3 +33,22 @@ export function destroySubtitle(id: number) {
 type DestroySubtitleRequest = {
   subtitleid: string;
 };
+
+function buildTrack(
+  subtitle: Subtitle
+): { kind: "subtitles"; src: string; srclang: string; label: string } {
+  let src;
+  if (subtitle.file.size === 0)
+    src = `${process.env.NEXT_PUBLIC_SUBTITLE_STORE_PATH}/${subtitle.file.name}`;
+  else src = URL.createObjectURL(subtitle.file);
+  return {
+    kind: "subtitles",
+    src,
+    srclang: subtitle.lang,
+    label: ISO6391.getNativeName(subtitle.lang),
+  };
+}
+
+export function buildTracks(subtitles: Subtitle[]) {
+  return subtitles.map(buildTrack);
+}
