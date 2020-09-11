@@ -10,10 +10,12 @@ type WowzaResource = {
   url: string;
 };
 
-const wowzaResourceUrl = new URL(
-  `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/wowza.php`,
-  document.location.href
-);
+const wowzaResourceUrl = process.browser
+  ? new URL(
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/wowza.php`,
+      document.location.href
+    ).href
+  : "";
 
 const fetchWowzaResource: (
   request: string
@@ -26,9 +28,9 @@ const fetchWowzaResource: (
 );
 
 function buildRequest(src: string) {
-  const url = new URL(wowzaResourceUrl.href);
-  url.searchParams.set("src", src);
-  return url.href;
+  const params = new URLSearchParams();
+  params.set("src", src);
+  return new URL(`?${params.toString()}`, wowzaResourceUrl).href;
 }
 
 export function useWowzaResource(src: string) {
