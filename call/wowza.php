@@ -56,11 +56,11 @@ function build_query(string $path): string {
 }
 
 function build(string $src): string {
-  $url = WOWZA_BASE_URL."/{$src}/playlist.m3u8";
+  $url = WOWZA_BASE_URL."/{$src}";
   $basepath = parse_url($url, PHP_URL_PATH);
   $path = preg_replace('/^\//', '', $basepath);
   $query = build_query($path);
-  return "{$url}?{$query}";
+  return "{$url}/playlist.m3u8?{$query}";
 }
 
 header('Content-Type: application/json');
