@@ -43,9 +43,7 @@ function build_hash(string $path, array $query): string {
   return base64_urlsafe(hash('sha512', $token, true));
 }
 
-function build_query(string $src): string {
-  $basepath = parse_url(WOWZA_BASE_URL, PHP_URL_PATH);
-  $path = preg_replace('/^\//', '', $basepath)."/{$src}/playlist.m3u8";
+function build_query(string $path): string {
   $expires_at = time() + WOWZA_EXPIRES_IN;
   $query = [
     WOWZA_QUERY_PREFIX.'endtime' => $expires_at
@@ -58,8 +56,11 @@ function build_query(string $src): string {
 }
 
 function build(string $src): string {
-  $query = build_query($src);
-  return WOWZA_BASE_URL."/{$src}/playlist.m3u8?{$query}";
+  $url = WOWZA_BASE_URL."/{$src}/playlist.m3u8";
+  $basepath = parse_url($url, PHP_URL_PATH);
+  $path = preg_replace('/^\//', '', $basepath);
+  $query = build_query($path);
+  return "{$url}?{$query}";
 }
 
 header('Content-Type: application/json');
