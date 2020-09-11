@@ -146,8 +146,6 @@ echo json_encode([
   'title' => $content_name,
   'type' => $content_type,
   'src' => $content_src,
-  // TODO: プロパティ video は非推奨で type, src に移行
-  'video' => $content_src,
   'description' => $content_description,
   'createdby' => $content_createdby,
   'subtitles' => $subtitles,
