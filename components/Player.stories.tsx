@@ -1,11 +1,16 @@
 export default { title: "Player" };
-import { Player } from "./Player";
+import { Player, PlayerProps } from "./Player";
 
-export const YouTube = () => (
+const Template = (props: Partial<PlayerProps>) => (
   <Player
     type="youtube"
     src="3yfen-t49eI"
     subtitles={[{ lang: "en", file: new File([], "sample_file.vtt") }]}
     autoplay
+    {...props}
   />
 );
+
+export const YouTube = Template;
+
+export const Wowza = () => <Template type="wowza" src="sample.mp4" />;

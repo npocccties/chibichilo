@@ -24,10 +24,11 @@ import CloseIcon from "@material-ui/icons/Close";
 import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
+import { VideoLocation } from "./video/location";
 import { Subtitle, destroySubtitle } from "./video/subtitle";
 import { useRouter } from "./router";
 import { Video, updateVideo, createVideo } from "./video";
-import { VideoLocation, VideoLocationField } from "./VideoLocationField";
+import { VideoLocationField } from "./VideoLocationField";
 
 const iso6391 = ISO6391.getLanguages(ISO6391.getAllCodes());
 

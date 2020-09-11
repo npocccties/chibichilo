@@ -10,18 +10,17 @@ import {
 import { Skill } from "./video/skill";
 import { Task } from "./video/task";
 import { Level } from "./video/level";
+import { VideoLocation } from "./video/location";
 import { Subtitle, createSubtitle } from "./video/subtitle";
 import { mutate } from "swr";
 
 const key = "/api/video";
 
 type UserId = string; // NOTE: セッションに含まれる利用者のID
-export type VideoSchema = {
+export type VideoSchema = VideoLocation & {
   id?: number;
   title: string;
   description: string;
-  type: "youtube" | "wowza";
-  src: string;
   creator: UserId;
   skills: Skill[];
   tasks: Task[];

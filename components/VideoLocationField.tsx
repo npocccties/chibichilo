@@ -8,6 +8,7 @@ import {
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { validUrl } from "./validUrl";
+import { VideoLocation, videoLocationType } from "./video/location";
 
 const defaultLabel = "動画URLまたはファイル名";
 const label = {
@@ -19,27 +20,6 @@ const adornment = {
   youtube: "https://www.youtube.com/watch?v=",
   wowza: defaultAdornment,
 };
-
-export type VideoLocation = {
-  type: "youtube" | "wowza";
-  src: string;
-};
-
-const hosts = [
-  {
-    type: "youtube" as const,
-    reg: /(^|\.)youtube\.com$/,
-  },
-];
-
-function hostMatcher(reg: RegExp, host: string): boolean {
-  return reg.test(host);
-}
-
-function videoLocationType(url: URL): VideoLocation["type"] {
-  const type = hosts.find(({ reg }) => hostMatcher(reg, url.host))?.type;
-  return type ?? "wowza";
-}
 
 function parse(value: string): SetStateAction<VideoLocation> {
   if (!validUrl(value)) {
