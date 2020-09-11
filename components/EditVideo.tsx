@@ -96,7 +96,7 @@ export function EditVideoForm(props: {
 
   const edit = useCallback(
     (dispatch: (v: Video) => Video) => {
-      setVideo(dispatch({ ...video, state: "pending" }));
+      setVideo(video => dispatch({ ...video, state: "pending" }));
       if (typeof window === "undefined") return;
       window.onbeforeunload = function (e: BeforeUnloadEvent) {
         // NOTE: 作成(new)・編集(edit)画面での離脱防止
@@ -106,7 +106,7 @@ export function EditVideoForm(props: {
         if (action && ["new", "edit"].includes(action)) e.returnValue = "";
       };
     },
-    [video, setVideo]
+    [setVideo]
   );
   const onInputHandler = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
