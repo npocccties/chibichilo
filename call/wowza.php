@@ -45,7 +45,7 @@ function build_hash(string $path, array $query): string {
 
 function build_query(string $src): string {
   $basepath = parse_url(WOWZA_BASE_URL, PHP_URL_PATH);
-  $path = preg_replace('/^\//', '', $basepath)."/{$src}";
+  $path = preg_replace('/^\//', '', $basepath)."/{$src}/playlist.m3u8";
   $expires_at = time() + WOWZA_EXPIRES_IN;
   $query = [
     WOWZA_QUERY_PREFIX.'endtime' => $expires_at
