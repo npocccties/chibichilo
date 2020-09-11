@@ -39,7 +39,7 @@ function base64_urlsafe(string $data): string {
 
 function build_hash(string $path, array $query): string {
   // FIXME: SHA512 以外は未対応
-  $token = $path.'?'.WOWZA_SECURE_TOKEN.http_build_query($query);
+  $token = $path.'?'.WOWZA_SECURE_TOKEN.'&'.http_build_query($query);
   return base64_urlsafe(hash('sha512', $token, true));
 }
 
