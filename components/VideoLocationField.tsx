@@ -8,7 +8,7 @@ import {
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { validUrl } from "./validUrl";
-import { VideoLocation, videoLocationType } from "./video/location";
+import { VideoLocation, location } from "./video/location";
 
 const defaultLabel = "動画URLまたはファイル名";
 const label = {
@@ -28,20 +28,7 @@ function parse(value: string): SetStateAction<VideoLocation> {
     return (prev: VideoLocation) => ({ ...prev, src: value });
   }
   const url = new URL(value);
-  switch (videoLocationType(url)) {
-    case "youtube": {
-      const src = url.searchParams.get("v") ?? "";
-      return () => ({ type: "youtube", src });
-    }
-    case "vimeo": {
-      const src =
-        url.pathname.split("/").find((path) => /^\d+$/.test(path)) ?? "";
-      return () => ({ type: "vimeo", src });
-    }
-    case "wowza":
-    default:
-      return () => ({ type: "wowza", src: value });
-  }
+  return () => location(url);
 }
 
 function useInputHandler(dispatch: Dispatch<SetStateAction<VideoLocation>>) {
