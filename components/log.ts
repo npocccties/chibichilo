@@ -70,7 +70,7 @@ export function trackingStart(player: VideoJsPlayer) {
     previousTime = currentTime;
     currentTime = player.currentTime();
   });
-  player.on("|", function () {
+  player.on("seeking", function () {
     if (seekStart === null) {
       seekStart = previousTime;
     }
