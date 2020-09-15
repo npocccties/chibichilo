@@ -28,7 +28,9 @@ export function postForm<T extends object>(
   body: FormData;
 } {
   const form = new FormData();
-  Object.entries(req).forEach(([key, value]) => form.append(key, value));
+  Object.entries(req).forEach(
+    ([key, value]) => value === undefined || form.append(key, value)
+  );
   return {
     method: "POST",
     body: form,
