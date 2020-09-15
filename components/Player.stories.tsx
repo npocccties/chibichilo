@@ -13,4 +13,6 @@ const Template = (props: Partial<PlayerProps>) => (
 
 export const YouTube = Template;
 
+export const Vimeo = () => <Template type="vimeo" src="1084537" />;
+
 export const Wowza = () => <Template type="wowza" src="sample.mp4" />;

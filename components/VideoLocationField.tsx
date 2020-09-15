@@ -13,11 +13,13 @@ import { VideoLocation, videoLocationType } from "./video/location";
 const defaultLabel = "動画URLまたはファイル名";
 const label = {
   youtube: "YouTube動画のURLまたはビデオID",
+  vimeo: "Vimeo動画のURLまたはビデオID",
   wowza: defaultLabel,
 };
 const defaultAdornment = null;
 const adornment = {
   youtube: "https://www.youtube.com/watch?v=",
+  vimeo: "https://vimeo.com/",
   wowza: defaultAdornment,
 };
 
@@ -30,6 +32,11 @@ function parse(value: string): SetStateAction<VideoLocation> {
     case "youtube": {
       const src = url.searchParams.get("v") ?? "";
       return () => ({ type: "youtube", src });
+    }
+    case "vimeo": {
+      const src =
+        url.pathname.split("/").find((path) => /^\d+$/.test(path)) ?? "";
+      return () => ({ type: "vimeo", src });
     }
     case "wowza":
     default:
