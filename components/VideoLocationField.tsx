@@ -7,7 +7,7 @@ import {
 } from "react";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { parseLocation } from "./video/location";
+import { parse } from "./video/location";
 
 const defaultLabel = "動画URLまたはファイル名";
 const label = {
@@ -22,16 +22,16 @@ const adornment = {
   wowza: defaultAdornment,
 };
 
-function parse(value: string): SetStateAction<VideoLocation> {
+function state(value: string): SetStateAction<VideoLocation> {
   return (prev: VideoLocation) => ({
     ...prev,
-    ...parseLocation(value),
+    ...parse(value),
   });
 }
 
 function useInputHandler(dispatch: Dispatch<SetStateAction<VideoLocation>>) {
   const handler = (event: FormEvent<HTMLInputElement>) => {
-    dispatch(parse(event.currentTarget.value));
+    dispatch(state(event.currentTarget.value));
   };
   return useCallback(handler, [dispatch]);
 }

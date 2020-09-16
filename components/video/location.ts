@@ -20,7 +20,7 @@ function locationType(url: URL): VideoLocation["type"] {
   return type ?? "wowza";
 }
 
-export function parseLocation(value: string): Partial<VideoLocation> {
+export function parse(value: string): Partial<VideoLocation> {
   if (!validUrl(value)) return { src: value };
 
   const url = new URL(value);
