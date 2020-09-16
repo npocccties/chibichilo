@@ -14,14 +14,11 @@ const initialContentsIndex: ContentsIndex = {
   contents: [],
   state: "pending",
 };
-const fetchContentsIndex = makeFetcher(
-  (_: typeof key) =>
-    jsonFetcher(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_list_view.php`
-    ).then(contentsIndexHandler),
-  initialContentsIndex
-);
-function contentsIndexHandler(res: ContentsIndexResponse): ContentsIndexSchema {
+const fetchContentsIndex = makeFetcher((_: typeof key) => {
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_list_view.php`;
+  return jsonFetcher(url).then(indexHandler);
+}, initialContentsIndex);
+function indexHandler(res: ContentsIndexResponse): ContentsIndexSchema {
   return {
     contents: res.map(({ id, name, timemodified, createdby }) => ({
       id: Number(id),
@@ -84,9 +81,7 @@ export const useContents = (id: ContentsSchema["id"]) =>
   useApi([key, id], fetchContents, initialContents);
 
 export async function showContents(id: ContentsSchema["id"]) {
-  if (!Number.isFinite(id)) {
-    return failure(id);
-  }
+  if (!Number.isFinite(id)) return failure(id);
   return mutate([key, id]);
 }
 
@@ -101,7 +96,7 @@ export async function createContents(contents: ContentsSchema) {
     await success({ ...contents, id });
     return id;
   } catch {
-    failure(contents.id);
+    await failure(contents.id);
     return;
   }
 }
@@ -122,9 +117,7 @@ export async function updateContents(contents: ContentsSchema) {
 }
 
 export async function destroyContents(id: ContentsSchema["id"]) {
-  if (!Number.isFinite(id)) {
-    return await failure(id);
-  }
+  if (!Number.isFinite(id)) return await failure(id);
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_delete.php`;
   const req: DestroyContentsRequest = {
     content_id: id.toString(),
