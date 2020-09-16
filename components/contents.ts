@@ -85,7 +85,7 @@ export async function showContents(id: ContentsSchema["id"]) {
   return mutate([key, id]);
 }
 
-export async function createContents(contents: ContentsSchema) {
+export async function create(contents: ContentsSchema) {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_create.php`;
   const req: CreateContentsRequest = {
     title: contents.title,
@@ -97,11 +97,11 @@ export async function createContents(contents: ContentsSchema) {
     return id;
   } catch {
     await failure(contents.id);
-    return;
+    return NaN;
   }
 }
 
-export async function updateContents(contents: ContentsSchema) {
+async function update(contents: ContentsSchema) {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_update.php`;
   const req: UpdateContentsRequest = {
     id: contents.id,
@@ -128,6 +128,16 @@ export async function destroyContents(id: ContentsSchema["id"]) {
   } catch {
     return await failure(id);
   }
+}
+
+export async function saveContents(contents: ContentsSchema) {
+  let id: ContentsSchema["id"] = contents.id;
+  if (Number.isFinite(id)) {
+    await update(contents);
+  } else {
+    id = await create(contents);
+  }
+  return id;
 }
 
 async function success(contents: ContentsSchema) {

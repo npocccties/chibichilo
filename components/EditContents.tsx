@@ -1,7 +1,7 @@
 import { useState, useCallback, FormEvent, useEffect } from "react";
 import { reorder } from "./reorder";
 import { produce } from "immer";
-import { updateContents, createContents } from "./contents";
+import { saveContents } from "./contents";
 import { ReorderVideos } from "./ReorderVideos";
 import { IconButton, Tooltip, Box, Button, TextField } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -21,24 +21,20 @@ export function EditContents(props: { contents: Contents; videos: Videos }) {
   const router = useRouter();
   const { showMessage } = useSnackbar();
   const saveHandler = useCallback(async () => {
+    const id = await saveContents(contents);
+    if (!Number.isFinite(id)) return;
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
     }
-    if (contents.id) {
-      await updateContents(contents as ContentsSchema);
-    } else {
-      const id = await createContents(contents);
-      if (!Number.isFinite(id)) return;
-      router.replace({
-        pathname: "/contents",
-        query: {
-          id,
-          action: "edit",
-        },
-      });
-    }
-    showMessage(`保存しました`);
+    router.replace({
+      pathname: "/contents",
+      query: {
+        id,
+        action: "edit",
+      },
+    });
     router.push("/contents");
+    showMessage(`保存しました`);
   }, [contents, showMessage, router]);
   const submitHandler = useCallback(
     (event: FormEvent) => {

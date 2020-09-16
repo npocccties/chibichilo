@@ -140,11 +140,9 @@ type InitialVideoResponse = {
 export const useVideo = (id: VideoSchema["id"]) =>
   useApi([key, id], fetchVideo, initialVideo);
 
-export async function createVideo(
-  video: VideoSchema
-): Promise<VideoSchema["id"]> {
+export async function create(video: VideoSchema): Promise<VideoSchema["id"]> {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_create.php`;
-  const req: CreateVideoRequest = {
+  const req: CreateRequest = {
     title: video.title,
     type: video.type,
     src: video.src,
@@ -172,7 +170,7 @@ export async function createVideo(
     return NaN;
   }
 }
-type CreateVideoRequest = {
+type CreateRequest = {
   title: string;
   type: VideoSchema["type"];
   src: VideoSchema["src"];
@@ -183,9 +181,9 @@ type CreateVideoRequest = {
   level: string[];
 };
 
-export async function updateVideo(video: VideoSchema) {
+async function update(video: VideoSchema) {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_update.php`;
-  const req: UpdateVideoRequest = {
+  const req: UpdateRequest = {
     id: video.id,
     title: video.title,
     type: video.type,
@@ -211,9 +209,9 @@ export async function updateVideo(video: VideoSchema) {
     return await failure(video.id);
   }
 }
-type UpdateVideoRequest = {
+type UpdateRequest = {
   id: number;
-} & CreateVideoRequest;
+} & CreateRequest;
 
 export async function destroyVideo(id: VideoSchema["id"]) {
   if (!Number.isFinite(id)) {
@@ -233,6 +231,16 @@ export async function destroyVideo(id: VideoSchema["id"]) {
 type DestroyVideoRequest = {
   microcontentid: string;
 };
+
+export async function saveVideo(video: VideoSchema) {
+  let id: VideoSchema["id"] = video.id;
+  if (Number.isFinite(id)) {
+    await update(video);
+  } else {
+    id = await create(video);
+  }
+  return id;
+}
 
 async function success(video: VideoSchema) {
   await mutate([key, video.id], (prev?: Video) => ({

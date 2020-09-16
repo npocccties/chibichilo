@@ -26,7 +26,7 @@ import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
 import { destroySubtitle } from "./video/subtitle";
 import { useRouter } from "./router";
-import { updateVideo, createVideo } from "./video";
+import { saveVideo } from "./video";
 import { VideoLocationField } from "./VideoLocationField";
 
 const iso6391 = ISO6391.getLanguages(ISO6391.getAllCodes());
@@ -74,12 +74,7 @@ export function EditVideoForm(props: {
   }, [props.video]);
   const { showMessage } = useSnackbar();
   const saveHandler = useCallback(async () => {
-    let id = video.id;
-    if (!Number.isFinite(id)) {
-      await updateVideo(video as VideoSchema);
-    } else {
-      id = await createVideo(video);
-    }
+    const id = await saveVideo(video);
     if (!Number.isFinite(id)) return;
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
