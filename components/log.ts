@@ -1,8 +1,9 @@
 import { VideoJsPlayer } from "video.js";
-import { postForm } from "./api";
+import { postFormFetchText } from "./api";
 import { loadSessionInStorage } from "./session";
 
-const sendLogPath = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/log.php`;
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
+const sendLogPath = `${basePath}/call/log.php`;
 
 /** video-learner.js にあったトラッキング用コードの移植 */
 function sendLog(eventType: EventType, player: VideoJsPlayer, detail?: string) {
@@ -23,7 +24,7 @@ function sendLog(eventType: EventType, player: VideoJsPlayer, detail?: string) {
     cid: session?.lmsCourse,
     nonce: session?.nonce,
   };
-  return fetch(sendLogPath, postForm(req));
+  return postFormFetchText(sendLogPath, req);
 }
 type EventType =
   | "changepage"

@@ -1,24 +1,24 @@
 import {
-  jsonFetcher,
+  fetchJson,
+  postFormFetchJson,
+  postFormFetchText,
+  postJsonFetchText,
   useApi,
-  makeFetcher,
-  postForm,
-  textFetcher,
-  postJson,
 } from "./api";
 import { createSubtitles } from "./video/subtitle";
 import { mutate } from "swr";
 
 const key = "/api/video";
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
 
 const initialVideos: Videos = {
   videos: [],
   state: "pending",
 };
-const fetchVideos = makeFetcher((_: typeof key) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_search.php`;
-  return jsonFetcher(url).then(videosHandler);
-}, initialVideos);
+async function fetchVideos(_: typeof key) {
+  const url = `${basePath}/call/microcontent_search.php`;
+  return fetchJson(url).then(videosHandler);
+}
 type VideosResponse = {
   contents: Array<{
     id: string;
@@ -52,20 +52,20 @@ const initialVideo: Video = {
   subtitles: [],
   state: "pending",
 };
-const fetchVideo = makeFetcher(async (_: typeof key, id: VideoSchema["id"]) => {
-  if (!Number.isFinite(id)) return (await fetchInitialVideo()) || initialVideo;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_edit.php`;
+async function fetchVideo(_: typeof key, id: VideoSchema["id"]) {
+  if (!Number.isFinite(id)) return await fetchInitialVideo();
+  const url = `${basePath}/call/microcontent_edit.php`;
   const req: ShowVideoRequest = {
     microcontent_id: id.toString(),
   };
-  const res = await jsonFetcher(url, postForm(req)).then(showHandler(id));
+  const res = await postFormFetchJson(url, req).then(showHandler(id));
   return res;
-}, initialVideo);
-const fetchInitialVideo = makeFetcher(async (_: typeof key) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_new.php`;
-  const res = await jsonFetcher(url).then(initialVideoHandler);
+}
+async function fetchInitialVideo() {
+  const url = `${basePath}/call/microcontent_new.php`;
+  const res = await fetchJson(url).then(initialVideoHandler);
   return res;
-}, initialVideo);
+}
 function showHandler(
   videoId: Video["id"]
 ): (res: ShowVideoResponse) => VideoSchema {
@@ -141,7 +141,7 @@ export const useVideo = (id: VideoSchema["id"]) =>
   useApi([key, id], fetchVideo, initialVideo);
 
 export async function create(video: VideoSchema): Promise<VideoSchema["id"]> {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_create.php`;
+  const url = `${basePath}/call/microcontent_create.php`;
   const req: CreateRequest = {
     title: video.title,
     type: video.type,
@@ -154,7 +154,7 @@ export async function create(video: VideoSchema): Promise<VideoSchema["id"]> {
   };
   let id: VideoSchema["id"] = NaN;
   try {
-    id = Number(await textFetcher(url, postJson(req)));
+    id = Number(await postJsonFetchText(url, req));
   } catch {}
   if (!Number.isFinite(id)) {
     await failure(video.id);
@@ -182,7 +182,7 @@ type CreateRequest = {
 };
 
 async function update(video: VideoSchema) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_update.php`;
+  const url = `${basePath}/call/microcontent_update.php`;
   const req: UpdateRequest = {
     id: video.id,
     title: video.title,
@@ -196,7 +196,7 @@ async function update(video: VideoSchema) {
   };
   let id: VideoSchema["id"] = NaN;
   try {
-    id = Number(await textFetcher(url, postJson(req)));
+    id = Number(await postJsonFetchText(url, req));
   } catch {}
   if (!Number.isFinite(id)) {
     return await failure(video.id);
@@ -204,9 +204,9 @@ async function update(video: VideoSchema) {
 
   try {
     await createSubtitles(id, video.subtitles);
-    return await success({ ...video, id });
+    await success({ ...video, id });
   } catch {
-    return await failure(video.id);
+    await failure(video.id);
   }
 }
 type UpdateRequest = {
@@ -217,15 +217,15 @@ export async function destroyVideo(id: VideoSchema["id"]) {
   if (!Number.isFinite(id)) {
     return await failure(id);
   }
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_delete.php`;
+  const url = `${basePath}/call/microcontent_delete.php`;
   const req: DestroyVideoRequest = {
     microcontentid: id.toString(),
   };
   try {
-    await textFetcher(url, postForm(req));
-    return await success({ ...initialVideo, id });
+    await postFormFetchText(url, req);
+    await success({ ...initialVideo, id });
   } catch {
-    return await failure(id);
+    await failure(id);
   }
 }
 type DestroyVideoRequest = {
@@ -249,7 +249,6 @@ async function success(video: VideoSchema) {
     state: "success",
   }));
   await mutate(key);
-  return true;
 }
 
 async function failure(id: VideoSchema["id"]) {
@@ -258,5 +257,4 @@ async function failure(id: VideoSchema["id"]) {
     state: "failure",
   }));
   await mutate(key);
-  return true;
 }

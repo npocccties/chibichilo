@@ -1,4 +1,4 @@
-import { useSession } from "./api";
+import { useSession } from "./session";
 
 export function ShowSession() {
   const { data, error } = useSession();

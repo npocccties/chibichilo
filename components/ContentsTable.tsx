@@ -6,7 +6,7 @@ import LinkIcon from "@material-ui/icons/Link";
 import { Column } from "material-table";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
-import { registContents } from "./api";
+import { registContents } from "./registContents";
 import { useRouter } from "./router";
 import { Table } from "./Table";
 import { destroyContents } from "./contents";

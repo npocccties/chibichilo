@@ -1,17 +1,19 @@
 import ISO6391 from "iso-639-1";
-import { postForm, textFetcher } from "../api";
+import { postFormFetchText } from "../api";
+
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
 
 const makeCreator = (videoId: VideoSchema["id"]) => async (
   subtitle: Subtitle
 ) => {
   if (subtitle.file.size === 0) return;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle.php`;
+  const url = `${basePath}/call/microcontent_subtitle.php`;
   const req: CreateVideoSubtitleRequest = {
     id: videoId.toString(),
     lang: subtitle.lang,
     file: subtitle.file,
   };
-  await textFetcher(url, postForm(req));
+  await postFormFetchText(url, req);
 };
 type CreateVideoSubtitleRequest = {
   id: string; // NOTE: videoId
@@ -29,11 +31,11 @@ export function createSubtitles(
 
 export async function destroySubtitle(id: Subtitle["id"]) {
   if (id == null || !Number.isFinite(id)) return;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle_delete.php`;
+  const url = `${basePath}/call/microcontent_subtitle_delete.php`;
   const req: DestroySubtitleRequest = {
     subtitleid: id.toString(),
   };
-  await textFetcher(url, postForm(req));
+  await postFormFetchText(url, req);
 }
 type DestroySubtitleRequest = {
   subtitleid: string;

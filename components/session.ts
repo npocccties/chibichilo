@@ -1,6 +1,17 @@
-import { useSession } from "./api";
+import { SetStateAction } from "react";
+import useSWR, { mutate } from "swr";
+import { fetchJson } from "./api";
 
-const lmsUrl = process.env.NEXT_PUBLIC_LMS_URL || "";
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
+const sessionPath = `${basePath}/call/session.php`;
+
+export const useSession = () => useSWR<Session>(sessionPath, fetchJson);
+
+export function mutateSession(state: SetStateAction<Session>) {
+  mutate(sessionPath, state);
+}
+
+const lmsUrl = process.env.NEXT_PUBLIC_LMS_URL ?? "";
 
 export function useLmsSession(): Session | undefined {
   // TODO: for development
@@ -51,6 +62,6 @@ export function loadSessionInStorage():
   try {
     return JSON.parse(res);
   } catch {
-    return;
+    return undefined;
   }
 }

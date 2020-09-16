@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { jsonFetcher, useApi, makeFetcher } from "./api";
+import { fetchJson, useApi } from "./api";
 
 const initialData = {
   url: "",
@@ -17,15 +17,11 @@ const wowzaResourceUrl = process.browser
     ).href
   : "";
 
-const fetchWowzaResource: (
-  request: string
-) => Promise<WowzaResource> = makeFetcher(
+const fetchWowzaResource: (request: string) => Promise<WowzaResource> =
   // NOTE: for development
   process.env.NODE_ENV === "development"
     ? () => Promise.resolve({ url: "https://example/dummy" })
-    : jsonFetcher,
-  initialData
-);
+    : fetchJson;
 
 function buildRequest(src: string) {
   const params = new URLSearchParams();

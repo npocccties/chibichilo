@@ -1,23 +1,23 @@
 import {
-  jsonFetcher,
-  textFetcher,
-  postJson,
-  postForm,
-  makeFetcher,
+  fetchJson,
+  postFormFetchJson,
+  postFormFetchText,
+  postJsonFetchText,
   useApi,
 } from "./api";
 import { mutate } from "swr";
 
 const key = "/api/contents";
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
 
 const initialContentsIndex: ContentsIndex = {
   contents: [],
   state: "pending",
 };
-const fetchContentsIndex = makeFetcher((_: typeof key) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_list_view.php`;
-  return jsonFetcher(url).then(indexHandler);
-}, initialContentsIndex);
+function fetchContentsIndex(_: typeof key) {
+  const url = `${basePath}/call/content_list_view.php`;
+  return fetchJson(url).then(indexHandler);
+}
 function indexHandler(res: ContentsIndexResponse): ContentsIndexSchema {
   return {
     contents: res.map(({ id, name, timemodified, createdby }) => ({
@@ -43,18 +43,13 @@ const initialContents: Contents = {
   videos: [],
   state: "pending",
 };
-const fetchContents = makeFetcher(
-  async (_: typeof key, id: ContentsSchema["id"]) => {
-    if (!Number.isFinite(id)) return initialContents;
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/list_content_view.php`;
-    const req: ShowContentsRequest = {
-      content_id: id.toString(),
-    };
-    const res = await jsonFetcher(url, postForm(req)).then(showHandler(id));
-    return res;
-  },
-  initialContents
-);
+async function fetchContents(_: typeof key, id: ContentsSchema["id"]) {
+  if (!Number.isFinite(id)) return initialContents;
+  const url = `${basePath}/call/list_content_view.php`;
+  const req: ShowContentsRequest = { content_id: id.toString() };
+  const res = await postFormFetchJson(url, req).then(showHandler(id));
+  return res;
+}
 const showHandler = (contentsId: ContentsSchema["id"]) => (
   res: ShowContentsResponse
 ): ContentsSchema => ({
@@ -66,9 +61,7 @@ const showHandler = (contentsId: ContentsSchema["id"]) => (
     creator: createdby,
   })),
 });
-type ShowContentsRequest = {
-  content_id: string;
-};
+type ShowContentsRequest = { content_id: string };
 type ShowContentsResponse = {
   title: string;
   contents: Array<{
@@ -86,13 +79,13 @@ export async function showContents(id: ContentsSchema["id"]) {
 }
 
 export async function create(contents: ContentsSchema) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_create.php`;
+  const url = `${basePath}/call/content_create.php`;
   const req: CreateContentsRequest = {
     title: contents.title,
     contents: contents.videos.map(({ id, title }) => [id, title]),
   };
   try {
-    const id = Number(await textFetcher(url, postJson(req)));
+    const id = Number(await postJsonFetchText(url, req));
     await success({ ...contents, id });
     return id;
   } catch {
@@ -102,14 +95,14 @@ export async function create(contents: ContentsSchema) {
 }
 
 async function update(contents: ContentsSchema) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_update.php`;
+  const url = `${basePath}/call/content_update.php`;
   const req: UpdateContentsRequest = {
     id: contents.id,
     title: contents.title,
     contents: contents.videos.map(({ id, title }) => [id, title]),
   };
   try {
-    await textFetcher(url, postJson(req));
+    await postJsonFetchText(url, req);
     return await success(contents);
   } catch {
     return await failure(contents.id);
@@ -118,15 +111,15 @@ async function update(contents: ContentsSchema) {
 
 export async function destroyContents(id: ContentsSchema["id"]) {
   if (!Number.isFinite(id)) return await failure(id);
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_delete.php`;
+  const url = `${basePath}/call/content_delete.php`;
   const req: DestroyContentsRequest = {
     content_id: id.toString(),
   };
   try {
-    await textFetcher(url, postForm(req));
-    return await success({ ...initialContents, id });
+    await postFormFetchText(url, req);
+    await success({ ...initialContents, id });
   } catch {
-    return await failure(id);
+    await failure(id);
   }
 }
 
@@ -147,7 +140,6 @@ async function success(contents: ContentsSchema) {
     state: "success",
   }));
   await mutate(key);
-  return true;
 }
 
 async function failure(id: ContentsSchema["id"]) {
@@ -156,7 +148,6 @@ async function failure(id: ContentsSchema["id"]) {
     state: "failure",
   }));
   await mutate(key);
-  return false;
 }
 
 type CreateContentsRequest = {

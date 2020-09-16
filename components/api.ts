@@ -1,24 +1,20 @@
-import useSWR, { mutate, keyInterface } from "swr";
+import useSWR, { keyInterface } from "swr";
 import { fetcherFn } from "swr/dist/types";
-import { useSnackbar } from "material-ui-snackbar-provider";
 import { useMemo } from "react";
 
-const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH || "";
-const sessionPath = `${basePath}/call/session.php`;
-const registContentsPath = `${basePath}/call/content_regist.php`;
+const makeFetch = <T, U>(
+  responseHandler: (res: Response) => Promise<T>,
+  requestBuilder?: (req: U) => RequestInit
+) => async (input: RequestInfo, init?: U) => {
+  const res = await fetch(
+    input,
+    init && requestBuilder && requestBuilder(init)
+  );
+  if (!res.ok) throw new Error(res.statusText);
+  return responseHandler(res);
+};
 
-export function jsonFetcher(input: RequestInfo, init?: RequestInit) {
-  return fetch(input, init).then((r) => r.json());
-}
-export function textFetcher(input: RequestInfo, init?: RequestInit) {
-  return fetch(input, init).then((r) => r.text());
-}
-export function postForm<T extends object>(
-  req: T
-): {
-  method: "POST";
-  body: FormData;
-} {
+function postForm<T extends object>(req: T) {
   const form = new FormData();
   Object.entries(req).forEach(
     ([key, value]) => value === undefined || form.append(key, value)
@@ -28,15 +24,8 @@ export function postForm<T extends object>(
     body: form,
   };
 }
-export function postJson<T extends object>(
-  req: T
-): {
-  method: "POST";
-  headers: {
-    "Content-Type": "application/json";
-  };
-  body: string;
-} {
+
+function postJson<T extends object>(req: T) {
   return {
     method: "POST",
     headers: {
@@ -46,46 +35,12 @@ export function postJson<T extends object>(
   };
 }
 
-type LinkedContentsResponse = {
-  id: number;
-  name: string;
-};
-export async function registContents(id: ContentsSchema["id"], name: string) {
-  await mutate(registContentsPath, async () => {
-    const data = await textFetcher(
-      registContentsPath,
-      postForm({
-        content_id: id,
-      })
-    );
-    if (data !== "new" && data !== "update") throw new Error(data);
-    const res: LinkedContentsResponse = { id, name };
-    return res;
-  });
-  await mutate(sessionPath, (prev: Session) => ({
-    ...prev,
-    contents: id,
-  }));
-}
+export const fetchJson = makeFetch((res) => res.json());
+export const postFormFetchJson = makeFetch((res) => res.json(), postForm);
+export const postFormFetchText = makeFetch((res) => res.text(), postForm);
+export const postJsonFetchText = makeFetch((res) => res.text(), postJson);
 
-export function useShowRegistContents() {
-  const { showMessage } = useSnackbar();
-  const { data, error } = useSWR<LinkedContentsResponse>(registContentsPath);
-
-  if (error) {
-    console.error(error);
-    showMessage("問題が発生しました");
-  } else if (data) {
-    showMessage(`「${data.name}」を紐づけました`);
-    mutate(registContentsPath, () => null);
-  }
-
-  return { data, error };
-}
-
-export const useSession = () => useSWR<Session>(sessionPath, jsonFetcher);
-
-export function makeFetcher<T extends object, U extends any[]>(
+function withState<T extends object, U extends any[]>(
   fetcher: fetcherFn<T>,
   initialState: T
 ): (...args: U) => Promise<WithState<T>> {
@@ -114,7 +69,7 @@ export function useApi<T extends object, U extends any[]>(
   fetcher: (...args: U) => Promise<T>,
   initialState: WithState<T>
 ): WithState<T> {
-  const fetch = useMemo(() => makeFetcher(fetcher, initialState), [
+  const fetch = useMemo(() => withState(fetcher, initialState), [
     fetcher,
     initialState,
   ]);
