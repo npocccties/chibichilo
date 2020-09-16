@@ -122,7 +122,7 @@ export function trackingStart(player: VideoJsPlayer) {
   });
 
   // TODO: Window オブジェクトを介さない排他制御にしたい
-  // @ts-ignore
+  // @ts-expect-error
   if ("__trackingStart" in window && player === window.__trackingStart) return;
   window.addEventListener("beforeunload", function () {
     sendLog("beforeunload-ended", player);
@@ -142,6 +142,6 @@ export function trackingStart(player: VideoJsPlayer) {
     sendLog("current-time", player);
   }, 10000);
   // TODO: Window オブジェクトを介さない排他制御にしたい
-  // @ts-ignore
+  // @ts-expect-error
   window.__trackingStart = player;
 }

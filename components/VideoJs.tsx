@@ -26,7 +26,7 @@ export function VideoJs(props: {
     element.classList.add("vjs-big-play-centered");
     ref.current.appendChild(element);
     const player = videojs(element, { ...defaultOptions, ...props.options });
-    // @ts-ignore
+    // @ts-expect-error
     player.seekButtons({
       forward: 15,
       back: 15,
@@ -43,7 +43,7 @@ export function VideoJs(props: {
     if (!props.tracks || props.tracks.length === 0) return;
     const player: VideoJsPlayer | undefined = ref.current.querySelector(
       "video-js"
-      // @ts-ignore
+      // @ts-expect-error
     )?.player;
     if (!player) return;
     player.ready(() => {

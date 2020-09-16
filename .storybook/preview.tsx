@@ -12,7 +12,7 @@ import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
 
 // NOTE: Mock useRouter
-// @ts-ignore
+// @ts-expect-error
 nextRouter.useRouter = () => ({ route: "/", query: {} });
 
 addDecorator((story) => (
