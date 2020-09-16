@@ -15,13 +15,10 @@ const initialVideos: Videos = {
   videos: [],
   state: "pending",
 };
-const fetchVideos = makeFetcher(
-  (_: typeof key) =>
-    jsonFetcher(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_search.php`
-    ).then(videosHandler),
-  initialVideos
-);
+const fetchVideos = makeFetcher((_: typeof key) => {
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_search.php`;
+  return jsonFetcher(url).then(videosHandler);
+}, initialVideos);
 type VideosResponse = {
   contents: Array<{
     id: string;
@@ -166,14 +163,11 @@ export async function createVideo(
     return NaN;
   }
 
-  if (video.subtitles.length === 0) {
-    await success({ ...video, id });
-    return id;
-  }
-
-  // NOTE: With subtitle files
   try {
-    await Promise.all(video.subtitles.map(createSubtitle(id)));
+    // NOTE: With subtitle files
+    if (video.subtitles.length > 0) {
+      await Promise.all(video.subtitles.map(createSubtitle(id)));
+    }
     await success({ ...video, id });
     return id;
   } catch {
@@ -213,13 +207,11 @@ export async function updateVideo(video: VideoSchema) {
     return await failure(video.id);
   }
 
-  if (video.subtitles.length === 0) {
-    return await success({ ...video, id });
-  }
-
-  // NOTE: With subtitle files
   try {
-    await Promise.all(video.subtitles.map(createSubtitle(id)));
+    // NOTE: With subtitle files
+    if (video.subtitles.length > 0) {
+      await Promise.all(video.subtitles.map(createSubtitle(id)));
+    }
     return await success({ ...video, id });
   } catch {
     return await failure(video.id);
