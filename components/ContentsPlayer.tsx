@@ -60,12 +60,13 @@ export function ContentsPlayer(props: {
       index: number; // NOTE: playlist index number
     } & PlayerProps
   >();
+
   React.useEffect(() => {
     if (props.playlist.length === 0) return;
     const index = 0;
     const { type, src, subtitles } = props.playlist[index];
     setPlayerState({ index, type, src, subtitles, autoplay: true });
-  }, [setPlayerState, props.playlist]);
+  }, [setPlayerState, ...props.playlist]);
   const endedHandler = React.useCallback(() => {
     setPlayerState((prev) => {
       if (!prev) return prev;
@@ -80,7 +81,7 @@ export function ContentsPlayer(props: {
         return prev;
       }
     });
-  }, [setPlayerState, props.playlist]);
+  }, [setPlayerState, ...props.playlist]);
 
   const playlistClickHandler: (
     index: number
@@ -96,7 +97,7 @@ export function ContentsPlayer(props: {
         setPlayerState((prev) => prev && { index, ...video, autoplay: true });
       };
     },
-    [setPlayerState, props.playlist, session, player]
+    [setPlayerState, ...props.playlist, session, player]
   );
 
   const classes = useStyles();
