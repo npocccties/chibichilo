@@ -20,6 +20,8 @@ export function Vimeo(props: VimeoProps) {
     if (props.onEnded) player.on("ended", props.onEnded);
     return () => {
       player.destroy();
+      // NOTE: destroy() してもゴミが残るので新しい空の要素にしておく
+      ref.current = document.createElement("div");
     };
   }, [props.options, props.onEnded]);
   return <div ref={ref} />;
