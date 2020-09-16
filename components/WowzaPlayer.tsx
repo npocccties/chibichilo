@@ -7,6 +7,7 @@ type PlayerProps = {
   src: string;
   subtitles: Subtitle[];
   autoplay?: boolean;
+  onEnded?: () => void;
 };
 
 function WowzaPlayerBase(props: PlayerProps) {
@@ -28,6 +29,7 @@ function WowzaPlayerBase(props: PlayerProps) {
         autoplay: props.autoplay,
       }}
       tracks={buildTracks(props.subtitles)}
+      onEnded={props.onEnded}
     />
   );
 }

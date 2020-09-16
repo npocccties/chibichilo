@@ -5,6 +5,7 @@ import { WowzaPlayer } from "./WowzaPlayer";
 export type PlayerProps = VideoLocation & {
   subtitles: Subtitle[];
   autoplay?: boolean;
+  onEnded?: () => void;
 };
 
 export function Player(props: PlayerProps) {

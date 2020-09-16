@@ -4,6 +4,12 @@ import "videojs-youtube";
 import "videojs-seek-buttons";
 import { useAppState, useAppPlayer } from "./state";
 
+type VideoJsProps = {
+  options: VideoJsPlayerOptions;
+  tracks?: videojs.TextTrackOptions[];
+  onEnded?: () => void;
+};
+
 const defaultOptions: VideoJsPlayerOptions = {
   controls: true,
   fluid: true,
@@ -15,10 +21,7 @@ const defaultOptions: VideoJsPlayerOptions = {
   playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
 };
 
-export function VideoJs(props: {
-  options: VideoJsPlayerOptions;
-  tracks?: videojs.TextTrackOptions[];
-}) {
+export function VideoJs(props: VideoJsProps) {
   const ref = React.useRef(document.createElement("div"));
   const setPlayer = useAppPlayer();
   React.useEffect(() => {
@@ -31,13 +34,14 @@ export function VideoJs(props: {
       forward: 15,
       back: 15,
     });
+    if (props.onEnded) player.on("ended", props.onEnded);
     volumePersister(player);
     setPlayer(player);
     return () => {
       setPlayer(undefined);
       player.dispose();
     };
-  }, [props.options]);
+  }, [props.options, props.onEnded]);
   const tracksRef = React.useRef<HTMLTrackElement[]>([]);
   React.useEffect(() => {
     if (!props.tracks || props.tracks.length === 0) return;

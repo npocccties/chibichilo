@@ -6,6 +6,7 @@ type PlayerProps = {
   src: string;
   subtitles: Subtitle[];
   autoplay?: boolean;
+  onEnded?: () => void;
 };
 
 function YouTubePlayerBase(props: PlayerProps) {
@@ -22,6 +23,7 @@ function YouTubePlayerBase(props: PlayerProps) {
         autoplay: props.autoplay,
       }}
       tracks={buildTracks(props.subtitles)}
+      onEnded={props.onEnded}
     />
   );
 }

@@ -81,11 +81,6 @@ export function ContentsPlayer(props: {
       }
     });
   }, [setPlayerState, props.playlist]);
-  React.useEffect(() => {
-    if (!player) return;
-    player.on("ended", endedHandler);
-    return () => player.off("ended", endedHandler);
-  }, [player, endedHandler]);
 
   const playlistClickHandler: (
     index: number
@@ -106,6 +101,7 @@ export function ContentsPlayer(props: {
 
   const classes = useStyles();
   const videoPlayerProps: VideoPlayerProps | undefined = playerState && {
+    onEnded: endedHandler,
     ...playerState,
     ...props.playlist[playerState.index],
   };

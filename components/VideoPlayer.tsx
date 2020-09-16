@@ -9,6 +9,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   return (
     <div>
       <Player
+        onEnded={props.onEnded}
         type={props.type}
         src={props.src}
         subtitles={props.subtitles}
