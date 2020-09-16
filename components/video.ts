@@ -6,7 +6,7 @@ import {
   textFetcher,
   postJson,
 } from "./api";
-import { createSubtitle } from "./video/subtitle";
+import { createSubtitles } from "./video/subtitle";
 import { mutate } from "swr";
 
 const key = "/api/video";
@@ -164,10 +164,7 @@ export async function createVideo(
   }
 
   try {
-    // NOTE: With subtitle files
-    if (video.subtitles.length > 0) {
-      await Promise.all(video.subtitles.map(createSubtitle(id)));
-    }
+    await createSubtitles(id, video.subtitles);
     await success({ ...video, id });
     return id;
   } catch {
@@ -208,10 +205,7 @@ export async function updateVideo(video: VideoSchema) {
   }
 
   try {
-    // NOTE: With subtitle files
-    if (video.subtitles.length > 0) {
-      await Promise.all(video.subtitles.map(createSubtitle(id)));
-    }
+    await createSubtitles(id, video.subtitles);
     return await success({ ...video, id });
   } catch {
     return await failure(video.id);

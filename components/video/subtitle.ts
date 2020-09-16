@@ -1,17 +1,17 @@
 import ISO6391 from "iso-639-1";
 import { postForm, textFetcher } from "../api";
 
-export const createSubtitle = (videoId: VideoSchema["id"]) => (
+const makeCreator = (videoId: VideoSchema["id"]) => async (
   subtitle: Subtitle
 ) => {
+  if (subtitle.file.size === 0) return;
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle.php`;
   const req: CreateVideoSubtitleRequest = {
     id: videoId.toString(),
     lang: subtitle.lang,
     file: subtitle.file,
   };
-  if (subtitle.file.size > 0) return textFetcher(url, postForm(req));
-  else return Promise.resolve("");
+  await textFetcher(url, postForm(req));
 };
 type CreateVideoSubtitleRequest = {
   id: string; // NOTE: videoId
@@ -19,13 +19,21 @@ type CreateVideoSubtitleRequest = {
   file: File;
 };
 
-export function destroySubtitle(id: Subtitle["id"]) {
-  if (id == null || !Number.isFinite(id)) return Promise.resolve();
+export function createSubtitles(
+  videoId: VideoSchema["id"],
+  subtitles: Subtitle[]
+) {
+  const creator = makeCreator(videoId);
+  return Promise.all(subtitles.map(creator));
+}
+
+export async function destroySubtitle(id: Subtitle["id"]) {
+  if (id == null || !Number.isFinite(id)) return;
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle_delete.php`;
   const req: DestroySubtitleRequest = {
     subtitleid: id.toString(),
   };
-  return textFetcher(url, postForm(req));
+  await textFetcher(url, postForm(req));
 }
 type DestroySubtitleRequest = {
   subtitleid: string;
