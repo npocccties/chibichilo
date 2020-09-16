@@ -1,6 +1,5 @@
 export default { title: "EditVideo" };
 import { EditVideo } from "./EditVideo";
-import { Video } from "./video";
 
 const video: Video = {
   id: 39,

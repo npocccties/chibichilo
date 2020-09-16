@@ -54,8 +54,8 @@ type Request = {
   nonce?: string;
 };
 
-export function sendVideoId(player: VideoJsPlayer, id?: number) {
-  return sendLog("changepage", player, id?.toString());
+export function sendVideoId(player: VideoJsPlayer, id: VideoSchema["id"]) {
+  return sendLog("changepage", player, id.toString());
 }
 
 /** video-learner.js にあったトラッキング用コードの移植 */

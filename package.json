@@ -35,7 +35,7 @@
   },
   "scripts": {
     "build": "next build && next export -o v1",
-    "format": "prettier --write components pages",
+    "format": "prettier --write components pages types",
     "lint": "tsc",
     "storybook": "start-storybook"
   }

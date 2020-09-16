@@ -1,7 +1,6 @@
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import { VideoSchema } from "./video";
 import { PlayerProps, Player } from "./Player";
 
 export type VideoPlayerProps = VideoSchema & PlayerProps;

@@ -8,7 +8,7 @@ import {
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { validUrl } from "./validUrl";
-import { VideoLocation, location } from "./video/location";
+import { location } from "./video/location";
 
 const defaultLabel = "動画URLまたはファイル名";
 const label = {

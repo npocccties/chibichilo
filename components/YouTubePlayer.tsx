@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { VideoJs } from "./VideoJs";
-import { Subtitle, buildTracks } from "./video/subtitle";
+import { buildTracks } from "./video/subtitle";
 
 type PlayerProps = {
   src: string;

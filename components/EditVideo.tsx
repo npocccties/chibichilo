@@ -24,10 +24,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
-import { VideoLocation } from "./video/location";
-import { Subtitle, destroySubtitle } from "./video/subtitle";
+import { destroySubtitle } from "./video/subtitle";
 import { useRouter } from "./router";
-import { Video, updateVideo, createVideo } from "./video";
+import { updateVideo, createVideo } from "./video";
 import { VideoLocationField } from "./VideoLocationField";
 
 const iso6391 = ISO6391.getLanguages(ISO6391.getAllCodes());
@@ -76,12 +75,12 @@ export function EditVideoForm(props: {
   const { showMessage } = useSnackbar();
   const saveHandler = useCallback(async () => {
     let id = video.id;
-    if (id) {
-      await updateVideo(video as Required<Video>);
+    if (!Number.isFinite(id)) {
+      await updateVideo(video as VideoSchema);
     } else {
       id = await createVideo(video);
     }
-    if (!id) return;
+    if (!Number.isFinite(id)) return;
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
     }
@@ -190,8 +189,8 @@ export function EditVideoForm(props: {
 
   const confirm = useConfirm();
   const destroySubtitleHandler = useCallback(
-    (lang: string, id?: number) => async (_: MouseEvent) => {
-      if (!id) return;
+    (lang: string, id: number) => async (_: MouseEvent) => {
+      if (!Number.isFinite(id)) return;
       try {
         await confirm({
           title: `字幕「${lang}」を削除します。よろしいですか？`,

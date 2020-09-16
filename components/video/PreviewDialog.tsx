@@ -3,7 +3,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
-import { Video } from "components/video";
 import { VideoPlayer } from "components/VideoPlayer";
 
 type Props = {

@@ -1,13 +1,9 @@
 import ISO6391 from "iso-639-1";
 import { postForm, textFetcher } from "../api";
 
-export type Subtitle = {
-  id?: number;
-  file: File; // NOTE: WebVTT file
-  lang: string; // NOTE: ISO 639-1 code
-};
-
-export const createSubtitle = (videoId: number) => (subtitle: Subtitle) => {
+export const createSubtitle = (videoId: VideoSchema["id"]) => (
+  subtitle: Subtitle
+) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle.php`;
   const req: CreateVideoSubtitleRequest = {
     id: videoId.toString(),
@@ -23,7 +19,8 @@ type CreateVideoSubtitleRequest = {
   file: File;
 };
 
-export function destroySubtitle(id: number) {
+export function destroySubtitle(id: Subtitle["id"]) {
+  if (id == null || !Number.isFinite(id)) return Promise.resolve();
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_subtitle_delete.php`;
   const req: DestroySubtitleRequest = {
     subtitleid: id.toString(),

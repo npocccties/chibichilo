@@ -7,14 +7,6 @@ const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH || "";
 const sessionPath = `${basePath}/call/session.php`;
 const registContentsPath = `${basePath}/call/content_regist.php`;
 
-export type SessionResponse = {
-  id: string;
-  role: "administrator" | "instructor" | "";
-  contents?: number;
-  lmsResource: string;
-  lmsCourse: string;
-};
-
 export function jsonFetcher(input: RequestInfo, init?: RequestInit) {
   return fetch(input, init).then((r) => r.json());
 }
@@ -58,7 +50,7 @@ type LinkedContentsResponse = {
   id: number;
   name: string;
 };
-export async function registContents(id: number, name: string) {
+export async function registContents(id: ContentsSchema["id"], name: string) {
   await mutate(registContentsPath, async () => {
     const data = await textFetcher(
       registContentsPath,
@@ -70,7 +62,7 @@ export async function registContents(id: number, name: string) {
     const res: LinkedContentsResponse = { id, name };
     return res;
   });
-  await mutate(sessionPath, (prev: SessionResponse) => ({
+  await mutate(sessionPath, (prev: Session) => ({
     ...prev,
     contents: id,
   }));
@@ -91,10 +83,7 @@ export function useShowRegistContents() {
   return { data, error };
 }
 
-export const useSession = () =>
-  useSWR<SessionResponse>(sessionPath, jsonFetcher);
-
-export type WithState<T> = T & { state: "pending" | "success" | "failure" };
+export const useSession = () => useSWR<Session>(sessionPath, jsonFetcher);
 
 export function makeFetcher<T extends object, U extends any[]>(
   fetcher: fetcherFn<T>,

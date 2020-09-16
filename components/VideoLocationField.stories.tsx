@@ -1,6 +1,5 @@
 export default { title: "VideoLocationField" };
 import { useState } from "react";
-import { VideoLocation } from "./video/location";
 import { VideoLocationField } from "./VideoLocationField";
 
 export function Basic() {

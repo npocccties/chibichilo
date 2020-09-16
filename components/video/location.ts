@@ -1,8 +1,3 @@
-export type VideoLocation = {
-  type: "youtube" | "vimeo" | "wowza";
-  src: string;
-};
-
 const hosts = [
   {
     type: "youtube" as const,

@@ -8,8 +8,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { Contents } from "./contents";
-import { Video } from "./video";
 import { PlayerProps } from "./Player";
 import { usePlayer } from "./VideoJs";
 import { sendVideoId, trackingStart } from "./log";

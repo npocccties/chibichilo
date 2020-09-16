@@ -3,36 +3,12 @@ import {
   textFetcher,
   postJson,
   postForm,
-  WithState,
   makeFetcher,
   useApi,
 } from "./api";
 import { mutate } from "swr";
 
 const key = "/api/contents";
-
-type VideoId = number; // NOTE: Video.id
-type UserId = string; // NOTE: セッションに含まれる利用者のID
-type ContentsSchema = {
-  id?: number;
-  title: string;
-  videos: Array<{
-    id: VideoId;
-    title: string;
-    creator: UserId;
-  }>;
-};
-type ContentsIndexSchema = {
-  contents: Array<{
-    id: number;
-    title: string;
-    creator: UserId;
-    updateAt: Date;
-  }>;
-};
-
-export type Contents = WithState<ContentsSchema>;
-export type ContentsIndex = WithState<ContentsIndexSchema>;
 
 const initialContentsIndex: ContentsIndex = {
   contents: [],
@@ -65,35 +41,34 @@ export const useContentsIndex = () =>
   useApi(key, fetchContentsIndex, initialContentsIndex);
 
 const initialContents: Contents = {
+  id: NaN,
   title: "",
   videos: [],
   state: "pending",
 };
-const fetchContents = makeFetcher(async (_: typeof key, id?: number) => {
-  if (id == null) return initialContents;
-  if (!Number.isFinite(id)) return initialContents;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/list_content_view.php`;
-  const req: ShowContentsRequest = {
-    content_id: id.toString(),
-  };
-  const contents: ContentsSchema = await jsonFetcher(url, postForm(req)).then(
-    showContentsHandler
-  );
-  return {
-    id,
-    ...contents,
-  };
-}, initialContents);
-function showContentsHandler(res: ShowContentsResponse): ContentsSchema {
-  return {
-    title: res.title,
-    videos: res.contents.map(({ id, cname, createdby }) => ({
-      id: Number(id),
-      title: cname,
-      creator: createdby,
-    })),
-  };
-}
+const fetchContents = makeFetcher(
+  async (_: typeof key, id: ContentsSchema["id"]) => {
+    if (!Number.isFinite(id)) return initialContents;
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/list_content_view.php`;
+    const req: ShowContentsRequest = {
+      content_id: id.toString(),
+    };
+    const res = await jsonFetcher(url, postForm(req)).then(showHandler(id));
+    return res;
+  },
+  initialContents
+);
+const showHandler = (contentsId: ContentsSchema["id"]) => (
+  res: ShowContentsResponse
+): ContentsSchema => ({
+  id: contentsId,
+  title: res.title,
+  videos: res.contents.map(({ id, cname, createdby }) => ({
+    id: Number(id),
+    title: cname,
+    creator: createdby,
+  })),
+});
 type ShowContentsRequest = {
   content_id: string;
 };
@@ -105,11 +80,11 @@ type ShowContentsResponse = {
     createdby: string;
   }>;
 };
-export const useContents = (id?: number) =>
+export const useContents = (id: ContentsSchema["id"]) =>
   useApi([key, id], fetchContents, initialContents);
 
 export async function showContents(id: ContentsSchema["id"]) {
-  if (id == null) {
+  if (!Number.isFinite(id)) {
     return failure(id);
   }
   return mutate([key, id]);
@@ -131,7 +106,7 @@ export async function createContents(contents: ContentsSchema) {
   }
 }
 
-export async function updateContents(contents: Required<ContentsSchema>) {
+export async function updateContents(contents: ContentsSchema) {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_update.php`;
   const req: UpdateContentsRequest = {
     id: contents.id,
@@ -147,7 +122,7 @@ export async function updateContents(contents: Required<ContentsSchema>) {
 }
 
 export async function destroyContents(id: ContentsSchema["id"]) {
-  if (id == null) {
+  if (!Number.isFinite(id)) {
     return await failure(id);
   }
   const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_delete.php`;
@@ -162,7 +137,7 @@ export async function destroyContents(id: ContentsSchema["id"]) {
   }
 }
 
-async function success(contents: Required<ContentsSchema>) {
+async function success(contents: ContentsSchema) {
   await mutate([key, contents.id], (prev?: Contents) => ({
     ...(prev || initialContents),
     ...contents,

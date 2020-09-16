@@ -1,5 +1,3 @@
-import { VideoLocation } from "./video/location";
-import { Subtitle } from "./video/subtitle";
 import { YouTubePlayer } from "./YouTubePlayer";
 import { VimeoPlayer } from "./VimeoPlayer";
 import { WowzaPlayer } from "./WowzaPlayer";

@@ -1,6 +1,5 @@
-import { Contents } from "./contents";
 import { ContentsPlayer } from "./ContentsPlayer";
-import { useVideo, Video } from "./video";
+import { useVideo } from "./video";
 
 /**
  * Contents に紐づくビデオをの情報を取得して playlist を生成しタイトルを書き換えて ContentsPlayer に渡す
