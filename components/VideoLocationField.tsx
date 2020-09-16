@@ -7,8 +7,7 @@ import {
 } from "react";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { validUrl } from "./validUrl";
-import { location } from "./video/location";
+import { parseLocation } from "./video/location";
 
 const defaultLabel = "動画URLまたはファイル名";
 const label = {
@@ -24,11 +23,10 @@ const adornment = {
 };
 
 function parse(value: string): SetStateAction<VideoLocation> {
-  if (!validUrl(value)) {
-    return (prev: VideoLocation) => ({ ...prev, src: value });
-  }
-  const url = new URL(value);
-  return () => location(url);
+  return (prev: VideoLocation) => ({
+    ...prev,
+    ...parseLocation(value),
+  });
 }
 
 function useInputHandler(dispatch: Dispatch<SetStateAction<VideoLocation>>) {

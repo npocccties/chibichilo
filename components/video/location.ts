@@ -1,3 +1,5 @@
+import { validUrl } from "../validUrl";
+
 const hosts = [
   {
     type: "youtube" as const,
@@ -18,7 +20,10 @@ function locationType(url: URL): VideoLocation["type"] {
   return type ?? "wowza";
 }
 
-export function location(url: URL): VideoLocation {
+export function parseLocation(value: string): Partial<VideoLocation> {
+  if (!validUrl(value)) return { src: value };
+
+  const url = new URL(value);
   switch (locationType(url)) {
     case "youtube": {
       const src = url.searchParams.get("v") ?? "";
@@ -30,7 +35,6 @@ export function location(url: URL): VideoLocation {
       return { type: "vimeo", src };
     }
     case "wowza":
-    default:
-      return { type: "wowza", src: url.href };
+      return { type: "wowza", src: value };
   }
 }
