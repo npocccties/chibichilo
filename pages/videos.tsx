@@ -59,7 +59,7 @@ function Router() {
       default:
         return <Index preview={query.preview} />;
       case "new": {
-        appTitle("ビデオの追加");
+        appTitle("ビデオの登録");
         return <New />;
       }
     }
