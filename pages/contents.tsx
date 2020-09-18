@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useEffect } from "react";
 import { useContentsIndex } from "components/contents";
 import { ContentsTable } from "components/ContentsTable";
 import { ShowContents } from "components/ShowContents";
@@ -30,7 +30,7 @@ function Index(props: { preview?: string }) {
   const contentsIndex = useContentsIndex();
   const previewContents = useContents(Number(props.preview));
   const router = useRouter();
-  const closePreviewHandler = React.useCallback(() => {
+  const closePreviewHandler = useCallback(() => {
     router.push("/contents");
   }, [router]);
 
@@ -58,10 +58,12 @@ function Show(props: { id: string }) {
   const contents = useContents(Number(props.id));
   const appTitle = useAppTitle();
   const playerTracker = usePlayerTracker();
-  if (!isLmsInstructor(session)) {
-    if (contents.title) appTitle(contents.title);
-    if (playerTracker) startTracking(playerTracker);
-  }
+  useEffect(() => {
+    if (!isLmsInstructor(session)) {
+      if (contents.title) appTitle(contents.title);
+      if (playerTracker) startTracking(playerTracker);
+    }
+  }, [session, contents.title]);
   return <ShowContents contents={contents} />;
 }
 function Edit(props: { id?: string; preview?: string; video?: string }) {
@@ -72,7 +74,7 @@ function Edit(props: { id?: string; preview?: string; video?: string }) {
     Number(props.video) || Number(props.preview)
   );
   const router = useRouter();
-  const closePreviewHandler = React.useCallback(() => {
+  const closePreviewHandler = useCallback(() => {
     router.push({
       pathname: "/contents",
       query: {
