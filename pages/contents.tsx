@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { useContentsIndex } from "components/contents";
 import { ContentsTable } from "components/ContentsTable";
 import { ShowContents } from "components/ShowContents";
@@ -55,15 +55,16 @@ function Index(props: { preview?: string }) {
 
 function Show(props: { id: string }) {
   const session = useLmsSession();
+  const student = useMemo(() => !isLmsInstructor(session), [session]);
   const contents = useContents(Number(props.id));
   const appTitle = useAppTitle();
   const playerTracker = usePlayerTracker();
   useEffect(() => {
-    if (!isLmsInstructor(session)) {
-      if (contents.title) appTitle(contents.title);
-      if (playerTracker) startTracking(playerTracker);
-    }
-  }, [session, contents.title]);
+    if (student && contents.title) appTitle(contents.title);
+  }, [student, contents.title]);
+  useEffect(() => {
+    if (student && playerTracker) startTracking(playerTracker);
+  }, [student, playerTracker]);
   return <ShowContents contents={contents} />;
 }
 function Edit(props: { id?: string; preview?: string; video?: string }) {
