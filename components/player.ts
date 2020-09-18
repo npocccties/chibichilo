@@ -2,7 +2,7 @@ import { SetStateAction, useEffect } from "react";
 import { StrictEventEmitter } from "strict-event-emitter-types";
 import { EventEmitter } from "events";
 import { VideoJsPlayer } from "video.js";
-import { Player as VimeoPlayer } from "@vimeo/player";
+import { default as VimeoPlayer } from "@vimeo/player";
 import { useAppPlayerTracker, useAppState } from "./state";
 
 const basicEventsMap = [
