@@ -87,6 +87,7 @@ export function startTracking(tracker: PlayerTracker) {
   });
 
   /* Record subtitle information */
+  // FIXME: 反応してない
   tracker.on("texttrackchange", function (event) {
     send("trackchange", event, event.language ?? "off");
   });
@@ -106,8 +107,8 @@ export function startTracking(tracker: PlayerTracker) {
   // TODO: Window オブジェクトを介さない排他制御にしたい
   // @ts-expect-error
   if ("__trackingStart" in window && tracker === window.__trackingStart) return;
-
   for (const event of ["beforeunload", "pagehide", "unload"] as const) {
+    // FIXME: removeEventListener 呼ばれない
     window.addEventListener(
       event,
       // TODO: TypeScript 4.1 以降では as EventType を外せる、はず
@@ -115,11 +116,13 @@ export function startTracking(tracker: PlayerTracker) {
     );
   }
 
+  // FIXME: removeEventListener 呼ばれない
   document.addEventListener("visibilitychange", async function () {
     if (document.visibilityState === "hidden")
       send("hidden-ended", await tracker.stats());
   });
 
+  // FIXME: clearInterval 呼ばれない
   setInterval(async () => send("current-time", await tracker.stats()), 10000);
 
   // TODO: Window オブジェクトを介さない排他制御にしたい
