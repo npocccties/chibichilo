@@ -1,7 +1,9 @@
+import { SetStateAction, useEffect } from "react";
 import { StrictEventEmitter } from "strict-event-emitter-types";
 import { EventEmitter } from "events";
 import { VideoJsPlayer } from "video.js";
 import { Player as VimeoPlayer } from "@vimeo/player";
+import { useAppPlayerTracker, useAppState } from "./state";
 
 const basicEventsMap = [
   "ended",
@@ -12,51 +14,67 @@ const basicEventsMap = [
   "timeupdate",
 ] as const;
 
+type CustomEvents = {
+  nextvideo: PlayerEvent & { video: VideoSchema["id"] };
+};
+
 /** プレイヤーのトラッキング用 */
 export class PlayerTracker extends (EventEmitter as {
-  new (): StrictEventEmitter<EventEmitter, PlayerEvents>;
+  new (): StrictEventEmitter<EventEmitter, PlayerEvents & CustomEvents>;
 }) {
+  readonly player: VideoJsPlayer | VimeoPlayer;
+  readonly stats: () => Promise<PlayerEvent>;
+
   constructor(player: VideoJsPlayer | VimeoPlayer) {
     super();
+    this.player = player;
 
     if (player instanceof VimeoPlayer) {
+      this.stats = async () => vimeoStats(player);
       this.intoVimeo(player);
     } else {
+      this.stats = async () => videoJsStats(player);
       this.intoVideoJs(player);
     }
   }
 
-  intoVideoJs(player: VideoJsPlayer) {
+  async next(video: VideoSchema["id"]) {
+    this.emit("nextvideo", { ...(await this.stats()), video });
+  }
+
+  private intoVideoJs(player: VideoJsPlayer) {
     for (const event of basicEventsMap) {
-      player.on(event, () => this.emit(event, videoJsStats(player)));
+      player.on(event, async () => this.emit(event, await this.stats()));
     }
 
-    player.on("firstplay", () => this.emit("firstplay", videoJsStats(player)));
-    player.on("ratechange", () => {
+    player.on("firstplay", async () =>
+      this.emit("firstplay", await this.stats())
+    );
+    player.on("ratechange", async () => {
       this.emit("playbackratechange", {
-        ...videoJsStats(player),
+        ...(await this.stats()),
         playbackRate: player.playbackRate(),
       });
     });
-    player.on("texttrackchange", () => {
+    player.on("texttrackchange", async () => {
       const showingSubtitle = [...player.remoteTextTracks()].find(
         ({ kind, mode }) => kind === "subtitles" && mode === "showing"
       );
       this.emit("texttrackchange", {
-        ...videoJsStats(player),
-        language: showingSubtitle?.language ?? "und",
+        ...(await this.stats()),
+        language: showingSubtitle?.language,
       });
     });
   }
 
-  intoVimeo(player: VimeoPlayer) {
+  private intoVimeo(player: VimeoPlayer) {
     for (const event of basicEventsMap) {
       player.on(event, async () => this.emit(event, await vimeoStats(player)));
     }
 
     player.on("playbackratechange", async (data: { playbackRate: number }) => {
       this.emit("playbackratechange", {
-        ...(await vimeoStats(player)),
+        ...(await this.stats()),
         playbackRate: data.playbackRate,
       });
     });
@@ -69,7 +87,7 @@ export class PlayerTracker extends (EventEmitter as {
       }) => {
         if (data.kind !== "subtitles") return;
         this.emit("texttrackchange", {
-          ...(await vimeoStats(player)),
+          ...(await this.stats()),
           language: data.language,
         });
       }
@@ -96,3 +114,26 @@ async function vimeoStats(player: VimeoPlayer): Promise<PlayerEvent> {
     currentTime,
   };
 }
+
+function playerTrackerState(
+  player?: VideoJsPlayer | VimeoPlayer
+): SetStateAction<PlayerTracker | undefined> {
+  if (!player) return () => undefined;
+  return (prev) => {
+    if (prev?.player === player) return prev;
+    if (prev != null) prev.removeAllListeners();
+    return new PlayerTracker(player);
+  };
+}
+
+export function usePlayerTracking() {
+  const playerTracker = useAppPlayerTracker();
+  const tracking = (player?: VideoJsPlayer | VimeoPlayer) =>
+    playerTracker(playerTrackerState(player));
+
+  useEffect(() => () => tracking());
+
+  return tracking;
+}
+
+export const usePlayerTracker = () => useAppState().playerTracker;

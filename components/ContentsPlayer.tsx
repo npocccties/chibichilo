@@ -9,8 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { PlayerProps } from "./Player";
-import { usePlayer } from "./VideoJs";
-import { sendVideoId, trackingStart } from "./log";
+import { usePlayerTracker } from "./player";
 import { useLmsSession, isLmsInstructor } from "./session";
 import { VideoPlayerProps, VideoPlayer } from "./VideoPlayer";
 
@@ -47,14 +46,6 @@ export function ContentsPlayer(props: {
   contents: Contents;
   playlist: Video[];
 }) {
-  const player = usePlayer();
-
-  // NOTE: トラッキング用
-  const session = useLmsSession();
-  React.useEffect(() => {
-    if (!isLmsInstructor(session) && player) trackingStart(player);
-  }, [session, player]);
-
   const [playerState, setPlayerState] = React.useState<
     {
       index: number; // NOTE: playlist index number
@@ -83,6 +74,10 @@ export function ContentsPlayer(props: {
     });
   }, [setPlayerState, props.playlist.length]);
 
+  // NOTE: トラッキング用
+  const playerTracker = usePlayerTracker();
+  // NOTE: トラッキング用
+  const session = useLmsSession();
   const playlistClickHandler: (
     index: number
   ) => (
@@ -92,12 +87,12 @@ export function ContentsPlayer(props: {
       const video = props.playlist[index];
       return () => {
         // NOTE: トラッキング用
-        if (!isLmsInstructor(session) && player) sendVideoId(player, video.id);
+        if (!isLmsInstructor(session)) playerTracker?.next(video.id);
 
         setPlayerState((prev) => prev && { index, ...video, autoplay: true });
       };
     },
-    [setPlayerState, props.playlist.length, session, player]
+    [setPlayerState, props.playlist.length, session, playerTracker]
   );
 
   const classes = useStyles();

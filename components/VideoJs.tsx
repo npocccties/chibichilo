@@ -2,7 +2,7 @@ import React from "react";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "videojs-youtube";
 import "videojs-seek-buttons";
-import { useAppState, useAppPlayer } from "./state";
+import { usePlayerTracking } from "./player";
 
 type VideoJsProps = {
   options: VideoJsPlayerOptions;
@@ -23,7 +23,7 @@ const defaultOptions: VideoJsPlayerOptions = {
 
 export function VideoJs(props: VideoJsProps) {
   const ref = React.useRef(document.createElement("div"));
-  const setPlayer = useAppPlayer();
+  const tracking = usePlayerTracking();
   React.useEffect(() => {
     const element = document.createElement("video-js");
     element.classList.add("vjs-big-play-centered");
@@ -34,13 +34,10 @@ export function VideoJs(props: VideoJsProps) {
       forward: 15,
       back: 15,
     });
-    if (props.onEnded) player.on("ended", props.onEnded);
+    tracking(player);
     volumePersister(player);
-    setPlayer(player);
-    return () => {
-      setPlayer(undefined);
-      player.dispose();
-    };
+    if (props.onEnded) player.on("ended", props.onEnded);
+    return () => player.dispose();
   }, [props.options, props.onEnded]);
   const tracksRef = React.useRef<HTMLTrackElement[]>([]);
   React.useEffect(() => {
@@ -60,11 +57,6 @@ export function VideoJs(props: VideoJsProps) {
     });
   }, [props.tracks]);
   return <div ref={ref} />;
-}
-
-export function usePlayer(): videojs.Player | undefined {
-  const player = useAppState().player;
-  return player;
 }
 
 function volumePersister(player: videojs.Player) {

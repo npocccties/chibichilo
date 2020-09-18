@@ -12,6 +12,8 @@ import {
   useLmsInstructor,
   isLmsInstructor,
 } from "components/session";
+import { usePlayerTracker } from "components/player";
+import { startTracking } from "components/log";
 import { EditVideoDialog } from "components/contents/EditVideoDialog";
 import { PreviewContentsDialog } from "components/contents/PreviewContentsDialog";
 import { PreviewDialog } from "components/video/PreviewDialog";
@@ -55,8 +57,10 @@ function Show(props: { id: string }) {
   const session = useLmsSession();
   const contents = useContents(Number(props.id));
   const appTitle = useAppTitle();
-  if (!isLmsInstructor(session) && contents.title) {
-    appTitle(contents.title);
+  const playerTracker = usePlayerTracker();
+  if (!isLmsInstructor(session)) {
+    if (contents.title) appTitle(contents.title);
+    if (playerTracker) startTracking(playerTracker);
   }
   return <ShowContents contents={contents} />;
 }

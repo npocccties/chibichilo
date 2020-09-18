@@ -11,7 +11,7 @@ type PlayerEvents = {
   seeking: PlayerEvent;
   timeupdate: PlayerEvent;
   playbackratechange: PlayerEvent & { playbackRate: number };
-  texttrackchange: PlayerEvent & { language: string };
+  texttrackchange: PlayerEvent & { language?: string };
   /** @deprecated */
   firstplay: PlayerEvent;
 };
