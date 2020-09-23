@@ -1,40 +1,39 @@
 import { validUrl } from "../validUrl";
 
-const hosts = [
+type Matcher = {
+  host: RegExp;
+  type: VideoLocation["type"];
+  src: (url: URL) => VideoLocation["src"];
+};
+
+const matchers: Array<Matcher> = [
   {
-    type: "youtube" as const,
-    reg: /(^|\.)youtube\.com$/,
+    host: /(^|\.)youtube\.com$/,
+    type: "youtube",
+    src: (url) => url.searchParams.get("v") ?? "",
   },
   {
-    type: "vimeo" as const,
-    reg: /^vimeo\.com$/,
+    host: /^youtu\.be$/,
+    type: "youtube",
+    src: (url) => url.pathname.split("/")[1] ?? "",
+  },
+  {
+    host: /^vimeo\.com$/,
+    type: "vimeo",
+    src: (url) =>
+      url.pathname.split("/").find((path) => /^\d+$/.test(path)) ?? "",
   },
 ];
 
-function hostMatcher(reg: RegExp, host: string): boolean {
-  return reg.test(host);
-}
+const hostMatch = (url: URL) => (matcher: Matcher): boolean =>
+  matcher.host.test(url.host);
 
-function locationType(url: URL): VideoLocation["type"] {
-  const type = hosts.find(({ reg }) => hostMatcher(reg, url.host))?.type;
-  return type ?? "wowza";
+function match(url: URL): VideoLocation | undefined {
+  const location = matchers.find(hostMatch(url));
+  return location && { type: location.type, src: location.src(url) };
 }
 
 export function parse(value: string): Partial<VideoLocation> {
   if (!validUrl(value)) return { src: value };
-
-  const url = new URL(value);
-  switch (locationType(url)) {
-    case "youtube": {
-      const src = url.searchParams.get("v") ?? "";
-      return { type: "youtube", src };
-    }
-    case "vimeo": {
-      const src =
-        url.pathname.split("/").find((path) => /^\d+$/.test(path)) ?? "";
-      return { type: "vimeo", src };
-    }
-    case "wowza":
-      return { type: "wowza", src: value };
-  }
+  return match(new URL(value)) ?? { type: "wowza", src: value };
 }
