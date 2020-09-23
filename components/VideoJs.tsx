@@ -1,5 +1,6 @@
 import React from "react";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
+import ja from "video.js/dist/lang/ja.json";
 import "videojs-youtube";
 import "videojs-seek-buttons";
 import { usePlayerTracking } from "./player";
@@ -19,6 +20,8 @@ const defaultOptions: VideoJsPlayerOptions = {
     pictureInPictureToggle: false,
   },
   playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+  language: "ja",
+  languages: { ja },
 };
 
 export function VideoJs(props: VideoJsProps) {
