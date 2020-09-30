@@ -4,6 +4,7 @@ import ja from "video.js/dist/lang/ja.json";
 import "videojs-youtube";
 import "videojs-seek-buttons";
 import { usePlayerTracking } from "./player";
+import { volumePersister } from "./player/volume";
 
 type VideoJsProps = {
   options: VideoJsPlayerOptions;
@@ -60,21 +61,4 @@ export function VideoJs(props: VideoJsProps) {
     });
   }, [props.tracks]);
   return <div ref={ref} />;
-}
-
-function volumePersister(player: videojs.Player) {
-  if (typeof window === "undefined") return;
-  const key = "volumePersisterVolume";
-  const muteKey = "volumePersisterMute";
-  player.on("volumechange", function () {
-    localStorage.setItem(key, player.volume().toString());
-    if (player.muted()) {
-      localStorage.setItem(muteKey, "true");
-    } else {
-      localStorage.removeItem(muteKey);
-    }
-  });
-  const volume = localStorage.getItem(key);
-  if (volume !== null) player.volume(Number(volume));
-  player.muted(localStorage.getItem(muteKey) != null);
 }

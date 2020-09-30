@@ -1,6 +1,7 @@
 import React from "react";
 import Player, { Options } from "@vimeo/player";
 import { usePlayerTracking } from "./player";
+import { volumePersister } from "./player/volume";
 
 type VimeoProps = {
   options: Options;
@@ -20,6 +21,7 @@ export function Vimeo(props: VimeoProps) {
       ...props.options,
     });
     tracking(player);
+    volumePersister(player);
     if (props.onEnded) player.on("ended", props.onEnded);
     return () => {
       player.destroy();
