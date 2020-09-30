@@ -26,7 +26,7 @@ export function Vimeo(props: VimeoProps) {
     return () => {
       player.destroy();
       // NOTE: destroy() してもゴミが残るので新しい空の要素にしておく
-      ref.current = document.createElement("div");
+      ref.current.textContent = "";
     };
   }, [props.options, props.onEnded]);
   return <div ref={ref} />;
