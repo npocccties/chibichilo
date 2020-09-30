@@ -18,6 +18,12 @@ type CustomEvents = {
   nextvideo: PlayerEvent & { video: VideoSchema["id"] };
 };
 
+const nullEvent = {
+  type: "youtube",
+  src: "",
+  currentTime: 0,
+} as const;
+
 /** プレイヤーのトラッキング用 */
 export class PlayerTracker extends (EventEmitter as {
   new (): StrictEventEmitter<EventEmitter, PlayerEvents & CustomEvents>;
@@ -96,6 +102,9 @@ export class PlayerTracker extends (EventEmitter as {
 }
 
 function videoJsStats(player: VideoJsPlayer): PlayerEvent {
+  // @ts-expect-error
+  if (player.isDisposed()) return nullEvent;
+
   return {
     type: /youtube/.test(player.currentType()) ? "youtube" : "wowza",
     src: player.src(),
@@ -104,15 +113,19 @@ function videoJsStats(player: VideoJsPlayer): PlayerEvent {
 }
 
 async function vimeoStats(player: VimeoPlayer): Promise<PlayerEvent> {
-  const [src, currentTime] = await Promise.all([
-    player.getVideoId(),
-    player.getCurrentTime(),
-  ]);
-  return {
-    type: "vimeo",
-    src: src.toString(),
-    currentTime,
-  };
+  try {
+    const [src, currentTime] = await Promise.all([
+      player.getVideoId(),
+      player.getCurrentTime(),
+    ]);
+    return {
+      type: "vimeo",
+      src: src.toString(),
+      currentTime,
+    };
+  } catch {
+    return nullEvent;
+  }
 }
 
 function playerTrackerState(
