@@ -57,7 +57,7 @@ export class PlayerTracker extends (EventEmitter as {
       });
     });
     player.on("texttrackchange", async () => {
-      const showingSubtitle = [...player.remoteTextTracks()].find(
+      const showingSubtitle = Array.from(player.remoteTextTracks()).find(
         ({ kind, mode }) => kind === "subtitles" && mode === "showing"
       );
       this.emit("texttrackchange", {

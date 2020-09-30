@@ -87,7 +87,6 @@ export function startTracking(tracker: PlayerTracker) {
   });
 
   /* Record subtitle information */
-  // FIXME: 反応してない
   tracker.on("texttrackchange", function (event) {
     send("trackchange", event, event.language ?? "off");
   });
