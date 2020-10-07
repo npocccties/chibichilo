@@ -10,9 +10,7 @@ const DB_USERNAME = 'username';
 const DB_PASSWORD = 'passowrd';
 const DB_DATABASE = 'db';
 
-const WOWZA_URL = 'url';
-const WOWZA_PATH = 'path';
-const WOWZA_SECRET = 'secret';
-const WOWZA_TOKEN = 'token';
-const WOWZA_START = 'starttime';
-const WOWZA_END = 'endtime';
+const WOWZA_BASE_URL = 'https://example/path/to';
+const WOWZA_SECURE_TOKEN = 'secrettoken';
+const WOWZA_QUERY_PREFIX = 'wowzatoken';
+const WOWZA_EXPIRES_IN = 3600;

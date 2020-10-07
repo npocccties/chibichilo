@@ -1,51 +1,24 @@
 import {
-  jsonFetcher,
-  textFetcher,
-  postJson,
-  postForm,
-  WithState,
-  makeFetcher,
+  fetchJson,
+  postFormFetchJson,
+  postFormFetchText,
+  postJsonFetchText,
   useApi,
 } from "./api";
 import { mutate } from "swr";
 
 const key = "/api/contents";
-
-type VideoId = number; // NOTE: Video.id
-type UserId = string; // NOTE: セッションに含まれる利用者のID
-type ContentsSchema = {
-  id?: number;
-  title: string;
-  videos: Array<{
-    id: VideoId;
-    title: string;
-    creator: UserId;
-  }>;
-};
-type ContentsIndexSchema = {
-  contents: Array<{
-    id: number;
-    title: string;
-    creator: UserId;
-    updateAt: Date;
-  }>;
-};
-
-export type Contents = WithState<ContentsSchema>;
-export type ContentsIndex = WithState<ContentsIndexSchema>;
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
 
 const initialContentsIndex: ContentsIndex = {
   contents: [],
   state: "pending",
 };
-const fetchContentsIndex = makeFetcher(
-  (_: typeof key) =>
-    jsonFetcher(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_list_view.php`
-    ).then(contentsIndexHandler),
-  initialContentsIndex
-);
-function contentsIndexHandler(res: ContentsIndexResponse): ContentsIndexSchema {
+function fetchContentsIndex(_: typeof key) {
+  const url = `${basePath}/call/content_list_view.php`;
+  return fetchJson(url).then(indexHandler);
+}
+function indexHandler(res: ContentsIndexResponse): ContentsIndexSchema {
   return {
     contents: res.map(({ id, name, timemodified, createdby }) => ({
       id: Number(id),
@@ -65,38 +38,30 @@ export const useContentsIndex = () =>
   useApi(key, fetchContentsIndex, initialContentsIndex);
 
 const initialContents: Contents = {
+  id: NaN,
   title: "",
   videos: [],
   state: "pending",
 };
-const fetchContents = makeFetcher(async (_: typeof key, id?: number) => {
-  if (id == null) return initialContents;
+async function fetchContents(_: typeof key, id: ContentsSchema["id"]) {
   if (!Number.isFinite(id)) return initialContents;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/list_content_view.php`;
-  const req: ShowContentsRequest = {
-    content_id: id.toString(),
-  };
-  const contents: ContentsSchema = await jsonFetcher(url, postForm(req)).then(
-    showContentsHandler
-  );
-  return {
-    id,
-    ...contents,
-  };
-}, initialContents);
-function showContentsHandler(res: ShowContentsResponse): ContentsSchema {
-  return {
-    title: res.title,
-    videos: res.contents.map(({ id, cname, createdby }) => ({
-      id: Number(id),
-      title: cname,
-      creator: createdby,
-    })),
-  };
+  const url = `${basePath}/call/list_content_view.php`;
+  const req: ShowContentsRequest = { content_id: id.toString() };
+  const res = await postFormFetchJson(url, req).then(showHandler(id));
+  return res;
 }
-type ShowContentsRequest = {
-  content_id: string;
-};
+const showHandler = (contentsId: ContentsSchema["id"]) => (
+  res: ShowContentsResponse
+): ContentsSchema => ({
+  id: contentsId,
+  title: res.title,
+  videos: res.contents.map(({ id, cname, createdby }) => ({
+    id: Number(id),
+    title: cname,
+    creator: createdby,
+  })),
+});
+type ShowContentsRequest = { content_id: string };
 type ShowContentsResponse = {
   title: string;
   contents: Array<{
@@ -105,41 +70,39 @@ type ShowContentsResponse = {
     createdby: string;
   }>;
 };
-export const useContents = (id?: number) =>
+export const useContents = (id: ContentsSchema["id"]) =>
   useApi([key, id], fetchContents, initialContents);
 
 export async function showContents(id: ContentsSchema["id"]) {
-  if (id == null) {
-    return failure(id);
-  }
+  if (!Number.isFinite(id)) return failure(id);
   return mutate([key, id]);
 }
 
-export async function createContents(contents: ContentsSchema) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_create.php`;
+export async function create(contents: ContentsSchema) {
+  const url = `${basePath}/call/content_create.php`;
   const req: CreateContentsRequest = {
     title: contents.title,
     contents: contents.videos.map(({ id, title }) => [id, title]),
   };
   try {
-    const id = Number(await textFetcher(url, postJson(req)));
+    const id = Number(await postJsonFetchText(url, req));
     await success({ ...contents, id });
     return id;
   } catch {
-    failure(contents.id);
-    return;
+    await failure(contents.id);
+    return NaN;
   }
 }
 
-export async function updateContents(contents: Required<ContentsSchema>) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_update.php`;
+async function update(contents: ContentsSchema) {
+  const url = `${basePath}/call/content_update.php`;
   const req: UpdateContentsRequest = {
     id: contents.id,
     title: contents.title,
     contents: contents.videos.map(({ id, title }) => [id, title]),
   };
   try {
-    await textFetcher(url, postJson(req));
+    await postJsonFetchText(url, req);
     return await success(contents);
   } catch {
     return await failure(contents.id);
@@ -147,29 +110,36 @@ export async function updateContents(contents: Required<ContentsSchema>) {
 }
 
 export async function destroyContents(id: ContentsSchema["id"]) {
-  if (id == null) {
-    return await failure(id);
-  }
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/content_delete.php`;
+  if (!Number.isFinite(id)) return await failure(id);
+  const url = `${basePath}/call/content_delete.php`;
   const req: DestroyContentsRequest = {
     content_id: id.toString(),
   };
   try {
-    await textFetcher(url, postForm(req));
-    return await success({ ...initialContents, id });
+    await postFormFetchText(url, req);
+    await success({ ...initialContents, id });
   } catch {
-    return await failure(id);
+    await failure(id);
   }
 }
 
-async function success(contents: Required<ContentsSchema>) {
+export async function saveContents(contents: ContentsSchema) {
+  let id: ContentsSchema["id"] = contents.id;
+  if (Number.isFinite(id)) {
+    await update(contents);
+  } else {
+    id = await create(contents);
+  }
+  return id;
+}
+
+async function success(contents: ContentsSchema) {
   await mutate([key, contents.id], (prev?: Contents) => ({
     ...(prev || initialContents),
     ...contents,
     state: "success",
   }));
   await mutate(key);
-  return true;
 }
 
 async function failure(id: ContentsSchema["id"]) {
@@ -178,7 +148,6 @@ async function failure(id: ContentsSchema["id"]) {
     state: "failure",
   }));
   await mutate(key);
-  return false;
 }
 
 type CreateContentsRequest = {

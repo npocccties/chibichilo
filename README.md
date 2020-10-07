@@ -15,19 +15,17 @@ cp config.php.sample config.php
 
 config.php:
 
-| Const             | type       | Explanation                                    |
-| ----------------- | ---------- | ---------------------------------------------  |
-| `OAUTH_CONSUMERS` | consumer[] | consumer array of objects                      |
-| `DB_HOST`         | string     | RDB Host name                                  |
-| `DB_USERNAME`     | string     | RDB Username                                   |
-| `DB_PASSWORD`     | string     | RDB User password                              |
-| `DB_DATABASE`     | string     | RDB Database name                              |
-| `WOWZA_URL`       | string     | WOWZA Host name                                |
-| `WOWZA_PATH`      | string     | WOWZA Content path                             |
-| `WOWZA_SECRET`    | string     | WOWZA SecureToken Shared Secret                |
-| `WOWZA_TOKEN`     | string     | WOWZA SecureToken Hash Query Parameter Prefix  |
-| `WOWZA_START`     | int        | WOWZA SecureToken starttime                    |
-| `WOWZA_END`       | int        | WOWZA SecureToken endtime                      |
+| Const                | type       | Explanation                                   |
+| -------------------- | ---------- | --------------------------------------------- |
+| `OAUTH_CONSUMERS`    | consumer[] | consumer array of objects                     |
+| `DB_HOST`            | string     | RDB Host name                                 |
+| `DB_USERNAME`        | string     | RDB Username                                  |
+| `DB_PASSWORD`        | string     | RDB User password                             |
+| `DB_DATABASE`        | string     | RDB Database name                             |
+| `WOWZA_BASE_URL`     | string     | WOWZA Content base URL                        |
+| `WOWZA_SECURE_TOKEN` | string     | WOWZA SecureToken Shared Secret               |
+| `WOWZA_QUERY_PREFIX` | string     | WOWZA SecureToken Hash Query Parameter Prefix |
+| `WOWZA_EXPIRES_IN`   | int        | WOWZA SecureToken lifetime (seconds)          |
 
 consumer object: Associative array of authentication information of OAuth
 
@@ -43,12 +41,12 @@ When changing the information of the connection destination of API, .env must be
 
 .env:
 
-| Environment variable              | Explanation                             |
-| --------------------------------- | --------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_PATH`       | Base path for API URLs                  |
-| `NEXT_PUBLIC_SUBTITLE_STORE_PATH` | URL path for saved subtitle files       |
-| `NEXT_PUBLIC_LMS_URL`             | Learning management system URL          |
-| `NEXT_PUBLIC_BASE_PATH`           | Base path for static content URLs       |
+| Environment variable              | Explanation                       |
+| --------------------------------- | --------------------------------- |
+| `NEXT_PUBLIC_API_BASE_PATH`       | Base path for API URLs            |
+| `NEXT_PUBLIC_SUBTITLE_STORE_PATH` | URL path for saved subtitle files |
+| `NEXT_PUBLIC_LMS_URL`             | Learning management system URL    |
+| `NEXT_PUBLIC_BASE_PATH`           | Base path for static content URLs |
 
 ## Build front-ends
 

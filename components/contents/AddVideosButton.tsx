@@ -4,7 +4,6 @@ import { VideosRow } from "./VideosSelectorTable";
 import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import { Videos } from "components/video";
 
 export function AddVideosButton(props: {
   videos: Videos;

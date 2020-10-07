@@ -8,11 +8,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { Contents } from "./contents";
-import { Video } from "./video";
 import { PlayerProps } from "./Player";
-import { usePlayer } from "./VideoJs";
-import { sendVideoId, trackingStart } from "./log";
+import { usePlayerTracker } from "./player";
 import { useLmsSession, isLmsInstructor } from "./session";
 import { VideoPlayerProps, VideoPlayer } from "./VideoPlayer";
 
@@ -49,25 +46,18 @@ export function ContentsPlayer(props: {
   contents: Contents;
   playlist: Video[];
 }) {
-  const player = usePlayer();
-
-  // NOTE: トラッキング用
-  const session = useLmsSession();
-  React.useEffect(() => {
-    if (!isLmsInstructor(session) && player) trackingStart(player);
-  }, [session, player]);
-
   const [playerState, setPlayerState] = React.useState<
     {
       index: number; // NOTE: playlist index number
     } & PlayerProps
   >();
+
   React.useEffect(() => {
     if (props.playlist.length === 0) return;
     const index = 0;
-    const { youtubeVideoId, subtitles } = props.playlist[index];
-    setPlayerState({ index, youtubeVideoId, subtitles, autoplay: true });
-  }, [setPlayerState, props.playlist]);
+    const { type, src, subtitles } = props.playlist[index];
+    setPlayerState({ index, type, src, subtitles, autoplay: true });
+  }, [setPlayerState, props.playlist.length]);
   const endedHandler = React.useCallback(() => {
     setPlayerState((prev) => {
       if (!prev) return prev;
@@ -82,13 +72,12 @@ export function ContentsPlayer(props: {
         return prev;
       }
     });
-  }, [setPlayerState, props.playlist]);
-  React.useEffect(() => {
-    if (!player) return;
-    player.on("ended", endedHandler);
-    return () => player.off("ended", endedHandler);
-  }, [player, endedHandler]);
+  }, [setPlayerState, props.playlist.length]);
 
+  // NOTE: トラッキング用
+  const playerTracker = usePlayerTracker();
+  // NOTE: トラッキング用
+  const session = useLmsSession();
   const playlistClickHandler: (
     index: number
   ) => (
@@ -98,16 +87,17 @@ export function ContentsPlayer(props: {
       const video = props.playlist[index];
       return () => {
         // NOTE: トラッキング用
-        if (!isLmsInstructor(session) && player) sendVideoId(player, video.id);
+        if (!isLmsInstructor(session)) playerTracker?.next(video.id);
 
         setPlayerState((prev) => prev && { index, ...video, autoplay: true });
       };
     },
-    [setPlayerState, props.playlist, session, player]
+    [setPlayerState, props.playlist.length, session, playerTracker]
   );
 
   const classes = useStyles();
   const videoPlayerProps: VideoPlayerProps | undefined = playerState && {
+    onEnded: endedHandler,
     ...playerState,
     ...props.playlist[playerState.index],
   };

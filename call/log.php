@@ -7,7 +7,7 @@ if (!$context->valid) {
 }
 
 function e($str) {
-  if ($str == "undefined" || empty($str) && $str !== "0" ){
+  if (empty($str) && $str !== "0"){
     return "-";
   } else {
     return $str;

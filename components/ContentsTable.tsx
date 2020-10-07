@@ -6,10 +6,10 @@ import LinkIcon from "@material-ui/icons/Link";
 import { Column } from "material-table";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
-import { registContents, SessionResponse } from "./api";
+import { registContents } from "./registContents";
 import { useRouter } from "./router";
 import { Table } from "./Table";
-import { ContentsIndex, destroyContents } from "./contents";
+import { destroyContents } from "./contents";
 import { useLmsInstructor } from "./session";
 
 type ContentsRow = {
@@ -18,7 +18,7 @@ type ContentsRow = {
   creator: string;
 };
 
-function editable(row: ContentsRow, session?: SessionResponse) {
+function editable(row: ContentsRow, session?: Session) {
   return (
     session && (session.role === "administrator" || row.creator === session.id)
   );

@@ -20,7 +20,7 @@ export function VideosSelectorTable(props: {
   const tableRef = useRef<HTMLTableElement>(document.createElement("table"));
   useEffect(() => {
     // NOTE: Uncheck All
-    // @ts-ignore
+    // @ts-expect-error
     tableRef.current.onAllSelected(false);
   }, [tableRef]);
   const onSelect = useCallback(

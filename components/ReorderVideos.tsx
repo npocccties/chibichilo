@@ -23,10 +23,9 @@ import {
   PopupState,
 } from "material-ui-popup-state/hooks";
 import { useRouter } from "./router";
-import { SessionResponse } from "./api";
 import { useLmsSession } from "./session";
 
-function editable(video: { creator: string }, session?: SessionResponse) {
+function editable(video: { creator: string }, session?: Session) {
   return (
     session &&
     (session.role === "administrator" || video.creator === session.id)

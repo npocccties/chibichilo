@@ -10,11 +10,20 @@ $db = require(__DIR__.'/../database.php');
 
 $microcontent_id = $_POST['microcontent_id'];
 
-// NOTE: read mc_microcontent
+// NOTE: read mc_microcontent with video
+// FIXME: mc_microcontent.video カラムは非推奨だが稼働中の環境に存在してしまっている
 $sth = $db->prepare(<<<'SQL'
-  SELECT name, video, description, createdby FROM mc_microcontent
+  SELECT
+    mc_microcontent.name,
+    mc_microcontent.video,
+    mc_microcontent.description,
+    mc_microcontent.createdby,
+    video.type,
+    video.src
+  FROM
+    mc_microcontent LEFT JOIN video ON (mc_microcontent.id=video.mc_microcontent_id)
   WHERE
-    id=? AND deleted=0
+    mc_microcontent.id=? AND mc_microcontent.deleted=0
 SQL);
 
 $sth->execute([$microcontent_id]);
@@ -24,40 +33,9 @@ $row = $sth->fetch();
 if (!$row) return;
 
 $content_name = $row['name'];
-//$content_video = $row['video'];
-class UUID {
-    public static function v4() {
-      return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-          mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-          mt_rand(0, 0xffff),
-          mt_rand(0, 0x0fff) | 0x4000,
-          mt_rand(0, 0x3fff) | 0x8000,
-          mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-      );
-    }
-    public static function is_valid($uuid) {
-        return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                          '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
-    }
-}
-$v4uuid = UUID::v4();
-use const Config\WOWZA_URL;
-use const Config\WOWZA_PATH;
-use const Config\WOWZA_SECRET;
-use const Config\WOWZA_TOKEN;
-use const Config\WOWZA_START;
-use const Config\WOWZA_END;
-$contenturl  = WOWZA_URL.WOWZA_PATH.$row['video'].'/playlist.m3u8';
-$contentpath = WOWZA_PATH.$row['video'];
-$wowzasecret = WOWZA_SECRET;
-$wowzatoken  = WOWZA_TOKEN;
-$wowzastart = WOWZA_START;
-$wowzaend = strtotime(date('d-m-Y H:i:s')) + WOWZA_END;
-$customparameter = $v4uuid;
-$hashstr = hash('sha512', $contentpath.'?'.$wowzasecret.'&'.$wowzatoken.'customparameter='.$customparameter.'&'.$wowzatoken.'endtime='.$wowzaend.'&'.$wowzatoken.'starttime='.$wowzastart.'', true);
-$usableHash= strtr(base64_encode($hashstr), '+/', '-_');
-$wowzaquery = $wowzatoken."customparameter=".$customparameter."&".$wowzatoken."endtime=".$wowzaend."&".$wowzatoken."starttime=".$wowzastart."&".$wowzatoken."hash=".$usableHash."";
-$content_video = $contenturl."?".$wowzaquery;
+$content_type = $row['type'] ?? 'youtube';
+// FIXME: mc_microcontent.video カラムは非推奨だが稼働中の環境に存在してしまっている
+$content_src = $row['src'] ?? $row['video'];
 $content_description = $row['description'];
 $content_createdby = $row['createdby'];
 
@@ -163,6 +141,15 @@ foreach ($sth as $row) {
   }
 }
 
-$arr = array('title' => $content_name, 'video' => $content_video, 'description' => $content_description, 'createdby' => $content_createdby, 'subtitles' => $subtitles, 'skills' => $skills, 'tasks' => $tasks, 'levels' => $levels);
 header('Content-Type: application/json');
-echo json_encode($arr);
+echo json_encode([
+  'title' => $content_name,
+  'type' => $content_type,
+  'src' => $content_src,
+  'description' => $content_description,
+  'createdby' => $content_createdby,
+  'subtitles' => $subtitles,
+  'skills' => $skills,
+  'tasks' => $tasks,
+  'levels' => $levels
+]);

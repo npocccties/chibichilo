@@ -1,9 +1,16 @@
-import { useEffect, useState, useCallback, FormEvent } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  FormEvent,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
 import { produce } from "immer";
 import ISO6391 from "iso-639-1";
-//import { Player } from "./Player";
+import { Player } from "./Player";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
@@ -17,19 +24,12 @@ import CloseIcon from "@material-ui/icons/Close";
 import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
 import Typography from "@material-ui/core/Typography";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import { Subtitle, destroySubtitle } from "./video/subtitle";
+import { destroySubtitle } from "./video/subtitle";
 import { useRouter } from "./router";
-import { Video, updateVideo, createVideo } from "./video";
-import { validUrl } from "./validUrl";
+import { saveVideo } from "./video";
+import { VideoLocationField } from "./VideoLocationField";
 
 const iso6391 = ISO6391.getLanguages(ISO6391.getAllCodes());
-const parseVideoId = (youtubeUrlOrVideoId: string) => {
-  if (!validUrl(youtubeUrlOrVideoId)) return youtubeUrlOrVideoId;
-  return (
-    new URL(youtubeUrlOrVideoId).searchParams.get("v") ?? youtubeUrlOrVideoId
-  );
-};
 
 export function EditVideo(props: { video: Video }) {
   const router = useRouter();
@@ -74,13 +74,8 @@ export function EditVideoForm(props: {
   }, [props.video]);
   const { showMessage } = useSnackbar();
   const saveHandler = useCallback(async () => {
-    let id = video.id;
-    if (id) {
-      await updateVideo(video as Required<Video>);
-    } else {
-      id = await createVideo(video);
-    }
-    if (!id) return;
+    const id = await saveVideo(video);
+    if (!Number.isFinite(id)) return;
     if (typeof window !== "undefined") {
       window.onbeforeunload = null;
     }
@@ -96,7 +91,7 @@ export function EditVideoForm(props: {
 
   const edit = useCallback(
     (dispatch: (v: Video) => Video) => {
-      setVideo(dispatch({ ...video, state: "pending" }));
+      setVideo((video) => dispatch({ ...video, state: "pending" }));
       if (typeof window === "undefined") return;
       window.onbeforeunload = function (e: BeforeUnloadEvent) {
         // NOTE: 作成(new)・編集(edit)画面での離脱防止
@@ -106,7 +101,7 @@ export function EditVideoForm(props: {
         if (action && ["new", "edit"].includes(action)) e.returnValue = "";
       };
     },
-    [video, setVideo]
+    [setVideo]
   );
   const onInputHandler = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -115,8 +110,6 @@ export function EditVideoForm(props: {
         produce(video, (draft) => {
           draft.title = form.get("title") as string;
           draft.description = form.get("description") as string;
-          const youtubeUrlOrVideoId = form.get("youtubeVideoId") as string;
-          draft.youtubeVideoId = parseVideoId(youtubeUrlOrVideoId);
           draft.skills = draft.skills.map(({ id, name }) => ({
             id,
             name,
@@ -169,6 +162,17 @@ export function EditVideoForm(props: {
     [saveHandler]
   );
 
+  const setLocation: Dispatch<SetStateAction<VideoLocation>> = (state) => {
+    edit((video) => {
+      const { type, src } =
+        state instanceof Function
+          ? state({ type: video.type, src: video.src })
+          : state;
+      return { ...video, type, src };
+    });
+  };
+  const locationFieldHandler = useCallback(setLocation, [edit]);
+
   const [subtitleLang, setSubtitleLang] = useState<string>("und");
   const changesubtitleLangHandler = useCallback(
     (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -180,8 +184,8 @@ export function EditVideoForm(props: {
 
   const confirm = useConfirm();
   const destroySubtitleHandler = useCallback(
-    (lang: string, id?: number) => async (_: MouseEvent) => {
-      if (!id) return;
+    (lang: string, id: number) => async (_: MouseEvent) => {
+      if (!Number.isFinite(id)) return;
       try {
         await confirm({
           title: `字幕「${lang}」を削除します。よろしいですか？`,
@@ -213,21 +217,15 @@ export function EditVideoForm(props: {
       </Box>
       <Box my={2}>
         <Box my={1}>
+          <Player
+            type={video.type}
+            src={video.src}
+            subtitles={video.subtitles}
+          />
         </Box>
-        <TextField
-          name="youtubeVideoId"
-          label="ビデオファイル名 (例 : sample.mp4 , test/sample.mp4 )"
-          value={video.youtubeVideoId}
-          variant="filled"
-          required
-          fullWidth
-          color="secondary"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-              </InputAdornment>
-            ),
-          }}
+        <VideoLocationField
+          location={{ type: video.type, src: video.src }}
+          setLocation={locationFieldHandler}
         />
       </Box>
       <TextField

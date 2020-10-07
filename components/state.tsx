@@ -6,11 +6,13 @@ import {
   SetStateAction,
   ReactNode,
 } from "react";
+import { PlayerTracker } from "./player";
 
 type State = {
   title: string;
-  player?: videojs.VideoJsPlayer;
+  playerTracker?: PlayerTracker;
 };
+
 const initialState = {
   title: "学習コンテンツ管理",
 };
@@ -20,13 +22,9 @@ export const DispatchContext = createContext<Dispatch<SetStateAction<State>>>(
   () => {}
 );
 
-export const useAppState = () => {
-  return useContext(StateContext);
-};
+export const useAppState = () => useContext(StateContext);
 
-export const useDispatch = () => {
-  return useContext(DispatchContext);
-};
+export const useDispatch = () => useContext(DispatchContext);
 
 export const StateProvider = (props: { children: ReactNode }) => {
   const [state, dispatch] = useState<State>(initialState);
@@ -43,12 +41,15 @@ export const StateProvider = (props: { children: ReactNode }) => {
 function makeDispatch<T extends keyof State>(key: T) {
   function hook() {
     const appDispatch = useDispatch();
-    function dispatch(value: State[T]) {
-      appDispatch((s) => (s[key] === value ? s : { ...s, [key]: value }));
+    function dispatch(state: SetStateAction<State[T]>) {
+      appDispatch((prev) => ({
+        ...prev,
+        [key]: state instanceof Function ? state(prev[key]) : state,
+      }));
     }
     return dispatch;
   }
   return hook;
 }
 export const useAppTitle = makeDispatch("title");
-export const useAppPlayer = makeDispatch("player");
+export const useAppPlayerTracker = makeDispatch("playerTracker");

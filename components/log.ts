@@ -1,37 +1,15 @@
-import { VideoJsPlayer } from "video.js";
-import { postForm } from "./api";
+import { postFormFetchText } from "./api";
+import { PlayerTracker } from "./player";
 import { loadSessionInStorage } from "./session";
 
-const sendLogPath = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/log.php`;
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
+const sendLogPath = `${basePath}/call/log.php`;
 
-/** video-learner.js にあったトラッキング用コードの移植 */
-function sendLog(eventType: EventType, player: VideoJsPlayer, detail?: string) {
-  const currentSrc = player?.currentSrc(); // NOTE: `watch?v={YouTube Video ID}` (Player.tsx)
-  const youtubeQuery = currentSrc?.split("?")[1];
-  const youtubeVideoId =
-    //new URLSearchParams(youtubeQuery).get("v") ?? undefined;
-    currentSrc?.split("?")[0].split("/_definst_/")[1].split("/playlist.m3u8")[0];
-  const currentTime = player?.currentTime();
-  const session = loadSessionInStorage();
-  const req: Request = {
-    event: eventType,
-    detail,
-    file: youtubeVideoId,
-    query: youtubeQuery,
-    current: currentTime?.toString(),
-    rid: session?.lmsResource,
-    uid: session?.id,
-    cid: session?.lmsCourse,
-    nonce: session?.nonce,
-  };
-  return fetch(sendLogPath, postForm(req));
-}
 type EventType =
   | "changepage"
   | "timeupdate"
   | "seeking"
   | "seeked"
-  | "change"
   | "trackchange"
   | "firstplay"
   | "play"
@@ -43,11 +21,35 @@ type EventType =
   | "unload-ended"
   | "hidden-ended"
   | "current-time";
+
+/** video-learner.js にあったトラッキング用コードの移植 */
+function send(eventType: EventType, event: PlayerEvent, detail?: string) {
+  const session = loadSessionInStorage();
+  const req: Request = {
+    event: eventType,
+    detail,
+    // TODO: Vimeo 未対応
+    file:
+      event.type === "wowza"
+        ? event.src
+            .split("?")[0]
+            .split("/_definst_/")[1]
+            .split("/playlist.m3u8")[0]
+        : new URLSearchParams(event.src.split("?")[1]).get("v") ?? undefined,
+    query: event.src.split("?")[1], // TODO: Vimeo 未対応
+    current: event.currentTime.toString(),
+    rid: session?.lmsResource,
+    uid: session?.id,
+    cid: session?.lmsCourse,
+    nonce: session?.nonce,
+  };
+  return postFormFetchText(sendLogPath, req);
+}
 type Request = {
   event: EventType;
   detail?: string;
-  file?: string; // NOTE: YouTube Video ID
-  query?: string; // NOTE: `v={YouTube Video ID}`
+  file?: string;
+  query?: string;
   current?: string;
   rid?: string;
   uid?: string;
@@ -55,94 +57,74 @@ type Request = {
   nonce?: string;
 };
 
-export function sendVideoId(player: VideoJsPlayer, id?: number) {
-  return sendLog("changepage", player, id?.toString());
-}
+const buildHandler = <T extends EventType & keyof PlayerEvents>(
+  eventType: T
+) => (event: PlayerEvents[T]) => send(eventType, event);
 
-/** video-learner.js にあったトラッキング用コードの移植 */
-export function trackingStart(player: VideoJsPlayer) {
+const buildSender = (event: EventType, tracker: PlayerTracker) => async () =>
+  send(event, await tracker.stats());
+
+/** トラッキング開始 */
+export function startTracking(tracker: PlayerTracker) {
   if (typeof window === "undefined") return;
 
   /* Record the start and end of seek time */
   let previousTime = 0;
   let currentTime = 0;
   let seekStart: number | null;
-  player.on("timeupdate", function () {
+  tracker.on("timeupdate", function (event) {
     previousTime = currentTime;
-    currentTime = player.currentTime();
+    currentTime = event.currentTime;
   });
-  player.on("|", function () {
+  tracker.on("seeking", function () {
     if (seekStart === null) {
       seekStart = previousTime;
     }
   });
-  player.on("seeked", function () {
-    sendLog("seeked", player, seekStart?.toString());
+  tracker.on("seeked", function (event) {
+    send("seeked", event, seekStart?.toString());
     seekStart = null;
   });
 
   /* Record subtitle information */
-  let timeout: number;
-  player.remoteTextTracks().addEventListener("change", function action() {
-    window.clearTimeout(timeout);
-    let showing = Array.from(player.remoteTextTracks()).filter(function (
-      track
-    ) {
-      if (track.kind === "subtitles" && track.mode === "showing") {
-        return true;
-      } else {
-        return false;
-      }
-    })[0];
-    timeout = window.setTimeout(function () {
-      player.trigger("subtitleChanged", showing);
-    }, 10);
-  });
-  player.on("subtitleChanged", function (_, track) {
-    if (track) {
-      sendLog("trackchange", player, track.language);
-    } else {
-      sendLog("trackchange", player, "off");
-    }
+  tracker.on("texttrackchange", function (event) {
+    send("trackchange", event, event.language ?? "off");
   });
 
-  player.on("firstplay", function () {
-    sendLog("firstplay", player);
+  for (const event of ["firstplay", "ended", "pause", "play"] as const) {
+    tracker.on(event, buildHandler(event));
+  }
+
+  tracker.on("playbackratechange", function (event) {
+    send("ratechange", event, event.playbackRate.toString());
   });
-  player.on("play", function () {
-    sendLog("play", player);
-  });
-  player.on("pause", function () {
-    sendLog("pause", player);
-  });
-  player.on("ratechange", function () {
-    sendLog("ratechange", player, player.playbackRate().toString());
-  });
-  player.on("ended", function () {
-    sendLog("ended", player);
+
+  tracker.on("nextvideo", function (event) {
+    send("changepage", event, event.video.toString());
   });
 
   // TODO: Window オブジェクトを介さない排他制御にしたい
-  // @ts-ignore
-  if ("__trackingStart" in window && player === window.__trackingStart) return;
-  window.addEventListener("beforeunload", function () {
-    sendLog("beforeunload-ended", player);
+  // @ts-expect-error
+  if ("__trackingStart" in window && tracker === window.__trackingStart) return;
+  for (const event of ["beforeunload", "pagehide", "unload"] as const) {
+    // FIXME: removeEventListener 呼ばれない
+    window.addEventListener(
+      event,
+      // TODO: TypeScript 4.1 以降では as EventType を外せる、はず
+      buildSender(`${event}-ended` as EventType, tracker)
+    );
+  }
+
+  // FIXME: removeEventListener 呼ばれない
+  document.addEventListener("visibilitychange", async function () {
+    if (document.visibilityState === "hidden")
+      send("hidden-ended", await tracker.stats());
   });
-  window.addEventListener("pagehide", function () {
-    sendLog("pagehide-ended", player);
-  });
-  window.addEventListener("unload", function () {
-    sendLog("unload-ended", player);
-  });
-  document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState == "hidden") {
-      sendLog("hidden-ended", player);
-    }
-  });
-  setInterval(function () {
-    sendLog("current-time", player);
-  }, 10000);
+
+  // FIXME: clearInterval 呼ばれない
+  setInterval(async () => send("current-time", await tracker.stats()), 10000);
+
   // TODO: Window オブジェクトを介さない排他制御にしたい
-  // @ts-ignore
-  window.__trackingStart = player;
+  // @ts-expect-error
+  window.__trackingStart = tracker;
 }

@@ -1,7 +1,6 @@
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import { VideoSchema } from "./video";
 import { PlayerProps, Player } from "./Player";
 
 export type VideoPlayerProps = VideoSchema & PlayerProps;
@@ -10,7 +9,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
   return (
     <div>
       <Player
-        youtubeVideoId={props.youtubeVideoId}
+        onEnded={props.onEnded}
+        type={props.type}
+        src={props.src}
         subtitles={props.subtitles}
         autoplay={props.autoplay}
       />

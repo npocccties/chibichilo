@@ -1,5 +1,5 @@
 import React from "react";
-import { useVideos, useVideo,useVideoNotWowza } from "components/video";
+import { useVideos, useVideo } from "components/video";
 import { PreviewDialog } from "components/video/PreviewDialog";
 import { useAppTitle } from "components/state";
 import { useRouter } from "components/router";
@@ -42,7 +42,7 @@ function Show(props: { id: string }) {
   return <ShowVideo {...video} />;
 }
 function Edit(props: { id?: string }) {
-  const video = useVideoNotWowza(Number(props.id));
+  const video = useVideo(Number(props.id));
   return <EditVideo video={video} />;
 }
 const New = Edit;
@@ -59,7 +59,7 @@ function Router() {
       default:
         return <Index preview={query.preview} />;
       case "new": {
-        appTitle("ビデオの追加");
+        appTitle("ビデオの登録");
         return <New />;
       }
     }

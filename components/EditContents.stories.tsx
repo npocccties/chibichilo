@@ -1,6 +1,5 @@
 export default { title: "EditContents" };
 import { EditContents } from "./EditContents";
-import { Videos } from "./video";
 
 const videos: Videos = {
   videos: [2, 4, 6, 8].map((id) => ({

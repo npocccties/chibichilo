@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { useContentsIndex } from "components/contents";
 import { ContentsTable } from "components/ContentsTable";
 import { ShowContents } from "components/ShowContents";
@@ -12,6 +12,8 @@ import {
   useLmsInstructor,
   isLmsInstructor,
 } from "components/session";
+import { usePlayerTracker } from "components/player";
+import { startTracking } from "components/log";
 import { EditVideoDialog } from "components/contents/EditVideoDialog";
 import { PreviewContentsDialog } from "components/contents/PreviewContentsDialog";
 import { PreviewDialog } from "components/video/PreviewDialog";
@@ -28,7 +30,7 @@ function Index(props: { preview?: string }) {
   const contentsIndex = useContentsIndex();
   const previewContents = useContents(Number(props.preview));
   const router = useRouter();
-  const closePreviewHandler = React.useCallback(() => {
+  const closePreviewHandler = useCallback(() => {
     router.push("/contents");
   }, [router]);
 
@@ -53,11 +55,16 @@ function Index(props: { preview?: string }) {
 
 function Show(props: { id: string }) {
   const session = useLmsSession();
+  const student = useMemo(() => !isLmsInstructor(session), [session]);
   const contents = useContents(Number(props.id));
   const appTitle = useAppTitle();
-  if (!isLmsInstructor(session) && contents.title) {
-    appTitle(contents.title);
-  }
+  const playerTracker = usePlayerTracker();
+  useEffect(() => {
+    if (student && contents.title) appTitle(contents.title);
+  }, [student, contents.title]);
+  useEffect(() => {
+    if (student && playerTracker) startTracking(playerTracker);
+  }, [student, playerTracker]);
   return <ShowContents contents={contents} />;
 }
 function Edit(props: { id?: string; preview?: string; video?: string }) {
@@ -68,7 +75,7 @@ function Edit(props: { id?: string; preview?: string; video?: string }) {
     Number(props.video) || Number(props.preview)
   );
   const router = useRouter();
-  const closePreviewHandler = React.useCallback(() => {
+  const closePreviewHandler = useCallback(() => {
     router.push({
       pathname: "/contents",
       query: {

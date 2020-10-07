@@ -9,9 +9,11 @@ import { StateProvider } from "../components/state";
 import { theme } from "../components/theme";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
+import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
+import "../components/VideoJs.css";
 
 // NOTE: Mock useRouter
-// @ts-ignore
+// @ts-expect-error
 nextRouter.useRouter = () => ({ route: "/", query: {} });
 
 addDecorator((story) => (
@@ -20,8 +22,8 @@ addDecorator((story) => (
       <CssBaseline />
       <ConfirmProvider>
         <SnackbarProvider SnackbarProps={{ autoHideDuration: 5e3 }}>
-        <Container>{story()}</Container>
-      </SnackbarProvider>
+          <Container>{story()}</Container>
+        </SnackbarProvider>
       </ConfirmProvider>
     </ThemeProvider>
   </StateProvider>

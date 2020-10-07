@@ -5,10 +5,9 @@ import { useRouter } from "./router";
 import { Table } from "./Table";
 import { MouseEvent, useCallback } from "react";
 import { Column } from "material-table";
-import { Videos, destroyVideo } from "./video";
+import { destroyVideo } from "./video";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "material-ui-snackbar-provider";
-import { SessionResponse } from "./api";
 import { useLmsInstructor } from "./session";
 
 type VideosRow = {
@@ -18,7 +17,7 @@ type VideosRow = {
   creator: string;
 };
 
-function editable(row: VideosRow, session?: SessionResponse) {
+function editable(row: VideosRow, session?: Session) {
   return (
     session && (session.role === "administrator" || row.creator === session.id)
   );

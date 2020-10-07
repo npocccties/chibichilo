@@ -15,7 +15,7 @@ import { SnackbarProvider } from "material-ui-snackbar-provider";
 import Head from "next/head";
 import { TopAppMenu } from "./TopAppMenu";
 import { useAppState } from "./state";
-import { useShowRegistContents } from "./api";
+import { useShowRegistContents } from "./registContents";
 import { theme } from "./theme";
 import { useLmsSession, isLmsInstructor } from "./session";
 

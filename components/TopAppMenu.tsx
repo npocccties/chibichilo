@@ -38,7 +38,7 @@ const menuItems: AppMenu = [
     },
   },
   {
-    title: "ビデオの追加",
+    title: "ビデオの登録",
     icon: <AddCircleIcon />,
     href: {
       pathname: "/videos",

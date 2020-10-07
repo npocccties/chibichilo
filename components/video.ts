@@ -1,57 +1,24 @@
 import {
-  jsonFetcher,
-  WithState,
+  fetchJson,
+  postFormFetchJson,
+  postFormFetchText,
+  postJsonFetchText,
   useApi,
-  makeFetcher,
-  postForm,
-  textFetcher,
-  postJson,
 } from "./api";
-import { Skill } from "./video/skill";
-import { Task } from "./video/task";
-import { Level } from "./video/level";
-import { Subtitle, createSubtitle } from "./video/subtitle";
+import { createSubtitles } from "./video/subtitle";
 import { mutate } from "swr";
 
 const key = "/api/video";
-
-type YouTubeVideoId = string;
-type UserId = string; // NOTE: セッションに含まれる利用者のID
-export type VideoSchema = {
-  id?: number;
-  title: string;
-  description: string;
-  youtubeVideoId: YouTubeVideoId;
-  creator: UserId;
-  skills: Skill[];
-  tasks: Task[];
-  levels: Level[];
-  subtitles: Subtitle[];
-};
-
-type VideosSchema = {
-  videos: Array<{
-    id: number;
-    title: string;
-    description: string;
-    creator: UserId;
-  }>;
-};
-
-export type Video = WithState<VideoSchema>;
-export type Videos = WithState<VideosSchema>;
+const basePath = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
 
 const initialVideos: Videos = {
   videos: [],
   state: "pending",
 };
-const fetchVideos = makeFetcher(
-  (_: typeof key) =>
-    jsonFetcher(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_search.php`
-    ).then(videosHandler),
-  initialVideos
-);
+async function fetchVideos(_: typeof key) {
+  const url = `${basePath}/call/microcontent_search.php`;
+  return fetchJson(url).then(videosHandler);
+}
 type VideosResponse = {
   contents: Array<{
     id: string;
@@ -73,9 +40,11 @@ function videosHandler(res: VideosResponse): VideosSchema {
 export const useVideos = () => useApi(key, fetchVideos, initialVideos);
 
 const initialVideo: Video = {
+  id: NaN,
   title: "",
   description: "",
-  youtubeVideoId: "",
+  type: "wowza",
+  src: "",
   creator: "",
   skills: [],
   tasks: [],
@@ -83,48 +52,29 @@ const initialVideo: Video = {
   subtitles: [],
   state: "pending",
 };
-const fetchVideo = makeFetcher(async (_: typeof key, id?: number) => {
-  if (id == null || !Number.isFinite(id))
-    return (await fetchInitialVideo()) || initialVideo;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_edit.php`;
+async function fetchVideo(_: typeof key, id: VideoSchema["id"]) {
+  if (!Number.isFinite(id)) return await fetchInitialVideo();
+  const url = `${basePath}/call/microcontent_edit.php`;
   const req: ShowVideoRequest = {
     microcontent_id: id.toString(),
   };
-  const video: VideoSchema = await jsonFetcher(url, postForm(req)).then(
-    showVideoHandler(id)
-  );
-  return {
-    id,
-    ...video,
-  };
-}, initialVideo);
-const fetchVideoNotWowza = makeFetcher(async (_: typeof key, id?: number) => {
-  if (id == null || !Number.isFinite(id))
-    return (await fetchInitialVideo()) || initialVideo;
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_edit_not_wowza.php`;
-  const req: ShowVideoRequest = {
-    microcontent_id: id.toString(),
-  };
-  const video: VideoSchema = await jsonFetcher(url, postForm(req)).then(
-    showVideoHandler(id)
-  );
-  return {
-    id,
-    ...video,
-  };
-}, initialVideo);
-const fetchInitialVideo = makeFetcher(async (_: typeof key) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_new.php`;
-  const video: VideoSchema = await jsonFetcher(url).then(initialVideoHandler);
-  return video;
-}, initialVideo);
-function showVideoHandler(
+  const res = await postFormFetchJson(url, req).then(showHandler(id));
+  return res;
+}
+async function fetchInitialVideo() {
+  const url = `${basePath}/call/microcontent_new.php`;
+  const res = await fetchJson(url).then(initialVideoHandler);
+  return res;
+}
+function showHandler(
   videoId: Video["id"]
 ): (res: ShowVideoResponse) => VideoSchema {
   return (res) => ({
+    id: videoId,
     title: res.title,
     description: res.description,
-    youtubeVideoId: res.video,
+    type: res.type,
+    src: res.src,
     creator: res.createdby,
     skills: res.skills.map(({ id, name, checked }) => ({
       id: Number(id),
@@ -173,7 +123,8 @@ type ShowVideoRequest = {
 };
 type ShowVideoResponse = {
   title: string;
-  video: YouTubeVideoId;
+  type: VideoSchema["type"];
+  src: VideoSchema["src"];
   description: string;
   createdby: string;
   subtitles: Array<{ id: string; cname: string }>; // NOTE: `{id}_{cname}.vtt` cname as langcode
@@ -186,51 +137,43 @@ type InitialVideoResponse = {
   tasks: Array<{ id: string; name: string }>;
   levels: Array<{ id: string; name: string }>;
 };
-export const useVideo = (id?: number) =>
+export const useVideo = (id: VideoSchema["id"]) =>
   useApi([key, id], fetchVideo, initialVideo);
-export const useVideoNotWowza = (id?: number) =>
-  useApi([key, id], fetchVideoNotWowza, initialVideo);
 
-export async function createVideo(
-  video: VideoSchema
-): Promise<number | undefined> {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_create.php`;
-  const req: CreateVideoRequest = {
+export async function create(video: VideoSchema): Promise<VideoSchema["id"]> {
+  const url = `${basePath}/call/microcontent_create.php`;
+  const req: CreateRequest = {
     title: video.title,
-    video: video.youtubeVideoId,
+    type: video.type,
+    src: video.src,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
     task: video.tasks.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
     level: video.levels.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
   };
-  let id: VideoSchema["id"];
+  let id: VideoSchema["id"] = NaN;
   try {
-    id = Number(await textFetcher(url, postJson(req)));
+    id = Number(await postJsonFetchText(url, req));
   } catch {}
-  if (!id) {
+  if (!Number.isFinite(id)) {
     await failure(video.id);
-    return;
+    return NaN;
   }
 
-  if (video.subtitles.length === 0) {
-    await success({ ...video, id });
-    return id;
-  }
-
-  // NOTE: With subtitle files
   try {
-    await Promise.all(video.subtitles.map(createSubtitle(id)));
+    await createSubtitles(id, video.subtitles);
     await success({ ...video, id });
     return id;
   } catch {
     await failure(video.id);
-    return;
+    return NaN;
   }
 }
-type CreateVideoRequest = {
+type CreateRequest = {
   title: string;
-  video: YouTubeVideoId;
+  type: VideoSchema["type"];
+  src: VideoSchema["src"];
   description: string;
   subtitles: Subtitle[];
   skill: string[];
@@ -238,69 +181,74 @@ type CreateVideoRequest = {
   level: string[];
 };
 
-export async function updateVideo(video: Required<VideoSchema>) {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_update.php`;
-  const req: UpdateVideoRequest = {
+async function update(video: VideoSchema) {
+  const url = `${basePath}/call/microcontent_update.php`;
+  const req: UpdateRequest = {
     id: video.id,
     title: video.title,
-    video: video.youtubeVideoId,
+    type: video.type,
+    src: video.src,
     description: video.description,
     subtitles: video.subtitles,
     skill: video.skills.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
     task: video.tasks.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
     level: video.levels.flatMap(({ id, has }) => (has ? [id.toString()] : [])),
   };
-  let id: VideoSchema["id"];
+  let id: VideoSchema["id"] = NaN;
   try {
-    id = Number(await textFetcher(url, postJson(req)));
+    id = Number(await postJsonFetchText(url, req));
   } catch {}
-  if (!id) {
+  if (!Number.isFinite(id)) {
     return await failure(video.id);
   }
 
-  if (video.subtitles.length === 0) {
-    return await success({ ...video, id });
-  }
-
-  // NOTE: With subtitle files
   try {
-    await Promise.all(video.subtitles.map(createSubtitle(id)));
-    return await success({ ...video, id });
+    await createSubtitles(id, video.subtitles);
+    await success({ ...video, id });
   } catch {
-    return await failure(video.id);
+    await failure(video.id);
   }
 }
-type UpdateVideoRequest = {
+type UpdateRequest = {
   id: number;
-} & CreateVideoRequest;
+} & CreateRequest;
 
 export async function destroyVideo(id: VideoSchema["id"]) {
-  if (id == null) {
+  if (!Number.isFinite(id)) {
     return await failure(id);
   }
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_PATH}/call/microcontent_delete.php`;
+  const url = `${basePath}/call/microcontent_delete.php`;
   const req: DestroyVideoRequest = {
     microcontentid: id.toString(),
   };
   try {
-    await textFetcher(url, postForm(req));
-    return await success({ ...initialVideo, id });
+    await postFormFetchText(url, req);
+    await success({ ...initialVideo, id });
   } catch {
-    return await failure(id);
+    await failure(id);
   }
 }
 type DestroyVideoRequest = {
   microcontentid: string;
 };
 
-async function success(video: Required<VideoSchema>) {
+export async function saveVideo(video: VideoSchema) {
+  let id: VideoSchema["id"] = video.id;
+  if (Number.isFinite(id)) {
+    await update(video);
+  } else {
+    id = await create(video);
+  }
+  return id;
+}
+
+async function success(video: VideoSchema) {
   await mutate([key, video.id], (prev?: Video) => ({
     ...(prev || initialVideo),
     ...video,
     state: "success",
   }));
   await mutate(key);
-  return true;
 }
 
 async function failure(id: VideoSchema["id"]) {
@@ -309,5 +257,4 @@ async function failure(id: VideoSchema["id"]) {
     state: "failure",
   }));
   await mutate(key);
-  return true;
 }

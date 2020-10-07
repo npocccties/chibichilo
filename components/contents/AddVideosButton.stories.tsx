@@ -1,7 +1,6 @@
 export default { title: "AddVideosButton" };
 import { AddVideosButton } from "./AddVideosButton";
 import { useState } from "react";
-import { Videos } from "components/video";
 import { VideosRow } from "./VideosSelectorTable";
 import Typography from "@material-ui/core/Typography";
 
