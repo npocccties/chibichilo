@@ -1,7 +1,8 @@
 name: deploy
 on:
   push:
-    branches: [master]
+    # FIXME: NEXT_PUBLIC_LMS_URL など実際の環境に合わせたパラメーターを何かしらの手段で与えないと動かない
+    branches: [dummy]
 jobs:
   main:
     runs-on: ubuntu-latest
