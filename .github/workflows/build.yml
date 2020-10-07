@@ -1,9 +1,14 @@
 name: build
 on: pull_request
+env:
+  RUNNER_OS: ubuntu-latest
+  NODE_VERSION: "14"
 jobs:
   install:
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.RUNNER_OS }}
     steps:
+      - uses: actions/setup-node@v1
+        with: { node-version: "${{ env.NODE_VERSION }}" }
       - uses: actions/cache@v1
         with:
           path: ${{ github.workspace }}
@@ -19,8 +24,10 @@ jobs:
       - run: yarn
   format:
     needs: install
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.RUNNER_OS }}
     steps:
+      - uses: actions/setup-node@v1
+        with: { node-version: "${{ env.NODE_VERSION }}" }
       - uses: actions/cache@v1
         with:
           path: ${{ github.workspace }}
@@ -34,8 +41,10 @@ jobs:
           git push origin HEAD
   build:
     needs: [install, format]
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.RUNNER_OS }}
     steps:
+      - uses: actions/setup-node@v1
+        with: { node-version: "${{ env.NODE_VERSION }}" }
       - uses: actions/cache@v1
         with:
           path: ${{ github.workspace }}
