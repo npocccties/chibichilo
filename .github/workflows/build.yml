@@ -1,5 +1,7 @@
 name: build
-on: pull_request
+on:
+  push:
+    branches-ignore: [master]
 env:
   RUNNER_OS: ubuntu-latest
   NODE_VERSION: "14"
