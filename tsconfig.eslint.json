@@ -1,6 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "allowJs": true,
   "include": [
     ".eslintrc.js",
     ".storybook/*",
