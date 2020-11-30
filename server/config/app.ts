@@ -20,20 +20,29 @@ export type Options = {
 async function app(fastify: FastifyInstance, options: Options) {
   const { basePath, sessionSecret, sessionStore } = options;
 
-  await Promise.all([
-    fastify.register(swagger, {
-      routePrefix: `${basePath}/swagger`,
-      swagger: {
-        info: {
-          title: pkg.name,
-          version: pkg.version,
-        },
+  await fastify.register(swagger, {
+    routePrefix: `${basePath}/swagger`,
+    swagger: {
+      info: {
+        title: pkg.name,
+        version: pkg.version,
       },
-      exposeRoute: true,
-    }),
-    fastify.register(helmet, {
-      contentSecurityPolicy: false,
-    }),
+    },
+    exposeRoute: true,
+  });
+
+  await fastify.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:"],
+        scriptSrc: ["'self'"].concat(fastify.swaggerCSP.script),
+        styleSrc: ["'self'"].concat(fastify.swaggerCSP.style),
+      },
+    },
+  });
+
+  await Promise.all([
     fastify.register(cors),
     fastify.register(cookie),
     fastify.register(session, {
