@@ -37,5 +37,7 @@ jobs:
         run: |
           git -c "user.name=bot" -c "user.email=bot@example" commit -a -m "bot: format"
           git push origin HEAD
+      - name: test
+        run: yarn test
       - name: build
         run: yarn build
