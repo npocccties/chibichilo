@@ -1,4 +1,4 @@
-import { Section } from "$prisma/client";
+import { Section } from "@prisma/client";
 import jsonSchema from "$server/prisma/json-schema.json";
 import { TopicProps, TopicSchema, topicSchema } from "$server/models/topic";
 

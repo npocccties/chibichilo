@@ -1,4 +1,4 @@
-import { Topic } from "$prisma/client";
+import { Topic } from "@prisma/client";
 import jsonSchema from "$server/prisma/json-schema.json";
 import { ResourceProps, ResourceSchema, resourceSchema } from "./resource";
 

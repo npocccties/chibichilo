@@ -1,4 +1,4 @@
-import { Resource, Topic, Video } from "$prisma/client";
+import { Resource, Topic, Video } from "@prisma/client";
 import { TopicSchema } from "$server/models/topic";
 
 export const topicsWithResourcesArg = {

@@ -23,7 +23,6 @@
       "$molecules/*": ["components/molecules/*"],
       "$organisms/*": ["components/organisms/*"],
       "$templates/*": ["components/templates/*"],
-      "$prisma/*": ["./node_modules/.prisma/*"],
       "$*": ["*"]
     }
   },

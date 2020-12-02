@@ -1,4 +1,4 @@
-import { Book, Topic, Section, TopicSection } from "$prisma/client";
+import { Book, Topic, Section, TopicSection } from "@prisma/client";
 import { TopicProps } from "$server/models/topic";
 import { BookProps, BookSchema } from "$server/models/book";
 import { SectionProps } from "$server/models/book/section";

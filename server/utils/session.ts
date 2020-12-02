@@ -1,4 +1,4 @@
-import { User } from "$prisma/client";
+import { User } from "@prisma/client";
 import { FastifyRequest } from "fastify";
 import { LtiLaunchBody } from "$server/validators/ltiLaunchBody";
 import * as ltiRoles from "./ltiv1p1/roles";

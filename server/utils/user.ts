@@ -1,4 +1,4 @@
-import { User } from "$prisma/client";
+import { User } from "@prisma/client";
 import { UserProps } from "$server/models/user";
 import { BookSchema } from "$server/models/book";
 import prisma from "./prisma";

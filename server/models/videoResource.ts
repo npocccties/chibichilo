@@ -1,4 +1,4 @@
-import { Resource, Video } from "$prisma/client";
+import { Resource, Video } from "@prisma/client";
 import jsonSchema from "$server/prisma/json-schema.json";
 
 type VideoResource = {

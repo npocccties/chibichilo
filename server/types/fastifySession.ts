@@ -1,4 +1,4 @@
-import { User } from "$prisma/client";
+import { User } from "@prisma/client";
 import { LtiLaunchBody } from "$server/validators/ltiLaunchBody";
 
 declare module "fastify" {
