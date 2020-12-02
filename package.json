@@ -38,6 +38,7 @@
     "material-ui-popup-state": "^1.6.1",
     "material-ui-snackbar-provider": "^1.4.0",
     "next": "^9.5.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.1.1",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
@@ -51,6 +52,9 @@
   },
   "scripts": {
     "test": "yarn workspaces run test",
+    "dev": "run-p dev:*",
+    "dev:app": "next",
+    "dev:server": "yarn --cwd server dev",
     "build": "yarn --cwd server build:prisma && next build && next export -o v1",
     "build:openapi": "openapi-generator-cli generate -i http://localhost:8080/api/v2/swagger/json -g typescript-fetch -o openapi",
     "format": "prettier --write .",

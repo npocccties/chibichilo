@@ -1,0 +1,44 @@
+# NOTE: DON'T USE IT IN PRODUCTION. 本番環境で使用しないで。
+version: "3"
+services:
+  mariadb:
+    image: "mariadb:10"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: bitnami_moodle
+  moodle:
+    image: "bitnami/moodle:3"
+    ports: ["8081:8080"]
+    environment:
+      MOODLE_USERNAME: user
+      MOODLE_PASSWORD: passowrd
+      ALLOW_EMPTY_PASSWORD: "yes"
+      MOODLE_DATABASE_USER: root
+    depends_on: [mariadb]
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports: ["5432:5432"]
+  app:
+    image: node:lts-alpine
+    environment:
+      NEXT_PUBLIC_API_BASE_PATH: "http://localhost:8080"
+      NEXT_PUBLIC_LMS_URL: "http://localhost:8081"
+      NEXT_PUBLIC_BASE_PATH: ""
+      PORT: "8080"
+      BASE_PATH: /api/v2
+      FRONTEND_ORIGIN: "http://localhost:3000"
+      FRONTEND_PATH: /
+      SESSION_SECRET: super_secret_characters_for_session
+      OAUTH_CONSUMER_KEY: test
+      OAUTH_CONSUMER_SECRET: test
+      DATABASE_URL: postgresql://postgres:password@db/postgres
+    command: "sh -c 'cd /app && yarn && yarn --cwd server build && yarn dev'"
+    volumes: ["./:/app"]
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+      - "8080:8080"
+    depends_on: [moodle, db]

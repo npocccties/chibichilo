@@ -12,4 +12,4 @@ fastify({ logger: isDev })
     sessionSecret: SESSION_SECRET,
     sessionStore: sessionStore as Options["sessionStore"],
   })
-  .listen(PORT);
+  .listen(PORT, "::");
