@@ -1,5 +1,22 @@
+import { Prisma } from "@prisma/client";
 import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import prisma from "./prisma";
+
+export const ltiResourceLinkIncludingContextArg = {
+  include: { context: true },
+} as const;
+
+export function ltiResourceLinkToSchema(
+  props: Prisma.LtiResourceLinkGetPayload<
+    typeof ltiResourceLinkIncludingContextArg
+  >
+): LtiResourceLinkSchema {
+  const { context, ...link } = props;
+  return {
+    ...link,
+    contextTitle: context.title,
+  };
+}
 
 export async function upsertLtiResourceLink(
   props: LtiResourceLinkSchema

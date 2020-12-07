@@ -8,8 +8,8 @@ import {
 
 async function findBook(bookId: Book["id"]): Promise<BookSchema | undefined> {
   const book = await prisma.book.findUnique({
+    ...bookIncludingTopicsArg,
     where: { id: bookId },
-    include: bookIncludingTopicsArg,
   });
   if (book == null) return;
 

@@ -4,7 +4,7 @@ import users from "$server/config/seeds/users";
 import books from "$server/config/seeds/books";
 import ltiResourceLinks from "$server/config/seeds/ltiResourceLinks";
 import { upsertUser } from "$server/utils/user";
-import upsertBooks from "$server/utils/book/upsertBook";
+import upsertBook from "$server/utils/book/upsertBook";
 import { upsertLtiResourceLink } from "$server/utils/ltiResourceLink";
 
 dotenv.config();
@@ -17,7 +17,7 @@ async function main() {
     const createdBooks = await Promise.all(
       books
         .map((book) => ({ ...book, author: { id: createdUsers[0].id } }))
-        .map(upsertBooks)
+        .map(upsertBook)
     );
 
     await Promise.all(

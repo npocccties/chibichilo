@@ -14,6 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    InlineResponse200,
+    InlineResponse200FromJSON,
+    InlineResponse200FromJSONTyped,
+    InlineResponse200ToJSON,
     InlineResponse2001Author,
     InlineResponse2001AuthorFromJSON,
     InlineResponse2001AuthorFromJSONTyped,
@@ -84,6 +88,12 @@ export interface InlineResponse2001Books {
      * @memberof InlineResponse2001Books
      */
     sections?: Array<InlineResponse2001Sections>;
+    /**
+     * 
+     * @type {Array<InlineResponse200>}
+     * @memberof InlineResponse2001Books
+     */
+    ltiResourceLinks?: Array<InlineResponse200>;
 }
 
 export function InlineResponse2001BooksFromJSON(json: any): InlineResponse2001Books {
@@ -105,6 +115,7 @@ export function InlineResponse2001BooksFromJSONTyped(json: any, ignoreDiscrimina
         'details': !exists(json, 'details') ? undefined : json['details'],
         'author': !exists(json, 'author') ? undefined : InlineResponse2001AuthorFromJSON(json['author']),
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(InlineResponse2001SectionsFromJSON)),
+        'ltiResourceLinks': !exists(json, 'ltiResourceLinks') ? undefined : ((json['ltiResourceLinks'] as Array<any>).map(InlineResponse200FromJSON)),
     };
 }
 
@@ -126,6 +137,7 @@ export function InlineResponse2001BooksToJSON(value?: InlineResponse2001Books | 
         'details': value.details,
         'author': InlineResponse2001AuthorToJSON(value.author),
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(InlineResponse2001SectionsToJSON)),
+        'ltiResourceLinks': value.ltiResourceLinks === undefined ? undefined : ((value.ltiResourceLinks as Array<any>).map(InlineResponse200ToJSON)),
     };
 }
 

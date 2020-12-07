@@ -63,9 +63,9 @@ export async function findTopics(
   perPage: number
 ): Promise<TopicSchema[]> {
   const topics = await prisma.topic.findMany({
+    ...topicsWithResourcesArg,
     skip: page * perPage,
     take: perPage,
-    include: topicsWithResourcesArg,
   });
 
   return topics.map(topicToTopicSchema);

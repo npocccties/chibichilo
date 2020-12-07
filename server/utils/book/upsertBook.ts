@@ -71,17 +71,19 @@ const sectionUpsertInput = (creatorId: Topic["creatorId"]) => (
   };
 };
 
-async function upsertBook(book: BookProps | BookSchema) {
-  if (!("id" in book)) {
-    const { id } = await createBook(book);
+async function upsertBook(
+  props: BookProps | Omit<BookSchema, "ltiResourceLinks">
+) {
+  if (!("id" in props)) {
+    const { id } = await createBook(props);
     const created = await (findBook(id) as Promise<BookSchema>);
     return created;
   }
 
-  const { author, ...props } = book;
-  const sectionsUpsertInput = props.sections.map(sectionUpsertInput(author.id));
+  const { id, author, ...book } = props;
+  const sectionsUpsertInput = book.sections.map(sectionUpsertInput(author.id));
   const input = {
-    ...props,
+    ...book,
     details: {},
     author: { connect: { id: author.id } },
   };
@@ -95,12 +97,12 @@ async function upsertBook(book: BookProps | BookSchema) {
   };
 
   await prisma.book.upsert({
-    where: { id: book.id },
+    where: { id },
     create,
     update,
   });
 
-  return book;
+  return props;
 }
 
 export default upsertBook;

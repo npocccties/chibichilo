@@ -2,6 +2,10 @@ import { Book, Prisma } from "@prisma/client";
 import jsonSchema from "$server/prisma/json-schema.json";
 import { UserSchema, userSchema } from "./user";
 import { SectionProps, SectionSchema, sectionSchema } from "./book/section";
+import {
+  LtiResourceLinkSchema,
+  ltiResourceLinkSchema,
+} from "./ltiResourceLink";
 
 export type BookProps = Omit<
   Prisma.BookCreateWithoutAuthorInput,
@@ -14,6 +18,7 @@ export type BookProps = Omit<
 export type BookSchema = Omit<Book, "authorId"> & {
   author: UserSchema;
   sections: SectionSchema[];
+  ltiResourceLinks: LtiResourceLinkSchema[];
 };
 
 const {
@@ -39,6 +44,10 @@ export const bookSchema = {
     sections: {
       type: "array",
       items: sectionSchema,
+    },
+    ltiResourceLinks: {
+      type: "array",
+      items: ltiResourceLinkSchema,
     },
   },
 };

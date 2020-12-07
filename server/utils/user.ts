@@ -22,9 +22,9 @@ export async function findWrittenBooks(
 ): Promise<BookSchema[]> {
   const user = prisma.user.findUnique({ where: { id: userId } });
   const books = await user.writtenBooks({
+    ...bookIncludingTopicsArg,
     skip: page * perPage,
     take: perPage,
-    include: bookIncludingTopicsArg,
   });
 
   return books.map(bookToBookSchema);

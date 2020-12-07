@@ -1,15 +1,13 @@
-import { Resource, Topic, Video } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { TopicSchema } from "$server/models/topic";
 
 export const topicsWithResourcesArg = {
-  resource: { include: { video: true } },
+  include: { resource: { include: { video: true } } },
 } as const;
 
-export type TopicWithResource = Topic & {
-  resource: Resource & {
-    video: Video | null;
-  };
-};
+export type TopicWithResource = Prisma.TopicGetPayload<
+  typeof topicsWithResourcesArg
+>;
 
 export function topicToTopicSchema(topic: TopicWithResource): TopicSchema {
   return {
