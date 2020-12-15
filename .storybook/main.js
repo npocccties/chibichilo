@@ -1,20 +1,18 @@
-const path = require("path");
-const glob = require("glob");
+const { basename, resolve } = require("path");
+const { sync: glob } = require("glob");
 
 module.exports = {
   webpackFinal: async (config) => {
-    glob
-      .sync(`../*/`, { cwd: __dirname })
-      .map((path) => path.basename(path))
+    glob(`../*/`, { cwd: __dirname })
+      .map((path) => basename(path))
       .forEach((dir) => {
-        config.resolve.alias[dir] = path.resolve(__dirname, "..", dir);
-        config.resolve.alias[`$${dir}`] = path.resolve(__dirname, "..", dir);
+        config.resolve.alias[dir] = resolve(__dirname, "..", dir);
+        config.resolve.alias[`$${dir}`] = resolve(__dirname, "..", dir);
       });
-    glob
-      .sync(`../components/*/`, { cwd: __dirname })
-      .map((path) => path.basename(path))
+    glob(`../components/*/`, { cwd: __dirname })
+      .map((path) => basename(path))
       .forEach((dir) => {
-        config.resolve.alias[`$${dir}`] = path.resolve(
+        config.resolve.alias[`$${dir}`] = resolve(
           __dirname,
           "..",
           "components",
