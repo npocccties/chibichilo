@@ -6,36 +6,32 @@ const key = "/api/v2/lti/resource_link/{lti_resource_link_id}";
 
 async function fetchLtiResourceLink(
   _: typeof key,
-  ltiResourceLinkId: LtiResourceLinkSchema["id"]
+  id: LtiResourceLinkSchema["id"]
 ) {
   const res = await api.apiV2LtiResourceLinkLtiResourceLinkIdGet({
-    ltiResourceLinkId,
+    ltiResourceLinkId: id,
   });
   return res as LtiResourceLinkSchema;
 }
 
-export function useLtiResourceLink(
-  ltiResourceLinkId: LtiResourceLinkSchema["id"]
-) {
-  return useSWR<LtiResourceLinkSchema>(
-    [key, ltiResourceLinkId],
-    fetchLtiResourceLink
-  );
+export function useLtiResourceLink(id: LtiResourceLinkSchema["id"]) {
+  return useSWR<LtiResourceLinkSchema>([key, id], fetchLtiResourceLink);
 }
 
-export async function updateLtiResourceLink(body: LtiResourceLinkSchema) {
+export async function updateLtiResourceLink({
+  id,
+  ...body
+}: LtiResourceLinkSchema) {
   const res = await api.apiV2LtiResourceLinkLtiResourceLinkIdPut({
-    ltiResourceLinkId: body.id,
+    ltiResourceLinkId: id,
     body,
   });
-  await mutate([key, body.id], res);
+  await mutate([key, id], res);
 }
 
-export async function destroyLtiResourceLink(
-  ltiResourceLinkId: LtiResourceLinkSchema["id"]
-) {
+export async function destroyLtiResourceLink(id: LtiResourceLinkSchema["id"]) {
   await api.apiV2LtiResourceLinkLtiResourceLinkIdDelete({
-    ltiResourceLinkId,
+    ltiResourceLinkId: id,
   });
-  await mutate([key, ltiResourceLinkId], undefined);
+  await mutate([key, id], undefined);
 }
