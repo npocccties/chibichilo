@@ -34,10 +34,22 @@ export interface InlineObject5 {
     name?: string;
     /**
      * 
+     * @type {string}
+     * @memberof InlineObject5
+     */
+    language?: string;
+    /**
+     * 
      * @type {number}
      * @memberof InlineObject5
      */
     timeRequired?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject5
+     */
+    shared?: boolean;
     /**
      * 
      * @type {string}
@@ -63,7 +75,9 @@ export function InlineObject5FromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'name': !exists(json, 'name') ? undefined : json['name'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'description': !exists(json, 'description') ? undefined : json['description'],
         'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
     };
@@ -79,7 +93,9 @@ export function InlineObject5ToJSON(value?: InlineObject5 | null): any {
     return {
         
         'name': value.name,
+        'language': value.language,
         'timeRequired': value.timeRequired,
+        'shared': value.shared,
         'description': value.description,
         'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
     };

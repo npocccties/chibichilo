@@ -10,7 +10,7 @@ import { UserSchema, userSchema } from "./user";
 
 export type TopicProps = Pick<
   Prisma.TopicCreateWithoutCreatorInput,
-  "name" | "timeRequired" | "description"
+  "name" | "language" | "timeRequired" | "shared" | "description"
 > & {
   resource: ResourceProps;
 };
@@ -23,7 +23,9 @@ export type TopicSchema = Omit<Topic, "creatorId"> & {
 const {
   id,
   name,
+  language,
   timeRequired,
+  shared,
   description,
   createdAt,
   updatedAt,
@@ -34,7 +36,9 @@ export const topicPropsSchema = {
   type: "object",
   properties: {
     name,
+    language: { ...language, nullable: true },
     timeRequired,
+    shared: { ...shared, nullable: true },
     description,
     resource: resourcePropsSchema,
   },
@@ -45,7 +49,9 @@ export const topicSchema = {
   properties: {
     id,
     name,
+    language,
     timeRequired,
+    shared,
     description,
     createdAt,
     updatedAt,

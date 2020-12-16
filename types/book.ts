@@ -12,7 +12,7 @@ export type Section = Pick<Prisma.Section, "id" | "name"> & {
   topics: Topic[];
 };
 
-export type Topic = Omit<Prisma.Topic, "creatorId" | "shared"> & {
+export type Topic = Omit<Prisma.Topic, "creatorId" | "language" | "shared"> & {
   creator: { id: number; name: string };
   resource: Resource;
 };

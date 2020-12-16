@@ -40,10 +40,22 @@ export interface InlineResponse2001Topics {
     name?: string;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse2001Topics
+     */
+    language?: string;
+    /**
+     * 
      * @type {number}
      * @memberof InlineResponse2001Topics
      */
     timeRequired?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineResponse2001Topics
+     */
+    shared?: boolean;
     /**
      * 
      * @type {string}
@@ -94,7 +106,9 @@ export function InlineResponse2001TopicsFromJSONTyped(json: any, ignoreDiscrimin
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': !exists(json, 'name') ? undefined : json['name'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'description': !exists(json, 'description') ? undefined : json['description'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
@@ -115,7 +129,9 @@ export function InlineResponse2001TopicsToJSON(value?: InlineResponse2001Topics 
         
         'id': value.id,
         'name': value.name,
+        'language': value.language,
         'timeRequired': value.timeRequired,
+        'shared': value.shared,
         'description': value.description,
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
