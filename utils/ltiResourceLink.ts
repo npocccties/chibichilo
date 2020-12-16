@@ -24,7 +24,7 @@ export function useLtiResourceLink(
 }
 
 export async function updateLtiResourceLink(body: LtiResourceLinkSchema) {
-  const res = await api.apiV2LtiResourceLinkLtiResourceLinkIdPost({
+  const res = await api.apiV2LtiResourceLinkLtiResourceLinkIdPut({
     ltiResourceLinkId: body.id,
     body,
   });

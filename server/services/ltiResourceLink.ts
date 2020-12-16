@@ -27,7 +27,7 @@ export const method: Method = {
       404: {},
     },
   },
-  post: {
+  put: {
     description: "LTI Resource Link の更新",
     params: ltiResourceLinkParamsSchema,
     body: ltiResourceLinkPropsSchema,

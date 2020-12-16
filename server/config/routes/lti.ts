@@ -24,10 +24,10 @@ export async function resourceLink(fastify: FastifyInstance) {
     Params: ltiResourceLinkService.Params;
   }>(path, { schema: method.get, preHandler }, handler(show));
 
-  fastify.post<{
+  fastify.put<{
     Params: ltiResourceLinkService.Params;
     Body: ltiResourceLinkService.Props;
-  }>(path, { schema: method.post, preHandler }, handler(update));
+  }>(path, { schema: method.put, preHandler }, handler(update));
 
   fastify.delete<{
     Params: ltiResourceLinkService.Params;

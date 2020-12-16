@@ -82,7 +82,7 @@ export interface ApiV2LtiResourceLinkLtiResourceLinkIdGetRequest {
     ltiResourceLinkId: string;
 }
 
-export interface ApiV2LtiResourceLinkLtiResourceLinkIdPostRequest {
+export interface ApiV2LtiResourceLinkLtiResourceLinkIdPutRequest {
     ltiResourceLinkId: string;
     body?: InlineObject1;
 }
@@ -333,9 +333,9 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * LTI Resource Link の更新
      */
-    async apiV2LtiResourceLinkLtiResourceLinkIdPostRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPostRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
+    async apiV2LtiResourceLinkLtiResourceLinkIdPutRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPutRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.ltiResourceLinkId === null || requestParameters.ltiResourceLinkId === undefined) {
-            throw new runtime.RequiredError('ltiResourceLinkId','Required parameter requestParameters.ltiResourceLinkId was null or undefined when calling apiV2LtiResourceLinkLtiResourceLinkIdPost.');
+            throw new runtime.RequiredError('ltiResourceLinkId','Required parameter requestParameters.ltiResourceLinkId was null or undefined when calling apiV2LtiResourceLinkLtiResourceLinkIdPut.');
         }
 
         const queryParameters: runtime.HTTPQuery = {};
@@ -346,7 +346,7 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/api/v2/lti/resource_link/{lti_resource_link_id}`.replace(`{${"lti_resource_link_id"}}`, encodeURIComponent(String(requestParameters.ltiResourceLinkId))),
-            method: 'POST',
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: InlineObject1ToJSON(requestParameters.body),
@@ -358,8 +358,8 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * LTI Resource Link の更新
      */
-    async apiV2LtiResourceLinkLtiResourceLinkIdPost(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPostRequest): Promise<InlineResponse200> {
-        const response = await this.apiV2LtiResourceLinkLtiResourceLinkIdPostRaw(requestParameters);
+    async apiV2LtiResourceLinkLtiResourceLinkIdPut(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPutRequest): Promise<InlineResponse200> {
+        const response = await this.apiV2LtiResourceLinkLtiResourceLinkIdPutRaw(requestParameters);
         return await response.value();
     }
 
