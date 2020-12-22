@@ -22,7 +22,7 @@ function Index() {
       query: { id: book.id },
     });
   };
-  const handleBookNewClick = () => router.replace("/book/new");
+  const handleBookNewClick = () => router.push("/book/new");
 
   if (userId == null) {
     return (
