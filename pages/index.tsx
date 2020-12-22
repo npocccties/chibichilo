@@ -2,8 +2,8 @@ import { UrlObject } from "url";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { isInstructor, useSession } from "$utils/session";
-import { NEXT_PUBLIC_LMS_URL } from "$utils/env";
 import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
+import BookUnknown from "$templates/BookUnknown";
 
 function Replace(props: { href: string | UrlObject }) {
   const router = useRouter();
@@ -23,12 +23,10 @@ function ReplaceToBook(props: { ltiResourceLink: LtiResourceLinkSchema }) {
 function Router() {
   const session = useSession();
 
+  // TODO: https://github.com/npocccties/ChibiCHiLO/issues/3
   if (!session.data) return <div>Loading...</div>; // TODO: プレースホルダーがいい加減
   if (isInstructor(session.data)) return <Replace href="/books" />;
-  if (!session.data.ltiResourceLink) {
-    // TODO: https://github.com/npocccties/ChibiCHiLO/issues/3
-    return <Replace href={NEXT_PUBLIC_LMS_URL} />;
-  }
+  if (!session.data.ltiResourceLink) return <BookUnknown />;
 
   return <ReplaceToBook ltiResourceLink={session.data.ltiResourceLink} />;
 }

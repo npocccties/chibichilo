@@ -1,7 +1,9 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import Container from "@material-ui/core/Container";
 import useContainerStyles from "styles/container";
+import { NEXT_PUBLIC_LMS_URL } from "$utils/env";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,7 +26,7 @@ export default function BookUnknown() {
       <Typography variant="body1">
         LTIリンクがどのブックとも連携していません。担当教員にお問い合わせください。
         <br />
-        LMSに戻る
+        <Link href={NEXT_PUBLIC_LMS_URL}>LMSに戻る</Link>
       </Typography>
     </Container>
   );
