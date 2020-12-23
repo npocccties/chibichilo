@@ -6,7 +6,6 @@ export * from './InlineObject2';
 export * from './InlineObject3';
 export * from './InlineObject4';
 export * from './InlineObject5';
-export * from './InlineObject6';
 export * from './InlineResponse200';
 export * from './InlineResponse2001';
 export * from './InlineResponse2001Author';

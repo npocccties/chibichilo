@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ApiV2BookBookIdSections,
+    ApiV2BookBookIdSectionsFromJSON,
+    ApiV2BookBookIdSectionsFromJSONTyped,
+    ApiV2BookBookIdSectionsToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -24,25 +31,31 @@ export interface InlineObject1 {
      * @type {string}
      * @memberof InlineObject1
      */
-    contextId: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject1
      */
-    contextTitle: string;
+    description?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject1
      */
-    title: string;
+    language?: string;
     /**
      * 
-     * @type {number}
+     * @type {boolean}
      * @memberof InlineObject1
      */
-    bookId: number;
+    shared?: boolean;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdSections>}
+     * @memberof InlineObject1
+     */
+    sections?: Array<ApiV2BookBookIdSections>;
 }
 
 export function InlineObject1FromJSON(json: any): InlineObject1 {
@@ -55,10 +68,11 @@ export function InlineObject1FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'contextId': json['contextId'],
-        'contextTitle': json['contextTitle'],
-        'title': json['title'],
-        'bookId': json['bookId'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
     };
 }
 
@@ -71,10 +85,11 @@ export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
     }
     return {
         
-        'contextId': value.contextId,
-        'contextTitle': value.contextTitle,
-        'title': value.title,
-        'bookId': value.bookId,
+        'name': value.name,
+        'description': value.description,
+        'language': value.language,
+        'shared': value.shared,
+        'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
     };
 }
 

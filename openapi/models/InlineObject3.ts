@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdSections,
-    ApiV2BookBookIdSectionsFromJSON,
-    ApiV2BookBookIdSectionsFromJSONTyped,
-    ApiV2BookBookIdSectionsToJSON,
+    ApiV2TopicTopicIdResource,
+    ApiV2TopicTopicIdResourceFromJSON,
+    ApiV2TopicTopicIdResourceFromJSONTyped,
+    ApiV2TopicTopicIdResourceToJSON,
 } from './';
 
 /**
@@ -37,13 +37,13 @@ export interface InlineObject3 {
      * @type {string}
      * @memberof InlineObject3
      */
-    description?: string;
+    language?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof InlineObject3
      */
-    language?: string;
+    timeRequired?: number;
     /**
      * 
      * @type {boolean}
@@ -52,10 +52,16 @@ export interface InlineObject3 {
     shared?: boolean;
     /**
      * 
-     * @type {Array<ApiV2BookBookIdSections>}
+     * @type {string}
      * @memberof InlineObject3
      */
-    sections?: Array<ApiV2BookBookIdSections>;
+    description?: string;
+    /**
+     * 
+     * @type {ApiV2TopicTopicIdResource}
+     * @memberof InlineObject3
+     */
+    resource?: ApiV2TopicTopicIdResource;
 }
 
 export function InlineObject3FromJSON(json: any): InlineObject3 {
@@ -69,10 +75,11 @@ export function InlineObject3FromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'description': !exists(json, 'description') ? undefined : json['description'],
         'language': !exists(json, 'language') ? undefined : json['language'],
+        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
     };
 }
 
@@ -86,10 +93,11 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
     return {
         
         'name': value.name,
-        'description': value.description,
         'language': value.language,
+        'timeRequired': value.timeRequired,
         'shared': value.shared,
-        'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
+        'description': value.description,
+        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
     };
 }
 

@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    ApiV2TopicTopicIdResource,
-    ApiV2TopicTopicIdResourceFromJSON,
-    ApiV2TopicTopicIdResourceFromJSONTyped,
-    ApiV2TopicTopicIdResourceToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -31,37 +24,13 @@ export interface InlineObject5 {
      * @type {string}
      * @memberof InlineObject5
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject5
-     */
     language?: string;
     /**
      * 
-     * @type {number}
-     * @memberof InlineObject5
-     */
-    timeRequired?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InlineObject5
-     */
-    shared?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof InlineObject5
      */
-    description?: string;
-    /**
-     * 
-     * @type {ApiV2TopicTopicIdResource}
-     * @memberof InlineObject5
-     */
-    resource?: ApiV2TopicTopicIdResource;
+    content?: string;
 }
 
 export function InlineObject5FromJSON(json: any): InlineObject5 {
@@ -74,12 +43,8 @@ export function InlineObject5FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'name': !exists(json, 'name') ? undefined : json['name'],
         'language': !exists(json, 'language') ? undefined : json['language'],
-        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'description': !exists(json, 'description') ? undefined : json['description'],
-        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
+        'content': !exists(json, 'content') ? undefined : json['content'],
     };
 }
 
@@ -92,12 +57,8 @@ export function InlineObject5ToJSON(value?: InlineObject5 | null): any {
     }
     return {
         
-        'name': value.name,
         'language': value.language,
-        'timeRequired': value.timeRequired,
-        'shared': value.shared,
-        'description': value.description,
-        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
+        'content': value.content,
     };
 }
 
