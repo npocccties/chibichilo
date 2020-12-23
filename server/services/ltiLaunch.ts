@@ -21,6 +21,7 @@ const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 const method: Method = {
   post: {
     description: "LTI ツールとして指定するエンドポイント",
+    consumes: ["application/x-www-form-urlencoded"],
     body: ltiLaunchBodySchema,
     response: {
       302: {
