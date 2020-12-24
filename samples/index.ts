@@ -1,4 +1,4 @@
-export { default as resoruce } from "./resource";
+export { default as resource } from "./resource";
 export { default as ltiResourceLink } from "./ltiResourceLink";
 export { default as user } from "./user";
 export { default as topic } from "./topic";
