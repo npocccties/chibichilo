@@ -63,7 +63,9 @@ export default function BookPreview(props: Props) {
   const cardClasses = useCardStyle();
   const classes = useStyles();
   const { book, onEditClick, checked, ...radioProps } = props;
-  const [topic] = useState<TopicSchema>(book.sections[0].topics[0]);
+  const [topic] = useState<TopicSchema | undefined>(
+    book.sections[0]?.topics[0]
+  );
   const [open, setOpen] = useState(false);
   const handleInfoClick = () => {
     setOpen(true);
@@ -128,7 +130,9 @@ export default function BookPreview(props: Props) {
         </Button>
       </div>
       <div className={classes.right}>
-        {"providerUrl" in topic.resource && <Video {...topic.resource} />}
+        {topic && "providerUrl" in topic.resource && (
+          <Video {...topic.resource} />
+        )}
       </div>
       {book && <BookItemDialog open={open} onClose={handleClose} book={book} />}
     </Card>

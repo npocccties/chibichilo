@@ -35,3 +35,7 @@ export const Checked = () => {
     </div>
   );
 };
+
+export const EmptySection = () => {
+  return <BookPreview {...props} book={{ ...props.book, sections: [] }} />;
+};
