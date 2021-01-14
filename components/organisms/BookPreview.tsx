@@ -1,11 +1,11 @@
-import { Fragment, useState } from "react";
+import { MouseEvent, Fragment, useState } from "react";
+import classnames from "classnames";
 import { format } from "date-fns";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
+import Radio from "@material-ui/core/Radio";
 import { InfoOutlined, EditOutlined } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import Video from "$organisms/Video";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   checkBox: {
-    marginLeft: theme.spacing(-2),
+    marginLeft: theme.spacing(-1.5),
   },
   chips: {
     "& > *": {
@@ -54,13 +54,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = { book: BookSchema };
+type Props = Parameters<typeof Radio>[0] & {
+  book: BookSchema;
+  onEditClick(event: MouseEvent<HTMLElement>, book: BookSchema): void;
+};
 
 export default function BookPreview(props: Props) {
   const cardClasses = useCardStyle();
   const classes = useStyles();
-  const { book } = props;
-  const [checkBox, setCheckBox] = useState(false);
+  const { book, onEditClick, checked, ...radioProps } = props;
   const [topic] = useState<TopicSchema>(book.sections[0].topics[0]);
   const [open, setOpen] = useState(false);
   const handleInfoClick = () => {
@@ -69,28 +71,27 @@ export default function BookPreview(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleCheckBoxClick = () => {
-    setCheckBox(!checkBox);
+  const handleEditClick = (event: MouseEvent<HTMLElement>) => {
+    onEditClick(event, book);
   };
   return (
     <Card
       classes={cardClasses}
-      className={`${classes.root} ${checkBox && classes.selected}`}
+      className={classnames(classes.root, { [classes.selected]: checked })}
     >
       <div className={classes.left}>
         <Typography variant="h6" className={classes.title}>
-          <IconButton
+          <Radio
             className={classes.checkBox}
             color="primary"
-            onClick={handleCheckBoxClick}
-          >
-            {checkBox ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlankIcon />}
-          </IconButton>
+            checked={checked}
+            {...radioProps}
+          />
           {book.name}
           <IconButton onClick={handleInfoClick}>
             <InfoOutlined />
           </IconButton>
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={handleEditClick}>
             <EditOutlined />
           </IconButton>
         </Typography>

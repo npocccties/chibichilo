@@ -11,6 +11,9 @@ const props = {
     contextId: "2",
     contextTitle: "コース2",
   },
+  onSubmit: console.log,
+  onBookEditClick: console.log,
+  onBookNewClick: console.log,
 };
 
 export const Default = () => <BookLink {...props} />;
