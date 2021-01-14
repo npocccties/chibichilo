@@ -48,7 +48,7 @@ type Props = {
 };
 
 export default function TopicImport(props: Props) {
-  const { topics, onTopicDetailClick } = props;
+  const { topics } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
