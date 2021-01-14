@@ -1,5 +1,5 @@
 import { MouseEvent, Fragment, useState } from "react";
-import classnames from "classnames";
+import clsx from "clsx";
 import { format } from "date-fns";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -79,7 +79,7 @@ export default function BookPreview(props: Props) {
   return (
     <Card
       classes={cardClasses}
-      className={classnames(classes.root, { [classes.selected]: checked })}
+      className={clsx(classes.root, { [classes.selected]: checked })}
     >
       <div className={classes.left}>
         <Typography variant="h6" className={classes.title}>
