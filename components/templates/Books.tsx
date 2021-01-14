@@ -41,6 +41,7 @@ type Props = {
   onBookClick(book: BookSchema): void;
   onBookEditClick(book: BookSchema): void;
   onBookNewClick(): void;
+  onBookLinkClick(): void;
 };
 
 export default function Books(props: Props) {
@@ -50,6 +51,7 @@ export default function Books(props: Props) {
     onBookClick,
     onBookEditClick,
     onBookNewClick,
+    onBookLinkClick,
   } = props;
   const handleBookEditClick = (book: BookSchema) => () => onBookEditClick(book);
   const handleTopicClick = (book: BookSchema) => () => onBookClick(book);
@@ -69,7 +71,7 @@ export default function Books(props: Props) {
           ブックの作成
         </Button>
         {ltiResourceLink && (
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={onBookLinkClick}>
             <LinkIcon className={classes.icon} />
             LTIリンク「{ltiResourceLink.title}」と連携
           </Button>

@@ -71,7 +71,7 @@ export default function BookLink(props: Props) {
     e.preventDefault();
     if (selectedBook != null) onSubmit(selectedBook);
   };
-  const handleBookEditClick = (_: never, book: BookSchema) => () => {
+  const handleBookEditClick = (_: never, book: BookSchema) => {
     onBookEditClick(book);
   };
   return (

@@ -29,6 +29,7 @@ function Index() {
     onBookClick: handleBookClick("/book"),
     onBookEditClick: handleBookClick("/book/edit", { prev: "/books" }),
     onBookNewClick: () => router.push("/book/new"),
+    onBookLinkClick: () => router.push("/link"),
   };
 
   if (userId == null) {

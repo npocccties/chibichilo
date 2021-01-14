@@ -16,15 +16,13 @@ const props = {
   onBookNewClick() {
     console.log("onBookNewClick");
   },
+  onBookLinkClick() {
+    console.log("onBookLinkClick");
+  },
 };
 
 export const Default = () => <Books {...props} />;
 
 export const Empty = () => (
-  <Books
-    books={[]}
-    onBookClick={props.onBookClick}
-    onBookEditClick={props.onBookEditClick}
-    onBookNewClick={props.onBookNewClick}
-  />
+  <Books {...props} books={[]} ltiResourceLink={null} />
 );

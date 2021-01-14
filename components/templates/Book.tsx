@@ -58,6 +58,7 @@ type Props = {
   book: BookSchema | null;
   index: ItemIndex;
   onBookEditClick(book: BookSchema): void;
+  onBookLinkClick(): void;
   onTopicEditClick?(topic: TopicSchema): void;
   onTopicEnded(): void;
   onItemClick(index: ItemIndex): void;
@@ -68,6 +69,7 @@ export default function Book(props: Props) {
     book,
     index: [sectionIndex, topicIndex],
     onBookEditClick,
+    onBookLinkClick,
     onTopicEditClick,
     onTopicEnded,
     onItemClick,
@@ -110,7 +112,7 @@ export default function Book(props: Props) {
         <IconButton color="primary" onClick={handleEditClick}>
           <EditOutlinedIcon />
         </IconButton>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={onBookLinkClick}>
           <LinkIcon className={classes.icon} />
           LTIリンクの再連携
         </Button>

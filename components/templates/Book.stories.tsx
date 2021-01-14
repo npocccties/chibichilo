@@ -7,6 +7,9 @@ import { book } from "samples";
 const props = {
   book,
   onBookEditClick: console.log,
+  onBookLinkClick() {
+    console.log("onBookLinkClick");
+  },
   onTopicEditClick: console.log,
 };
 
@@ -40,9 +43,9 @@ export const Empty = wrap(() => {
 
   return (
     <Book
+      {...props}
       book={null}
       index={index}
-      onBookEditClick={props.onBookEditClick}
       onTopicEnded={handleTopicEnded}
       onItemClick={handleItemClick}
     />
@@ -56,9 +59,9 @@ export const EmptySection = wrap(() => {
 
   return (
     <Book
+      {...props}
       book={{ ...props.book, sections: [] }}
       index={index}
-      onBookEditClick={props.onBookEditClick}
       onTopicEnded={handleTopicEnded}
       onItemClick={handleItemClick}
     />

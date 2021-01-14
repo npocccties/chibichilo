@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = { header: Node | string; children?: Node | string };
 
-export default function BookUnknown(props: Props) {
+export default function Unknown(props: Props) {
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const { header, children } = props;

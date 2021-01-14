@@ -8,7 +8,7 @@ import { destroyBook, updateBook, useBook } from "$utils/book";
 
 export type Query = {
   bookId?: string;
-  prev?: "/books";
+  prev?: "/books" | "/link";
 };
 
 export type EditProps = { bookId: BookSchema["id"] } & Pick<Query, "prev">;
@@ -20,6 +20,7 @@ function Edit({ bookId, prev }: EditProps) {
     await updateBook({ id: bookId, ...props });
     switch (prev) {
       case "/books":
+      case "/link":
         return router.push(prev);
       default:
         return router.push({ pathname: "/book", query: { bookId } });
@@ -27,7 +28,12 @@ function Edit({ bookId, prev }: EditProps) {
   }
   async function handleDelete({ id }: Pick<BookSchema, "id">) {
     await destroyBook(id);
-    return router.push("/books");
+    switch (prev) {
+      case "/link":
+        return router.push(prev);
+      default:
+        return router.push("/books");
+    }
   }
   async function handleAddSection(section: SectionProps) {
     if (!book) return;

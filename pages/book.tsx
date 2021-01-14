@@ -20,8 +20,9 @@ function Show(props: ShowProps) {
   const handleItemClick = nextItemIndex;
   const router = useRouter();
   const handleBookEditClick = () => {
-    router.push({ pathname: "/book/edit", query: props });
+    return router.push({ pathname: "/book/edit", query: props });
   };
+  const handleBookLinkClick = () => router.push("/link");
   const handleTopicEditClick = ({ id }: Pick<TopicSchema, "id">) => {
     router.push({
       pathname: "/book/topic/edit",
@@ -39,6 +40,7 @@ function Show(props: ShowProps) {
       book={book}
       index={index}
       onBookEditClick={handleBookEditClick}
+      onBookLinkClick={handleBookLinkClick}
       onTopicEditClick={handleTopicEditClick}
       onTopicEnded={handleTopicEnded}
       onItemClick={handleItemClick}
