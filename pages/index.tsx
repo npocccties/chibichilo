@@ -25,15 +25,21 @@ function Router() {
 
   // TODO: https://github.com/npocccties/ChibiCHiLO/issues/3
   if (!session.data) return <Placeholder />;
-  if (isInstructor(session.data)) return <Replace href="/books" />;
-  if (!session.data.ltiResourceLink)
+
+  const ltiResourceLink = session.data.ltiResourceLink;
+
+  if (isInstructor(session.data)) {
+    const href = ltiResourceLink == null ? "/link" : "/books";
+    return <Replace href={href} />;
+  }
+  if (!ltiResourceLink)
     return (
       <Unknown header="ブックが未連携です">
         LTIリンクがどのブックとも連携されていません。担当教員にお問い合わせください
       </Unknown>
     );
 
-  return <ReplaceToBook ltiResourceLink={session.data.ltiResourceLink} />;
+  return <ReplaceToBook ltiResourceLink={ltiResourceLink} />;
 }
 
 export default Router;

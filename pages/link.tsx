@@ -20,7 +20,13 @@ function Index() {
   const router = useRouter();
   const session = useSession();
   const userId = session.data?.user?.id;
-  const ltiResourceLink = session.data?.ltiResourceLink;
+  const ltiLaunchBody = session.data?.ltiLaunchBody;
+  const ltiResourceLink = ltiLaunchBody && {
+    id: ltiLaunchBody.resource_link_id,
+    title: ltiLaunchBody.resource_link_title ?? "",
+    contextId: ltiLaunchBody.context_id,
+    contextTitle: ltiLaunchBody.context_title ?? "",
+  };
   async function handleSubmit(bookId: BookSchema["id"]) {
     if (ltiResourceLink == null) return;
     await updateLtiResourceLink({ ...ltiResourceLink, bookId });
