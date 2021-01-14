@@ -6,7 +6,8 @@ import AddIcon from "@material-ui/icons/Add";
 import BookPreview from "$organisms/BookPreview";
 import SortSelect from "$atoms/SortSelect";
 import SearchTextField from "$atoms/SearchTextField";
-import { BookSchema } from "$server/models/book";
+import type { BookSchema } from "$server/models/book";
+import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { gray } from "theme/colors";
 import useContainerStyles from "styles/container";
 
@@ -47,17 +48,18 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
+  ltiResourceLink: Pick<LtiResourceLinkSchema, "title">;
 };
 
 export default function BookLink(props: Props) {
-  const { books } = props;
+  const { books, ltiResourceLink } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   return (
     <Container classes={containerClasses} maxWidth="md">
       <div className={classes.header}>
         <Typography className={classes.title} variant="h4" gutterBottom={true}>
-          LTIリンク「〇〇」と連携
+          LTIリンク「{ltiResourceLink.title}」と連携
           <Button size="small" color="primary">
             <AddIcon className={classes.icon} />
             ブックの作成

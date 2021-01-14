@@ -18,6 +18,7 @@ function Index() {
   const router = useRouter();
   const session = useSession();
   const userId = session.data?.user?.id;
+  const ltiResourceLink = session.data?.ltiResourceLink;
   const handleBookClick = (
     pathname: `/book${"" | "/edit"}`,
     query?: BookQuery | BookEditQuery
@@ -34,7 +35,13 @@ function Index() {
     return <Books books={[]} {...handlers} />;
   }
 
-  return <UserBooks userId={userId} {...handlers} />;
+  return (
+    <UserBooks
+      userId={userId}
+      ltiResourceLink={ltiResourceLink}
+      {...handlers}
+    />
+  );
 }
 
 export default Index;

@@ -5,6 +5,12 @@ import { books } from "samples";
 
 const props = {
   books,
+  ltiResourceLink: {
+    id: "1",
+    title: "リンク1",
+    contextId: "2",
+    contextTitle: "コース2",
+  },
   onBookClick: console.log,
   onBookEditClick: console.log,
   onBookNewClick() {

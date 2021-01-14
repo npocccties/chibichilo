@@ -7,7 +7,8 @@ import LinkIcon from "@material-ui/icons/Link";
 import BookAccordion from "$organisms/BookAccordion";
 import SortSelect from "$atoms/SortSelect";
 import SearchTextField from "$atoms/SearchTextField";
-import { BookSchema } from "$server/models/book";
+import type { BookSchema } from "$server/models/book";
+import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import useContainerStyles from "styles/container";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,13 +37,20 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
+  ltiResourceLink?: Pick<LtiResourceLinkSchema, "title"> | null;
   onBookClick(book: BookSchema): void;
   onBookEditClick(book: BookSchema): void;
   onBookNewClick(): void;
 };
 
 export default function Books(props: Props) {
-  const { books, onBookClick, onBookEditClick, onBookNewClick } = props;
+  const {
+    books,
+    ltiResourceLink,
+    onBookClick,
+    onBookEditClick,
+    onBookNewClick,
+  } = props;
   const handleBookEditClick = (book: BookSchema) => () => onBookEditClick(book);
   const handleTopicClick = (book: BookSchema) => () => onBookClick(book);
   const handleBookNewClick = () => onBookNewClick();
@@ -60,10 +68,12 @@ export default function Books(props: Props) {
           <AddIcon className={classes.icon} />
           ブックの作成
         </Button>
-        <Button size="small" color="primary">
-          <LinkIcon className={classes.icon} />
-          LTIリンク「〇〇」と連携
-        </Button>
+        {ltiResourceLink && (
+          <Button size="small" color="primary">
+            <LinkIcon className={classes.icon} />
+            LTIリンク「{ltiResourceLink.title}」と連携
+          </Button>
+        )}
       </Typography>
       <div className={classes.line}>
         <SortSelect />
