@@ -1,6 +1,7 @@
 export { default as resource } from "./resource";
 export { default as ltiResourceLink } from "./ltiResourceLink";
 export { default as user } from "./user";
+export { default as session } from "./session";
 export { default as topic } from "./topic";
 export { default as section } from "./section";
 export { default as sections } from "./sections";
