@@ -2,6 +2,7 @@ export default { title: "organisms/AppBar" };
 
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "./AppBar";
+import { session } from "$samples";
 
 const useStyles = makeStyles({
   root: {
@@ -13,7 +14,12 @@ export const Default = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <AppBar position="static" />
+      <AppBar
+        position="static"
+        session={session}
+        onBooksClick={console.log}
+        onDashboardClick={console.log}
+      />
     </div>
   );
 };

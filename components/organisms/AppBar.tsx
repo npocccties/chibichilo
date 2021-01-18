@@ -1,9 +1,16 @@
-import { ComponentProps } from "react";
+import { useState, ComponentProps } from "react";
 import MuiAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
 import SvgIcon, { SvgIconProps } from "@material-ui/core/SvgIcon";
+import { MenuBookOutlined, AssessmentOutlined } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import useAppBarStyles from "styles/appBar";
+import clsx from "clsx";
+import AppBarNavButton from "$atoms/AppBarNavButton";
+import LtiItemDialog from "$organisms/LtiItemDialog";
+import useAppBarStyles from "$styles/appBar";
+import { Session } from "$server/utils/session";
+import { gray } from "$theme/colors";
 
 const useHomeIconStyles = makeStyles({
   root: {
@@ -26,14 +33,94 @@ function LogoIcon(props: SvgIconProps) {
   );
 }
 
-type Props = ComponentProps<typeof MuiAppBar>;
+const useStyles = makeStyles((theme) => ({
+  inner: {
+    display: "flex",
+    alignItems: "center",
+    maxWidth: theme.breakpoints.width("lg"),
+    width: "100%",
+    margin: "0 auto",
+    padding: `0 ${theme.spacing(3)}px`,
+    [theme.breakpoints.down("xs")]: {
+      padding: `0 ${theme.spacing(2)}px`,
+    },
+  },
+  margin: {
+    marginRight: theme.spacing(1),
+  },
+  user: {
+    display: "inline-block",
+    "& > p": {
+      margin: 0,
+      lineHeight: 1.2,
+    },
+  },
+  roles: {
+    fontSize: "0.75rem",
+    color: gray[700],
+  },
+  grow: {
+    flexGrow: 1,
+  },
+}));
+
+type Props = ComponentProps<typeof MuiAppBar> & {
+  session: Session;
+  onBooksClick(): void;
+  onDashboardClick(): void;
+};
 
 export default function AppBar(props: Props) {
+  const { session, onBooksClick, onDashboardClick, ...others } = props;
   const appBarClasses = useAppBarStyles();
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
-    <MuiAppBar classes={appBarClasses} color="default" {...props}>
-      <Toolbar color="inherit">
-        <LogoIcon />
+    <MuiAppBar classes={appBarClasses} color="default" {...others}>
+      <Toolbar color="inherit" disableGutters>
+        <div className={classes.inner}>
+          <LogoIcon className={classes.margin} />
+          <AppBarNavButton
+            color="inherit"
+            icon={<MenuBookOutlined />}
+            label="マイブック"
+            onClick={onBooksClick}
+          />
+          <AppBarNavButton
+            color="inherit"
+            icon={<AssessmentOutlined />}
+            label="学習分析"
+            onClick={onDashboardClick}
+          />
+          <div className={classes.grow} />
+          <div className={clsx(classes.user, classes.margin)}>
+            {session.user && <p>{session.user.name}</p>}
+            {session.ltiLaunchBody && (
+              // TODO: Roleに対応するHuman Readableな文字列を返す
+              <p className={classes.roles}>
+                {session.ltiLaunchBody.roles.replace(/[^,]+\//g, "")}
+              </p>
+            )}
+          </div>
+          {session && (
+            <>
+              <Button variant="text" color="primary" onClick={handleClick}>
+                LTI情報
+              </Button>
+              <LtiItemDialog
+                open={open}
+                onClose={handleClose}
+                session={session}
+              />
+            </>
+          )}
+        </div>
       </Toolbar>
     </MuiAppBar>
   );

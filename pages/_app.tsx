@@ -7,12 +7,18 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { ConfirmProvider } from "material-ui-confirm";
 import theme from "$theme";
 import AppBar from "$organisms/AppBar";
+import { useRouter } from "next/router";
+import { useSession } from "$utils/session";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
 import "$styles/video-js.css";
 
 function ThemeProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const session = useSession();
+  const handleBooksClick = () => router.push("/books");
+  const handleDashboardClick = () => undefined;
   return (
     <>
       <Head>
@@ -22,7 +28,12 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       </Head>
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar position="sticky" />
+        <AppBar
+          position="sticky"
+          session={session.data || {}}
+          onBooksClick={handleBooksClick}
+          onDashboardClick={handleDashboardClick}
+        />
         {children}
       </MuiThemeProvider>
     </>

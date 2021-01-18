@@ -1,3 +1,4 @@
+import { ElementType } from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import gray from "theme/colors/gray";
@@ -8,11 +9,21 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Item(props: { itemKey: string; value: string }) {
+type Props = {
+  itemKey: string;
+  value: string;
+  component?: ElementType;
+};
+
+export default function Item(props: Props) {
   const classes = useStyles();
-  const { itemKey, value } = props;
+  const { itemKey, value, component = "span" } = props;
   return (
-    <Typography className={classes.item} variant="caption" component="span">
+    <Typography
+      className={classes.item}
+      variant="caption"
+      component={component}
+    >
       {itemKey}: {value}
     </Typography>
   );

@@ -14,12 +14,6 @@ function formatInterval(start: Date | number, end: Date | number) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  video: {
-    marginTop: theme.spacing(-2),
-    marginRight: theme.spacing(-3),
-    marginBottom: theme.spacing(2),
-    marginLeft: theme.spacing(-3),
-  },
   title: {
     marginBottom: theme.spacing(2),
   },
@@ -58,7 +52,7 @@ export default function BookItemDialog(props: Props) {
         </Typography>
         <div className={classes.items}>
           <Typography className={classes.title} variant="h6">
-            学習時間{" "}
+            学習時間
             {formatInterval(0, book?.timeRequired ?? 0 * 1000) || "10秒未満"}
           </Typography>
           <Typography className={classes.title} variant="h6">
