@@ -11,7 +11,7 @@ import LtiItemDialog from "$organisms/LtiItemDialog";
 import useAppBarStyles from "$styles/appBar";
 import { Session } from "$server/utils/session";
 import { gray } from "$theme/colors";
-import { formatRoles } from "$utils/session";
+import { isAdministrator, isInstructor } from "$utils/session";
 
 const useHomeIconStyles = makeStyles({
   root: {
@@ -71,6 +71,12 @@ type Props = ComponentProps<typeof MuiAppBar> & {
   onDashboardClick(): void;
 };
 
+const role = (session: Session) => {
+  if (isAdministrator(session)) return "管理者";
+  if (isInstructor(session)) return "教員";
+  return "学生";
+};
+
 export default function AppBar(props: Props) {
   const { session, onBooksClick, onDashboardClick, ...others } = props;
   const appBarClasses = useAppBarStyles();
@@ -102,12 +108,7 @@ export default function AppBar(props: Props) {
           <div className={classes.grow} />
           <div className={clsx(classes.user, classes.margin)}>
             {session.user && <p>{session.user.name}</p>}
-            {session.ltiLaunchBody && (
-              // TODO: Roleに対応するHuman Readableな文字列を返す
-              <p className={classes.roles}>
-                {formatRoles(session.ltiLaunchBody.roles)}
-              </p>
-            )}
+            <p className={classes.roles}>{role(session)}</p>
           </div>
           {session && (
             <>

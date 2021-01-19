@@ -12,14 +12,9 @@ export function useSession() {
   });
 }
 
-export function formatRoles(roles: string) {
-  const normalizedRoles = roles
+export function normalizeRoles(roles: string) {
+  return roles
     .replace(/[^,]+\//g, "")
     .toLowerCase()
     .split(",");
-  if (normalizedRoles.includes("administrator")) return "管理者";
-  if (normalizedRoles.includes("instructor")) return "教育者";
-  if (normalizedRoles.includes("teaching assistant")) return "TA";
-  if (normalizedRoles.includes("student")) return "学習者";
-  return "不明なロール";
 }
