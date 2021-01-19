@@ -11,10 +11,3 @@ export function useSession() {
     return InlineResponse2004ToJSON(body);
   });
 }
-
-export function normalizeRoles(roles: string) {
-  return roles
-    .replace(/[^,]+\//g, "")
-    .toLowerCase()
-    .split(",");
-}
