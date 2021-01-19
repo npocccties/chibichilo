@@ -99,5 +99,5 @@ dist ディレクトリ以下に作られたファイルが作られれば成功
 
 ### 起動
 
-dist ディレクトリをサーバー上に配置し、各環境変数とともに `NODE_ENV=production node dist/index.js` とコマンドを実行することでアプリケーションを起動できます。
+dist ディレクトリをサーバー上に配置し、各環境変数とともに `NODE_ENV=production node dist/index.js | logger -p daemon.info -t chibichilo-server` とコマンドを実行することでアプリケーションを起動できます。
 [プロセスマネージャ PM2 を使って本番環境のサーバー上で起動する](https://future-architect.github.io/typescript-guide/deploy.html#id3)などしましょう。
