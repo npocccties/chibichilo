@@ -11,6 +11,7 @@ import LtiItemDialog from "$organisms/LtiItemDialog";
 import useAppBarStyles from "$styles/appBar";
 import { Session } from "$server/utils/session";
 import { gray } from "$theme/colors";
+import { formatRoles } from "$utils/session";
 
 const useHomeIconStyles = makeStyles({
   root: {
@@ -104,7 +105,7 @@ export default function AppBar(props: Props) {
             {session.ltiLaunchBody && (
               // TODO: Roleに対応するHuman Readableな文字列を返す
               <p className={classes.roles}>
-                {session.ltiLaunchBody.roles.replace(/[^,]+\//g, "")}
+                {formatRoles(session.ltiLaunchBody.roles)}
               </p>
             )}
           </div>
