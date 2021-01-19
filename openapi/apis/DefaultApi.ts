@@ -33,6 +33,9 @@ import {
     InlineObject5,
     InlineObject5FromJSON,
     InlineObject5ToJSON,
+    InlineObject6,
+    InlineObject6FromJSON,
+    InlineObject6ToJSON,
     InlineResponse200,
     InlineResponse200FromJSON,
     InlineResponse200ToJSON,
@@ -74,6 +77,10 @@ export interface ApiV2BookBookIdPutRequest {
 
 export interface ApiV2BookPostRequest {
     body?: InlineObject2;
+}
+
+export interface ApiV2EventPostRequest {
+    body?: InlineObject6;
 }
 
 export interface ApiV2LtiLaunchPostRequest {
@@ -279,6 +286,34 @@ export class DefaultApi extends runtime.BaseAPI {
     async apiV2BookPost(requestParameters: ApiV2BookPostRequest): Promise<InlineResponse2001Books> {
         const response = await this.apiV2BookPostRaw(requestParameters);
         return await response.value();
+    }
+
+    /**
+     * ビデオプレイヤーのイベント情報を記録 (v1互換)
+     */
+    async apiV2EventPostRaw(requestParameters: ApiV2EventPostRequest): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v2/event`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InlineObject6ToJSON(requestParameters.body),
+        });
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ビデオプレイヤーのイベント情報を記録 (v1互換)
+     */
+    async apiV2EventPost(requestParameters: ApiV2EventPostRequest): Promise<void> {
+        await this.apiV2EventPostRaw(requestParameters);
     }
 
     /**
