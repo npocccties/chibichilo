@@ -5,6 +5,7 @@ import Book from "$templates/Book";
 import Placeholder from "$templates/Placeholder";
 import Unknown from "$templates/Unknown";
 import { useBook } from "$utils/book";
+import { isInstructor, useSession } from "$utils/session";
 import { TopicSchema } from "$server/models/topic";
 
 export type Query = {
@@ -14,6 +15,7 @@ export type Query = {
 export type ShowProps = { bookId: BookSchema["id"] };
 
 function Show(props: ShowProps) {
+  const { data: session } = useSession();
   const book = useBook(props.bookId);
   const [index, nextItemIndex] = useNextItemIndexAtom();
   const handleTopicEnded = () => nextItemIndex();
@@ -37,6 +39,7 @@ function Show(props: ShowProps) {
 
   return (
     <Book
+      editable={session && isInstructor(session)}
       book={book}
       index={index}
       onBookEditClick={handleBookEditClick}

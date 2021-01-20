@@ -65,17 +65,19 @@ export default function BookChildren(props: Props) {
                       {sectionItemIndex + 1}
                       {section.name && `.${topicItemIndex + 1}`} {topic.name}
                     </ListItemText>
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        color="primary"
-                        onClick={handleItemEditClick(
-                          sectionItemIndex,
-                          topicItemIndex
-                        )}
-                      >
-                        <EditOutlined />
-                      </IconButton>
-                    </ListItemSecondaryAction>
+                    {onItemEditClick && (
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          color="primary"
+                          onClick={handleItemEditClick(
+                            sectionItemIndex,
+                            topicItemIndex
+                          )}
+                        >
+                          <EditOutlined />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    )}
                   </ListItem>
                 ))}
               </Collapse>
@@ -94,17 +96,19 @@ export default function BookChildren(props: Props) {
                     {sectionItemIndex + 1}
                     {section.name && `.${topicItemIndex + 1}`} {topic.name}
                   </ListItemText>
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      color="primary"
-                      onClick={handleItemEditClick(
-                        sectionItemIndex,
-                        topicItemIndex
-                      )}
-                    >
-                      <EditOutlined />
-                    </IconButton>
-                  </ListItemSecondaryAction>
+                  {onItemEditClick && (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        color="primary"
+                        onClick={handleItemEditClick(
+                          sectionItemIndex,
+                          topicItemIndex
+                        )}
+                      >
+                        <EditOutlined />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  )}
                 </ListItem>
               ))}
             </>

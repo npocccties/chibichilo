@@ -6,6 +6,7 @@ import { book } from "samples";
 
 const props = {
   book,
+  editable: true,
   onBookEditClick: console.log,
   onBookLinkClick() {
     console.log("onBookLinkClick");
@@ -61,6 +62,22 @@ export const EmptySection = wrap(() => {
     <Book
       {...props}
       book={{ ...props.book, sections: [] }}
+      index={index}
+      onTopicEnded={handleTopicEnded}
+      onItemClick={handleItemClick}
+    />
+  );
+});
+
+export const ForStudent = wrap(() => {
+  const [index, nextItemIndex] = useNextItemIndexAtom();
+  const handleTopicEnded = () => nextItemIndex();
+  const handleItemClick = nextItemIndex;
+
+  return (
+    <Book
+      {...props}
+      editable={false}
       index={index}
       onTopicEnded={handleTopicEnded}
       onItemClick={handleItemClick}

@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 type ItemIndex = [number, number];
 
 type Props = {
+  editable?: boolean;
   book: BookSchema | null;
   index: ItemIndex;
   onBookEditClick(book: BookSchema): void;
@@ -66,6 +67,7 @@ type Props = {
 
 export default function Book(props: Props) {
   const {
+    editable,
     book,
     index: [sectionIndex, topicIndex],
     onBookEditClick,
@@ -109,13 +111,17 @@ export default function Book(props: Props) {
         <IconButton onClick={handleInfoClick}>
           <InfoOutlinedIcon />
         </IconButton>
-        <IconButton color="primary" onClick={handleEditClick}>
-          <EditOutlinedIcon />
-        </IconButton>
-        <Button size="small" color="primary" onClick={onBookLinkClick}>
-          <LinkIcon className={classes.icon} />
-          LTIリンクの再連携
-        </Button>
+        {editable && (
+          <>
+            <IconButton color="primary" onClick={handleEditClick}>
+              <EditOutlinedIcon />
+            </IconButton>
+            <Button size="small" color="primary" onClick={onBookLinkClick}>
+              <LinkIcon className={classes.icon} />
+              LTIリンクの再連携
+            </Button>
+          </>
+        )}
       </Typography>
       <div
         className={`${classes.inner} ${
@@ -133,7 +139,7 @@ export default function Book(props: Props) {
           className={classes.bookChildren}
           sections={book?.sections ?? []}
           onItemClick={handleItemClick}
-          onItemEditClick={handleItemEditClick}
+          onItemEditClick={editable ? handleItemEditClick : undefined}
         />
       </div>
       {book && <BookItemDialog open={open} onClose={handleClose} book={book} />}

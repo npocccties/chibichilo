@@ -11,3 +11,7 @@ const props = {
 };
 
 export const Default = () => <BookChildren {...props} />;
+
+export const Editable = () => (
+  <BookChildren {...props} onItemEditClick={console.log} />
+);
