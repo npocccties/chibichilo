@@ -98,7 +98,7 @@ export default function TopicPreview(props: Props) {
       <div className={classes.items}>
         <Item itemKey="作成日" value={format(topic.createdAt, "yyyy.MM.dd")} />
         <Item itemKey="更新日" value={format(topic.updatedAt, "yyyy.MM.dd")} />
-        <Item itemKey="著者" value={topic.creator.name} />
+        <Item itemKey="作成者" value={topic.creator.name} />
       </div>
       <p className={classes.description}>{topic.description}</p>
       <Button size="small" color="primary" onClick={handle(onTopicDetailClick)}>
