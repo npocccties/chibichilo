@@ -38,6 +38,7 @@ export function useUpdateBookAtom() {
 }
 
 export function useNextItemIndexAtom() {
+  useAtom(bookAtom);
   useAtom(itemIndexAtom);
   return useAtom(nextItemIndexAtom);
 }
