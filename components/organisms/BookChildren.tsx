@@ -1,4 +1,4 @@
-import { MouseEvent, Fragment, useState } from "react";
+import { ReactNode, MouseEvent, Fragment, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -17,6 +17,36 @@ type Props = {
   onItemEditClick?(event: MouseEvent<HTMLElement>, index: ItemIndex): void;
 };
 
+function Section({
+  key,
+  section,
+  sectionItemIndex,
+  onSectionClick,
+  open,
+  children,
+}: {
+  key: string | number;
+  section: Pick<SectionSchema, "name">;
+  sectionItemIndex: number;
+  onSectionClick(): void;
+  open: boolean;
+  children: ReactNode;
+}) {
+  if (section.name == null) return <Fragment key={key}>{children}</Fragment>;
+
+  return (
+    <Fragment key={key}>
+      <ListItem button onClick={onSectionClick}>
+        <ListItemText>
+          {sectionItemIndex + 1} {section.name}
+        </ListItemText>
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={open}>{children}</Collapse>
+    </Fragment>
+  );
+}
+
 export default function BookChildren(props: Props) {
   const { className, sections, onItemClick, onItemEditClick } = props;
   const [open, setOpen] = useState<boolean[]>(sections.map(() => true));
@@ -24,7 +54,7 @@ export default function BookChildren(props: Props) {
     const { section, topic } = event.currentTarget.dataset;
     onItemClick(event, [section, topic].map(Number) as ItemIndex);
   };
-  const handleSectionClick = (sectionItemIndex: number) => {
+  const handleSectionClick = (sectionItemIndex: number) => () => {
     setOpen((open) => {
       const newOpen = open.slice();
       newOpen[sectionItemIndex] = !newOpen[sectionItemIndex];
@@ -40,80 +70,41 @@ export default function BookChildren(props: Props) {
   return (
     <List disablePadding className={className}>
       {sections.map((section, sectionItemIndex) => (
-        <Fragment key={section.id}>
-          {(section.name && (
-            <>
-              <ListItem
-                button
-                onClick={() => handleSectionClick(sectionItemIndex)}
-              >
-                <ListItemText>
-                  {sectionItemIndex + 1} {section.name}
-                </ListItemText>
-                {open[sectionItemIndex] ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={open[sectionItemIndex]}>
-                {section.topics.map((topic, topicItemIndex) => (
-                  <ListItem
-                    key={topic.id}
-                    button
-                    data-section={sectionItemIndex}
-                    data-topic={topicItemIndex}
-                    onClick={handleItemClick}
-                  >
-                    <ListItemText>
-                      {sectionItemIndex + 1}
-                      {section.name && `.${topicItemIndex + 1}`} {topic.name}
-                    </ListItemText>
-                    {onItemEditClick && (
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          color="primary"
-                          onClick={handleItemEditClick(
-                            sectionItemIndex,
-                            topicItemIndex
-                          )}
-                        >
-                          <EditOutlined />
-                        </IconButton>
-                      </ListItemSecondaryAction>
+        <Section
+          key={section.id}
+          section={section}
+          sectionItemIndex={sectionItemIndex}
+          onSectionClick={handleSectionClick(sectionItemIndex)}
+          open={open[sectionItemIndex]}
+        >
+          {section.topics.map((topic, topicItemIndex) => (
+            <ListItem
+              key={topic.id}
+              button
+              data-section={sectionItemIndex}
+              data-topic={topicItemIndex}
+              onClick={handleItemClick}
+            >
+              <ListItemText>
+                {sectionItemIndex + 1}
+                {section.name && `.${topicItemIndex + 1}`} {topic.name}
+              </ListItemText>
+              {onItemEditClick && (
+                <ListItemSecondaryAction>
+                  <IconButton
+                    color="primary"
+                    onClick={handleItemEditClick(
+                      sectionItemIndex,
+                      topicItemIndex
                     )}
-                  </ListItem>
-                ))}
-              </Collapse>
-            </>
-          )) || (
-            <>
-              {section.topics.map((topic, topicItemIndex) => (
-                <ListItem
-                  key={topic.id}
-                  button
-                  data-section={sectionItemIndex}
-                  data-topic={topicItemIndex}
-                  onClick={handleItemClick}
-                >
-                  <ListItemText>
-                    {sectionItemIndex + 1}
-                    {section.name && `.${topicItemIndex + 1}`} {topic.name}
-                  </ListItemText>
-                  {onItemEditClick && (
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        color="primary"
-                        onClick={handleItemEditClick(
-                          sectionItemIndex,
-                          topicItemIndex
-                        )}
-                      >
-                        <EditOutlined />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  )}
-                </ListItem>
-              ))}
-            </>
-          )}
-        </Fragment>
+                  >
+                    <EditOutlined />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              )}
+            </ListItem>
+          ))}
+        </Section>
       ))}
     </List>
   );
