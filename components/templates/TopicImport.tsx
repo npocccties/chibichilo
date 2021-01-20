@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   topics: TopicSchema[];
-  onSubmit(topics: Array<TopicSchema["id"]>): void;
+  onSubmit(topics: TopicSchema[]): void;
   onTopicEditClick(topic: TopicSchema): void;
 };
 
@@ -53,16 +53,14 @@ export default function TopicImport(props: Props) {
   const { topics, onSubmit, onTopicEditClick } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
-  const [selectedTopics, selectTopics] = useState<Set<TopicSchema["id"]>>(
-    new Set()
-  );
-  const handleChecked = (id: TopicSchema["id"]) => () =>
-    selectTopics((ids) =>
-      ids.delete(id) ? new Set(ids) : new Set(ids.add(id))
+  const [selectedIndexes, select] = useState<Set<number>>(new Set());
+  const handleChecked = (index: number) => () =>
+    select((indexes) =>
+      indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
     );
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit([...selectedTopics]);
+    onSubmit([...selectedIndexes].map((i) => topics[i]));
   };
   const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
   const handlePreviewTopicClose = () => setPreviewTopic(null);
@@ -94,8 +92,8 @@ export default function TopicImport(props: Props) {
           <TopicPreview
             key={index}
             topic={topic}
-            checked={selectedTopics.has(topic.id)}
-            onChange={handleChecked(topic.id)}
+            checked={selectedIndexes.has(index)}
+            onChange={handleChecked(index)}
             onTopicDetailClick={handleTopicDetailClick}
             onTopicEditClick={onTopicEditClick}
           />
