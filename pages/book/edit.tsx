@@ -43,15 +43,18 @@ function Edit({ bookId, prev }: EditProps) {
       sections: [...book?.sections, section],
     });
   }
+  function toTopic(path: "import" | "new") {
+    return router.push({
+      pathname: `/book/topic/${path}`,
+      query: { bookId, ...(prev && { prev }) },
+    });
+  }
   const handlers = {
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onAddSection: handleAddSection,
-    onTopicNewClick: () =>
-      router.push({
-        pathname: "/book/topic/new",
-        query: { bookId, ...(prev && { prev }) },
-      }),
+    onTopicImportClick: () => toTopic("import"),
+    onTopicNewClick: () => toTopic("new"),
   };
   if (!book) return <Placeholder />;
 

@@ -12,7 +12,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const props = { topic, onTopicDetailClick: console.log };
+const props = {
+  topic,
+  onTopicDetailClick: console.log,
+  onTopicEditClick: console.log,
+};
 
 export const Default = () => {
   const classes = useStyles();

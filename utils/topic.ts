@@ -15,24 +15,32 @@ export function useTopic(id: TopicSchema["id"]) {
 }
 
 export async function createTopic(body: TopicProps): Promise<TopicSchema> {
-  const res = await api.apiV2TopicPost({ body });
-  await mutate([key, res.id], res);
-  return res as TopicSchema;
+  const res = (await api.apiV2TopicPost({
+    body,
+  })) as TopicSchema;
+  await revalidateTopic(res.id, res);
+  return res;
 }
 
 export async function updateTopic({
   id,
   ...body
 }: TopicProps & { id: TopicSchema["id"] }): Promise<TopicSchema> {
-  const res = await api.apiV2TopicTopicIdPut({ topicId: id, body });
-  await mutate([key, res.id], res);
-  return res as TopicSchema;
+  const res = (await api.apiV2TopicTopicIdPut({
+    topicId: id,
+    body,
+  })) as TopicSchema;
+  await revalidateTopic(res.id, res);
+  return res;
 }
 
 export async function destroyTopic(id: TopicSchema["id"]) {
   await api.apiV2TopicTopicIdDelete({ topicId: id });
 }
 
-export function revalidateTopic(id: TopicSchema["id"]): Promise<TopicSchema> {
-  return mutate([key, id]);
+export function revalidateTopic(
+  id: TopicSchema["id"],
+  res?: TopicSchema
+): Promise<TopicSchema> {
+  return mutate([key, id], res);
 }

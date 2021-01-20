@@ -1,11 +1,10 @@
-import { useState } from "react";
+import clsx from "clsx";
 import { format } from "date-fns";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import CheckBoxOutlineBlonkIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxOutlinedIcon from "@material-ui/icons/CheckBoxOutlined";
+import Checkbox from "@material-ui/core/Checkbox";
 import { EditOutlined } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import Video from "$organisms/Video";
@@ -35,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: 2,
   },
+  checkBox: {
+    marginLeft: theme.spacing(0.5),
+  },
   items: {
     "& > *": {
       display: "inline-block",
@@ -55,41 +57,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+type Props = Parameters<typeof Checkbox>[0] & {
   topic: TopicSchema;
   onTopicDetailClick(topic: TopicSchema): void;
+  onTopicEditClick(topic: TopicSchema): void;
 };
 
 export default function TopicPreview(props: Props) {
   const cardClasses = useCardStyle();
   const classes = useStyles();
-  const { topic, onTopicDetailClick } = props;
-  const [checkBox, setCheckBox] = useState(false);
-  const handleCheckBoxClick = () => {
-    setCheckBox(!checkBox);
-  };
-  const handleTopicDetailClick = () => {
-    onTopicDetailClick(topic);
+  const {
+    topic,
+    onTopicDetailClick,
+    onTopicEditClick,
+    checked,
+    ...checkboxProps
+  } = props;
+  const handle = (handler: (topic: TopicSchema) => void) => () => {
+    handler(topic);
   };
   return (
     <Card
       classes={cardClasses}
-      className={`${classes.root} ${checkBox && classes.selected}`}
+      className={clsx(classes.root, { [classes.selected]: checked })}
     >
       <Typography variant="h6" className={classes.header}>
-        <IconButton color="primary" onClick={handleCheckBoxClick}>
-          {checkBox ? <CheckBoxOutlinedIcon /> : <CheckBoxOutlineBlonkIcon />}
-        </IconButton>
-        <span
-          className={classes.title}
-          title={topic.name}
-          role="presentation"
-          onClick={handleCheckBoxClick}
-          onKeyPress={handleCheckBoxClick}
-        >
-          {topic.name}
-        </span>
-        <IconButton color="primary">
+        <Checkbox
+          id={`TopicPreview-topic:${topic.id}`}
+          className={classes.checkBox}
+          color="primary"
+          checked={checked}
+          {...checkboxProps}
+        />
+        <label htmlFor={`TopicPreview-topic:${topic.id}`}>{topic.name}</label>
+        <IconButton color="primary" onClick={handle(onTopicEditClick)}>
           <EditOutlined />
         </IconButton>
       </Typography>
@@ -100,7 +101,7 @@ export default function TopicPreview(props: Props) {
         <Item itemKey="著者" value={topic.creator.name} />
       </div>
       <p className={classes.description}>{topic.description}</p>
-      <Button size="small" color="primary" onClick={handleTopicDetailClick}>
+      <Button size="small" color="primary" onClick={handle(onTopicDetailClick)}>
         もっと詳しく...
       </Button>
     </Card>

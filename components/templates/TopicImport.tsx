@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -45,18 +45,31 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   topics: TopicSchema[];
+  onSubmit(topics: Array<TopicSchema["id"]>): void;
+  onTopicEditClick(topic: TopicSchema): void;
 };
 
 export default function TopicImport(props: Props) {
-  const { topics } = props;
+  const { topics, onSubmit, onTopicEditClick } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
+  const [selectedTopics, selectTopics] = useState<Set<TopicSchema["id"]>>(
+    new Set()
+  );
+  const handleChecked = (id: TopicSchema["id"]) => () =>
+    selectTopics((ids) =>
+      ids.delete(id) ? new Set(ids) : new Set(ids.add(id))
+    );
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onSubmit([...selectedTopics]);
+  };
   const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
   const handlePreviewTopicClose = () => setPreviewTopic(null);
   const handleTopicDetailClick = (topic: TopicSchema) => setPreviewTopic(topic);
   return (
     <Container classes={containerClasses} maxWidth="lg">
-      <div className={classes.header}>
+      <form className={classes.header} onSubmit={handleSubmit}>
         <Typography className={classes.title} variant="h4" gutterBottom={true}>
           トピックのインポート
           <Typography variant="body1">
@@ -64,19 +77,27 @@ export default function TopicImport(props: Props) {
           </Typography>
         </Typography>
         <div className={classes.line}>
-          <Button color="primary" size="large" variant="contained">
+          <Button
+            color="primary"
+            size="large"
+            variant="contained"
+            type="submit"
+          >
             トピックをインポート
           </Button>
           <SortSelect />
           <SearchTextField placeholder="トピック検索" />
         </div>
-      </div>
+      </form>
       <div className={classes.topics}>
         {topics.map((topic, index) => (
           <TopicPreview
             key={index}
             topic={topic}
+            checked={selectedTopics.has(topic.id)}
+            onChange={handleChecked(topic.id)}
             onTopicDetailClick={handleTopicDetailClick}
+            onTopicEditClick={onTopicEditClick}
           />
         ))}
       </div>

@@ -23,22 +23,20 @@ import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
 
 type Query = BookQuery & {
   topicId?: string;
+  prev?: string;
 };
 
 type EditProps = BookShowProps & {
   topicId: TopicSchema["id"];
+  back(): Promise<unknown>;
 };
 
-function Edit({ bookId, topicId }: EditProps) {
+function Edit({ bookId, topicId, back }: EditProps) {
   const book = useBook(bookId);
   const topic = useTopic(topicId);
-  const router = useRouter();
-  function backToBook() {
-    return router.push({ pathname: "/book", query: { bookId } });
-  }
   async function handleSubmit(props: TopicProps) {
     await updateTopic({ id: topicId, ...props });
-    return backToBook();
+    return back();
   }
   async function handleDelete({ id: topicId }: Pick<TopicSchema, "id">) {
     if (!book) return;
@@ -51,7 +49,7 @@ function Edit({ bookId, topicId }: EditProps) {
       })),
     });
     await destroyTopic(topicId);
-    return backToBook();
+    return back();
   }
   async function handleSubtitleSubmit(videoTrack: VideoTrackProps) {
     if (!topic) return;
@@ -83,6 +81,19 @@ function Router() {
     bookId: Number(query.bookId),
     topicId: Number(query.topicId),
   };
+  function backToBook() {
+    return router.push({ pathname: "/book", query: { bookId: props.bookId } });
+  }
+  function backToTopicImport() {
+    const bookEditQuery = {
+      bookId: props.bookId,
+      ...(query.prev && { prev: query.prev }),
+    };
+    return router.push({
+      pathname: "/book/topic/import",
+      query: bookEditQuery,
+    });
+  }
 
   if (![props.bookId, props.topicId].every(Number.isFinite)) {
     return (
@@ -92,7 +103,7 @@ function Router() {
     );
   }
 
-  return <Edit {...props} />;
+  return <Edit {...props} back={query.prev ? backToTopicImport : backToBook} />;
 }
 
 export default Router;

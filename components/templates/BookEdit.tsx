@@ -46,11 +46,19 @@ type Props = {
   onSubmit(book: BookProps): void;
   onDelete(book: BookSchema): void;
   onAddSection(props: SectionProps): void;
+  onTopicImportClick(): void;
   onTopicNewClick(): void;
 };
 
 export default function BookEdit(props: Props) {
-  const { book, onSubmit, onDelete, onAddSection, onTopicNewClick } = props;
+  const {
+    book,
+    onSubmit,
+    onDelete,
+    onAddSection,
+    onTopicImportClick,
+    onTopicNewClick,
+  } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const confirm = useConfirm();
@@ -89,6 +97,7 @@ export default function BookEdit(props: Props) {
         className={classes.children}
         sections={book?.sections ?? []}
         onTopicClick={handleTopicClick}
+        onTopicImportClick={onTopicImportClick}
         onTopicNewClick={onTopicNewClick}
         onSectionNewClick={handleSectionNewClick}
       />
