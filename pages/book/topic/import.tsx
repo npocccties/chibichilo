@@ -6,12 +6,19 @@ import { updateBook, useBook } from "$utils/book";
 import { useSession } from "$utils/session";
 import { useTopics } from "$utils/topics";
 import type { TopicSchema } from "$server/models/topic";
+import type { UserSchema } from "$server/models/user";
 import type {
   Query as BookEditQuery,
   EditProps as BookEditProps,
 } from "../edit";
 import topicCreateBy from "$utils/topicCreateBy";
 import { createTopic } from "$utils/topic";
+
+const sharedOrCreatedBy = (creator?: Pick<UserSchema, "id">) => (
+  topic: TopicSchema
+) => {
+  return topic.shared || topicCreateBy(topic, creator);
+};
 
 function Import({ bookId, prev }: BookEditProps) {
   const { data: session } = useSession();
@@ -54,7 +61,12 @@ function Import({ bookId, prev }: BookEditProps) {
   if (!book) return <Placeholder />;
   if (!topics) return <Placeholder />;
 
-  return <TopicImport topics={topics} {...handlers} />;
+  return (
+    <TopicImport
+      topics={topics.filter(sharedOrCreatedBy(session?.user))}
+      {...handlers}
+    />
+  );
 }
 
 function Router() {

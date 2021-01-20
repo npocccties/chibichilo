@@ -9,9 +9,9 @@ import { UserSchema } from "$server/models/user";
  */
 function topicCreateBy(
   topic: Pick<TopicSchema, "creator">,
-  by: Pick<UserSchema, "id">
+  by?: Pick<UserSchema, "id">
 ): boolean {
-  return topic.creator.id === by.id;
+  return topic.creator.id === by?.id;
 }
 
 export default topicCreateBy;
