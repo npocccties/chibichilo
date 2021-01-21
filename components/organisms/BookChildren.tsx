@@ -16,24 +16,22 @@ type Props = {
 };
 
 function Section({
-  key,
   section,
   sectionItemIndex,
   onSectionClick,
   open,
   children,
 }: {
-  key: string | number;
   section: Pick<SectionSchema, "name">;
   sectionItemIndex: number;
   onSectionClick(): void;
   open: boolean;
   children: ReactNode;
 }) {
-  if (section.name == null) return <Fragment key={key}>{children}</Fragment>;
+  if (section.name == null) return <Fragment>{children}</Fragment>;
 
   return (
-    <Fragment key={key}>
+    <Fragment>
       <ListItem button onClick={onSectionClick}>
         <ListItemText>
           {sectionItemIndex + 1} {section.name}
