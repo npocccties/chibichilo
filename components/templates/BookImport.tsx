@@ -52,15 +52,16 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
+  onBookEditClick?(book: BookSchema): void;
   onTopicClick(topic: TopicSchema): void;
 };
 
 export default function BookImport(props: Props) {
-  const { books, onTopicClick } = props;
+  const { books, onBookEditClick, onTopicClick } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [open, setOpen] = useState(false);
-  const [book, setBook] = useState<BookSchema | null>(null);
+  const [currentBook, setBook] = useState<BookSchema | null>(null);
   const handleClose = () => {
     setOpen(false);
   };
@@ -89,25 +90,31 @@ export default function BookImport(props: Props) {
         defaultExpandIcon={<ChevronRightIcon />}
       >
         {books.map((book) => {
-          const handleItemClick = ([sectionIndex, topicIndex]: [
-            number,
-            number
-          ]) => onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
-          const handleInfoClick = () => {
+          const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
+            onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
+          const handleBookInfoClick = () => {
             setBook(book);
             setOpen(true);
+          };
+          const handleBookEditClick = () => {
+            setBook(book);
+            onBookEditClick && currentBook && onBookEditClick(currentBook);
           };
           return (
             <BookTree
               key={book.id}
               book={book}
               onItemClick={handleItemClick}
-              onInfoClick={handleInfoClick}
+              onItemEditClick={handleItemClick}
+              onBookInfoClick={handleBookInfoClick}
+              onBookEditClick={handleBookEditClick}
             />
           );
         })}
       </TreeView>
-      {book && <BookItemDialog open={open} onClose={handleClose} book={book} />}
+      {currentBook && (
+        <BookItemDialog open={open} onClose={handleClose} book={currentBook} />
+      )}
     </Container>
   );
 }

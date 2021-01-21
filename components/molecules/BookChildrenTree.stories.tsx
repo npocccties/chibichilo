@@ -8,9 +8,7 @@ import { sections } from "$samples";
 
 const props = {
   sections,
-  onItemClick(index: [number, number]) {
-    console.log({ index });
-  },
+  onItemClick: console.log,
 };
 
 export const Default = () => (
@@ -19,5 +17,14 @@ export const Default = () => (
     defaultExpandIcon={<ChevronRightIcon />}
   >
     <BookChildrenTree {...props} />
+  </TreeView>
+);
+
+export const Editable = () => (
+  <TreeView
+    defaultCollapseIcon={<ExpandMoreIcon />}
+    defaultExpandIcon={<ChevronRightIcon />}
+  >
+    <BookChildrenTree {...props} onItemEditClick={console.log} />
   </TreeView>
 );
