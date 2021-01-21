@@ -1,4 +1,5 @@
 import Method from "$server/types/method";
+import { outdent } from "outdent";
 import { topicSchema } from "$server/models/topic";
 import {
   PaginationProps,
@@ -11,7 +12,10 @@ export type IndexQuery = PaginationProps;
 
 const indexMethod: Method = {
   get: {
-    description: "トピック一覧",
+    summary: "トピック一覧",
+    description: outdent`
+      トピックの一覧を取得します。
+      教員または管理者でなければなりません。`,
     querystring: paginationPropsSchema,
     response: {
       200: {

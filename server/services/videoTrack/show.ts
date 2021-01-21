@@ -6,7 +6,8 @@ import {
 import findVideoTrack from "$server/utils/videoTrack/findVideoTrack";
 
 export const showSchema: FastifySchema = {
-  description: "字幕の取得",
+  summary: "字幕の取得",
+  description: "字幕を取得します。",
   params: videoTrackParamsSchema,
   // @ts-expect-error NOTE: fastify-swagger用。型が用意されていない。
   produces: ["text/vtt"],

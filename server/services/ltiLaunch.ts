@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { outdent } from "outdent";
 import { validateOrReject } from "class-validator";
 import { upsertUser } from "$server/utils/user";
 import Method from "$server/types/method";
@@ -20,15 +21,15 @@ const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 
 const method: Method = {
   post: {
-    description: "LTI ツールとして指定するエンドポイント",
+    summary: "LTI起動エンドポイント",
+    description: outdent`
+      LTIツールとして起動するためのエンドポイントです。
+      このエンドポイントをLMSのLTIツールのURLに指定して利用します。
+      成功時 ${frontendUrl} にリダイレクトします。`,
     consumes: ["application/x-www-form-urlencoded"],
     body: ltiLaunchBodySchema,
     response: {
-      302: {
-        description:
-          "成功時 `${FRONTEND_ORIGIN}${FRONTEND_PATH}` にリダイレクト",
-        type: "null",
-      },
+      302: {},
     },
   },
 };

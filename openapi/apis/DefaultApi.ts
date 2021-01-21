@@ -168,6 +168,7 @@ export interface ApiV2UserUserIdBooksGetRequest {
 export class DefaultApi extends runtime.BaseAPI {
 
     /**
+     * ブックを削除します。 教員または管理者でなければなりません。 教員の場合は自身のブックでなければなりません。
      * ブックの削除
      */
     async apiV2BookBookIdDeleteRaw(requestParameters: ApiV2BookBookIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
@@ -190,6 +191,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックを削除します。 教員または管理者でなければなりません。 教員の場合は自身のブックでなければなりません。
      * ブックの削除
      */
     async apiV2BookBookIdDelete(requestParameters: ApiV2BookBookIdDeleteRequest): Promise<void> {
@@ -197,7 +199,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックの詳細の取得
+     * ブックの詳細を取得します。
+     * ブックの取得
      */
     async apiV2BookBookIdGetRaw(requestParameters: ApiV2BookBookIdGetRequest): Promise<runtime.ApiResponse<InlineResponse2001Books>> {
         if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
@@ -219,7 +222,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックの詳細の取得
+     * ブックの詳細を取得します。
+     * ブックの取得
      */
     async apiV2BookBookIdGet(requestParameters: ApiV2BookBookIdGetRequest): Promise<InlineResponse2001Books> {
         const response = await this.apiV2BookBookIdGetRaw(requestParameters);
@@ -227,6 +231,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックを更新します。 教員または管理者でなければなりません。
      * ブックの更新
      */
     async apiV2BookBookIdPutRaw(requestParameters: ApiV2BookBookIdPutRequest): Promise<runtime.ApiResponse<InlineResponse2001Books>> {
@@ -252,6 +257,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックを更新します。 教員または管理者でなければなりません。
      * ブックの更新
      */
     async apiV2BookBookIdPut(requestParameters: ApiV2BookBookIdPutRequest): Promise<InlineResponse2001Books> {
@@ -260,6 +266,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックを作成します。 教員または管理者でなければなりません。
      * ブックの作成
      */
     async apiV2BookPostRaw(requestParameters: ApiV2BookPostRequest): Promise<runtime.ApiResponse<InlineResponse2001Books>> {
@@ -281,6 +288,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックを作成します。 教員または管理者でなければなりません。
      * ブックの作成
      */
     async apiV2BookPost(requestParameters: ApiV2BookPostRequest): Promise<InlineResponse2001Books> {
@@ -289,6 +297,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ビデオプレイヤーのイベント情報を記録します。 利用は推奨しません。 以前のバージョンv1の構造を踏襲してますが、今後変更される可能性があります。
      * ビデオプレイヤーのイベント情報を記録 (v1互換)
      */
     async apiV2EventPostRaw(requestParameters: ApiV2EventPostRequest): Promise<runtime.ApiResponse<void>> {
@@ -310,6 +319,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ビデオプレイヤーのイベント情報を記録します。 利用は推奨しません。 以前のバージョンv1の構造を踏襲してますが、今後変更される可能性があります。
      * ビデオプレイヤーのイベント情報を記録 (v1互換)
      */
     async apiV2EventPost(requestParameters: ApiV2EventPostRequest): Promise<void> {
@@ -317,7 +327,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI ツールとして指定するエンドポイント
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTI起動エンドポイント
      */
     async apiV2LtiLaunchPostRaw(requestParameters: ApiV2LtiLaunchPostRequest): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.oauthVersion === null || requestParameters.oauthVersion === undefined) {
@@ -458,16 +469,18 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI ツールとして指定するエンドポイント
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTI起動エンドポイント
      */
     async apiV2LtiLaunchPost(requestParameters: ApiV2LtiLaunchPostRequest): Promise<void> {
         await this.apiV2LtiLaunchPostRaw(requestParameters);
     }
 
     /**
-     * LTI Resource Link の削除
+     * LTI Resource Linkを削除します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの削除
      */
-    async apiV2LtiResourceLinkLtiResourceLinkIdDeleteRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
+    async apiV2LtiResourceLinkLtiResourceLinkIdDeleteRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdDeleteRequest): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.ltiResourceLinkId === null || requestParameters.ltiResourceLinkId === undefined) {
             throw new runtime.RequiredError('ltiResourceLinkId','Required parameter requestParameters.ltiResourceLinkId was null or undefined when calling apiV2LtiResourceLinkLtiResourceLinkIdDelete.');
         }
@@ -483,18 +496,21 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
-     * LTI Resource Link の削除
+     * LTI Resource Linkを削除します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの削除
      */
-    async apiV2LtiResourceLinkLtiResourceLinkIdDelete(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdDeleteRequest): Promise<void> {
-        await this.apiV2LtiResourceLinkLtiResourceLinkIdDeleteRaw(requestParameters);
+    async apiV2LtiResourceLinkLtiResourceLinkIdDelete(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdDeleteRequest): Promise<object> {
+        const response = await this.apiV2LtiResourceLinkLtiResourceLinkIdDeleteRaw(requestParameters);
+        return await response.value();
     }
 
     /**
-     * LTI Resource Link の取得
+     * LTI Resource Linkの詳細を取得します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの取得
      */
     async apiV2LtiResourceLinkLtiResourceLinkIdGetRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdGetRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.ltiResourceLinkId === null || requestParameters.ltiResourceLinkId === undefined) {
@@ -516,7 +532,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI Resource Link の取得
+     * LTI Resource Linkの詳細を取得します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの取得
      */
     async apiV2LtiResourceLinkLtiResourceLinkIdGet(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdGetRequest): Promise<InlineResponse200> {
         const response = await this.apiV2LtiResourceLinkLtiResourceLinkIdGetRaw(requestParameters);
@@ -524,7 +541,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI Resource Link の更新
+     * LTI Resource Linkを更新します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの更新
      */
     async apiV2LtiResourceLinkLtiResourceLinkIdPutRaw(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPutRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.ltiResourceLinkId === null || requestParameters.ltiResourceLinkId === undefined) {
@@ -549,7 +567,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI Resource Link の更新
+     * LTI Resource Linkを更新します。 教員または管理者でなければなりません。
+     * LTI Resource Linkの更新
      */
     async apiV2LtiResourceLinkLtiResourceLinkIdPut(requestParameters: ApiV2LtiResourceLinkLtiResourceLinkIdPutRequest): Promise<InlineResponse200> {
         const response = await this.apiV2LtiResourceLinkLtiResourceLinkIdPutRaw(requestParameters);
@@ -557,7 +576,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * 字幕ファイルのアップロード
+     * 字幕をアップロードします。 教員または管理者でなければなりません。
+     * 字幕のアップロード
      */
     async apiV2ResourceResourceIdVideoTrackPostRaw(requestParameters: ApiV2ResourceResourceIdVideoTrackPostRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.resourceId === null || requestParameters.resourceId === undefined) {
@@ -582,7 +602,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * 字幕ファイルのアップロード
+     * 字幕をアップロードします。 教員または管理者でなければなりません。
+     * 字幕のアップロード
      */
     async apiV2ResourceResourceIdVideoTrackPost(requestParameters: ApiV2ResourceResourceIdVideoTrackPostRequest): Promise<InlineResponse201> {
         const response = await this.apiV2ResourceResourceIdVideoTrackPostRaw(requestParameters);
@@ -590,6 +611,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 字幕を削除します。 教員または管理者でなければなりません。
      * 字幕の削除
      */
     async apiV2ResourceResourceIdVideoTrackVideoTrackIdDeleteRaw(requestParameters: ApiV2ResourceResourceIdVideoTrackVideoTrackIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
@@ -616,6 +638,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 字幕を削除します。 教員または管理者でなければなりません。
      * 字幕の削除
      */
     async apiV2ResourceResourceIdVideoTrackVideoTrackIdDelete(requestParameters: ApiV2ResourceResourceIdVideoTrackVideoTrackIdDeleteRequest): Promise<void> {
@@ -623,6 +646,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 字幕を取得します。
      * 字幕の取得
      */
     async apiV2ResourceResourceIdVideoTrackVideoTrackIdVttGetRaw(requestParameters: ApiV2ResourceResourceIdVideoTrackVideoTrackIdVttGetRequest): Promise<runtime.ApiResponse<object>> {
@@ -649,6 +673,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 字幕を取得します。
      * 字幕の取得
      */
     async apiV2ResourceResourceIdVideoTrackVideoTrackIdVttGet(requestParameters: ApiV2ResourceResourceIdVideoTrackVideoTrackIdVttGetRequest): Promise<object> {
@@ -657,6 +682,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * リソースの一覧を取得します。 教員または管理者でなければなりません。
      * リソース一覧
      */
     async apiV2ResourcesGetRaw(requestParameters: ApiV2ResourcesGetRequest): Promise<runtime.ApiResponse<InlineResponse2003>> {
@@ -683,6 +709,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * リソースの一覧を取得します。 教員または管理者でなければなりません。
      * リソース一覧
      */
     async apiV2ResourcesGet(requestParameters: ApiV2ResourcesGetRequest): Promise<InlineResponse2003> {
@@ -691,6 +718,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 自身に関する詳細な情報を取得します。
      * セッション情報
      */
     async apiV2SessionGetRaw(): Promise<runtime.ApiResponse<InlineResponse2004>> {
@@ -709,6 +737,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 自身に関する詳細な情報を取得します。
      * セッション情報
      */
     async apiV2SessionGet(): Promise<InlineResponse2004> {
@@ -717,6 +746,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを作成します。 教員または管理者でなければなりません。
      * トピックの作成
      */
     async apiV2TopicPostRaw(requestParameters: ApiV2TopicPostRequest): Promise<runtime.ApiResponse<InlineResponse2001Topics>> {
@@ -738,6 +768,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを作成します。 教員または管理者でなければなりません。
      * トピックの作成
      */
     async apiV2TopicPost(requestParameters: ApiV2TopicPostRequest): Promise<InlineResponse2001Topics> {
@@ -746,6 +777,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを削除します。 教員または管理者でなければなりません。 教員の場合は自身のトピックでなければなりません。
      * トピックの削除
      */
     async apiV2TopicTopicIdDeleteRaw(requestParameters: ApiV2TopicTopicIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
@@ -768,6 +800,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを削除します。 教員または管理者でなければなりません。 教員の場合は自身のトピックでなければなりません。
      * トピックの削除
      */
     async apiV2TopicTopicIdDelete(requestParameters: ApiV2TopicTopicIdDeleteRequest): Promise<void> {
@@ -775,7 +808,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * トピックの詳細の取得
+     * トピックの詳細を取得します。
+     * トピックの取得
      */
     async apiV2TopicTopicIdGetRaw(requestParameters: ApiV2TopicTopicIdGetRequest): Promise<runtime.ApiResponse<InlineResponse2001Topics>> {
         if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
@@ -797,7 +831,8 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * トピックの詳細の取得
+     * トピックの詳細を取得します。
+     * トピックの取得
      */
     async apiV2TopicTopicIdGet(requestParameters: ApiV2TopicTopicIdGetRequest): Promise<InlineResponse2001Topics> {
         const response = await this.apiV2TopicTopicIdGetRaw(requestParameters);
@@ -805,6 +840,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを更新します。 教員または管理者でなければなりません。 教員は自身の作成したトピックでなければなりません。
      * トピックの更新
      */
     async apiV2TopicTopicIdPutRaw(requestParameters: ApiV2TopicTopicIdPutRequest): Promise<runtime.ApiResponse<InlineResponse2001Topics>> {
@@ -830,6 +866,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックを更新します。 教員または管理者でなければなりません。 教員は自身の作成したトピックでなければなりません。
      * トピックの更新
      */
     async apiV2TopicTopicIdPut(requestParameters: ApiV2TopicTopicIdPutRequest): Promise<InlineResponse2001Topics> {
@@ -838,6 +875,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックの一覧を取得します。 教員または管理者でなければなりません。
      * トピック一覧
      */
     async apiV2TopicsGetRaw(requestParameters: ApiV2TopicsGetRequest): Promise<runtime.ApiResponse<InlineResponse2002>> {
@@ -864,6 +902,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * トピックの一覧を取得します。 教員または管理者でなければなりません。
      * トピック一覧
      */
     async apiV2TopicsGet(requestParameters: ApiV2TopicsGetRequest): Promise<InlineResponse2002> {
@@ -872,6 +911,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 利用者の作成したブックの一覧を取得します。 教員または管理者でなければなりません。
      * 作成したブックの一覧
      */
     async apiV2UserUserIdBooksGetRaw(requestParameters: ApiV2UserUserIdBooksGetRequest): Promise<runtime.ApiResponse<InlineResponse2001>> {
@@ -902,6 +942,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 利用者の作成したブックの一覧を取得します。 教員または管理者でなければなりません。
      * 作成したブックの一覧
      */
     async apiV2UserUserIdBooksGet(requestParameters: ApiV2UserUserIdBooksGetRequest): Promise<InlineResponse2001> {

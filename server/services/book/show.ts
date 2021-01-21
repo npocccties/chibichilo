@@ -4,7 +4,8 @@ import { BookParams, bookParamsSchema } from "$server/validators/bookParams";
 import findBook from "$server/utils/book/findBook";
 
 export const showSchema: FastifySchema = {
-  description: "ブックの詳細の取得",
+  summary: "ブックの取得",
+  description: "ブックの詳細を取得します。",
   params: bookParamsSchema,
   response: {
     200: bookSchema,

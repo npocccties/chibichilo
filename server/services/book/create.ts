@@ -2,9 +2,13 @@ import { FastifySchema } from "fastify";
 import { BookProps, bookPropsSchema, bookSchema } from "$server/models/book";
 import createBook from "$server/utils/book/createBook";
 import { Session } from "$utils/session";
+import { outdent } from "outdent";
 
 export const createSchema: FastifySchema = {
-  description: "ブックの作成",
+  summary: "ブックの作成",
+  description: outdent`
+    ブックを作成します。
+    教員または管理者でなければなりません。`,
   body: bookPropsSchema,
   response: {
     201: bookSchema,

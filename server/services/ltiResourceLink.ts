@@ -1,3 +1,4 @@
+import { outdent } from "outdent";
 import Method from "$server/types/method";
 import {
   LtiResourceLinkProps,
@@ -20,7 +21,10 @@ export type Props = LtiResourceLinkProps;
 
 export const method: Method = {
   get: {
-    description: "LTI Resource Link の取得",
+    summary: "LTI Resource Linkの取得",
+    description: outdent`
+      LTI Resource Linkの詳細を取得します。
+      教員または管理者でなければなりません。`,
     params: ltiResourceLinkParamsSchema,
     response: {
       200: ltiResourceLinkSchema,
@@ -28,7 +32,10 @@ export const method: Method = {
     },
   },
   put: {
-    description: "LTI Resource Link の更新",
+    summary: "LTI Resource Linkの更新",
+    description: outdent`
+      LTI Resource Linkを更新します。
+      教員または管理者でなければなりません。`,
     params: ltiResourceLinkParamsSchema,
     body: ltiResourceLinkPropsSchema,
     response: {
@@ -37,10 +44,13 @@ export const method: Method = {
     },
   },
   delete: {
-    description: "LTI Resource Link の削除",
+    summary: "LTI Resource Linkの削除",
+    description: outdent`
+      LTI Resource Linkを削除します。
+      教員または管理者でなければなりません。`,
     params: ltiResourceLinkParamsSchema,
     response: {
-      204: { type: "null", description: "成功" },
+      204: {},
     },
   },
 };

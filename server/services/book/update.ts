@@ -1,11 +1,15 @@
 import { FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import { BookProps, bookPropsSchema, bookSchema } from "$server/models/book";
 import { BookParams, bookParamsSchema } from "$server/validators/bookParams";
 import updateBook from "$server/utils/book/updateBook";
 import { Session } from "$utils/session";
 
 export const updateSchema: FastifySchema = {
-  description: "ブックの更新",
+  summary: "ブックの更新",
+  description: outdent`
+    ブックを更新します。
+    教員または管理者でなければなりません。`,
   params: bookParamsSchema,
   body: bookPropsSchema,
   response: {

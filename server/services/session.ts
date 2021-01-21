@@ -4,7 +4,8 @@ import { sessionSchema } from "$server/models/session";
 
 export const method: Method = {
   get: {
-    description: "セッション情報",
+    summary: "セッション情報",
+    description: "自身に関する詳細な情報を取得します。",
     response: {
       200: sessionSchema,
     },

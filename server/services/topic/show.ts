@@ -4,7 +4,8 @@ import { TopicParams, topicParamsSchema } from "$server/validators/topicParams";
 import findTopic from "$server/utils/topic/findTopic";
 
 export const showSchema: FastifySchema = {
-  description: "トピックの詳細の取得",
+  summary: "トピックの取得",
+  description: "トピックの詳細を取得します。",
   params: topicParamsSchema,
   response: {
     200: topicSchema,

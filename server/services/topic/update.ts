@@ -1,4 +1,5 @@
 import { FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import {
   TopicProps,
   topicPropsSchema,
@@ -10,7 +11,11 @@ import topicExists from "$server/utils/topic/topicExists";
 import upsertTopic from "$server/utils/topic/upsertTopic";
 
 export const updateSchema: FastifySchema = {
-  description: "トピックの更新",
+  summary: "トピックの更新",
+  description: outdent`
+    トピックを更新します。
+    教員または管理者でなければなりません。
+    教員は自身の作成したトピックでなければなりません。`,
   params: topicParamsSchema,
   body: topicPropsSchema,
   response: {

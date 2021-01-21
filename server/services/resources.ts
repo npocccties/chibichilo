@@ -1,4 +1,5 @@
 import Method from "$server/types/method";
+import { outdent } from "outdent";
 import { resourceSchema } from "$server/models/resource";
 import {
   PaginationProps,
@@ -11,7 +12,10 @@ export type Query = PaginationProps;
 
 export const method: Method = {
   get: {
-    description: "リソース一覧",
+    summary: "リソース一覧",
+    description: outdent`
+      リソースの一覧を取得します。
+      教員または管理者でなければなりません。`,
     querystring: paginationPropsSchema,
     response: {
       200: {

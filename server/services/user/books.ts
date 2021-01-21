@@ -1,3 +1,4 @@
+import { outdent } from "outdent";
 import Method from "$server/types/method";
 import { UserParams, userParamsSchema } from "$server/validators/userParams";
 import {
@@ -13,7 +14,10 @@ export type Params = UserParams;
 
 export const method: Method = {
   get: {
-    description: "作成したブックの一覧",
+    summary: "作成したブックの一覧",
+    description: outdent`
+      利用者の作成したブックの一覧を取得します。
+      教員または管理者でなければなりません。`,
     querystring: paginationPropsSchema,
     params: userParamsSchema,
     response: {

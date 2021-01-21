@@ -1,11 +1,16 @@
 import { FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import { BookParams, bookParamsSchema } from "$server/validators/bookParams";
 import { Session, isUserOrAdmin } from "$server/utils/session";
 import bookExists from "$server/utils/book/bookExists";
 import destroyBook from "$server/utils/book/destroyBook";
 
 export const destroySchema: FastifySchema = {
-  description: "ブックの削除",
+  summary: "ブックの削除",
+  description: outdent`
+    ブックを削除します。
+    教員または管理者でなければなりません。
+    教員の場合は自身のブックでなければなりません。`,
   params: bookParamsSchema,
   response: {
     204: { type: "null", description: "成功" },

@@ -1,4 +1,5 @@
 import { FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import {
   VideoTrackParams,
   videoTrackParamsSchema,
@@ -6,7 +7,10 @@ import {
 import destroyVideoTrack from "$server/utils/videoTrack/destroyVideoTrack";
 
 export const destroySchema: FastifySchema = {
-  description: "字幕の削除",
+  summary: "字幕の削除",
+  description: outdent`
+    字幕を削除します。
+    教員または管理者でなければなりません。`,
   params: videoTrackParamsSchema,
   response: {
     204: { type: "null", description: "成功" },

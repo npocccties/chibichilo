@@ -1,4 +1,5 @@
 import { FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import {
   TopicProps,
   topicPropsSchema,
@@ -8,7 +9,10 @@ import createTopic from "$server/utils/topic/createTopic";
 import { Session } from "$utils/session";
 
 export const createSchema: FastifySchema = {
-  description: "トピックの作成",
+  summary: "トピックの作成",
+  description: outdent`
+    トピックを作成します。
+    教員または管理者でなければなりません。`,
   body: topicPropsSchema,
   response: {
     201: topicSchema,

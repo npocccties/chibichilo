@@ -1,4 +1,5 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
+import { outdent } from "outdent";
 import {
   VideoTrackProps,
   videoTrackPropsSchema,
@@ -13,7 +14,10 @@ import createVideoTrack from "$server/utils/videoTrack/createVideoTrack";
 export type CreateBody = VideoTrackProps;
 
 export const createSchema: FastifySchema = {
-  description: "字幕ファイルのアップロード",
+  summary: "字幕のアップロード",
+  description: outdent`
+    字幕をアップロードします。
+    教員または管理者でなければなりません。`,
   params: resourceParamsSchema,
   body: videoTrackPropsSchema,
   response: {
