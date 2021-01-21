@@ -47,10 +47,11 @@ type Props = {
   topics: TopicSchema[];
   onSubmit(topics: TopicSchema[]): void;
   onTopicEditClick(topic: TopicSchema): void;
+  isTopicEditable(topic: TopicSchema): boolean | undefined;
 };
 
 export default function TopicImport(props: Props) {
-  const { topics, onSubmit, onTopicEditClick } = props;
+  const { topics, onSubmit, onTopicEditClick, isTopicEditable } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [selectedIndexes, select] = useState<Set<number>>(new Set());
@@ -65,6 +66,8 @@ export default function TopicImport(props: Props) {
   const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
   const handlePreviewTopicClose = () => setPreviewTopic(null);
   const handleTopicDetailClick = (topic: TopicSchema) => setPreviewTopic(topic);
+  const handleTopicEditClick = (topic: TopicSchema) =>
+    isTopicEditable(topic) && (() => onTopicEditClick(topic));
   return (
     <Container classes={containerClasses} maxWidth="lg">
       <form className={classes.header} onSubmit={handleSubmit}>
@@ -95,7 +98,7 @@ export default function TopicImport(props: Props) {
             checked={selectedIndexes.has(index)}
             onChange={handleChecked(index)}
             onTopicDetailClick={handleTopicDetailClick}
-            onTopicEditClick={onTopicEditClick}
+            onTopicEditClick={handleTopicEditClick(topic)}
           />
         ))}
       </div>

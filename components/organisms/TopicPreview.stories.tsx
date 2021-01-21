@@ -28,3 +28,14 @@ export const Default = () => {
     </div>
   );
 };
+
+export const Others = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.grid}>
+      {[...Array(10)].map((_value, index) => (
+        <TopicPreview key={index} {...props} onTopicEditClick={undefined} />
+      ))}
+    </div>
+  );
+};

@@ -56,6 +56,9 @@ function Import({ bookId, prev }: BookEditProps) {
   const handlers = {
     onSubmit: handleSubmit,
     onTopicEditClick: handleTopicEditClick,
+    isTopicEditable: (topic: TopicSchema) =>
+      // NOTE: 自身以外の作成したトピックに関しては編集不可
+      session?.user && topic.creator.id === session.user.id,
   };
 
   if (!book) return <Placeholder />;

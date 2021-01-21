@@ -12,7 +12,7 @@ export type Session = Pick<FastifyRequest["session"], keyof SessionScheme>;
  * @param user 対象の利用者
  * @return セッションが利用者のものの場合 true、それ以外の場合 false
  */
-export function verify(session: Session, user: User) {
+export function verify(session: Session, user: Pick<User, "id">) {
   return session.user?.id === user.id;
 }
 

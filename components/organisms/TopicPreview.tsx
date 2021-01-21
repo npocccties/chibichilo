@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 type Props = Parameters<typeof Checkbox>[0] & {
   topic: TopicSchema;
   onTopicDetailClick(topic: TopicSchema): void;
-  onTopicEditClick(topic: TopicSchema): void;
+  onTopicEditClick: ((topic: TopicSchema) => void) | false | undefined;
 };
 
 export default function TopicPreview(props: Props) {
@@ -90,9 +90,11 @@ export default function TopicPreview(props: Props) {
           {...checkboxProps}
         />
         <label htmlFor={`TopicPreview-topic:${topic.id}`}>{topic.name}</label>
-        <IconButton color="primary" onClick={handle(onTopicEditClick)}>
-          <EditOutlined />
-        </IconButton>
+        {onTopicEditClick && (
+          <IconButton color="primary" onClick={handle(onTopicEditClick)}>
+            <EditOutlined />
+          </IconButton>
+        )}
       </Typography>
       {"providerUrl" in topic.resource && <Video {...topic.resource} />}
       <div className={classes.items}>
