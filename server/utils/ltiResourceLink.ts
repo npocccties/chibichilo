@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import prisma from "./prisma";
+import bookExists from "./book/bookExists";
 
 export const ltiResourceLinkIncludingContextArg = {
   include: { context: true },
@@ -23,8 +24,8 @@ export async function upsertLtiResourceLink(
 ): Promise<LtiResourceLinkSchema | null> {
   const { contextId, contextTitle, bookId, ...link } = props;
 
-  const bookExists = await prisma.book.findUnique({ where: { id: bookId } });
-  if (!bookExists) return null;
+  const found = await bookExists(bookId);
+  if (!found) return null;
 
   const contextInput = { id: contextId, title: contextTitle };
   const linkInput = {
