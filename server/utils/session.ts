@@ -7,16 +7,6 @@ import * as ltiRoles from "./ltiv1p1/roles";
 export type Session = Pick<FastifyRequest["session"], keyof SessionScheme>;
 
 /**
- * セッションが利用者のものであるか否か
- * @param session セッション
- * @param user 対象の利用者
- * @return セッションが利用者のものの場合 true、それ以外の場合 false
- */
-export function verify(session: Session, user: Pick<User, "id">) {
-  return session.user?.id === user.id;
-}
-
-/**
  * セッションが管理者のものであるか否か
  * @param session セッション
  * @return セッションが管理者のものの場合 true、それ以外の場合 false
@@ -35,6 +25,16 @@ export function isInstructor(session: Session) {
 }
 
 /**
+ * セッションが管理者か特定の利用者のものであるか
+ * @param session セッション
+ * @param user 対象の利用者
+ * @return セッションが利用者自身または管理者のものの場合 true、それ以外の場合 false
+ */
+export function isUserOrAdmin(session: Session, user: Pick<User, "id">) {
+  return verify(session, user) || isAdministrator(session);
+}
+
+/**
  * 特定のロールであるか否か
  * @param session セッション
  * @param roleToFind 対象のロール
@@ -45,4 +45,14 @@ function hasRole(
   roleToFind: (ltiLaunchBody: LtiLaunchBody) => boolean
 ) {
   return session.ltiLaunchBody != null && roleToFind(session.ltiLaunchBody);
+}
+
+/**
+ * セッションが利用者のものであるか否か
+ * @param session セッション
+ * @param user 対象の利用者
+ * @return セッションが利用者のものの場合 true、それ以外の場合 false
+ */
+function verify(session: Session, user: Pick<User, "id">) {
+  return session.user?.id === user.id;
 }
