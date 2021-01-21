@@ -52,8 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type ItemIndex = [number, number];
-
 type Props = {
   editable?: boolean;
   book: BookSchema | null;

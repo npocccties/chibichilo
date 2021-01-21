@@ -44,7 +44,7 @@ export default function BookEditChildren(props: Props) {
   const { sections, className, onTopicClick } = props;
   const cardClasses = useCardStyles();
   const classes = useStyles();
-  const handleItemClick = ([sectionIndex, topicIndex]: [number, number]) =>
+  const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
     onTopicClick(sections[sectionIndex].topics[topicIndex]);
   return (
     <Card classes={cardClasses} className={className}>

@@ -8,8 +8,6 @@ import Collapse from "@material-ui/core/Collapse";
 import { ExpandLess, ExpandMore, EditOutlined } from "@material-ui/icons";
 import { SectionSchema } from "$server/models/book/section";
 
-type ItemIndex = [number, number];
-
 type Props = {
   className?: string;
   sections: SectionSchema[];

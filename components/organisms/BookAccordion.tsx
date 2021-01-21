@@ -64,7 +64,7 @@ export default function BookAccordion(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleItemClick = ([sectionIndex, topicIndex]: [number, number]) =>
+  const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
     onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
   const handleEditClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
