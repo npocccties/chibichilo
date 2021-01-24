@@ -32,3 +32,12 @@ export const Editable = () => (
     />
   </TreeView>
 );
+
+export const Selectable = () => (
+  <TreeView
+    defaultCollapseIcon={<ExpandMoreIcon />}
+    defaultExpandIcon={<ChevronRightIcon />}
+  >
+    <BookTree {...props} onTreeChange={console.log} />
+  </TreeView>
+);

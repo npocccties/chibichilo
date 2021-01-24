@@ -54,10 +54,11 @@ type Props = {
   books: BookSchema[];
   onBookEditClick?(book: BookSchema): void;
   onTopicClick(topic: TopicSchema): void;
+  onTreeChange?(nodeId: string): void;
 };
 
 export default function BookImport(props: Props) {
-  const { books, onBookEditClick, onTopicClick } = props;
+  const { books, onBookEditClick, onTopicClick, onTreeChange } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [open, setOpen] = useState(false);
@@ -69,9 +70,9 @@ export default function BookImport(props: Props) {
     <Container classes={containerClasses} maxWidth="md">
       <div className={classes.header}>
         <Typography className={classes.title} variant="h4" gutterBottom={true}>
-          ブックのインポート
+          ブックからインポート
           <Typography variant="body1">
-            インポートしたいブックを選んでください
+            ブックからインポートしたいトピックを選んでください
           </Typography>
         </Typography>
         <div className={classes.line}>
@@ -108,6 +109,7 @@ export default function BookImport(props: Props) {
               onItemEditClick={handleItemClick}
               onBookInfoClick={handleBookInfoClick}
               onBookEditClick={handleBookEditClick}
+              onTreeChange={onTreeChange}
             />
           );
         })}

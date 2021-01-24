@@ -8,6 +8,7 @@ export const Default = () => (
     books={books}
     onBookEditClick={console.log}
     onTopicClick={console.log}
+    onTreeChange={console.log}
   />
 );
 

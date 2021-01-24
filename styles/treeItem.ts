@@ -5,7 +5,7 @@ const treeItem = makeStyles({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
-    lineHeight: 2,
+    lineHeight: 2.5,
   },
 });
 
