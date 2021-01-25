@@ -1,6 +1,6 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import Devider from "@material-ui/core/Divider";
+import Divider from "@material-ui/core/Divider";
 import TreeView from "@material-ui/lab/TreeView";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -14,7 +14,7 @@ import { TopicSchema } from "$server/models/topic";
 import useCardStyles from "$styles/card";
 
 const useStyles = makeStyles((theme) => ({
-  devider: {
+  divider: {
     margin: `0 ${theme.spacing(-3)}px ${theme.spacing(2)}px`,
   },
   items: {
@@ -76,7 +76,7 @@ export default function BookEditChildren(props: Props) {
           並び替え
         </Button>
       </div>
-      <Devider className={classes.devider} />
+      <Divider className={classes.divider} />
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
