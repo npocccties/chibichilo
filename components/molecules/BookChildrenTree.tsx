@@ -27,32 +27,30 @@ function SectionTree({
   const handleChange = (handler?: (nodeId: string) => void) => () => {
     handler?.(nodeId);
   };
-  if (section.name == null) return <Fragment>{children}</Fragment>;
+  if (section.name == null) return children;
   return (
-    <Fragment>
-      <TreeItem
-        nodeId={nodeId}
-        classes={treeItemClasses}
-        label={
-          <>
-            {onTreeChange && (
-              <Checkbox
-                checked={checked}
-                color="primary"
-                size="small"
-                onChange={handleChange(onTreeChange)}
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-              />
-            )}
-            {sectionIndex + 1} {section.name}
-          </>
-        }
-      >
-        {children}
-      </TreeItem>
-    </Fragment>
+    <TreeItem
+      nodeId={nodeId}
+      classes={treeItemClasses}
+      label={
+        <>
+          {onTreeChange && (
+            <Checkbox
+              checked={checked}
+              color="primary"
+              size="small"
+              onChange={handleChange(onTreeChange)}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+            />
+          )}
+          {sectionIndex + 1} {section.name}
+        </>
+      }
+    >
+      {children}
+    </TreeItem>
   );
 }
 
