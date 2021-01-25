@@ -28,7 +28,7 @@ function Section({
   open: boolean;
   children: ReactNode;
 }) {
-  if (section.name == null) return <Fragment>{children}</Fragment>;
+  if (section.name == null) return children;
 
   return (
     <Fragment>
