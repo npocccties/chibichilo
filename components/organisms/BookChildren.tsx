@@ -28,10 +28,10 @@ function Section({
   open: boolean;
   children: ReactNode;
 }) {
-  if (section.name == null) return children;
+  if (section.name == null) return <>{children}</>;
 
   return (
-    <Fragment>
+    <>
       <ListItem button onClick={onSectionClick}>
         <ListItemText>
           {sectionItemIndex + 1} {section.name}
@@ -39,7 +39,7 @@ function Section({
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={open}>{children}</Collapse>
-    </Fragment>
+    </>
   );
 }
 

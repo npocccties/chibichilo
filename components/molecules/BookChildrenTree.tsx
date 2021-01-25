@@ -27,7 +27,7 @@ function SectionTree({
   const handleChange = (handler?: (nodeId: string) => void) => () => {
     handler?.(nodeId);
   };
-  if (section.name == null) return children;
+  if (section.name == null) return <>{children}</>;
   return (
     <TreeItem
       nodeId={nodeId}
