@@ -18,6 +18,7 @@ export const Default = () => {
         position="static"
         session={session}
         onBooksClick={console.log}
+        onTopicsClick={console.log}
         onDashboardClick={console.log}
       />
     </div>

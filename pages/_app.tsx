@@ -18,6 +18,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { data: session } = useSession();
   const handleBooksClick = () => router.push("/books");
+  const handleTopicsClick = () => router.push("/topics");
   const handleDashboardClick = () => undefined;
   return (
     <>
@@ -33,6 +34,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
             position="sticky"
             session={session}
             onBooksClick={handleBooksClick}
+            onTopicsClick={handleTopicsClick}
             onDashboardClick={handleDashboardClick}
           />
         )}

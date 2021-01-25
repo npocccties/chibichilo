@@ -1,11 +1,34 @@
 import { FastifyInstance } from "fastify";
 import handler from "$server/utils/handler";
-import * as service from "$server/services/user/books";
+import * as booksService from "$server/services/user/books";
+import * as topicsService from "$server/services/user/topics";
+
+const basePath = "/user/:user_id";
 
 export async function books(fastify: FastifyInstance) {
-  fastify.get<{ Querystring: service.Query; Params: service.Params }>(
-    "/user/:user_id/books",
-    { schema: service.method.get, preHandler: service.preHandler(fastify) },
-    handler(service.get)
+  fastify.get<{
+    Querystring: booksService.Query;
+    Params: booksService.Params;
+  }>(
+    `${basePath}/books`,
+    {
+      schema: booksService.method.get,
+      preHandler: booksService.preHandler(fastify),
+    },
+    handler(booksService.get)
+  );
+}
+
+export async function topics(fastify: FastifyInstance) {
+  fastify.get<{
+    Querystring: topicsService.Query;
+    Params: topicsService.Params;
+  }>(
+    `${basePath}/topics`,
+    {
+      schema: topicsService.method.get,
+      preHandler: topicsService.preHandler(fastify),
+    },
+    handler(topicsService.get)
   );
 }

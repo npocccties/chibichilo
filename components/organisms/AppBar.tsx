@@ -3,7 +3,9 @@ import MuiAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import SvgIcon, { SvgIconProps } from "@material-ui/core/SvgIcon";
-import { MenuBookOutlined, AssessmentOutlined } from "@material-ui/icons";
+import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
+import LibraryBooksOutlinedIcon from "@material-ui/icons/LibraryBooksOutlined";
+import AssessmentOutlinedIcon from "@material-ui/icons/AssessmentOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import AppBarNavButton from "$atoms/AppBarNavButton";
@@ -68,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
 type Props = ComponentProps<typeof MuiAppBar> & {
   session: Session;
   onBooksClick(): void;
+  onTopicsClick(): void;
   onDashboardClick(): void;
 };
 
@@ -78,7 +81,13 @@ const role = (session: Session) => {
 };
 
 export default function AppBar(props: Props) {
-  const { session, onBooksClick, onDashboardClick, ...others } = props;
+  const {
+    session,
+    onBooksClick,
+    onTopicsClick,
+    onDashboardClick,
+    ...others
+  } = props;
   const appBarClasses = useAppBarStyles();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -95,13 +104,19 @@ export default function AppBar(props: Props) {
           <LogoIcon className={classes.margin} />
           <AppBarNavButton
             color="inherit"
-            icon={<MenuBookOutlined />}
+            icon={<MenuBookOutlinedIcon />}
             label="マイブック"
             onClick={onBooksClick}
           />
           <AppBarNavButton
             color="inherit"
-            icon={<AssessmentOutlined />}
+            icon={<LibraryBooksOutlinedIcon />}
+            label="マイトピック"
+            onClick={onTopicsClick}
+          />
+          <AppBarNavButton
+            color="inherit"
+            icon={<AssessmentOutlinedIcon />}
             label="学習分析"
             onClick={onDashboardClick}
           />

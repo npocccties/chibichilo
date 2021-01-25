@@ -1,43 +1,28 @@
 import { useRouter } from "next/router";
-import type { TopicProps, TopicSchema } from "$server/models/topic";
-import type {
-  VideoTrackProps,
-  VideoTrackSchema,
-} from "$server/models/videoTrack";
+import type { TopicSchema } from "$server/models/topic";
 import type {
   Query as BookQuery,
   ShowProps as BookShowProps,
 } from "../../book";
+import {
+  Edit as TopicEdit,
+  Query as TopicEditQuery,
+  EditProps as TopicEditProps,
+} from "../../topic/edit";
 import Placeholder from "$templates/Placeholder";
-import TopicEdit from "$templates/TopicEdit";
 import Unknown from "$templates/Unknown";
 import { useBook } from "$utils/book";
-import {
-  destroyTopic,
-  revalidateTopic,
-  updateTopic,
-  useTopic,
-} from "$utils/topic";
 import { updateBook } from "$utils/book";
-import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
 
-type Query = BookQuery & {
-  topicId?: string;
-  prev?: string;
-};
+type Query = BookQuery &
+  TopicEditQuery & {
+    prev?: string;
+  };
 
-type EditProps = BookShowProps & {
-  topicId: TopicSchema["id"];
-  back(): Promise<unknown>;
-};
+type EditProps = BookShowProps & TopicEditProps;
 
-function Edit({ bookId, topicId, back }: EditProps) {
+function Edit({ bookId, ...props }: EditProps) {
   const book = useBook(bookId);
-  const topic = useTopic(topicId);
-  async function handleSubmit(props: TopicProps) {
-    await updateTopic({ id: topicId, ...props });
-    return back();
-  }
   async function handleDelete({ id: topicId }: Pick<TopicSchema, "id">) {
     if (!book) return;
     await updateBook({
@@ -48,30 +33,11 @@ function Edit({ bookId, topicId, back }: EditProps) {
         topics: section.topics.filter(({ id }) => id !== topicId),
       })),
     });
-    await destroyTopic(topicId);
-    return back();
   }
-  async function handleSubtitleSubmit(videoTrack: VideoTrackProps) {
-    if (!topic) return;
-    await uploadVideoTrack(topic.resource.id, videoTrack);
-    await revalidateTopic(topic.id);
-  }
-  async function handleSubtitleDelete({ id }: Pick<VideoTrackSchema, "id">) {
-    if (!topic) return;
-    await destroyVideoTrack(topic.resource.id, id);
-    await revalidateTopic(topic.id);
-  }
-  const handlers = {
-    onSubmit: handleSubmit,
-    onDelete: handleDelete,
-    onSubtitleSubmit: handleSubtitleSubmit,
-    onSubtitleDelete: handleSubtitleDelete,
-  };
 
   if (!book) return <Placeholder />;
-  if (!topic) return <Placeholder />;
 
-  return <TopicEdit topic={topic} {...handlers} />;
+  return <TopicEdit {...props} onDelete={handleDelete} />;
 }
 
 function Router() {

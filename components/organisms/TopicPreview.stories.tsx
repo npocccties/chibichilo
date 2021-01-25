@@ -29,6 +29,17 @@ export const Default = () => {
   );
 };
 
+export const Checkable = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.grid}>
+      {[...Array(10)].map((_value, index) => (
+        <TopicPreview key={index} {...props} onChange={console.log} />
+      ))}
+    </div>
+  );
+};
+
 export const Others = () => {
   const classes = useStyles();
   return (

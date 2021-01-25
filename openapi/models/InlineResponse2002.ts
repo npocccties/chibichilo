@@ -21,7 +21,7 @@ import {
 } from './';
 
 /**
- * 成功時
+ * 作成したトピックの一覧
  * @export
  * @interface InlineResponse2002
  */

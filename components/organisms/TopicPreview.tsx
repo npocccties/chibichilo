@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import clsx from "clsx";
 import { format } from "date-fns";
 import Button from "@material-ui/core/Button";
@@ -21,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     display: "flex",
-    margin: `0 ${theme.spacing(-2)}px`,
     height: "calc(1.125rem * 2 * 1.6)",
     alignItems: "center",
   },
@@ -34,8 +34,11 @@ const useStyles = makeStyles((theme) => ({
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: 2,
   },
-  checkBox: {
-    marginLeft: theme.spacing(0.5),
+  checkbox: {
+    marginLeft: theme.spacing(-1.5),
+  },
+  editButton: {
+    marginRight: theme.spacing(-2),
   },
   items: {
     "& > *": {
@@ -57,6 +60,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function CheckableTitle(
+  props: Parameters<typeof Checkbox>[0] & {
+    checkable: boolean;
+    children: ReactNode;
+  }
+) {
+  const { checkable, children, ...checkboxProps } = props;
+  const classes = useStyles();
+
+  if (!checkable) return <span className={classes.title}>{children}</span>;
+
+  return (
+    <>
+      <Checkbox
+        className={classes.checkbox}
+        color="primary"
+        {...checkboxProps}
+      />
+      <label className={classes.title} htmlFor={checkboxProps.id}>
+        {children}
+      </label>
+    </>
+  );
+}
+
 type Props = Parameters<typeof Checkbox>[0] & {
   topic: TopicSchema;
   onTopicDetailClick(topic: TopicSchema): void;
@@ -73,6 +101,7 @@ export default function TopicPreview(props: Props) {
     checked,
     ...checkboxProps
   } = props;
+  const checkable = "onChange" in checkboxProps;
   const handle = (handler: (topic: TopicSchema) => void) => () => {
     handler(topic);
   };
@@ -82,16 +111,20 @@ export default function TopicPreview(props: Props) {
       className={clsx(classes.root, { [classes.selected]: checked })}
     >
       <Typography variant="h6" className={classes.header}>
-        <Checkbox
+        <CheckableTitle
+          checkable={checkable}
           id={`TopicPreview-topic:${topic.id}`}
-          className={classes.checkBox}
-          color="primary"
           checked={checked}
           {...checkboxProps}
-        />
-        <label htmlFor={`TopicPreview-topic:${topic.id}`}>{topic.name}</label>
+        >
+          {topic.name}
+        </CheckableTitle>
         {onTopicEditClick && (
-          <IconButton color="primary" onClick={handle(onTopicEditClick)}>
+          <IconButton
+            className={classes.editButton}
+            color="primary"
+            onClick={handle(onTopicEditClick)}
+          >
             <EditOutlined />
           </IconButton>
         )}
