@@ -70,6 +70,7 @@ export default function BookEditChildren(props: Props) {
           variant="outlined"
           color="primary"
           onClick={props.onSortableChange}
+          disabled // TODO: セクションの並び替え機能を実装したら有効化して
         >
           <DragIndicatorIcon fontSize="small" />
           並び替え

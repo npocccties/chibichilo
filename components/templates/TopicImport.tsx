@@ -86,8 +86,11 @@ export default function TopicImport(props: Props) {
           >
             トピックをインポート
           </Button>
-          <SortSelect />
-          <SearchTextField placeholder="トピック検索" />
+          <SortSelect disabled /* TODO: ソート機能を追加したら有効化して */ />
+          <SearchTextField
+            placeholder="トピック検索"
+            disabled // TODO: トピック検索機能追加したら有効化して
+          />
         </div>
       </form>
       <div className={classes.topics}>

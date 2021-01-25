@@ -62,8 +62,11 @@ export default function Topics(props: Props) {
           マイトピック
         </Typography>
         <div className={classes.line}>
-          <SortSelect />
-          <SearchTextField placeholder="トピック検索" />
+          <SortSelect disabled /* TODO: ソート機能を追加したら有効化して */ />
+          <SearchTextField
+            placeholder="トピック検索"
+            disabled // TODO: ブック・トピック検索機能追加したら有効化して
+          />
         </div>
       </div>
       <div className={classes.topics}>

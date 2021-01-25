@@ -77,8 +77,11 @@ export default function BookImport(props: Props) {
           <Button color="primary" size="large" variant="contained">
             ブックをインポート
           </Button>
-          <SortSelect />
-          <SearchTextField placeholder="ブック・トピック検索" />
+          <SortSelect disabled /* TODO: ソート機能を追加したら有効化して */ />
+          <SearchTextField
+            placeholder="ブック・トピック検索"
+            disabled // TODO: ブック・トピック検索機能追加したら有効化して
+          />
         </div>
       </div>
       <TreeView

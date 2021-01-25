@@ -119,6 +119,7 @@ export default function AppBar(props: Props) {
             icon={<AssessmentOutlinedIcon />}
             label="学習分析"
             onClick={onDashboardClick}
+            disabled // TODO: 学習分析機能を実装したら有効化して
           />
           <div className={classes.grow} />
           <div className={clsx(classes.user, classes.margin)}>

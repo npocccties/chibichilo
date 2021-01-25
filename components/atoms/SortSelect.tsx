@@ -31,7 +31,7 @@ const options = [
   },
 ] as const;
 
-export default function Select() {
+export default function SortSelect(props: Parameters<typeof MuiSelect>[0]) {
   const selectClasses = useSelectStyles();
   const inputClasses = useInputStyles();
   const [value, setValue] = useState("name-descend");
@@ -44,6 +44,7 @@ export default function Select() {
       disableUnderline={true}
       value={value}
       onChange={handleChange}
+      {...props}
     >
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>

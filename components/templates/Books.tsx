@@ -78,8 +78,11 @@ export default function Books(props: Props) {
         )}
       </Typography>
       <div className={classes.line}>
-        <SortSelect />
-        <SearchTextField placeholder="ブック・トピック検索" />
+        <SortSelect disabled /* TODO: ソート機能を追加したら有効化して */ />
+        <SearchTextField
+          placeholder="ブック・トピック検索"
+          disabled // TODO: ブック・トピック検索機能追加したら有効化して
+        />
       </div>
       <div>
         {books.map((book) => (
