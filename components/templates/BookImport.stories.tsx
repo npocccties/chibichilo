@@ -8,7 +8,7 @@ export const Default = () => (
     books={books}
     onBookEditClick={console.log}
     onTopicClick={console.log}
-    onTreeChange={console.log}
+    onSubmit={console.log}
   />
 );
 
@@ -17,5 +17,6 @@ export const Empty = () => (
     books={[]}
     onBookEditClick={console.log}
     onTopicClick={console.log}
+    onSubmit={console.log}
   />
 );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -52,13 +52,13 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
+  onSubmit(books: BookSchema[]): void;
   onBookEditClick?(book: BookSchema): void;
   onTopicClick(topic: TopicSchema): void;
-  onTreeChange?(nodeId: string): void;
 };
 
 export default function BookImport(props: Props) {
-  const { books, onBookEditClick, onTopicClick, onTreeChange } = props;
+  const { books, onSubmit, onBookEditClick, onTopicClick } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [open, setOpen] = useState(false);
@@ -66,9 +66,18 @@ export default function BookImport(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
+  const [selectedIndexes, select] = useState<Set<number>>(new Set());
+  const handleTreeChange = (index: number) => () =>
+    select((indexes) =>
+      indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
+    );
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onSubmit([...selectedIndexes].map((i) => books[i]));
+  };
   return (
     <Container classes={containerClasses} maxWidth="md">
-      <div className={classes.header}>
+      <form className={classes.header} onSubmit={handleSubmit}>
         <Typography className={classes.title} variant="h4" gutterBottom={true}>
           ブックからインポート
           <Typography variant="body1">
@@ -76,7 +85,12 @@ export default function BookImport(props: Props) {
           </Typography>
         </Typography>
         <div className={classes.line}>
-          <Button color="primary" size="large" variant="contained">
+          <Button
+            color="primary"
+            size="large"
+            variant="contained"
+            type="submit"
+          >
             ブックをインポート
           </Button>
           <SortSelect disabled /* TODO: ソート機能を追加したら有効化して */ />
@@ -85,12 +99,12 @@ export default function BookImport(props: Props) {
             disabled // TODO: ブック・トピック検索機能追加したら有効化して
           />
         </div>
-      </div>
+      </form>
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        {books.map((book) => {
+        {books.map((book, index) => {
           const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
             onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
           const handleBookInfoClick = () => {
@@ -105,11 +119,12 @@ export default function BookImport(props: Props) {
             <BookTree
               key={book.id}
               book={book}
+              checked={selectedIndexes.has(index)}
               onItemClick={handleItemClick}
               onItemEditClick={handleItemClick}
               onBookInfoClick={handleBookInfoClick}
               onBookEditClick={handleBookEditClick}
-              onTreeChange={onTreeChange}
+              onTreeChange={handleTreeChange(index)}
             />
           );
         })}

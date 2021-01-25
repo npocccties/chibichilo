@@ -76,7 +76,8 @@ export default function BookTree(props: Props) {
         sections={book.sections}
         onItemClick={onItemClick}
         onItemEditClick={onItemEditClick}
-        onTreeChange={onTreeChange}
+        // TODO: トピック・セクションの個別選択とインポートの実装
+        // onTreeChange={onTreeChange}
       />
     </TreeItem>
   );
