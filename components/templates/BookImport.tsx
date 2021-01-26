@@ -52,13 +52,24 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
-  onSubmit(books: BookSchema[]): void;
+  onSubmit(nodeIds: string[]): void;
   onBookEditClick?(book: BookSchema): void;
-  onTopicClick(topic: TopicSchema): void;
+  onTopicClick?(topic: TopicSchema): void;
+  onTopicEditClick?(topic: TopicSchema): void;
+  isBookEditable?(book: BookSchema): boolean;
+  isTopicEditable?(topic: TopicSchema): boolean;
 };
 
 export default function BookImport(props: Props) {
-  const { books, onSubmit, onBookEditClick, onTopicClick } = props;
+  const {
+    books,
+    onSubmit,
+    onBookEditClick,
+    onTopicClick,
+    onTopicEditClick,
+    isBookEditable,
+    isTopicEditable,
+  } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [open, setOpen] = useState(false);
@@ -66,14 +77,15 @@ export default function BookImport(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const [selectedIndexes, select] = useState<Set<number>>(new Set());
-  const handleTreeChange = (index: number) => () =>
-    select((indexes) =>
-      indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
+  const [selectedNodeIds, select] = useState<Set<string>>(new Set());
+  const handleTreeChange = (nodeId: string) => {
+    select((nodeIds) =>
+      nodeIds.delete(nodeId) ? new Set(nodeIds) : new Set(nodeIds.add(nodeId))
     );
+  };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit([...selectedIndexes].map((i) => books[i]));
+    onSubmit([...selectedNodeIds]);
   };
   return (
     <Container classes={containerClasses} maxWidth="md">
@@ -104,9 +116,12 @@ export default function BookImport(props: Props) {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        {books.map((book, index) => {
-          const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
-            onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
+        {books.map((book) => {
+          const handleItem = (handler?: (topic: TopicSchema) => void) => ([
+            sectionIndex,
+            topicIndex,
+          ]: ItemIndex) =>
+            handler?.(book.sections[sectionIndex].topics[topicIndex]);
           const handleBookInfoClick = () => {
             setBook(book);
             setOpen(true);
@@ -119,12 +134,12 @@ export default function BookImport(props: Props) {
             <BookTree
               key={book.id}
               book={book}
-              checked={selectedIndexes.has(index)}
-              onItemClick={handleItemClick}
-              onItemEditClick={handleItemClick}
+              onItemClick={handleItem(onTopicClick)}
+              onItemEditClick={handleItem(onTopicEditClick)}
               onBookInfoClick={handleBookInfoClick}
-              onBookEditClick={handleBookEditClick}
-              onTreeChange={handleTreeChange(index)}
+              onBookEditClick={isBookEditable?.(book) && handleBookEditClick}
+              isTopicEditable={isTopicEditable}
+              onTreeChange={handleTreeChange}
             />
           );
         })}

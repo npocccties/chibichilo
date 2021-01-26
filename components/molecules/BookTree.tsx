@@ -1,19 +1,23 @@
 import IconButton from "@material-ui/core/IconButton";
 import TreeItem from "@material-ui/lab/TreeItem";
-import Checkbox from "@material-ui/core/Checkbox";
+// TODO: ブック単位でのインポートの実装
+// import Checkbox from "@material-ui/core/Checkbox";
 import { InfoOutlined, EditOutlined } from "@material-ui/icons";
 import CourseChip from "$atoms/CourseChip";
 import BookChildrenTree from "$molecules/BookChildrenTree";
 import useTreeItemStyle from "$styles/treeItem";
 import { BookSchema } from "$server/models/book";
+import { TopicSchema } from "$server/models/topic";
 
-type Props = Pick<Parameters<typeof Checkbox>[0], "checked"> & {
+type Props = {
   book: BookSchema;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(nodeId: string): void;
   onBookInfoClick?(): void;
-  onBookEditClick?(): void;
+  onBookEditClick?: (() => void) | false;
+  selectedNodeIds?: Set<string>;
+  isTopicEditable?(topic: TopicSchema): boolean;
 };
 
 export default function BookTree(props: Props) {
@@ -24,35 +28,40 @@ export default function BookTree(props: Props) {
     onTreeChange,
     onBookInfoClick,
     onBookEditClick,
-    checked,
+    selectedNodeIds,
+    isTopicEditable,
   } = props;
   const treeItemClasses = useTreeItemStyle();
+  const nodeId = `${book.id}`;
   const handle = (handler?: () => void) => (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
     handler?.();
   };
+  /* TODO: ブック単位でのインポートの実装
   const handleChange = (handler?: (nodeId: string) => void) => () => {
-    handler?.(`${book.id}`);
+    handler?.(nodeId);
   };
+  */
   return (
     <TreeItem
-      nodeId={`${book.id}`}
+      nodeId={nodeId}
       classes={treeItemClasses}
       label={
         <>
-          {onTreeChange && (
-            <Checkbox
-              checked={checked}
-              color="primary"
-              size="small"
-              onChange={handleChange(onTreeChange)}
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-            />
-          )}
+          {/* TODO: ブック単位でのインポートの実装
+          onTreeChange && (
+          <Checkbox
+            checked={selectedNodeIds?.has(nodeId)}
+            color="primary"
+            size="small"
+            onChange={handleChange(onTreeChange)}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
+          )*/}
           {book.name}
           <IconButton size="small" onClick={handle(onBookInfoClick)}>
             <InfoOutlined />
@@ -76,8 +85,9 @@ export default function BookTree(props: Props) {
         sections={book.sections}
         onItemClick={onItemClick}
         onItemEditClick={onItemEditClick}
-        // TODO: トピック・セクションの個別選択とインポートの実装
-        // onTreeChange={onTreeChange}
+        onTreeChange={onTreeChange}
+        selectedNodeIds={selectedNodeIds}
+        isTopicEditable={isTopicEditable}
       />
     </TreeItem>
   );

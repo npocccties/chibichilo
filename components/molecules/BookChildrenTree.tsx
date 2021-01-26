@@ -1,32 +1,37 @@
-import { ReactNode, MouseEvent, Fragment } from "react";
+import { ReactNode, MouseEvent } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import TreeItem from "@material-ui/lab/TreeItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import { EditOutlined } from "@material-ui/icons";
 import useTreeItemStyle from "$styles/treeItem";
 import { SectionSchema } from "$server/models/book/section";
+import { TopicSchema } from "$server/models/topic";
 
-type SectionProps = Pick<Parameters<typeof Checkbox>[0], "checked"> & {
+type SectionProps = {
   bookId: string | number;
   section: Pick<SectionSchema, "id" | "name">;
   sectionIndex: number;
   children: ReactNode;
   onTreeChange?(nodeId: string): void;
+  selectedNodeIds?: Set<string>;
 };
 
 function SectionTree({
   bookId,
   section,
   sectionIndex,
+  // TODO: セクション単位でのインポートの実装
+  // onTreeChange,
+  // selectedNodeIds,
   children,
-  onTreeChange,
-  checked,
 }: SectionProps) {
   const treeItemClasses = useTreeItemStyle();
   const nodeId = `${bookId}-${section.id}`;
+  /* TODO: セクション単位でのインポートの実装
   const handleChange = (handler?: (nodeId: string) => void) => () => {
     handler?.(nodeId);
   };
+  */
   if (section.name == null) return <>{children}</>;
   return (
     <TreeItem
@@ -34,9 +39,10 @@ function SectionTree({
       classes={treeItemClasses}
       label={
         <>
-          {onTreeChange && (
+          {/* TODO: セクション単位でのインポートの実装
+          onTreeChange && (
             <Checkbox
-              checked={checked}
+              checked={selectedNodeIds?.has(nodeId)}
               color="primary"
               size="small"
               onChange={handleChange(onTreeChange)}
@@ -44,7 +50,7 @@ function SectionTree({
                 event.stopPropagation();
               }}
             />
-          )}
+          )*/}
           {sectionIndex + 1} {section.name}
         </>
       }
@@ -54,12 +60,14 @@ function SectionTree({
   );
 }
 
-type Props = Pick<Parameters<typeof Checkbox>[0], "checked"> & {
+type Props = {
   bookId?: string | number;
   sections: SectionSchema[];
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(nodeId: string): void;
+  selectedNodeIds?: Set<string>;
+  isTopicEditable?(topic: TopicSchema): boolean;
 };
 
 export default function BookChildrenTree(props: Props) {
@@ -69,7 +77,8 @@ export default function BookChildrenTree(props: Props) {
     onItemClick,
     onItemEditClick,
     onTreeChange,
-    checked,
+    selectedNodeIds,
+    isTopicEditable,
   } = props;
   const treeItemClasses = useTreeItemStyle();
   return (
@@ -102,7 +111,7 @@ export default function BookChildrenTree(props: Props) {
                   <>
                     {onTreeChange && (
                       <Checkbox
-                        checked={checked}
+                        checked={selectedNodeIds?.has(nodeId)}
                         color="primary"
                         size="small"
                         onChange={handleChange(onTreeChange)}
@@ -113,7 +122,7 @@ export default function BookChildrenTree(props: Props) {
                     )}
                     {sectionIndex + 1}
                     {section.name && `.${topicIndex + 1}`} {topic.name}
-                    {onItemEditClick && (
+                    {isTopicEditable?.(topic) && onItemEditClick && (
                       <IconButton
                         size="small"
                         onClick={handle(onItemEditClick)}
