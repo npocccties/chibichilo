@@ -26,7 +26,7 @@ function SectionTree({
   children,
 }: SectionProps) {
   const treeItemClasses = useTreeItemStyle();
-  const index = [bookIndex, sectionIndex, null];
+  const index: TreeItemIndex = [bookIndex, sectionIndex, null];
   /* TODO: セクション単位でのインポートの実装
   const handleChange = (handler?: (index: TreeItemIndex) => void) => () => {
     handler?.(index);
@@ -92,7 +92,7 @@ export default function BookChildrenTree(props: Props) {
           onTreeChange={onTreeChange}
         >
           {section.topics.map((topic, topicIndex) => {
-            const index = [bookIndex, sectionIndex, topicIndex];
+            const index: TreeItemIndex = [bookIndex, sectionIndex, topicIndex];
             const handle = (handler: (index: ItemIndex) => void) => (
               event: MouseEvent<HTMLElement>
             ) => {
