@@ -82,6 +82,11 @@ export interface ApiV2BookPostRequest {
     body?: InlineObject2;
 }
 
+export interface ApiV2BooksGetRequest {
+    page?: number;
+    perPage?: number;
+}
+
 export interface ApiV2EventPostRequest {
     body?: InlineObject6;
 }
@@ -302,6 +307,42 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2BookPost(requestParameters: ApiV2BookPostRequest): Promise<InlineResponse2001Books> {
         const response = await this.apiV2BookPostRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * ブックの一覧を取得します。 教員または管理者でなければなりません。
+     * ブック一覧
+     */
+    async apiV2BooksGetRaw(requestParameters: ApiV2BooksGetRequest): Promise<runtime.ApiResponse<InlineResponse2002>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.page !== undefined) {
+            queryParameters['page'] = requestParameters.page;
+        }
+
+        if (requestParameters.perPage !== undefined) {
+            queryParameters['per_page'] = requestParameters.perPage;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/books`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2002FromJSON(jsonValue));
+    }
+
+    /**
+     * ブックの一覧を取得します。 教員または管理者でなければなりません。
+     * ブック一覧
+     */
+    async apiV2BooksGet(requestParameters: ApiV2BooksGetRequest): Promise<InlineResponse2002> {
+        const response = await this.apiV2BooksGetRaw(requestParameters);
         return await response.value();
     }
 
