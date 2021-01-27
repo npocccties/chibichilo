@@ -11,7 +11,7 @@ import { TopicSchema } from "$server/models/topic";
 
 type Props = {
   book: BookSchema;
-  bookIndex: number;
+  bookIndex?: number;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(index: TreeItemIndex): void;
@@ -24,7 +24,7 @@ type Props = {
 export default function BookTree(props: Props) {
   const {
     book,
-    bookIndex,
+    bookIndex = 0,
     onItemClick,
     onItemEditClick,
     onTreeChange,
