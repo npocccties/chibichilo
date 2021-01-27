@@ -8,16 +8,16 @@ import { SectionSchema } from "$server/models/book/section";
 import { TopicSchema } from "$server/models/topic";
 
 type SectionProps = {
-  bookIndex: number;
+  bookId: number;
   section: Pick<SectionSchema, "id" | "name">;
   sectionIndex: number;
   children: ReactNode;
-  onTreeChange?(index: TreeItemIndex): void;
+  onTreeChange?(nodeId: string): void;
   selectedIndexes?: Set<TreeItemIndex>;
 };
 
 function SectionTree({
-  bookIndex,
+  bookId,
   section,
   sectionIndex,
   // TODO: セクション単位でのインポートの実装
@@ -26,23 +26,23 @@ function SectionTree({
   children,
 }: SectionProps) {
   const treeItemClasses = useTreeItemStyle();
-  const index: TreeItemIndex = [bookIndex, sectionIndex, null];
+  const nodeId = `${bookId}-${section.id}`;
   /* TODO: セクション単位でのインポートの実装
-  const handleChange = (handler?: (index: TreeItemIndex) => void) => () => {
-    handler?.(index);
+  const handleChange = (handler?: (nodeId: string) => void) => () => {
+    handler?.(nodeId);
   };
   */
   if (section.name == null) return <>{children}</>;
   return (
     <TreeItem
-      nodeId={index.toString()}
+      nodeId={nodeId}
       classes={treeItemClasses}
       label={
         <>
           {/* TODO: セクション単位でのインポートの実装
           onTreeChange && (
             <Checkbox
-              checked={selectedIndexes?.has(index)}
+              checked={selectedIndexes?.has(nodeId)}
               color="primary"
               size="small"
               onChange={handleChange(onTreeChange)}
@@ -61,18 +61,18 @@ function SectionTree({
 }
 
 type Props = {
-  bookIndex?: number;
+  bookId?: number;
   sections: SectionSchema[];
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
-  onTreeChange?(index: TreeItemIndex): void;
+  onTreeChange?(nodeId: string): void;
   selectedIndexes?: Set<TreeItemIndex>;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookChildrenTree(props: Props) {
   const {
-    bookIndex = 0,
+    bookId = 0,
     sections,
     onItemClick,
     onItemEditClick,
@@ -86,34 +86,32 @@ export default function BookChildrenTree(props: Props) {
       {sections.map((section, sectionIndex) => (
         <SectionTree
           key={section.id}
-          bookIndex={bookIndex}
+          bookId={bookId}
           section={section}
           sectionIndex={sectionIndex}
           onTreeChange={onTreeChange}
         >
           {section.topics.map((topic, topicIndex) => {
-            const index: TreeItemIndex = [bookIndex, sectionIndex, topicIndex];
+            const nodeId = `${bookId}-${section.id}-${topic.id}`;
             const handle = (handler: (index: ItemIndex) => void) => (
               event: MouseEvent<HTMLElement>
             ) => {
               event.stopPropagation();
               handler([sectionIndex, topicIndex]);
             };
-            const handleChange = (
-              handler?: (index: TreeItemIndex) => void
-            ) => () => {
-              handler?.(index);
+            const handleChange = (handler?: (nodeId: string) => void) => () => {
+              handler?.(nodeId);
             };
             return (
               <TreeItem
                 key={topic.id}
-                nodeId={index.toString()}
+                nodeId={nodeId}
                 classes={treeItemClasses}
                 label={
                   <>
                     {onTreeChange && (
                       <Checkbox
-                        checked={selectedIndexes?.has(index)}
+                        checked={selectedIndexes?.has(nodeId)}
                         color="primary"
                         size="small"
                         onChange={handleChange(onTreeChange)}

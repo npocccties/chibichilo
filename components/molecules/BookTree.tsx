@@ -11,10 +11,10 @@ import { TopicSchema } from "$server/models/topic";
 
 type Props = {
   book: BookSchema;
-  bookIndex?: number;
+  bookId?: number;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
-  onTreeChange?(index: TreeItemIndex): void;
+  onTreeChange?(nodeId: string): void;
   onBookInfoClick?(): void;
   onBookEditClick?: (() => void) | false;
   selectedIndexes?: Set<TreeItemIndex>;
@@ -24,7 +24,7 @@ type Props = {
 export default function BookTree(props: Props) {
   const {
     book,
-    bookIndex = 0,
+    bookId = 0,
     onItemClick,
     onItemEditClick,
     onTreeChange,
@@ -34,7 +34,7 @@ export default function BookTree(props: Props) {
     isTopicEditable,
   } = props;
   const treeItemClasses = useTreeItemStyle();
-  const index: TreeItemIndex = [bookIndex, null, null];
+  const nodeId = `${bookId}`;
   const handle = (handler?: () => void) => (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -42,20 +42,20 @@ export default function BookTree(props: Props) {
     handler?.();
   };
   /* TODO: ブック単位でのインポートの実装
-  const handleChange = (handler?: (index: TreeItemIndex) => void) => () => {
-    handler?.(index);
+  const handleChange = (handler?: (nodeId: string) => void) => () => {
+    handler?.(nodeId);
   };
   */
   return (
     <TreeItem
-      nodeId={index.toString()}
+      nodeId={nodeId}
       classes={treeItemClasses}
       label={
         <>
           {/* TODO: ブック単位でのインポートの実装
           onTreeChange && (
           <Checkbox
-            checked={selectedIndexes?.has(index)}
+            checked={selectedIndexes?.has(nodeId)}
             color="primary"
             size="small"
             onChange={handleChange(onTreeChange)}
@@ -83,7 +83,7 @@ export default function BookTree(props: Props) {
       }
     >
       <BookChildrenTree
-        bookIndex={book.id}
+        bookId={book.id}
         sections={book.sections}
         onItemClick={onItemClick}
         onItemEditClick={onItemEditClick}

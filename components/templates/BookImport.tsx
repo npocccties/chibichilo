@@ -86,10 +86,10 @@ export default function BookImport(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const [selectedIndexes, select] = useState<Set<TreeItemIndex>>(new Set());
-  const handleTreeChange = (index: TreeItemIndex) => {
-    select((indexes) =>
-      indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
+  const [selectedNodeIds, select] = useState<Set<string>>(new Set());
+  const handleTreeChange = (nodeId: string) => {
+    select((nodeIds) =>
+      nodeIds.delete(nodeId) ? new Set(nodeIds) : new Set(nodeIds.add(nodeId))
     );
   };
   const handleSubmit = (e: FormEvent) => {
@@ -97,17 +97,24 @@ export default function BookImport(props: Props) {
     const selectedBooks: BookSchema[] = [];
     const selectedSections: SectionSchema[] = [];
     const selectedTopics: TopicSchema[] = [];
-    selectedIndexes.forEach(
-      ([bookIndex, sectionIndex, topicIndex]: TreeItemIndex) => {
-        if (sectionIndex === null) selectedBooks.push(books[bookIndex]);
-        else if (topicIndex === null)
-          selectedSections.push(books[bookIndex].sections[sectionIndex]);
-        else
-          selectedTopics.push(
-            books[bookIndex].sections[sectionIndex].topics[topicIndex]
-          );
+    selectedNodeIds.forEach((nodeId) => {
+      const [bookId, sectionId, topicId] = nodeId
+        .split("-")
+        .map((id) => Number(id));
+      const book = books.find((book) => book.id === bookId);
+      if (!book) return;
+      const section = book.sections.find((section) => section.id === sectionId);
+      if (!section) {
+        selectedBooks.push(book);
+        return;
       }
-    );
+      const topic = section.topics.find((topic) => topic.id === topicId);
+      if (!topic) {
+        selectedSections.push(section);
+        return;
+      }
+      selectedTopics.push(topic);
+    });
 
     onSubmit({
       books: selectedBooks,
@@ -144,7 +151,7 @@ export default function BookImport(props: Props) {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        {books.map((book, bookIndex) => {
+        {books.map((book) => {
           const handleItem = (handler?: (topic: TopicSchema) => void) => ([
             sectionIndex,
             topicIndex,
@@ -162,7 +169,7 @@ export default function BookImport(props: Props) {
             <BookTree
               key={book.id}
               book={book}
-              bookIndex={bookIndex}
+              bookId={book.id}
               onItemClick={handleItem(onTopicClick)}
               onItemEditClick={handleItem(onTopicEditClick)}
               onBookInfoClick={handleBookInfoClick}
