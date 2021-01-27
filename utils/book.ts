@@ -40,3 +40,10 @@ export async function updateBook({
 export async function destroyBook(id: BookSchema["id"]) {
   await api.apiV2BookBookIdDelete({ bookId: id });
 }
+
+export function revalidateBook(
+  id: BookSchema["id"],
+  res?: BookSchema
+): Promise<BookSchema> {
+  return mutate([key, id], res);
+}

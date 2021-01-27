@@ -43,6 +43,12 @@ function Edit({ bookId, prev }: EditProps) {
       sections: [...book?.sections, section],
     });
   }
+  function toBookImport() {
+    return router.push({
+      pathname: `/book/import`,
+      query: { bookId, ...(prev && { prev }) },
+    });
+  }
   function toTopic(path: "import" | "new") {
     return router.push({
       pathname: `/book/topic/${path}`,
@@ -53,6 +59,7 @@ function Edit({ bookId, prev }: EditProps) {
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onAddSection: handleAddSection,
+    onBookImportClick: () => toBookImport(),
     onTopicImportClick: () => toTopic("import"),
     onTopicNewClick: () => toTopic("new"),
   };
