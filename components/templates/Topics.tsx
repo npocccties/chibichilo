@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -9,6 +8,7 @@ import SearchTextField from "$atoms/SearchTextField";
 import { TopicSchema } from "$server/models/topic";
 import { gray } from "$theme/colors";
 import useContainerStyles from "$styles/container";
+import useDialogProps from "$utils/useDialogProps";
 
 const useStyles = makeStyles((theme) => ({
   line: {
@@ -51,8 +51,11 @@ export default function Topics(props: Props) {
   const { topics, onTopicEditClick } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
-  const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
-  const handlePreviewTopicClose = () => setPreviewTopic(null);
+  const {
+    data: previewTopic,
+    dispatch: setPreviewTopic,
+    ...dialogProps
+  } = useDialogProps<TopicSchema>();
   const handleTopicDetailClick = (topic: TopicSchema) => setPreviewTopic(topic);
   return (
     <Container classes={containerClasses} maxWidth="lg">
@@ -79,11 +82,7 @@ export default function Topics(props: Props) {
         ))}
       </div>
       {previewTopic && (
-        <TopicPreviewDialog
-          open
-          onClose={handlePreviewTopicClose}
-          topic={previewTopic}
-        />
+        <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
       )}
     </Container>
   );

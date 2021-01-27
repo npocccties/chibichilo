@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
@@ -13,6 +12,7 @@ import { BookProps, BookSchema } from "$server/models/book";
 import { SectionProps } from "$server/models/book/section";
 import { TopicSchema } from "$server/models/topic";
 import { useConfirm } from "material-ui-confirm";
+import useDialogProps from "$utils/useDialogProps";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -64,8 +64,11 @@ export default function BookEdit(props: Props) {
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const confirm = useConfirm();
-  const [previewTopic, setPreviewTopic] = useState<TopicSchema | null>(null);
-  const handlePreviewTopicClose = () => setPreviewTopic(null);
+  const {
+    data: previewTopic,
+    dispatch: setPreviewTopic,
+    ...dialogProps
+  } = useDialogProps<TopicSchema>();
   const handleTopicClick = (topic: TopicSchema) => setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
     if (!book) return;
@@ -110,11 +113,7 @@ export default function BookEdit(props: Props) {
         ブックを削除
       </Button>
       {previewTopic && (
-        <TopicPreviewDialog
-          open
-          onClose={handlePreviewTopicClose}
-          topic={previewTopic}
-        />
+        <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
       )}
     </Container>
   );

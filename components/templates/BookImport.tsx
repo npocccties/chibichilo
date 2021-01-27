@@ -15,6 +15,7 @@ import { SectionSchema } from "$server/models/book/section";
 import { TopicSchema } from "$server/models/topic";
 import { gray } from "$theme/colors";
 import useContainerStyles from "$styles/container";
+import useDialogProps from "$utils/useDialogProps";
 
 const useStyles = makeStyles((theme) => ({
   line: {
@@ -81,8 +82,11 @@ export default function BookImport(props: Props) {
   } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
-  const [currentBook, setBook] = useState<BookSchema | null>(null);
-  const handleClose = () => setBook(null);
+  const {
+    data: currentBook,
+    dispatch: setBook,
+    ...dialogProps
+  } = useDialogProps<BookSchema>();
   const [selectedNodeIds, select] = useState<Set<string>>(new Set());
   const handleTreeChange = (nodeId: string) => {
     select((nodeIds) =>
@@ -169,9 +173,7 @@ export default function BookImport(props: Props) {
           );
         })}
       </TreeView>
-      {currentBook && (
-        <BookItemDialog open onClose={handleClose} book={currentBook} />
-      )}
+      {currentBook && <BookItemDialog {...dialogProps} book={currentBook} />}
     </Container>
   );
 }
