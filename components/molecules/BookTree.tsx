@@ -11,12 +11,11 @@ import { TopicSchema } from "$server/models/topic";
 
 type Props = {
   book: BookSchema;
-  bookId?: number;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(nodeId: string): void;
-  onBookInfoClick?(): void;
-  onBookEditClick?: (() => void) | false;
+  onBookInfoClick(book: BookSchema): void;
+  onBookEditClick?: ((book: BookSchema) => void) | false | undefined;
   selectedIndexes?: Set<string>;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
@@ -24,7 +23,6 @@ type Props = {
 export default function BookTree(props: Props) {
   const {
     book,
-    bookId = 0,
     onItemClick,
     onItemEditClick,
     onTreeChange,
@@ -34,12 +32,12 @@ export default function BookTree(props: Props) {
     isTopicEditable,
   } = props;
   const treeItemClasses = useTreeItemStyle();
-  const nodeId = `${bookId}`;
-  const handle = (handler?: () => void) => (
+  const nodeId = `${book.id}`;
+  const handle = (handler?: (book: BookSchema) => void) => (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    handler?.();
+    handler?.(book);
   };
   /* TODO: ブック単位でのインポートの実装
   const handleChange = (handler?: (nodeId: string) => void) => () => {

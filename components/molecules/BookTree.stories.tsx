@@ -9,6 +9,7 @@ import { book } from "$samples";
 const props = {
   book,
   onItemClick: console.log,
+  onBookInfoClick: console.log,
 };
 
 export const Default = () => (

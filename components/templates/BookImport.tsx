@@ -81,11 +81,8 @@ export default function BookImport(props: Props) {
   } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
-  const [open, setOpen] = useState(false);
   const [currentBook, setBook] = useState<BookSchema | null>(null);
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setBook(null);
   const [selectedNodeIds, select] = useState<Set<string>>(new Set());
   const handleTreeChange = (nodeId: string) => {
     select((nodeIds) =>
@@ -157,23 +154,15 @@ export default function BookImport(props: Props) {
             topicIndex,
           ]: ItemIndex) =>
             handler?.(book.sections[sectionIndex].topics[topicIndex]);
-          const handleBookInfoClick = () => {
-            setBook(book);
-            setOpen(true);
-          };
-          const handleBookEditClick = () => {
-            setBook(book);
-            onBookEditClick && currentBook && onBookEditClick(currentBook);
-          };
+          const handleBookInfoClick = () => setBook(book);
           return (
             <BookTree
               key={book.id}
               book={book}
-              bookId={book.id}
               onItemClick={handleItem(onTopicClick)}
               onItemEditClick={handleItem(onTopicEditClick)}
               onBookInfoClick={handleBookInfoClick}
-              onBookEditClick={isBookEditable?.(book) && handleBookEditClick}
+              onBookEditClick={isBookEditable?.(book) && onBookEditClick}
               isTopicEditable={isTopicEditable}
               onTreeChange={handleTreeChange}
             />
@@ -181,7 +170,7 @@ export default function BookImport(props: Props) {
         })}
       </TreeView>
       {currentBook && (
-        <BookItemDialog open={open} onClose={handleClose} book={currentBook} />
+        <BookItemDialog open onClose={handleClose} book={currentBook} />
       )}
     </Container>
   );
