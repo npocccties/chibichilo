@@ -11,28 +11,30 @@ import { TopicSchema } from "$server/models/topic";
 
 type Props = {
   book: BookSchema;
+  bookIndex: number;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
-  onTreeChange?(nodeId: string): void;
+  onTreeChange?(index: TreeItemIndex): void;
   onBookInfoClick?(): void;
   onBookEditClick?: (() => void) | false;
-  selectedNodeIds?: Set<string>;
+  selectedIndexes?: Set<TreeItemIndex>;
   isTopicEditable?(topic: TopicSchema): boolean;
 };
 
 export default function BookTree(props: Props) {
   const {
     book,
+    bookIndex,
     onItemClick,
     onItemEditClick,
     onTreeChange,
     onBookInfoClick,
     onBookEditClick,
-    selectedNodeIds,
+    selectedIndexes,
     isTopicEditable,
   } = props;
   const treeItemClasses = useTreeItemStyle();
-  const nodeId = `${book.id}`;
+  const index: TreeItemIndex = [bookIndex, null, null];
   const handle = (handler?: () => void) => (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -40,20 +42,20 @@ export default function BookTree(props: Props) {
     handler?.();
   };
   /* TODO: ブック単位でのインポートの実装
-  const handleChange = (handler?: (nodeId: string) => void) => () => {
-    handler?.(nodeId);
+  const handleChange = (handler?: (index: TreeItemIndex) => void) => () => {
+    handler?.(index);
   };
   */
   return (
     <TreeItem
-      nodeId={nodeId}
+      nodeId={index.toString()}
       classes={treeItemClasses}
       label={
         <>
           {/* TODO: ブック単位でのインポートの実装
           onTreeChange && (
           <Checkbox
-            checked={selectedNodeIds?.has(nodeId)}
+            checked={selectedIndexes?.has(index)}
             color="primary"
             size="small"
             onChange={handleChange(onTreeChange)}
@@ -81,12 +83,12 @@ export default function BookTree(props: Props) {
       }
     >
       <BookChildrenTree
-        bookId={book.id}
+        bookIndex={book.id}
         sections={book.sections}
         onItemClick={onItemClick}
         onItemEditClick={onItemEditClick}
         onTreeChange={onTreeChange}
-        selectedNodeIds={selectedNodeIds}
+        selectedIndexes={selectedIndexes}
         isTopicEditable={isTopicEditable}
       />
     </TreeItem>

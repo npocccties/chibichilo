@@ -11,6 +11,7 @@ import BookTree from "$molecules/BookTree";
 import SortSelect from "$atoms/SortSelect";
 import SearchTextField from "$atoms/SearchTextField";
 import { BookSchema } from "$server/models/book";
+import { SectionSchema } from "$server/models/book/section";
 import { TopicSchema } from "$server/models/topic";
 import { gray } from "$theme/colors";
 import useContainerStyles from "$styles/container";
@@ -52,7 +53,15 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   books: BookSchema[];
-  onSubmit(nodeIds: string[]): void;
+  onSubmit({
+    books,
+    sections,
+    topics,
+  }: {
+    books: BookSchema[];
+    sections: SectionSchema[];
+    topics: TopicSchema[];
+  }): void;
   onBookEditClick?(book: BookSchema): void;
   onTopicClick?(topic: TopicSchema): void;
   onTopicEditClick?(topic: TopicSchema): void;
@@ -77,15 +86,34 @@ export default function BookImport(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const [selectedNodeIds, select] = useState<Set<string>>(new Set());
-  const handleTreeChange = (nodeId: string) => {
-    select((nodeIds) =>
-      nodeIds.delete(nodeId) ? new Set(nodeIds) : new Set(nodeIds.add(nodeId))
+  const [selectedIndexes, select] = useState<Set<TreeItemIndex>>(new Set());
+  const handleTreeChange = (index: TreeItemIndex) => {
+    select((indexes) =>
+      indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
     );
   };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit([...selectedNodeIds]);
+    const selectedBooks: BookSchema[] = [];
+    const selectedSections: SectionSchema[] = [];
+    const selectedTopics: TopicSchema[] = [];
+    selectedIndexes.forEach(
+      ([bookIndex, sectionIndex, topicIndex]: TreeItemIndex) => {
+        if (sectionIndex === null) selectedBooks.push(books[bookIndex]);
+        else if (topicIndex === null)
+          selectedSections.push(books[bookIndex].sections[sectionIndex]);
+        else
+          selectedTopics.push(
+            books[bookIndex].sections[sectionIndex].topics[topicIndex]
+          );
+      }
+    );
+
+    onSubmit({
+      books: selectedBooks,
+      sections: selectedSections,
+      topics: selectedTopics,
+    });
   };
   return (
     <Container classes={containerClasses} maxWidth="md">
@@ -116,7 +144,7 @@ export default function BookImport(props: Props) {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        {books.map((book) => {
+        {books.map((book, bookIndex) => {
           const handleItem = (handler?: (topic: TopicSchema) => void) => ([
             sectionIndex,
             topicIndex,
@@ -134,6 +162,7 @@ export default function BookImport(props: Props) {
             <BookTree
               key={book.id}
               book={book}
+              bookIndex={bookIndex}
               onItemClick={handleItem(onTopicClick)}
               onItemEditClick={handleItem(onTopicEditClick)}
               onBookInfoClick={handleBookInfoClick}
