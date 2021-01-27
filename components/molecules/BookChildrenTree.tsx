@@ -67,7 +67,7 @@ type Props = {
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(index: TreeItemIndex): void;
   selectedIndexes?: Set<TreeItemIndex>;
-  isTopicEditable?(topic: TopicSchema): boolean;
+  isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookChildrenTree(props: Props) {

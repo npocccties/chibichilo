@@ -48,6 +48,7 @@ type Props = {
   onAddSection(props: SectionProps): void;
   onTopicImportClick(): void;
   onTopicNewClick(): void;
+  onBookImportClick(): void;
 };
 
 export default function BookEdit(props: Props) {
@@ -58,6 +59,7 @@ export default function BookEdit(props: Props) {
     onAddSection,
     onTopicImportClick,
     onTopicNewClick,
+    onBookImportClick,
   } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
@@ -99,6 +101,7 @@ export default function BookEdit(props: Props) {
         onTopicClick={handleTopicClick}
         onTopicImportClick={onTopicImportClick}
         onTopicNewClick={onTopicNewClick}
+        onBookImportClick={onBookImportClick}
         onSectionNewClick={handleSectionNewClick}
       />
       <BookForm className={classes.form} book={book} onSubmit={onSubmit} />

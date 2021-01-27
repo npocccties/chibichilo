@@ -65,8 +65,8 @@ type Props = {
   onBookEditClick?(book: BookSchema): void;
   onTopicClick?(topic: TopicSchema): void;
   onTopicEditClick?(topic: TopicSchema): void;
-  isBookEditable?(book: BookSchema): boolean;
-  isTopicEditable?(topic: TopicSchema): boolean;
+  isBookEditable?(book: BookSchema): boolean | undefined;
+  isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookImport(props: Props) {
