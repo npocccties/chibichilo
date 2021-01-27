@@ -2,10 +2,10 @@ import { BookSchema } from "$server/models/book";
 import { UserSchema } from "$server/models/user";
 
 /**
- * トピックの作成者の判定
- * @param topic トピック
+ * ブックの作成者の判定
+ * @param book ブック
  * @param by ユーザー
- * @returns トピックの作成者がユーザーの場合: true、それ以外: false
+ * @returns ブックの作成者がユーザーの場合: true、それ以外: false
  */
 function bookCreateBy(
   book: Pick<BookSchema, "author">,
