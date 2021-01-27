@@ -4,6 +4,10 @@ import type {
   VideoTrackProps,
   VideoTrackSchema,
 } from "$server/models/videoTrack";
+import type {
+  Query as BookEditQuery,
+  EditProps as BookEditProps,
+} from "$pages/book/edit";
 import Placeholder from "$templates/Placeholder";
 import TopicEdit from "$templates/TopicEdit";
 import Unknown from "$templates/Unknown";
@@ -14,16 +18,19 @@ import {
   useTopic,
 } from "$utils/topic";
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
+import { updateBook, useBook } from "$utils/book";
 
-export type Query = { topicId?: string };
+type Query = { topicId?: string } & BookEditQuery;
 
-export type EditProps = {
+type EditProps = {
   topicId: TopicSchema["id"];
   back(): Promise<unknown>;
   onDelete?(topic: TopicSchema): Promise<void>;
 };
 
-export function Edit({ topicId, back, onDelete }: EditProps) {
+type EditWithBookProps = EditProps & BookEditProps;
+
+function Edit({ topicId, back, onDelete }: EditProps) {
   const topic = useTopic(topicId);
   async function handleSubmit(props: TopicProps) {
     await updateTopic({ id: topicId, ...props });
@@ -57,23 +64,53 @@ export function Edit({ topicId, back, onDelete }: EditProps) {
   return <TopicEdit topic={topic} {...handlers} />;
 }
 
+function EditWithBook({ bookId, ...props }: EditWithBookProps) {
+  const book = useBook(bookId);
+  async function handleDelete({ id: topicId }: Pick<TopicSchema, "id">) {
+    if (!book) return;
+    await updateBook({
+      ...book,
+      ltiResourceLinks: undefined,
+      sections: book?.sections?.map((section) => ({
+        ...section,
+        topics: section.topics.filter(({ id }) => id !== topicId),
+      })),
+    });
+  }
+
+  if (!book) return <Placeholder />;
+
+  return <Edit {...props} onDelete={handleDelete} />;
+}
+
 function Router() {
   const router = useRouter();
   const query: Query = router.query;
-  const props = { topicId: Number(query.topicId) };
-  function backToTopics() {
-    return router.push("/topics");
-  }
+  const topicId = Number(query.topicId);
+  const bookEditQuery = {
+    ...(query.bookId && { bookId: Number(query.bookId) }),
+    ...(query.prev && { prev: query.prev }),
+  };
+  const back = () => router.push({ pathname: "./", query: bookEditQuery });
 
-  if (!Number.isFinite(props.topicId)) {
+  if (!Number.isFinite(topicId)) {
     return (
       <Unknown header="トピックがありません">
         トピックが見つかりませんでした
       </Unknown>
     );
   }
-
-  return <Edit {...props} back={backToTopics} />;
+  if ("bookId" in bookEditQuery && !Number.isFinite(bookEditQuery.bookId)) {
+    return (
+      <Unknown header="ブックがありません">
+        ブックが見つかりませんでした
+      </Unknown>
+    );
+  }
+  if ("bookId" in bookEditQuery) {
+    return <EditWithBook topicId={topicId} back={back} {...bookEditQuery} />;
+  }
+  return <Edit topicId={topicId} back={back} />;
 }
 
 export default Router;

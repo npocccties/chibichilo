@@ -10,7 +10,7 @@ import type { UserSchema } from "$server/models/user";
 import type {
   Query as BookEditQuery,
   EditProps as BookEditProps,
-} from "../edit";
+} from "$pages/book/edit";
 import topicCreateBy from "$utils/topicCreateBy";
 import { createTopic } from "$utils/topic";
 
@@ -49,7 +49,7 @@ function Import({ bookId, prev }: BookEditProps) {
   }
   function handleTopicEditClick({ id: topicId }: Pick<TopicSchema, "id">) {
     return router.push({
-      pathname: "/book/topic/edit",
+      pathname: "/book/topic/import/edit",
       query: { ...bookEditQuery, topicId },
     });
   }

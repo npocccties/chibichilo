@@ -19,7 +19,7 @@ function Index() {
   const userId = session.data?.user?.id;
   const handlers = {
     onTopicEditClick: ({ id }: Pick<TopicSchema, "id">) =>
-      router.push({ pathname: "/topic/edit", query: { topicId: id } }),
+      router.push({ pathname: "/topics/edit", query: { topicId: id } }),
   };
 
   if (userId == null) {
