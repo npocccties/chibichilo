@@ -4,6 +4,7 @@ import { isInstructor, useSession } from "$utils/session";
 import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import Unknown from "$templates/Unknown";
 import Placeholder from "$templates/Placeholder";
+import { pagesPath } from "$utils/$path";
 
 function Replace(props: { href: string | UrlObject }) {
   const router = useRouter();
@@ -12,12 +13,13 @@ function Replace(props: { href: string | UrlObject }) {
 }
 
 function ReplaceToBook(props: { ltiResourceLink: LtiResourceLinkSchema }) {
-  const url = {
-    pathname: "/book",
-    query: { bookId: props.ltiResourceLink.bookId },
-  };
-
-  return <Replace href={url} />;
+  return (
+    <Replace
+      href={pagesPath.book.$url({
+        query: { bookId: props.ltiResourceLink.bookId },
+      })}
+    />
+  );
 }
 
 function Router() {
@@ -29,8 +31,8 @@ function Router() {
   const ltiResourceLink = session.data.ltiResourceLink;
 
   if (isInstructor(session.data)) {
-    const href = ltiResourceLink == null ? "/link" : "/books";
-    return <Replace href={href} />;
+    const path = ltiResourceLink == null ? "link" : "books";
+    return <Replace href={pagesPath[path].$url()} />;
   }
   if (!ltiResourceLink)
     return (

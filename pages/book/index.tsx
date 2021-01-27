@@ -7,32 +7,30 @@ import Unknown from "$templates/Unknown";
 import { useBook } from "$utils/book";
 import { isInstructor, useSession } from "$utils/session";
 import { TopicSchema } from "$server/models/topic";
+import { pagesPath } from "$utils/$path";
 
-export type Query = {
-  bookId?: string;
-};
+export type Query = { bookId: BookSchema["id"] };
 
-export type ShowProps = { bookId: BookSchema["id"] };
-
-function Show(props: ShowProps) {
+function Show(query: Query) {
   const { data: session } = useSession();
-  const book = useBook(props.bookId);
+  const book = useBook(query.bookId);
   const [index, nextItemIndex] = useNextItemIndexAtom();
   const handleTopicEnded = () => nextItemIndex();
   const handleItemClick = nextItemIndex;
   const router = useRouter();
   const handleBookEditClick = () => {
-    return router.push({ pathname: "/book/edit", query: props });
+    return router.push(pagesPath.book.edit.$url({ query }));
   };
-  const handleBookLinkClick = () => router.push("/link");
+  const handleBookLinkClick = () => router.push(pagesPath.link.$url());
   const handleTopicEditClick = ({ id }: Pick<TopicSchema, "id">) => {
-    router.push({
-      pathname: "/book/topic/edit",
-      query: {
-        bookId: props.bookId,
-        topicId: id,
-      },
-    });
+    return router.push(
+      pagesPath.book.topic.edit.$url({
+        query: {
+          bookId: query.bookId,
+          topicId: id,
+        },
+      })
+    );
   };
 
   if (!book) return <Placeholder />;
@@ -53,8 +51,7 @@ function Show(props: ShowProps) {
 
 function Router() {
   const router = useRouter();
-  const query: Query = router.query;
-  const bookId = Number(query.bookId);
+  const bookId = Number(router.query.bookId);
 
   if (!Number.isFinite(bookId))
     return (

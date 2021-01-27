@@ -9,13 +9,13 @@ import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { UserSchema } from "$server/models/user";
-import type {
-  Query as BookEditQuery,
-  EditProps as BookEditProps,
-} from "./edit";
+import type { Query as BookEditQuery } from "../edit";
 import bookCreateBy from "$utils/bookCreateBy";
 import topicCreateBy from "$utils/topicCreateBy";
 import { createTopic } from "$utils/topic";
+import { pagesPath } from "$utils/$path";
+
+export type Query = BookEditQuery;
 
 const sharedOrCreatedBy = (author?: Pick<UserSchema, "id">) => (
   book: BookSchema
@@ -23,7 +23,7 @@ const sharedOrCreatedBy = (author?: Pick<UserSchema, "id">) => (
   return book.shared || bookCreateBy(book, author);
 };
 
-function Import({ bookId, prev }: BookEditProps) {
+function Import({ bookId, prev }: Query) {
   const { data: session } = useSession();
   const book = useBook(bookId);
   const books = useBooks();
@@ -51,22 +51,21 @@ function Import({ bookId, prev }: BookEditProps) {
       sections: [...book.sections, ...ids.map((id) => ({ topics: [{ id }] }))],
     });
 
-    return router.push({
-      pathname: "/book/edit",
-      query: bookEditQuery,
-    });
+    return router.push(pagesPath.book.edit.$url({ query: { bookId } }));
   }
   function handleBookEditClick({ id: bookId }: Pick<BookSchema, "id">) {
-    return router.push({
-      pathname: "book/edit",
-      query: { ...bookEditQuery, bookId },
-    });
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { ...bookEditQuery, bookId },
+      })
+    );
   }
   function handleTopicEditClick({ id: topicId }: Pick<TopicSchema, "id">) {
-    return router.push({
-      pathname: "/book/topic/edit",
-      query: { ...bookEditQuery, topicId },
-    });
+    return router.push(
+      pagesPath.book.import.topic.edit.$url({
+        query: { ...bookEditQuery, topicId },
+      })
+    );
   }
   const handlers = {
     onSubmit: handleSubmit,
@@ -93,8 +92,8 @@ function Import({ bookId, prev }: BookEditProps) {
 
 function Router() {
   const router = useRouter();
-  const query: BookEditQuery = router.query;
-  const bookId = Number(query.bookId);
+  const bookId = Number(router.query.bookId);
+  const { prev }: Pick<Query, "prev"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -103,7 +102,7 @@ function Router() {
       </Unknown>
     );
 
-  return <Import bookId={bookId} prev={query.prev} />;
+  return <Import bookId={bookId} prev={prev} />;
 }
 
 export default Router;

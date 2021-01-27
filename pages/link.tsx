@@ -7,6 +7,7 @@ import { useUserBooks } from "$utils/userBooks";
 import BookLink from "$templates/BookLink";
 import Unknown from "$templates/Unknown";
 import Placeholder from "$templates/Placeholder";
+import { pagesPath } from "$utils/$path";
 
 function Link(
   props: Omit<Parameters<typeof BookLink>[0], "books"> & { userId: User["id"] }
@@ -30,22 +31,21 @@ function Index() {
   async function handleSubmit(bookId: BookSchema["id"]) {
     if (ltiResourceLink == null) return;
     await updateLtiResourceLink({ ...ltiResourceLink, bookId });
-    return router.push({
-      pathname: "/book",
-      query: { bookId },
-    });
+    return router.push(pagesPath.book.$url({ query: { bookId } }));
   }
   function handleBookEdit({ id }: Pick<BookSchema, "id">) {
-    return router.push({
-      pathname: "/book/edit",
-      query: { bookId: id, prev: "/link" },
-    });
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { bookId: id, prev: "/link" },
+      })
+    );
   }
   function handleBookNew() {
-    return router.push({
-      pathname: "/book/new",
-      query: { prev: "/link" },
-    });
+    return router.push(
+      pagesPath.book.new.$url({
+        query: { prev: "/link" },
+      })
+    );
   }
   const handlers = {
     onSubmit: handleSubmit,

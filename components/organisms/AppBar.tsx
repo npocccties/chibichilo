@@ -71,7 +71,7 @@ type Props = ComponentProps<typeof MuiAppBar> & {
   session: Session;
   onBooksClick(): void;
   onTopicsClick(): void;
-  onDashboardClick(): void;
+  onDashboardClick?(): void;
 };
 
 const role = (session: Session) => {

@@ -9,6 +9,7 @@ import theme from "$theme";
 import AppBar from "$organisms/AppBar";
 import { useRouter } from "next/router";
 import { isInstructor, useSession } from "$utils/session";
+import { pagesPath } from "$utils/$path";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
@@ -17,9 +18,8 @@ import "$styles/video-js.css";
 function ThemeProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { data: session } = useSession();
-  const handleBooksClick = () => router.push("/books");
-  const handleTopicsClick = () => router.push("/topics");
-  const handleDashboardClick = () => undefined;
+  const handleBooksClick = () => router.push(pagesPath.books.$url());
+  const handleTopicsClick = () => router.push(pagesPath.topics.$url());
   return (
     <>
       <Head>
@@ -35,7 +35,6 @@ function ThemeProvider({ children }: { children: ReactNode }) {
             session={session}
             onBooksClick={handleBooksClick}
             onTopicsClick={handleTopicsClick}
-            onDashboardClick={handleDashboardClick}
           />
         )}
         {children}

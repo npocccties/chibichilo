@@ -1,13 +1,15 @@
-import { User, Book } from "@prisma/client";
 import { useRouter } from "next/router";
+import type { UserSchema } from "$server/models/user";
+import type { BookSchema } from "$server/models/book";
 import { useSession } from "$utils/session";
 import { useUserBooks } from "$utils/userBooks";
 import Books from "$templates/Books";
-import type { Query as BookQuery } from "./book";
-import type { Query as BookEditQuery } from "./book/edit";
+import { pagesPath } from "$utils/$path";
 
 function UserBooks(
-  props: Omit<Parameters<typeof Books>[0], "books"> & { userId: User["id"] }
+  props: Omit<Parameters<typeof Books>[0], "books"> & {
+    userId: UserSchema["id"];
+  }
 ) {
   const userBooks = useUserBooks(props.userId);
   const books = userBooks.data?.books ?? [];
@@ -19,17 +21,23 @@ function Index() {
   const session = useSession();
   const userId = session.data?.user?.id;
   const ltiResourceLink = session.data?.ltiResourceLink;
-  const handleBookClick = (
-    pathname: `/book${"" | "/edit"}`,
-    query?: BookQuery | BookEditQuery
-  ) => ({ id }: Pick<Book, "id">) => {
-    router.push({ pathname, query: { ...query, bookId: id } });
-  };
   const handlers = {
-    onBookClick: handleBookClick("/book"),
-    onBookEditClick: handleBookClick("/book/edit", { prev: "/books" }),
-    onBookNewClick: () => router.push("/book/new"),
-    onBookLinkClick: () => router.push("/link"),
+    onBookClick({ id }: Pick<BookSchema, "id">) {
+      return router.push(pagesPath.book.$url({ query: { bookId: id } }));
+    },
+    onBookEditClick({ id }: Pick<BookSchema, "id">) {
+      return router.push(
+        pagesPath.book.edit.$url({ query: { prev: "/books", bookId: id } })
+      );
+    },
+    onBookNewClick() {
+      return router.push(
+        pagesPath.book.new.$url({ query: { prev: "/books" } })
+      );
+    },
+    onBookLinkClick() {
+      return router.push(pagesPath.link.$url());
+    },
   };
 
   if (userId == null) {

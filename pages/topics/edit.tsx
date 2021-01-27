@@ -4,10 +4,7 @@ import type {
   VideoTrackProps,
   VideoTrackSchema,
 } from "$server/models/videoTrack";
-import type {
-  Query as BookEditQuery,
-  EditProps as BookEditProps,
-} from "$pages/book/edit";
+import type { Query as BookEditQuery } from "$pages/book/edit";
 import Placeholder from "$templates/Placeholder";
 import TopicEdit from "$templates/TopicEdit";
 import Unknown from "$templates/Unknown";
@@ -20,7 +17,9 @@ import {
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
 import { updateBook, useBook } from "$utils/book";
 
-type Query = { topicId?: string } & BookEditQuery;
+export type Query =
+  | { topicId: TopicSchema["id"] }
+  | ({ topicId: TopicSchema["id"] } & BookEditQuery);
 
 type EditProps = {
   topicId: TopicSchema["id"];
@@ -28,7 +27,7 @@ type EditProps = {
   onDelete?(topic: TopicSchema): Promise<void>;
 };
 
-type EditWithBookProps = EditProps & BookEditProps;
+type EditWithBookProps = EditProps & BookEditQuery;
 
 function Edit({ topicId, back, onDelete }: EditProps) {
   const topic = useTopic(topicId);
@@ -85,12 +84,10 @@ function EditWithBook({ bookId, ...props }: EditWithBookProps) {
 
 function Router() {
   const router = useRouter();
-  const query: Query = router.query;
-  const topicId = Number(query.topicId);
-  const bookEditQuery = {
-    ...(query.bookId && { bookId: Number(query.bookId) }),
-    ...(query.prev && { prev: query.prev }),
-  };
+  const topicId = Number(router.query.topicId);
+  const bookId = router.query.bookId && Number(router.query.bookId);
+  const { prev }: Pick<BookEditQuery, "prev"> = router.query;
+  const bookEditQuery = { ...(bookId && { bookId }), ...(prev && { prev }) };
   const back = () => router.push({ pathname: "./", query: bookEditQuery });
 
   if (!Number.isFinite(topicId)) {

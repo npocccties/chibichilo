@@ -7,13 +7,13 @@ import Unknown from "$templates/Unknown";
 import { useAddVideoTrackAtom } from "$store/topic";
 import { updateBook, useBook } from "$utils/book";
 import { createTopic } from "$utils/topic";
-import type {
-  Query as BookEditQuery,
-  EditProps as BookEditProps,
-} from "../edit";
+import type { Query as BookEditQuery } from "../edit";
 import { uploadVideoTrack } from "$utils/videoTrack";
+import { pagesPath } from "$utils/$path";
 
-function New({ bookId, prev }: BookEditProps) {
+export type Query = BookEditQuery;
+
+function New({ bookId, prev }: Query) {
   const book = useBook(bookId);
   const router = useRouter();
   const [videoTracks, addVideoTrack] = useAddVideoTrackAtom();
@@ -36,14 +36,16 @@ function New({ bookId, prev }: BookEditProps) {
     });
 
     const bookEditQuery = { bookId, ...(prev && { prev }) };
-    await router.replace({
-      pathname: "/book/topic/edit",
-      query: { ...bookEditQuery, topicId: id },
-    });
-    return router.push({
-      pathname: "/book/edit",
-      query: bookEditQuery,
-    });
+    await router.replace(
+      pagesPath.book.topic.edit.$url({
+        query: { ...bookEditQuery, topicId: id },
+      })
+    );
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: bookEditQuery,
+      })
+    );
   }
   function handleSubtitleSubmit(videoTrack: VideoTrackProps) {
     addVideoTrack(videoTrack);
@@ -66,8 +68,8 @@ function New({ bookId, prev }: BookEditProps) {
 
 function Router() {
   const router = useRouter();
-  const query: BookEditQuery = router.query;
-  const bookId = Number(query.bookId);
+  const bookId = Number(router.query.bookId);
+  const { prev }: Pick<Query, "prev"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -76,7 +78,7 @@ function Router() {
       </Unknown>
     );
 
-  return <New bookId={bookId} prev={query.prev} />;
+  return <New bookId={bookId} prev={prev} />;
 }
 
 export default Router;

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useSession } from "$utils/session";
 import { useUserTopics } from "$utils/userTopics";
 import Topics from "$templates/Topics";
+import { pagesPath } from "$utils/$path";
 
 function UserTopics(
   props: Omit<Parameters<typeof Topics>[0], "topics"> & { userId: User["id"] }
@@ -18,8 +19,11 @@ function Index() {
   const session = useSession();
   const userId = session.data?.user?.id;
   const handlers = {
-    onTopicEditClick: ({ id }: Pick<TopicSchema, "id">) =>
-      router.push({ pathname: "/topics/edit", query: { topicId: id } }),
+    onTopicEditClick({ id }: Pick<TopicSchema, "id">) {
+      return router.push(
+        pagesPath.topics.edit.$url({ query: { topicId: id } })
+      );
+    },
   };
 
   if (userId == null) {

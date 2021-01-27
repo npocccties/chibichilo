@@ -7,20 +7,18 @@ import { useSession } from "$utils/session";
 import { useTopics } from "$utils/topics";
 import type { TopicSchema } from "$server/models/topic";
 import type { UserSchema } from "$server/models/user";
-import type {
-  Query as BookEditQuery,
-  EditProps as BookEditProps,
-} from "$pages/book/edit";
+import type { Query as BookEditQuery } from "$pages/book/edit";
 import topicCreateBy from "$utils/topicCreateBy";
 import { createTopic } from "$utils/topic";
+import { pagesPath } from "$utils/$path";
+
+export type Query = BookEditQuery;
 
 const sharedOrCreatedBy = (creator?: Pick<UserSchema, "id">) => (
   topic: TopicSchema
-) => {
-  return topic.shared || topicCreateBy(topic, creator);
-};
+) => topic.shared || topicCreateBy(topic, creator);
 
-function Import({ bookId, prev }: BookEditProps) {
+function Import({ bookId, prev }: BookEditQuery) {
   const { data: session } = useSession();
   const book = useBook(bookId);
   const topics = useTopics();
@@ -42,16 +40,18 @@ function Import({ bookId, prev }: BookEditProps) {
       sections: [...book.sections, ...ids.map((id) => ({ topics: [{ id }] }))],
     });
 
-    return router.push({
-      pathname: "/book/edit",
-      query: bookEditQuery,
-    });
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: bookEditQuery,
+      })
+    );
   }
   function handleTopicEditClick({ id: topicId }: Pick<TopicSchema, "id">) {
-    return router.push({
-      pathname: "/book/topic/import/edit",
-      query: { ...bookEditQuery, topicId },
-    });
+    return router.push(
+      pagesPath.book.topic.import.edit.$url({
+        query: { ...bookEditQuery, topicId },
+      })
+    );
   }
   const handlers = {
     onSubmit: handleSubmit,
@@ -74,8 +74,8 @@ function Import({ bookId, prev }: BookEditProps) {
 
 function Router() {
   const router = useRouter();
-  const query: BookEditQuery = router.query;
-  const bookId = Number(query.bookId);
+  const bookId = Number(router.query.bookId);
+  const { prev }: Pick<Query, "prev"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -84,7 +84,7 @@ function Router() {
       </Unknown>
     );
 
-  return <Import bookId={bookId} prev={query.prev} />;
+  return <Import bookId={bookId} prev={prev} />;
 }
 
 export default Router;

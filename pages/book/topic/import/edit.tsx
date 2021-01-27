@@ -1,1 +1,3 @@
-export { default as default } from "$pages/topics/edit";
+import Edit, { Query as EditQuery } from "$pages/topics/edit";
+export type Query = EditQuery;
+export default Edit;
