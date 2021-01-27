@@ -56,7 +56,8 @@ function Import({ bookId, prev }: Query) {
   function handleBookEditClick({ id: bookId }: Pick<BookSchema, "id">) {
     return router.push(
       pagesPath.book.edit.$url({
-        query: { ...bookEditQuery, bookId },
+        // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでマイブック画面に戻る
+        query: { bookId, prev: "/books" },
       })
     );
   }
