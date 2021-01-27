@@ -86,8 +86,11 @@ function Router() {
   const router = useRouter();
   const topicId = Number(router.query.topicId);
   const bookId = router.query.bookId && Number(router.query.bookId);
-  const { prev }: Pick<BookEditQuery, "prev"> = router.query;
-  const bookEditQuery = { ...(bookId && { bookId }), ...(prev && { prev }) };
+  const { context }: Pick<BookEditQuery, "context"> = router.query;
+  const bookEditQuery = {
+    ...(bookId && { bookId }),
+    ...(context && { context }),
+  };
   const back = () => router.push({ pathname: "./", query: bookEditQuery });
 
   if (!Number.isFinite(topicId)) {

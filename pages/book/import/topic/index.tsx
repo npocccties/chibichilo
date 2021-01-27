@@ -8,8 +8,8 @@ function Router() {
   const router = useRouter();
   useEffect(() => {
     const bookId = Number(router.query.bookId);
-    const { prev }: Pick<BookEditQuery, "prev"> = router.query;
-    const query = { bookId, ...(prev && { prev }) };
+    const { context }: Pick<BookEditQuery, "context"> = router.query;
+    const query = { bookId, ...(context && { context }) };
     router.replace(pagesPath.book.import.$url({ query }));
   }, [router]);
   return <Placeholder />;

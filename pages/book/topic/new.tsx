@@ -13,7 +13,7 @@ import { pagesPath } from "$utils/$path";
 
 export type Query = BookEditQuery;
 
-function New({ bookId, prev }: Query) {
+function New({ bookId, context }: Query) {
   const book = useBook(bookId);
   const router = useRouter();
   const [videoTracks, addVideoTrack] = useAddVideoTrackAtom();
@@ -35,7 +35,7 @@ function New({ bookId, prev }: Query) {
       sections: [...book.sections, { name: null, topics: [{ id }] }],
     });
 
-    const bookEditQuery = { bookId, ...(prev && { prev }) };
+    const bookEditQuery = { bookId, ...(context && { context }) };
     await router.replace(
       pagesPath.book.topic.edit.$url({
         query: { ...bookEditQuery, topicId: id },
@@ -69,7 +69,7 @@ function New({ bookId, prev }: Query) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
-  const { prev }: Pick<Query, "prev"> = router.query;
+  const { context }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -78,7 +78,7 @@ function Router() {
       </Unknown>
     );
 
-  return <New bookId={bookId} prev={prev} />;
+  return <New bookId={bookId} context={context} />;
 }
 
 export default Router;

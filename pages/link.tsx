@@ -36,16 +36,12 @@ function Index() {
   function handleBookEdit({ id }: Pick<BookSchema, "id">) {
     return router.push(
       pagesPath.book.edit.$url({
-        query: { bookId: id, prev: "/link" },
+        query: { bookId: id, context: "link" },
       })
     );
   }
   function handleBookNew() {
-    return router.push(
-      pagesPath.book.new.$url({
-        query: { prev: "/link" },
-      })
-    );
+    return router.push(pagesPath.book.new.$url({ query: { context: "link" } }));
   }
   const handlers = {
     onSubmit: handleSubmit,

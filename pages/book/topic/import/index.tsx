@@ -18,12 +18,12 @@ const sharedOrCreatedBy = (creator?: Pick<UserSchema, "id">) => (
   topic: TopicSchema
 ) => topic.shared || topicCreateBy(topic, creator);
 
-function Import({ bookId, prev }: BookEditQuery) {
+function Import({ bookId, context }: BookEditQuery) {
   const { data: session } = useSession();
   const book = useBook(bookId);
   const topics = useTopics();
   const router = useRouter();
-  const bookEditQuery = { bookId, ...(prev && { prev }) };
+  const bookEditQuery = { bookId, ...(context && { context }) };
   async function handleSubmit(topics: TopicSchema[]) {
     if (!book) return;
 
@@ -75,7 +75,7 @@ function Import({ bookId, prev }: BookEditQuery) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
-  const { prev }: Pick<Query, "prev"> = router.query;
+  const { context }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -84,7 +84,7 @@ function Router() {
       </Unknown>
     );
 
-  return <Import bookId={bookId} prev={prev} />;
+  return <Import bookId={bookId} context={context} />;
 }
 
 export default Router;

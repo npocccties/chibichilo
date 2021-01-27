@@ -7,26 +7,27 @@ import Unknown from "$templates/Unknown";
 import { destroyBook, updateBook, useBook } from "$utils/book";
 import { pagesPath } from "$utils/$path";
 
-export type Query = { bookId: BookSchema["id"]; prev?: "/books" | "/link" };
+export type Query = { bookId: BookSchema["id"]; context?: "books" | "link" };
 
-function Edit({ bookId, prev }: Query) {
+function Edit({ bookId, context }: Query) {
   const book = useBook(bookId);
   const router = useRouter();
   async function handleSubmit(props: BookProps) {
     await updateBook({ id: bookId, ...props });
-    switch (prev) {
-      case "/books":
-      case "/link":
-        return router.push(prev);
+    switch (context) {
+      case "books":
+      case "link":
+        return router.push(pagesPath[context].$url());
       default:
         return router.push(pagesPath.book.$url({ query: { bookId } }));
     }
   }
   async function handleDelete({ id }: Pick<BookSchema, "id">) {
     await destroyBook(id);
-    switch (prev) {
-      case "/link":
-        return router.push(prev);
+    switch (context) {
+      case "books":
+      case "link":
+        return router.push(pagesPath[context].$url());
       default:
         return router.push(pagesPath.books.$url());
     }
@@ -42,14 +43,14 @@ function Edit({ bookId, prev }: Query) {
   function toBookImport() {
     return router.push(
       pagesPath.book.import.$url({
-        query: { bookId, ...(prev && { prev }) },
+        query: { bookId, ...(context && { context }) },
       })
     );
   }
   function toTopic(path: "import" | "new") {
     return router.push(
       pagesPath.book.topic[path].$url({
-        query: { bookId, ...(prev && { prev }) },
+        query: { bookId, ...(context && { context }) },
       })
     );
   }
@@ -69,7 +70,7 @@ function Edit({ bookId, prev }: Query) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
-  const { prev }: Pick<Query, "prev"> = router.query;
+  const { context }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -78,7 +79,7 @@ function Router() {
       </Unknown>
     );
 
-  return <Edit bookId={bookId} prev={prev} />;
+  return <Edit bookId={bookId} context={context} />;
 }
 
 export default Router;

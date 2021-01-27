@@ -4,20 +4,18 @@ import BookNew from "$templates/BookNew";
 import { createBook } from "$utils/book";
 import { pagesPath } from "$utils/$path";
 
-export type Query = {
-  prev?: "/books" | "/link";
-};
+export type Query = { context?: "books" | "link" };
 
 function New() {
   const router = useRouter();
   const handleSubmit = async (book: BookProps) => {
     const { id } = await createBook(book);
-    const { prev }: Pick<Query, "prev"> = router.query;
+    const { context }: Pick<Query, "context"> = router.query;
     await router.replace(
       pagesPath.book.edit.$url({
         query: {
           bookId: id,
-          ...(prev && { prev }),
+          ...(context && { context }),
         },
       })
     );

@@ -23,12 +23,12 @@ const sharedOrCreatedBy = (author?: Pick<UserSchema, "id">) => (
   return book.shared || bookCreateBy(book, author);
 };
 
-function Import({ bookId, prev }: Query) {
+function Import({ bookId, context }: Query) {
   const { data: session } = useSession();
   const book = useBook(bookId);
   const books = useBooks();
   const router = useRouter();
-  const bookEditQuery = { bookId, ...(prev && { prev }) };
+  const bookEditQuery = { bookId, ...(context && { context }) };
   async function handleSubmit({
     topics,
   }: {
@@ -57,7 +57,7 @@ function Import({ bookId, prev }: Query) {
     return router.push(
       pagesPath.book.edit.$url({
         // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでマイブック画面に戻る
-        query: { bookId, prev: "/books" },
+        query: { bookId, context: "books" },
       })
     );
   }
@@ -94,7 +94,7 @@ function Import({ bookId, prev }: Query) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
-  const { prev }: Pick<Query, "prev"> = router.query;
+  const { context }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId))
     return (
@@ -103,7 +103,7 @@ function Router() {
       </Unknown>
     );
 
-  return <Import bookId={bookId} prev={prev} />;
+  return <Import bookId={bookId} context={context} />;
 }
 
 export default Router;

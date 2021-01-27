@@ -27,12 +27,12 @@ function Index() {
     },
     onBookEditClick({ id }: Pick<BookSchema, "id">) {
       return router.push(
-        pagesPath.book.edit.$url({ query: { prev: "/books", bookId: id } })
+        pagesPath.book.edit.$url({ query: { context: "books", bookId: id } })
       );
     },
     onBookNewClick() {
       return router.push(
-        pagesPath.book.new.$url({ query: { prev: "/books" } })
+        pagesPath.book.new.$url({ query: { context: "books" } })
       );
     },
     onBookLinkClick() {
