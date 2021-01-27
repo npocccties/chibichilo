@@ -13,7 +13,7 @@ type SectionProps = {
   sectionIndex: number;
   children: ReactNode;
   onTreeChange?(nodeId: string): void;
-  selectedIndexes?: Set<TreeItemIndex>;
+  selectedIndexes?: Set<string>;
 };
 
 function SectionTree({
@@ -66,7 +66,7 @@ type Props = {
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
   onTreeChange?(nodeId: string): void;
-  selectedIndexes?: Set<TreeItemIndex>;
+  selectedIndexes?: Set<string>;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 

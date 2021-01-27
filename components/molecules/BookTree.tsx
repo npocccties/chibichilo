@@ -17,7 +17,7 @@ type Props = {
   onTreeChange?(nodeId: string): void;
   onBookInfoClick?(): void;
   onBookEditClick?: (() => void) | false;
-  selectedIndexes?: Set<TreeItemIndex>;
+  selectedIndexes?: Set<string>;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
