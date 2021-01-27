@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2001Topics,
+    InlineResponse2001TopicsFromJSON,
+    InlineResponse2001TopicsFromJSONTyped,
+    InlineResponse2001TopicsToJSON,
+} from './';
+
 /**
  * 成功時
  * @export
@@ -21,10 +28,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse2004 {
     /**
      * 
-     * @type {Array<object>}
+     * @type {Array<InlineResponse2001Topics>}
      * @memberof InlineResponse2004
      */
-    resources?: Array<object>;
+    topics?: Array<InlineResponse2001Topics>;
     /**
      * 
      * @type {number}
@@ -49,7 +56,7 @@ export function InlineResponse2004FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'resources': !exists(json, 'resources') ? undefined : json['resources'],
+        'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2001TopicsFromJSON)),
         'page': !exists(json, 'page') ? undefined : json['page'],
         'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
@@ -64,7 +71,7 @@ export function InlineResponse2004ToJSON(value?: InlineResponse2004 | null): any
     }
     return {
         
-        'resources': value.resources,
+        'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2001TopicsToJSON)),
         'page': value.page,
         'perPage': value.perPage,
     };

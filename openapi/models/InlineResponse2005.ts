@@ -13,45 +13,30 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    InlineResponse200,
-    InlineResponse200FromJSON,
-    InlineResponse200FromJSONTyped,
-    InlineResponse200ToJSON,
-    InlineResponse2001Author,
-    InlineResponse2001AuthorFromJSON,
-    InlineResponse2001AuthorFromJSONTyped,
-    InlineResponse2001AuthorToJSON,
-    InlineResponse2005LtiLaunchBody,
-    InlineResponse2005LtiLaunchBodyFromJSON,
-    InlineResponse2005LtiLaunchBodyFromJSONTyped,
-    InlineResponse2005LtiLaunchBodyToJSON,
-} from './';
-
 /**
- * セッション情報
+ * 成功時
  * @export
  * @interface InlineResponse2005
  */
 export interface InlineResponse2005 {
     /**
      * 
-     * @type {InlineResponse2005LtiLaunchBody}
+     * @type {Array<object>}
      * @memberof InlineResponse2005
      */
-    ltiLaunchBody?: InlineResponse2005LtiLaunchBody;
+    resources?: Array<object>;
     /**
      * 
-     * @type {InlineResponse200}
+     * @type {number}
      * @memberof InlineResponse2005
      */
-    ltiResourceLink?: InlineResponse200;
+    page?: number;
     /**
      * 
-     * @type {InlineResponse2001Author}
+     * @type {number}
      * @memberof InlineResponse2005
      */
-    user?: InlineResponse2001Author;
+    perPage?: number;
 }
 
 export function InlineResponse2005FromJSON(json: any): InlineResponse2005 {
@@ -64,9 +49,9 @@ export function InlineResponse2005FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'ltiLaunchBody': !exists(json, 'ltiLaunchBody') ? undefined : InlineResponse2005LtiLaunchBodyFromJSON(json['ltiLaunchBody']),
-        'ltiResourceLink': !exists(json, 'ltiResourceLink') ? undefined : InlineResponse200FromJSON(json['ltiResourceLink']),
-        'user': !exists(json, 'user') ? undefined : InlineResponse2001AuthorFromJSON(json['user']),
+        'resources': !exists(json, 'resources') ? undefined : json['resources'],
+        'page': !exists(json, 'page') ? undefined : json['page'],
+        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
 }
 
@@ -79,9 +64,9 @@ export function InlineResponse2005ToJSON(value?: InlineResponse2005 | null): any
     }
     return {
         
-        'ltiLaunchBody': InlineResponse2005LtiLaunchBodyToJSON(value.ltiLaunchBody),
-        'ltiResourceLink': InlineResponse200ToJSON(value.ltiResourceLink),
-        'user': InlineResponse2001AuthorToJSON(value.user),
+        'resources': value.resources,
+        'page': value.page,
+        'perPage': value.perPage,
     };
 }
 
