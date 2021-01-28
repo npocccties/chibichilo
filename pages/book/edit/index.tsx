@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
+import { useSession } from "$utils/session";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { SectionProps } from "$server/models/book/section";
+import type { TopicSchema } from "$server/models/topic";
 import BookEdit from "$templates/BookEdit";
 import Placeholder from "$templates/Placeholder";
 import Unknown from "$templates/Unknown";
@@ -11,6 +13,7 @@ export type Query = { bookId: BookSchema["id"]; context?: "books" | "link" };
 
 function Edit({ bookId, context }: Query) {
   const book = useBook(bookId);
+  const { data: session } = useSession();
   const router = useRouter();
   async function handleSubmit(props: BookProps) {
     await updateBook({ id: bookId, ...props });
@@ -40,6 +43,13 @@ function Edit({ bookId, context }: Query) {
       sections: [...book?.sections, section],
     });
   }
+  function handleTopicEditClick({ id }: Pick<TopicSchema, "id">) {
+    return router.push(
+      pagesPath.book.edit.topic.edit.$url({
+        query: { bookId, topicId: id },
+      })
+    );
+  }
   function toBookImport() {
     return router.push(
       pagesPath.book.import.$url({
@@ -61,6 +71,10 @@ function Edit({ bookId, context }: Query) {
     onBookImportClick: () => toBookImport(),
     onTopicImportClick: () => toTopic("import"),
     onTopicNewClick: () => toTopic("new"),
+    onTopicEditClick: handleTopicEditClick,
+    isTopicEditable: (topic: TopicSchema) =>
+      // NOTE: 自身以外の作成したトピックに関しては編集不可
+      session?.user && topic.creator.id === session.user.id,
   };
   if (!book) return <Placeholder />;
 

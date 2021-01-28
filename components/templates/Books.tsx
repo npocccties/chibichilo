@@ -42,6 +42,8 @@ type Props = {
   onBookEditClick(book: BookSchema): void;
   onBookNewClick(): void;
   onBookLinkClick(): void;
+  onTopicEditClick?(topic: TopicSchema): void;
+  isTopicEditable?(): boolean | undefined;
 };
 
 export default function Books(props: Props) {
@@ -52,6 +54,8 @@ export default function Books(props: Props) {
     onBookEditClick,
     onBookNewClick,
     onBookLinkClick,
+    onTopicEditClick,
+    isTopicEditable,
   } = props;
   const handleBookEditClick = (book: BookSchema) => () => onBookEditClick(book);
   const handleTopicClick = (book: BookSchema) => () => onBookClick(book);
@@ -91,6 +95,8 @@ export default function Books(props: Props) {
             book={book}
             onEditClick={handleBookEditClick(book)}
             onTopicClick={handleTopicClick(book)}
+            onTopicEditClick={onTopicEditClick}
+            isTopicEditable={isTopicEditable}
           />
         ))}
       </div>

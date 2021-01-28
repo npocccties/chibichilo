@@ -5,6 +5,7 @@ import { useSession } from "$utils/session";
 import { useUserBooks } from "$utils/userBooks";
 import Books from "$templates/Books";
 import { pagesPath } from "$utils/$path";
+import { TopicSchema } from "$server/models/topic";
 
 function UserBooks(
   props: Omit<Parameters<typeof Books>[0], "books"> & {
@@ -37,6 +38,17 @@ function Index() {
     },
     onBookLinkClick() {
       return router.push(pagesPath.link.$url());
+    },
+    onTopicEditClick({ id }: Pick<TopicSchema, "id">) {
+      return router.push(
+        pagesPath.books.topic.edit.$url({
+          query: { topicId: id },
+        })
+      );
+    },
+    isTopicEditable(topic: TopicSchema) {
+      // NOTE: 自身以外の作成したトピックに関しては編集不可
+      return session?.data?.user && topic.creator.id === session?.data?.user.id;
     },
   };
 

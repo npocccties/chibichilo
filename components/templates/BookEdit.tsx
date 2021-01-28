@@ -48,7 +48,9 @@ type Props = {
   onAddSection(props: SectionProps): void;
   onTopicImportClick(): void;
   onTopicNewClick(): void;
+  onTopicEditClick?(topic: TopicSchema): void;
   onBookImportClick(): void;
+  isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookEdit(props: Props) {
@@ -59,7 +61,9 @@ export default function BookEdit(props: Props) {
     onAddSection,
     onTopicImportClick,
     onTopicNewClick,
+    onTopicEditClick,
     onBookImportClick,
+    isTopicEditable,
   } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
@@ -102,10 +106,12 @@ export default function BookEdit(props: Props) {
         className={classes.children}
         sections={book?.sections ?? []}
         onTopicClick={handleTopicClick}
+        onTopicEditClick={onTopicEditClick}
         onTopicImportClick={onTopicImportClick}
         onTopicNewClick={onTopicNewClick}
         onBookImportClick={onBookImportClick}
         onSectionNewClick={handleSectionNewClick}
+        isTopicEditable={isTopicEditable}
       />
       <BookForm className={classes.form} book={book} onSubmit={onSubmit} />
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>

@@ -38,14 +38,24 @@ type Props = {
   onSectionNewClick?(): void;
   onSortableChange?(): void;
   onTopicClick(topic: TopicSchema): void;
+  onTopicEditClick?(topic: TopicSchema): void;
+  isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookEditChildren(props: Props) {
-  const { sections, className, onTopicClick } = props;
+  const {
+    sections,
+    className,
+    onTopicClick,
+    onTopicEditClick,
+    isTopicEditable,
+  } = props;
   const cardClasses = useCardStyles();
   const classes = useStyles();
-  const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
-    onTopicClick(sections[sectionIndex].topics[topicIndex]);
+  const handleItem = (handler?: (topic: TopicSchema) => void) => ([
+    sectionIndex,
+    topicIndex,
+  ]: ItemIndex) => handler?.(sections[sectionIndex].topics[topicIndex]);
   return (
     <Card classes={cardClasses} className={className}>
       <div className={classes.items}>
@@ -81,7 +91,12 @@ export default function BookEditChildren(props: Props) {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
       >
-        <BookChildrenTree sections={sections} onItemClick={handleItemClick} />
+        <BookChildrenTree
+          sections={sections}
+          onItemClick={handleItem(onTopicClick)}
+          onItemEditClick={handleItem(onTopicEditClick)}
+          isTopicEditable={isTopicEditable}
+        />
       </TreeView>
     </Card>
   );

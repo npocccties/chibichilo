@@ -25,7 +25,11 @@ export const Editable = () => (
     defaultCollapseIcon={<ExpandMoreIcon />}
     defaultExpandIcon={<ChevronRightIcon />}
   >
-    <BookChildrenTree {...props} onItemEditClick={console.log} />
+    <BookChildrenTree
+      {...props}
+      onItemEditClick={console.log}
+      isTopicEditable={() => true}
+    />
   </TreeView>
 );
 

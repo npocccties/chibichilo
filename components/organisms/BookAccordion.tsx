@@ -48,10 +48,18 @@ type Props = {
   book: BookSchema;
   onEditClick(book: BookSchema): void;
   onTopicClick(topic: TopicSchema): void;
+  onTopicEditClick?(topic: TopicSchema): void;
+  isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
 export default function BookAccordion(props: Props) {
-  const { book, onEditClick, onTopicClick } = props;
+  const {
+    book,
+    onEditClick,
+    onTopicClick,
+    onTopicEditClick,
+    isTopicEditable,
+  } = props;
   const classes = useStyles();
   const accordionClasses = useAccordionStyle();
   const accordionSummaryClasses = useAccordionSummaryStyle();
@@ -64,8 +72,10 @@ export default function BookAccordion(props: Props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleItemClick = ([sectionIndex, topicIndex]: ItemIndex) =>
-    onTopicClick(book.sections[sectionIndex].topics[topicIndex]);
+  const handleItem = (handler?: (topic: TopicSchema) => void) => ([
+    sectionIndex,
+    topicIndex,
+  ]: ItemIndex) => handler?.(book.sections[sectionIndex].topics[topicIndex]);
   const handleEditClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onEditClick(book);
@@ -111,7 +121,9 @@ export default function BookAccordion(props: Props) {
         >
           <BookChildrenTree
             sections={book.sections}
-            onItemClick={handleItemClick}
+            onItemClick={handleItem(onTopicClick)}
+            onItemEditClick={handleItem(onTopicEditClick)}
+            isTopicEditable={isTopicEditable}
           />
         </TreeView>
       </AccordionDetails>
