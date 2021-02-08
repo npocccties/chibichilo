@@ -60,6 +60,10 @@ export class LtiLaunchBody {
 
   @IsOptional()
   @IsString()
+  context_label?: string;
+
+  @IsOptional()
+  @IsString()
   lis_person_name_full?: string;
 
   @IsOptional()

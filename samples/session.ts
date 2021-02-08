@@ -17,6 +17,7 @@ const session = {
     context_id: "1234567890abcdefg",
     resource_link_title: "テスト教材",
     context_title: "テストコース",
+    context_label: "テストコース",
     lis_person_name_full: "山田 太郎",
   },
   ltiResourceLink,

@@ -19,6 +19,7 @@ function Index() {
     title: ltiLaunchBody.resource_link_title ?? "",
     contextId: ltiLaunchBody.context_id,
     contextTitle: ltiLaunchBody.context_title ?? "",
+    contextLabel: ltiLaunchBody.context_label ?? "",
   };
   async function handleSubmit(book: BookSchema) {
     if (ltiResourceLink == null) return;

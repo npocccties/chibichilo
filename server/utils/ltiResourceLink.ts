@@ -16,13 +16,21 @@ export function ltiResourceLinkToSchema(
   return {
     ...link,
     contextTitle: context.title,
+    contextLabel: context.label,
   };
 }
 
 export async function upsertLtiResourceLink(
   props: LtiResourceLinkSchema
 ): Promise<LtiResourceLinkSchema | null> {
-  const { consumerId, contextId, contextTitle, bookId, ...link } = props;
+  const {
+    consumerId,
+    contextId,
+    contextTitle,
+    contextLabel,
+    bookId,
+    ...link
+  } = props;
 
   const found = await bookExists(bookId);
   if (!found) return null;
@@ -30,6 +38,7 @@ export async function upsertLtiResourceLink(
   const contextInput = {
     id: contextId,
     title: contextTitle,
+    label: contextLabel,
     consumer: { connect: { id: consumerId } },
   };
   const linkInput = {
@@ -71,6 +80,7 @@ export async function findLtiResourceLink({
     link && {
       ...link,
       contextTitle: link.context.title,
+      contextLabel: link.context.label,
     }
   );
 }

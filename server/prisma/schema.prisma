@@ -120,6 +120,7 @@ model LtiContext {
   id            String
   resourceLinks LtiResourceLink[]
   title         String
+  label         String
 
   @@id([consumerId, id])
   @@map("lti_context")

@@ -9,6 +9,7 @@ const ltiResourceLinks: readonly Omit<
     contextId: "2",
     title: "リンク",
     contextTitle: "コース",
+    contextLabel: "C2",
   },
 ];
 

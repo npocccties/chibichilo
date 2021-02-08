@@ -38,7 +38,7 @@ export default function CourseChip(props: Props) {
         variant="outlined"
         size="small"
         color="primary"
-        label={ltiResourceLink.contextId}
+        label={ltiResourceLink.contextLabel}
         onClick={onClick}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}

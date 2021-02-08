@@ -12,6 +12,10 @@ export class LtiResourceLinkProps {
 
   @IsNotEmpty()
   @IsString()
+  contextLabel!: string;
+
+  @IsNotEmpty()
+  @IsString()
   title!: string;
 
   @IsInt()

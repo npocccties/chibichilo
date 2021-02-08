@@ -10,6 +10,7 @@ const props = {
     title: "リンク1",
     contextId: "2",
     contextTitle: "コース2",
+    contextLabel: "C2",
   },
   onSubmit: console.log,
   onBookEditClick: console.log,

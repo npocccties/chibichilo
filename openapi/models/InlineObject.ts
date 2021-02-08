@@ -36,6 +36,12 @@ export interface InlineObject {
      * @type {string}
      * @memberof InlineObject
      */
+    contextLabel: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
     title: string;
     /**
      * 
@@ -57,6 +63,7 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'contextId': json['contextId'],
         'contextTitle': json['contextTitle'],
+        'contextLabel': json['contextLabel'],
         'title': json['title'],
         'bookId': json['bookId'],
     };
@@ -73,6 +80,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
         
         'contextId': value.contextId,
         'contextTitle': value.contextTitle,
+        'contextLabel': value.contextLabel,
         'title': value.title,
         'bookId': value.bookId,
     };

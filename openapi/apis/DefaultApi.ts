@@ -109,6 +109,7 @@ export interface ApiV2LtiLaunchPostRequest {
     contextId: string;
     resourceLinkTitle?: string;
     contextTitle?: string;
+    contextLabel?: string;
     lisPersonNameFull?: string;
     launchPresentationReturnUrl?: string;
 }
@@ -508,6 +509,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.contextTitle !== undefined) {
             formParams.append('context_title', requestParameters.contextTitle as any);
+        }
+
+        if (requestParameters.contextLabel !== undefined) {
+            formParams.append('context_label', requestParameters.contextLabel as any);
         }
 
         if (requestParameters.lisPersonNameFull !== undefined) {
