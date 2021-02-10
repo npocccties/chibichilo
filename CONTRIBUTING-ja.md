@@ -10,7 +10,7 @@
 
 ## コードの貢献方法
 
-GitHub の機能である、Pull Request を使って、コードを送ってください。いきなり巨大なpull request を review するのは、大変なので、できるだけ小さい機能単位に、pull request を作成して、review を受けてください。
+GitHub の機能である、Pull Request を使って、コードを送ってください。いきなり巨大な pull request を review するのは、大変なので、できるだけ小さい機能単位に、pull request を作成して、review を受けてください。
 
 pull request 作成時には、この pull request は、どのような問題を解決するのかなどの説明をつけてください。
 
