@@ -1,5 +1,21 @@
-import roles from "$server/config/roles";
+import roleUrns from "$server/config/roles";
 import { LtiLaunchBody } from "$server/validators/ltiLaunchBody";
+
+/** LIS Context Role 名前空間の接頭辞 */
+const lisContextRolePrefix = "urn:lti:role:ims/lis/";
+
+/** LIS Context Role 省略名を含める */
+function makeRole(role: string) {
+  return role.startsWith(lisContextRolePrefix)
+    ? [role, role.slice(lisContextRolePrefix.length)]
+    : [role];
+}
+
+/** LIS Context Role の名前空間のものを含めたロール */
+const roles = {
+  administrator: roleUrns.administrator.flatMap(makeRole),
+  instructor: roleUrns.instructor.flatMap(makeRole),
+} as const;
 
 /**
  * ロールが管理者か否か
