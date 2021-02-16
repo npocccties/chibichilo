@@ -27,7 +27,7 @@ export function useSessionInit() {
         return topicCreateBy(topic, data?.user);
       },
       isBookEditable(book: Pick<BookSchema, "author">) {
-        // NOTE: 自身以外の作成したトブックに関しては編集不可
+        // NOTE: 自身以外の作成したブックに関しては編集不可
         return bookCreateBy(book, data?.user);
       },
       error: Boolean(error),
