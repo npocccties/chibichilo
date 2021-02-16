@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { addDecorator } from "@storybook/react";
+import type { Story } from "@storybook/react";
 import { Provider } from "jotai";
 import MuiThemeProvider from "@material-ui/styles/ThemeProvider";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -20,12 +20,16 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-addDecorator((story) => (
-  <Provider>
-    <ThemeProvider>
-      <ConfirmProvider>
-        <Container>{story()}</Container>
-      </ConfirmProvider>
-    </ThemeProvider>
-  </Provider>
-));
+export const decorators = [
+  (Story: Story) => (
+    <Provider>
+      <ThemeProvider>
+        <ConfirmProvider>
+          <Container>
+            <Story />
+          </Container>
+        </ConfirmProvider>
+      </ThemeProvider>
+    </Provider>
+  ),
+];

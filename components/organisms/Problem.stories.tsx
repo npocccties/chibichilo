@@ -12,19 +12,11 @@ export const Default = () => (
   </Problem>
 );
 
-// TODO: Please use <Provider> の問題の回避
-function wrap(WrappedComponent: React.FC) {
-  function Component() {
-    return <WrappedComponent />;
-  }
-  return Component;
-}
-
 import UnlinkedProblem from "./UnlinkedProblem";
-export const Unlinked = wrap(UnlinkedProblem);
+export const Unlinked = UnlinkedProblem;
 
 import BookNotFoundProblem from "./BookNotFoundProblem";
-export const BookNotFound = wrap(BookNotFoundProblem);
+export const BookNotFound = BookNotFoundProblem;
 
 import TopicNotFoundProblem from "./TopicNotFoundProblem";
-export const TopicNotFound = wrap(TopicNotFoundProblem);
+export const TopicNotFound = TopicNotFoundProblem;

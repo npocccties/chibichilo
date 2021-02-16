@@ -15,15 +15,7 @@ const defaultProps = {
   onTopicEditClick: console.log,
 };
 
-// TODO: Please use <Provider> の問題の回避。なぜか回避できる。
-function wrap(WrappedComponent: React.FC) {
-  function Component() {
-    return <WrappedComponent />;
-  }
-  return Component;
-}
-
-export const Default = wrap(() => {
+export const Default = () => {
   const {
     updateBook,
     itemIndex,
@@ -42,9 +34,9 @@ export const Default = wrap(() => {
       onItemClick={updateItemIndex}
     />
   );
-});
+};
 
-export const Empty = wrap(() => {
+export const Empty = () => {
   const { itemIndex, updateItemIndex, nextItemIndex } = useBookAtom();
 
   return (
@@ -56,9 +48,9 @@ export const Empty = wrap(() => {
       onItemClick={updateItemIndex}
     />
   );
-});
+};
 
-export const EmptySection = wrap(() => {
+export const EmptySection = () => {
   const { itemIndex, updateItemIndex, nextItemIndex } = useBookAtom();
 
   return (
@@ -70,9 +62,9 @@ export const EmptySection = wrap(() => {
       onItemClick={updateItemIndex}
     />
   );
-});
+};
 
-export const ForStudent = wrap(() => {
+export const ForStudent = () => {
   const {
     updateBook,
     itemIndex,
@@ -92,4 +84,4 @@ export const ForStudent = wrap(() => {
       onItemClick={updateItemIndex}
     />
   );
-});
+};

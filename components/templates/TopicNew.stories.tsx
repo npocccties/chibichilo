@@ -8,15 +8,7 @@ const handlers = {
   onCancel: () => console.log("back"),
 };
 
-// TODO: Please use <Provider> の問題の回避。なぜか回避できる。
-function wrap(WrappedComponent: React.FC) {
-  function Component() {
-    return <WrappedComponent />;
-  }
-  return Component;
-}
-
-export const Default = wrap(() => {
+export const Default = () => {
   const { addVideoTrack, deleteVideoTrack } = useVideoTrackAtom();
   return (
     <TopicNew
@@ -25,4 +17,4 @@ export const Default = wrap(() => {
       {...handlers}
     />
   );
-});
+};

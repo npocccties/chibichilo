@@ -12,14 +12,6 @@ const handlers = {
   onSubmit: console.log,
 };
 
-// TODO: Please use <Provider> の問題の回避。なぜか回避できる。
-function wrap(WrappedComponent: React.FC) {
-  function Component() {
-    return <WrappedComponent />;
-  }
-  return Component;
-}
-
 const handleSubtitleSubmit = (
   handler: (videoTrack: VideoTrackSchema) => void
 ) => (videoTrackProps: VideoTrackProps) => {
@@ -32,7 +24,7 @@ const handleSubtitleSubmit = (
   });
 };
 
-export const Default = wrap(() => {
+export const Default = () => {
   const { addVideoTrack, deleteVideoTrack } = useVideoTrackAtom();
   return (
     <TopicForm
@@ -42,4 +34,4 @@ export const Default = wrap(() => {
       {...handlers}
     />
   );
-});
+};
