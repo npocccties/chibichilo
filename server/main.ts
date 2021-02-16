@@ -1,5 +1,4 @@
 import fastify from "fastify";
-import fastifyStatic from "fastify-static";
 import path from "path";
 import {
   PORT,
@@ -11,6 +10,7 @@ import {
   HTTPS_KEY,
 } from "$server/utils/env";
 import { sessionStore } from "$server/utils/prisma";
+import staticHandler from "$server/utils/staticHandler";
 import app, { Options } from "$server/config/app";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -21,11 +21,10 @@ if (HTTPS_CERT && HTTPS_KEY) {
 }
 
 fastify({ logger: isDev, trustProxy: true, ...options })
-  .register(fastifyStatic, {
-    root: path.resolve(__dirname, "public"),
-    prefix: FRONTEND_PATH,
-    extensions: ["html"],
-  })
+  .get(
+    path.join(FRONTEND_PATH, "*"),
+    staticHandler({ public: path.join(__dirname, "public") })
+  )
   .register(app, {
     basePath: API_BASE_PATH,
     allowOrigin: [FRONTEND_ORIGIN],
