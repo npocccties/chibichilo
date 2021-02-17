@@ -9,6 +9,7 @@ const roles = {
   instructor: [
     "urn:lti:role:ims/lis/TeachingAssistant/Grader",
     "urn:lti:role:ims/lis/TeachingAssistant",
+    "urn:lti:role:ims/lis/ContentDeveloper",
     "urn:lti:role:ims/lis/Instructor",
   ],
 } as const;
