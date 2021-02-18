@@ -1,21 +1,28 @@
 import { Topic } from "@prisma/client";
 import prisma from "$server/utils/prisma";
-import destroyResource from "$server/utils/resource/destroyResource";
 
 async function destroyTopic(id: Topic["id"]) {
-  const topic = await prisma.topic.findUnique({
-    where: { id },
-    select: { resourceId: true },
-  });
-
-  if (!topic) return;
-
   try {
     await prisma.$transaction([
-      prisma.activity.deleteMany({ where: { topicId: id } }),
-      prisma.topic.deleteMany({ where: { id } }),
+      prisma.activityTimeRange.deleteMany({
+        where: { activity: { topicId: id } },
+      }),
+      prisma.activity.deleteMany({
+        where: { topicId: id },
+      }),
+      prisma.topic.deleteMany({
+        where: { id },
+      }),
+      prisma.track.deleteMany({
+        where: { video: { resource: { topics: { every: { id } } } } },
+      }),
+      prisma.video.deleteMany({
+        where: { resource: { topics: { every: { id } } } },
+      }),
+      prisma.resource.deleteMany({
+        where: { topics: { every: { id } } },
+      }),
     ]);
-    await destroyResource(topic.resourceId);
   } catch {
     return;
   }
