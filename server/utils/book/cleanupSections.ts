@@ -1,13 +1,11 @@
-import { Section } from "@prisma/client";
+import type { Book } from "@prisma/client";
 import prisma from "$server/utils/prisma";
 
-function cleanupSections(sectionIds: Section["id"][]) {
-  return sectionIds.flatMap((id) => {
-    return [
-      prisma.topicSection.deleteMany({ where: { sectionId: id } }),
-      prisma.section.deleteMany({ where: { id } }),
-    ];
-  });
+function cleanupSections(bookId: Book["id"]) {
+  return [
+    prisma.topicSection.deleteMany({ where: { section: { bookId } } }),
+    prisma.section.deleteMany({ where: { bookId } }),
+  ];
 }
 
 export default cleanupSections;

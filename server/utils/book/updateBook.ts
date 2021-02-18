@@ -19,14 +19,7 @@ async function updateBook(
   authorId: User["id"],
   { sections, id, ...book }: Pick<Book, "id"> & BookProps
 ): Promise<BookSchema | undefined> {
-  const sectionIds = (
-    await prisma.section.findMany({
-      where: { bookId: id },
-      select: { id: true },
-    })
-  ).map(({ id }) => id);
-
-  const cleanup = cleanupSections(sectionIds);
+  const cleanup = cleanupSections(id);
   const upsert = upsertSections(id, sections ?? []);
   const update = (prisma.book.update({
     where: { id },
