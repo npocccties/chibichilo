@@ -913,7 +913,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * トピックを削除します。 教員または管理者でなければなりません。 教員の場合は自身の作成したトピックでなければなりません。
+     * トピックを削除します。 ブックから参照されている場合、そのブックから取り除きます。 教員または管理者でなければなりません。 教員の場合は自身の作成したトピックでなければなりません。
      * トピックの削除
      */
     async apiV2TopicTopicIdDeleteRaw(requestParameters: ApiV2TopicTopicIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
@@ -936,7 +936,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * トピックを削除します。 教員または管理者でなければなりません。 教員の場合は自身の作成したトピックでなければなりません。
+     * トピックを削除します。 ブックから参照されている場合、そのブックから取り除きます。 教員または管理者でなければなりません。 教員の場合は自身の作成したトピックでなければなりません。
      * トピックの削除
      */
     async apiV2TopicTopicIdDelete(requestParameters: ApiV2TopicTopicIdDeleteRequest): Promise<void> {

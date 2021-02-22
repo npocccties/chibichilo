@@ -4,6 +4,12 @@ import prisma from "$server/utils/prisma";
 async function destroyTopic(id: Topic["id"]) {
   try {
     await prisma.$transaction([
+      prisma.topicSection.deleteMany({
+        where: { topicId: id },
+      }),
+      prisma.section.deleteMany({
+        where: { topicSections: { every: { topicId: id } } },
+      }),
       prisma.activityTimeRange.deleteMany({
         where: { activity: { topicId: id } },
       }),

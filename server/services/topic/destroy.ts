@@ -12,6 +12,7 @@ export const destroySchema: FastifySchema = {
   summary: "トピックの削除",
   description: outdent`
     トピックを削除します。
+    ブックから参照されている場合、そのブックから取り除きます。
     教員または管理者でなければなりません。
     教員の場合は自身の作成したトピックでなければなりません。`,
   params: topicParamsSchema,

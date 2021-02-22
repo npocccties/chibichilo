@@ -12,7 +12,6 @@ import BookNotFoundProblem from "$organisms/TopicNotFoundProblem";
 import { useVideoTrackAtom } from "$store/videoTrack";
 import { destroyTopic, updateTopic, useTopic } from "$utils/topic";
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
-import { updateBook, useBook } from "$utils/book";
 
 export type Query =
   | { topicId: TopicSchema["id"] }
@@ -21,12 +20,9 @@ export type Query =
 type EditProps = {
   topicId: TopicSchema["id"];
   back(): Promise<unknown>;
-  onDelete?(topic: TopicSchema): Promise<void>;
 };
 
-type EditWithBookProps = EditProps & BookEditQuery;
-
-function Edit({ topicId, back, onDelete }: EditProps) {
+function Edit({ topicId, back }: EditProps) {
   const topic = useTopic(topicId);
   const { addVideoTrack, deleteVideoTrack } = useVideoTrackAtom();
   async function handleSubmit(props: TopicProps) {
@@ -34,9 +30,7 @@ function Edit({ topicId, back, onDelete }: EditProps) {
     return back();
   }
   async function handleDelete(topic: TopicSchema) {
-    // TODO: ブックから参照されているトピックは削除できないので何かしら処置が必要
-    await onDelete?.(topic);
-    await destroyTopic(topicId);
+    await destroyTopic(topic.id);
     return back();
   }
   async function handleSubtitleSubmit(videoTrack: VideoTrackProps) {
@@ -65,25 +59,6 @@ function Edit({ topicId, back, onDelete }: EditProps) {
   return <TopicEdit topic={topic} {...handlers} />;
 }
 
-function EditWithBook({ bookId, ...props }: EditWithBookProps) {
-  const { book } = useBook(bookId);
-  async function handleDelete({ id: topicId }: Pick<TopicSchema, "id">) {
-    if (!book) return;
-    await updateBook({
-      ...book,
-      ltiResourceLinks: undefined,
-      sections: book?.sections?.map((section) => ({
-        ...section,
-        topics: section.topics.filter(({ id }) => id !== topicId),
-      })),
-    });
-  }
-
-  if (!book) return <Placeholder />;
-
-  return <Edit {...props} onDelete={handleDelete} />;
-}
-
 function Router() {
   const router = useRouter();
   const topicId = Number(router.query.topicId);
@@ -98,9 +73,6 @@ function Router() {
   if (!Number.isFinite(topicId)) return <TopicNotFoundProblem />;
   if ("bookId" in bookEditQuery && !Number.isFinite(bookEditQuery.bookId)) {
     return <BookNotFoundProblem />;
-  }
-  if ("bookId" in bookEditQuery) {
-    return <EditWithBook topicId={topicId} back={back} {...bookEditQuery} />;
   }
   return <Edit topicId={topicId} back={back} />;
 }
