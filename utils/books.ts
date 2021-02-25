@@ -53,11 +53,8 @@ export function useBooks(
   isBookEditable: (book: Pick<BookSchema, "author">) => boolean,
   isTopicEditable: (topic: Pick<TopicSchema, "creator">) => boolean
 ) {
-  const { data, size, setSize } = useSWRInfinite<BookSchema[]>(
-    makeKey("updated"),
-    fetchBooks
-  );
+  const res = useSWRInfinite<BookSchema[]>(makeKey("updated"), fetchBooks);
   const books =
-    data?.flat().flatMap(filter(isBookEditable, isTopicEditable)) ?? [];
-  return { books, ...useInfiniteProps(data, size, setSize) };
+    res.data?.flat().flatMap(filter(isBookEditable, isTopicEditable)) ?? [];
+  return { books, ...useInfiniteProps(res) };
 }

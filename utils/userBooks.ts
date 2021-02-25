@@ -26,10 +26,10 @@ async function fetchUserBooks(
 }
 
 export function useUserBooks(userId: UserSchema["id"]) {
-  const { data, size, setSize } = useSWRInfinite<BookSchema[]>(
+  const res = useSWRInfinite<BookSchema[]>(
     makeKey(userId, "updated"),
     fetchUserBooks
   );
-  const books = data?.flatMap((books) => books) ?? [];
-  return { books, ...useInfiniteProps(data, size, setSize) };
+  const books = res.data?.flatMap((books) => books) ?? [];
+  return { books, ...useInfiniteProps(res) };
 }

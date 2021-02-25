@@ -45,10 +45,10 @@ const filter = (
 export function useTopics(
   isTopicEditable: (topic: Pick<TopicSchema, "creator">) => boolean
 ) {
-  const { data, size, setSize } = useSWRInfinite<TopicSchema[]>(
+  const res = useSWRInfinite<TopicSchema[]>(
     makeKey("updated", 20),
     fetchTopics
   );
-  const topics = data?.flat().flatMap(filter(isTopicEditable)) ?? [];
-  return { topics, ...useInfiniteProps(data, size, setSize) };
+  const topics = res.data?.flat().flatMap(filter(isTopicEditable)) ?? [];
+  return { topics, ...useInfiniteProps(res) };
 }

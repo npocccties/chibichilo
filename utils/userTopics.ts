@@ -36,10 +36,10 @@ async function fetchUserTopics(
 }
 
 export function useUserTopics(userId: UserSchema["id"]) {
-  const { data, size, setSize } = useSWRInfinite<TopicSchema[]>(
+  const res = useSWRInfinite<TopicSchema[]>(
     makeKey(userId, "updated", 20),
     fetchUserTopics
   );
-  const topics = data?.flatMap((topics) => topics) ?? [];
-  return { topics, ...useInfiniteProps(data, size, setSize) };
+  const topics = res.data?.flatMap((topics) => topics) ?? [];
+  return { topics, ...useInfiniteProps(res) };
 }
