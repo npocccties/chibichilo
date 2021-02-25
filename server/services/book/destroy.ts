@@ -40,5 +40,9 @@ export async function destroy({
 
   await destroyBook(params.book_id);
 
+  if (session.ltiResourceLink?.bookId === params.book_id) {
+    session.ltiResourceLink = null;
+  }
+
   return { status: 204 };
 }

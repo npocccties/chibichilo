@@ -6,6 +6,7 @@ import type { BookProps, BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { SectionSchema } from "$server/models/book/section";
 import { createTopic } from "./topic";
+import { revalidateSession } from "./session";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -77,6 +78,7 @@ export async function updateBook({
 
 export async function destroyBook(id: BookSchema["id"]) {
   await api.apiV2BookBookIdDelete({ bookId: id });
+  await revalidateSession();
 }
 
 export function revalidateBook(
