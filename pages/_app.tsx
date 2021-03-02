@@ -59,7 +59,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <>
       <Head>
-        <title>ChibiCHiLO</title>
+        <title>Chibi CHiLO</title>
         <meta name="viewport" content="width=device-width" />
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>

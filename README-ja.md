@@ -1,4 +1,4 @@
-# CHiBi CHiLO
+# Chibi CHiLO
 
 - [English Version](./README-en.md)
 
