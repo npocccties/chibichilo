@@ -38,9 +38,11 @@ export function VideoJs(props: VideoJsProps) {
       forward: 15,
       back: 15,
     });
-    tracking(player);
-    volumePersister(player);
-    if (props.onEnded) player.on("ended", props.onEnded);
+    player.ready(() => {
+      tracking(player);
+      volumePersister(player);
+      if (props.onEnded) player.on("ended", props.onEnded);
+    });
     return () => {
       // TODO: played() に失敗するので dispose() せず一時停止して保持
       //       メモリリークにつながるので避けたほうが望ましい

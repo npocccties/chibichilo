@@ -2,6 +2,8 @@ import { IsOptional, IsString } from "class-validator";
 import { validationMetadatasToSchemas } from "class-validator-jsonschema";
 
 export type EventType =
+  | "forward"
+  | "back"
   | "changepage"
   | "timeupdate"
   | "seeking"

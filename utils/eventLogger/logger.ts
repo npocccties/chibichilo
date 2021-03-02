@@ -66,7 +66,14 @@ function logger(tracker: PlayerTracker) {
     send("trackchange", event, event.language ?? "off");
   });
 
-  for (const event of ["firstplay", "ended", "pause", "play"] as const) {
+  for (const event of [
+    "forward",
+    "back",
+    "firstplay",
+    "ended",
+    "pause",
+    "play",
+  ] as const) {
     tracker.on(event, buildHandler(event));
   }
 

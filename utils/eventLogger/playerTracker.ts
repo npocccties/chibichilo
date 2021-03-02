@@ -19,6 +19,12 @@ export type PlayerEvent = Pick<VideoResourceSchema, "providerUrl" | "url"> & {
   currentTime: number;
 };
 
+type CustomEvents = {
+  nextvideo: PlayerEvent & { video: number };
+  forward: PlayerEvent;
+  back: PlayerEvent;
+};
+
 export type PlayerEvents = {
   ended: PlayerEvent;
   pause: PlayerEvent;
@@ -30,11 +36,7 @@ export type PlayerEvents = {
   texttrackchange: PlayerEvent & { language?: string };
   /** @deprecated */
   firstplay: PlayerEvent;
-};
-
-type CustomEvents = {
-  nextvideo: PlayerEvent & { video: number };
-};
+} & CustomEvents;
 
 const nullEvent = {
   providerUrl: "https://www.youtube.com/",
@@ -44,7 +46,7 @@ const nullEvent = {
 
 /** プレイヤーのトラッキング用 */
 export class PlayerTracker extends (EventEmitter as {
-  new (): StrictEventEmitter<EventEmitter, PlayerEvents & CustomEvents>;
+  new (): StrictEventEmitter<EventEmitter, PlayerEvents>;
 }) {
   readonly player: VideoJsPlayer | VimeoPlayer;
   readonly stats: () => Promise<PlayerEvent>;
@@ -102,6 +104,15 @@ export class PlayerTracker extends (EventEmitter as {
         ...(await this.stats()),
         language: showingSubtitle?.language,
       });
+    });
+
+    // @ts-expect-error NOTE: videojs-seek-buttons 由来
+    const { seekForward, seekBack } = player.controlBar;
+    seekForward.on("click", async () => {
+      this.emit("forward", await this.stats());
+    });
+    seekBack.on("click", async () => {
+      this.emit("back", await this.stats());
     });
   }
 
