@@ -96,7 +96,9 @@ export class PlayerTracker extends (EventEmitter as {
         playbackRate: player.playbackRate(),
       });
     });
-    player.on("texttrackchange", async () => {
+
+    // NOTE: texttrackchange イベントは表示の都度発火されるため使用しない
+    player.remoteTextTracks().addEventListener("change", async () => {
       const showingSubtitle = Array.from(player.remoteTextTracks()).find(
         ({ kind, mode }) => kind === "subtitles" && mode === "showing"
       );
