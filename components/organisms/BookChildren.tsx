@@ -109,7 +109,7 @@ export default function BookChildren(props: Props) {
               onClick={handleItemClick}
             >
               <ListItemText>
-                {getOutline(section, sectionIndex, topicIndex) + " "}
+                {getOutline(section, sectionItemIndex, topicItemIndex) + " "}
                 {topic.name}
               </ListItemText>
               {isTopicEditable(topic) && (
