@@ -1,10 +1,8 @@
 # Chibi CHiLO
 
-- [English Version](./README-en.md)
+[English](README-en.md) | 日本語
 
-目次
-
-## これは何をするプログラムか?
+## これは何をするプログラムか
 
 Moodle や BlackBoard などの LTI と連携して、Wowza, YouTube, Vimeo 上に存在する動画コンテンツを、学習者が利用しやすいコンテンツにまとめ上げるシステムです。
 
@@ -14,7 +12,7 @@ Moodle や BlackBoard などの LTI と連携して、Wowza, YouTube, Vimeo 上�
 
 ## 使い方
 
-インストール方法を読んでください。[INSTALL 方法(英語)](./INSTALL-en.md)
+[インストール方法](INSTALL-ja.md)を読んでください。
 
 ## ドキュメント
 

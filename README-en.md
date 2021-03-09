@@ -1,3 +1,3 @@
 # Chibi CHiLO
 
-[Japanese version document](./README-ja.md)
+English | [日本語](README-ja.md)

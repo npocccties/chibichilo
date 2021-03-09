@@ -84,6 +84,17 @@ docker-compose down
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
+### ヒント: 秘密鍵の生成
+
+秘密鍵には十分なエントロピーをもつ乱数を使用してください。
+
+例:
+
+```sh
+echo SESSION_SECRET=$(node -r crypto -pe 'crypto.randomBytes(32).toString("hex")') >> .env
+echo OAUTH_CONSUMER_SECRET=$(node -r crypto -pe 'crypto.randomBytes(32).toString("hex")') >> .env
+```
+
 ## 本番環境へのデプロイ
 
 ### ビルド
