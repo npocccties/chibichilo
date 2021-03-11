@@ -91,7 +91,7 @@ export default function TopicForm(props: Props) {
   const defaultValues = {
     name: topic?.name,
     description: topic?.description ?? "",
-    shared: topic?.shared ?? true,
+    shared: Boolean(topic?.shared),
     language: topic?.language ?? Object.getOwnPropertyNames(languages)[0],
     timeRequired: topic?.timeRequired,
   };

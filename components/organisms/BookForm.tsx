@@ -46,7 +46,7 @@ export default function BookForm(props: Props) {
   const defaultValues: BookProps = {
     name: book?.name ?? "",
     description: book?.description ?? "",
-    shared: book?.shared ?? true,
+    shared: Boolean(book?.shared),
     language: book?.language ?? Object.getOwnPropertyNames(languages)[0],
     timeRequired: book?.timeRequired,
     sections: book?.sections,
