@@ -72,7 +72,7 @@ model Topic {
   language     String         @default("ja")
   /// 学習所要時間 (秒)
   timeRequired Int            @map("time_required")
-  /// 共有可否 (true: 共有する, それ以外: 共有しない)
+  /// 共有可否 (true: シェアする, それ以外: シェアしない)
   shared       Boolean        @default(true)
   /// 作成者
   creator      User           @relation(fields: [creatorId], references: [id])
@@ -157,7 +157,7 @@ model Book {
   language         String            @default("ja")
   /// 学習所要時間 (秒)
   timeRequired     Int?              @map("time_required")
-  /// 共有可否 (true: 共有する, それ以外: 共有しない)
+  /// 共有可否 (true: シェアする, それ以外: シェアしない)
   shared           Boolean           @default(true)
   /// 著作者
   author           User              @relation(fields: [authorId], references: [id])
