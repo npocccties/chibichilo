@@ -3,4 +3,4 @@
 /eslint_report.json
 /utils/$path.ts
 node_modules/
-.env
+.env*

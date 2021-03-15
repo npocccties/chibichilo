@@ -65,22 +65,20 @@ docker-compose down
 
 ## 環境変数
 
-| 名称                    | 説明                                                                     |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `PORT`                  | ポート (デフォルト: `8080`)                                              |
-| `API_BASE_PATH`         | ベースとなるパス (デフォルト: `/api/v2` )                                |
-| `FRONTEND_ORIGIN`       | フロントエンドのオリジン (例: `http://localhost:3000`)                   |
-| `FRONTEND_PATH`         | フロントエンドのパス (例: `http://localhost:3000/` ならば `/`)           |
-| `SESSION_SECRET`        | セッションストアの秘密鍵                                                 |
-| `OAUTH_CONSUMER_KEY`    | LMS に登録する OAuth Consumer Key (デフォルト: 無効)                     |
-| `OAUTH_CONSUMER_SECRET` | LMS に登録する OAuth Consumer Secret (デフォルト: 無効)                  |
-| `DATABASE_URL`          | [PostgreSQL 接続 URL][database_connection_url]                           |
-| `HTTPS_CERT_PATH`       | HTTPS を使うための証明書のファイルパス (デフォルト: 無効)                |
-| `HTTPS_KEY_PATH`        | HTTPS を使うための証明書の秘密鍵のファイルパス (デフォルト: 無効)        |
-| `WOWZA_BASE_URL`        | Wowza Content base URL (デフォルト: 無効)                                |
-| `WOWZA_SECURE_TOKEN`    | Wowza SecureToken Shared (デフォルト: ``) Secret                         |
-| `WOWZA_QUERY_PREFIX`    | Wowza SecureToken Hash Query Parameter Prefix (デフォルト: `wowzatoken`) |
-| `WOWZA_EXPIRES_IN`      | Wowza SecureToken lifetime (seconds) (デフォルト: いつまでも持続 `0`)    |
+| 名称                 | 説明                                                                        |
+| -------------------- | --------------------------------------------------------------------------- |
+| `PORT`               | ポート (デフォルト: `8080`)                                                 |
+| `API_BASE_PATH`      | ベースとなるパス (デフォルト: `/api/v2` )                                   |
+| `FRONTEND_ORIGIN`    | フロントエンドのオリジン (デフォルト: 無効 ""、例: `http://localhost:3000`) |
+| `FRONTEND_PATH`      | フロントエンドのパス (デフォルト: `/`)                                      |
+| `SESSION_SECRET`     | セッションストアの秘密鍵                                                    |
+| `DATABASE_URL`       | [PostgreSQL 接続 URL][database_connection_url]                              |
+| `HTTPS_CERT_PATH`    | HTTPS を使うための証明書のファイルパス (デフォルト: 無効)                   |
+| `HTTPS_KEY_PATH`     | HTTPS を使うための証明書の秘密鍵のファイルパス (デフォルト: 無効)           |
+| `WOWZA_BASE_URL`     | Wowza Content base URL (デフォルト: 無効)                                   |
+| `WOWZA_SECURE_TOKEN` | Wowza SecureToken Shared (デフォルト: "") Secret                            |
+| `WOWZA_QUERY_PREFIX` | Wowza SecureToken Hash Query Parameter Prefix (デフォルト: `wowzatoken`)    |
+| `WOWZA_EXPIRES_IN`   | Wowza SecureToken lifetime (seconds) (デフォルト: いつまでも持続 `0`)       |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 

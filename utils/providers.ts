@@ -12,7 +12,7 @@ export const providers = {
   },
   wowza: {
     name: "Wowza",
-    baseUrl: new URL("/api/v2/wowza/", NEXT_PUBLIC_API_BASE_PATH).href,
+    baseUrl: `${NEXT_PUBLIC_API_BASE_PATH}/api/v2/wowza/`,
   },
 } as const;
 

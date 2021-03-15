@@ -7,7 +7,7 @@ function buildTrack(
 ): { kind: "subtitles"; src: string; srclang: string; label: string } {
   return {
     kind: "subtitles",
-    src: new URL(track.url, NEXT_PUBLIC_API_BASE_PATH).href,
+    src: `${NEXT_PUBLIC_API_BASE_PATH}${track.url}`,
     srclang: track.language,
     label: ISO6391.getNativeName(track.language),
   };

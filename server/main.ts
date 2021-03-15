@@ -27,8 +27,8 @@ fastify({ logger: isDev, trustProxy: true, ...options })
   )
   .register(app, {
     basePath: API_BASE_PATH,
-    allowOrigin: [FRONTEND_ORIGIN],
+    allowOrigin: FRONTEND_ORIGIN === "" ? [] : [FRONTEND_ORIGIN],
     sessionSecret: SESSION_SECRET,
     sessionStore: sessionStore as Options["sessionStore"],
   })
-  .listen(PORT, "::");
+  .listen(PORT, "::"); // TODO: UNIXドメインソケット(引数にファイルパスを指定)未対応

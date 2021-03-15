@@ -24,12 +24,7 @@ services:
   app:
     image: node:lts-alpine
     environment:
-      NEXT_PUBLIC_API_BASE_PATH: "http://localhost:8080"
-      NEXT_PUBLIC_BASE_PATH: ""
-      PORT: "8080"
-      API_BASE_PATH: /api/v2
       FRONTEND_ORIGIN: "http://localhost:3000"
-      FRONTEND_PATH: /
       SESSION_SECRET: super_secret_characters_for_session
       OAUTH_CONSUMER_KEY: test
       OAUTH_CONSUMER_SECRET: test

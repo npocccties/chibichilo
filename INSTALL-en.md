@@ -9,11 +9,11 @@ When changing the information of the connection destination of API, .env must be
 
 .env:
 
-| Environment variable                 | Explanation                                                  |
-| ------------------------------------ | ------------------------------------------------------------ |
-| `NEXT_PUBLIC_API_BASE_PATH`          | Base path for API URLs (デフォルト: `http://localhost:8080`) |
-| `NEXT_PUBLIC_BASE_PATH`              | Base path for static content URLs (デフォルト: ``)           |
-| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL` | 学習活動の送信間隔 (秒) (デフォルト: `10`)                   |
+| Environment variable                 | Explanation                                          |
+| ------------------------------------ | ---------------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_PATH`          | Base path for API URLs (デフォルト: 同一オリジン "") |
+| `NEXT_PUBLIC_BASE_PATH`              | Base path for static content URLs (デフォルト: "")   |
+| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL` | 学習活動の送信間隔 (秒) (デフォルト: `10`)           |
 
 ## Build front-ends
 

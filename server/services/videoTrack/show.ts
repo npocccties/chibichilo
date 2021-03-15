@@ -3,6 +3,7 @@ import {
   VideoTrackParams,
   videoTrackParamsSchema,
 } from "$server/validators/videoTrackParams";
+import authUser from "$server/auth/authUser";
 import findVideoTrack from "$server/utils/videoTrack/findVideoTrack";
 
 export const showSchema: FastifySchema = {
@@ -18,7 +19,7 @@ export const showSchema: FastifySchema = {
 };
 
 export const showHooks = {
-  auth: [], // TODO: 同一オリジンなら authUser を加えて
+  auth: [authUser],
 };
 
 export async function show({ params }: { params: VideoTrackParams }) {
