@@ -72,7 +72,7 @@
     "build:server": "yarn --cwd server build:app",
     "build:openapi": "openapi-generator-cli generate -i http://localhost:8080/api/v2/swagger/json -g typescript-fetch -o openapi",
     "start": "NODE_ENV=production node server/dist/index.js",
-    "vercel-build": "yarn build && rm -rf public/api/v2/swagger && mkdir -p public/api/v2/swagger && cp -a server/dist/static public/api/v2/swagger/static",
+    "vercel-build": "run-s build:prisma build:next build:server && rm -rf public/api/v2/swagger && mkdir -p public/api/v2/swagger && cp -a server/dist/static public/api/v2/swagger/static",
     "format": "prettier --write .",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn lint --fix",
