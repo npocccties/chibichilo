@@ -15,12 +15,10 @@ export function useSessionInit() {
   });
   const [state, update] = useUpdateSessionAtom();
   useEffect(() => {
-    if (data) {
-      update({
-        session: data,
-        error: Boolean(error),
-      });
-    }
+    update({
+      session: data,
+      error: Boolean(error),
+    });
   }, [data, error, update]);
 
   return state;

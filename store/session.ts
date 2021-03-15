@@ -30,19 +30,19 @@ const sessionAtom = atom<SessionWithState>({
 
 const updateSessionAtom = atom<
   null,
-  { session: SessionSchema; error: boolean }
+  { session: SessionSchema | undefined; error: boolean }
 >(null, (get, set, { session, error }) => {
-  const isAdministrator = isAdministratorSession(session);
-  const isInstructor = isInstructorSession(session);
+  const isAdministrator = Boolean(session && isAdministratorSession(session));
+  const isInstructor = Boolean(session && isInstructorSession(session));
   const sessionWithState = {
     session,
     isAdministrator,
     isInstructor,
     isTopicEditable(topic: Pick<TopicSchema, "creator">) {
-      return isAdministrator || topicCreateBy(topic, session.user);
+      return isAdministrator || topicCreateBy(topic, session?.user);
     },
     isBookEditable(book: Pick<BookSchema, "author">) {
-      return isAdministrator || bookCreateBy(book, session.user);
+      return isAdministrator || bookCreateBy(book, session?.user);
     },
     error,
   };
