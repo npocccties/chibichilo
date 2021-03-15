@@ -14,7 +14,7 @@
     "build:app": "ncc build -t --no-asset-builds --target es2020",
     "build:prisma": "prisma generate",
     "migrate": "prisma migrate deploy --preview-feature",
-    "migrate:reset": "prisma migrate reset --preview-feature",
+    "migrate:reset": "prisma migrate reset --skip-seed --preview-feature",
     "seed": "ncc run -t --no-asset-builds prisma/seed.ts",
     "start": "NODE_ENV=production node dist/index.js"
   },
