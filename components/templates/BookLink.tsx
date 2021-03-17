@@ -88,7 +88,7 @@ export default function BookLink(props: Props) {
               ブックの作成
             </Button>
             <Typography variant="body1">
-             提供するブックを選んで下さい
+              提供するブックを選んで下さい
             </Typography>
           </>
         }
