@@ -90,17 +90,17 @@ docker-compose down
 
 ```sh
 echo SESSION_SECRET=$(node -r crypto -pe 'crypto.randomBytes(32).toString("hex")') >> .env
-echo OAUTH_CONSUMER_SECRET=$(node -r crypto -pe 'crypto.randomBytes(32).toString("hex")') >> .env
 ```
 
 ## 本番環境へのデプロイ
 
 ### ビルド
 
-次のコマンドを実行し、フロントエンドの静的ファイルを生成し public ディレクトリ以下に配置します。
+次のコマンドを実行し、フロントエンドの静的ファイルを生成し配置します。
 
 ```sh
-https://github.com/npocccties/ChibiCHiLO.git
+git clone https://github.com/npocccties/ChibiCHiLO.git
+cd ChibiCHiLO
 yarn
 yarn build
 ```
