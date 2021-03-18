@@ -112,7 +112,7 @@ function DraggableSection({
       onSectionUpdate({ ...section, name: event.target.value || null });
     },
     500
-  ).callback;
+  );
   return (
     <Draggable draggableId={draggableId} index={index}>
       {(provided, snapshot) => (

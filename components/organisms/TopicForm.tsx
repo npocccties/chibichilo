@@ -72,7 +72,7 @@ export default function TopicForm(props: Props) {
   const handleResourceUrlChange = useDebouncedCallback(
     (event: ChangeEvent<HTMLInputElement>) => setUrl(event.target.value),
     500
-  ).callback;
+  );
   const { videoTracks } = useVideoTrackAtom();
   const [open, setOpen] = useState(false);
   const handleClickSubtitle = () => {

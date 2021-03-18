@@ -1,5 +1,5 @@
 import { IntervalTree } from "$server/utils/intervalTree";
-import type { User, Topic, Activity, Prisma } from "@prisma/client";
+import type { User, Topic, Activity } from "@prisma/client";
 import type { ActivityProps } from "$server/models/activity";
 import type { ActivityTimeRangeProps } from "$server/models/activityTimeRange";
 import prisma from "$server/utils/prisma";
@@ -68,7 +68,7 @@ async function upsertActivity(
 
   await prisma.$transaction([
     ...(exists ? [cleanup(exists.id)] : []),
-    (upsert(learnerId, topicId, timeRanges) as unknown) as Prisma.BatchPayload,
+    upsert(learnerId, topicId, timeRanges),
   ]);
 
   return { timeRanges };

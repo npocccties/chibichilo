@@ -17,7 +17,6 @@ extends:
   - plugin:react-hooks/recommended
   - plugin:react/recommended
   - prettier
-  - prettier/@typescript-eslint
 rules:
   "@typescript-eslint/explicit-module-boundary-types": "off"
   "@typescript-eslint/no-unused-vars":

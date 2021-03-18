@@ -259,10 +259,10 @@ model ActivityTimeRange {
 
 /// セッションストア
 model Session {
-  id      String   @id
-  sid     String   @unique @default(cuid())
-  data    String
-  expires DateTime
+  id        String   @id
+  sid       String   @unique @default(cuid())
+  data      String
+  expiresAt DateTime @map("expires_at")
 
   @@map("sessions")
 }

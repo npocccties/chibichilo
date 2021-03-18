@@ -1,4 +1,4 @@
-import { Prisma, User, Book } from "@prisma/client";
+import { User, Book } from "@prisma/client";
 import { BookProps, BookSchema } from "$server/models/book";
 import { SectionProps } from "$server/models/book/section";
 import prisma from "$server/utils/prisma";
@@ -9,11 +9,11 @@ import cleanupSections from "./cleanupSections";
 
 function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
   const sectionsCreateInput = sections.map(sectionCreateInput);
-  return (sectionsCreateInput.map((input, order) => {
+  return sectionsCreateInput.map((input, order) => {
     return prisma.section.create({
       data: { ...input, order, book: { connect: { id: bookId } } },
     });
-  }) as unknown) as Promise<Prisma.BatchPayload>[];
+  });
 }
 
 async function updateBook(
@@ -24,7 +24,7 @@ async function updateBook(
   const cleanup = cleanupSections(id);
   const { sections, ...other } = book;
   const upsert = upsertSections(id, sections ?? []);
-  const update = (prisma.book.update({
+  const update = prisma.book.update({
     where: { id },
     data: {
       ...other,
@@ -32,7 +32,7 @@ async function updateBook(
       author: { connect: { id: authorId } },
       updatedAt: new Date(),
     },
-  }) as unknown) as Promise<Prisma.BatchPayload>;
+  });
 
   await prisma.$transaction([...cleanup, ...upsert, update]);
 
