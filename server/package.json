@@ -2,9 +2,12 @@
   "name": "chibichilo-server",
   "version": "2.1.0",
   "main": "main.ts",
-  "author": "Kohei Watanabe <kou029w@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npocccties/ChibiCHiLO",
+    "directory": "server"
+  },
   "scripts": {
     "test": "jest",
     "dev": "run-p dev:*",

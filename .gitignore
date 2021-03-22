@@ -3,6 +3,7 @@
 /eslint_report.json
 /public/api/v2/swagger/
 /public/storybook/
+/public/LICENSE.csv
 /utils/$path.ts
 node_modules/
 .env*

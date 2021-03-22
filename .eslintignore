@@ -6,4 +6,5 @@ node_modules/
 /openapi/
 /public/api/v2/swagger/
 /public/storybook/
+/public/LICENSE.csv
 /utils/$path.ts

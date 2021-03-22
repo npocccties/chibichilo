@@ -4,6 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npocccties/ChibiCHiLO"
+  },
   "workspaces": [
     "server"
   ],
@@ -40,6 +44,7 @@
     "glob": "^7.1.6",
     "iso-639-1": "^2.1.8",
     "jotai": "^0.15.3",
+    "license-checker": "^25.0.1",
     "lodash.throttle": "^4.1.1",
     "material-ui-confirm": "^2.1.1",
     "next": "^10.0.9",
@@ -70,15 +75,16 @@
     "compile": "run-p compile:*",
     "compile:prisma": "yarn --cwd server build:prisma",
     "compile:pathpida": "pathpida",
-    "build": "run-s compile build:frontend build:export build:server",
-    "build:frontend": "run-p build:{storybook,next}",
+    "build": "run-s compile build:static build:export build:server",
+    "build:static": "run-p build:{license,storybook,next}",
+    "build:license": "license-checker --csv --out public/LICENSE.csv",
     "build:storybook": "build-storybook -o public/storybook",
     "build:next": "next build",
     "build:export": "next export -o server/dist/public",
     "build:server": "yarn --cwd server build:app",
     "build:openapi": "openapi-generator-cli generate -i http://localhost:8080/api/v2/swagger/json -g typescript-fetch -o openapi",
     "start": "yarn --cwd server start",
-    "vercel-build": "run-s compile build:frontend build:server && rm -rf public/api/v2/swagger && mkdir -p public/api/v2/swagger && cp -a server/dist/static public/api/v2/swagger/static",
+    "vercel-build": "run-s compile build:static build:server && rm -rf public/api/v2/swagger && mkdir -p public/api/v2/swagger && cp -a server/dist/static public/api/v2/swagger/static",
     "format": "prettier --write .",
     "lint": "run-s compile 'lint:eslint {@}' --",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
