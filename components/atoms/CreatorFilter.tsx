@@ -47,9 +47,9 @@ const options: ReadonlyArray<{
   value: Filter;
   label: string;
 }> = [
-  { value: "all", label: "すべて" },
   { value: "self", label: "自分" },
   { value: "other", label: "自分以外" },
+  { value: "all", label: "すべて" },
 ];
 
 type Props = {
