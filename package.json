@@ -14,6 +14,7 @@
     "@material-ui/styles": "^4.11.3",
     "@openapitools/openapi-generator-cli": "^2.2.2",
     "@rooks/use-previous": "^4.9.2",
+    "@storybook/addon-a11y": "^6.1.21",
     "@storybook/react": "^6.1.21",
     "@types/events": "^3.0.0",
     "@types/lodash.throttle": "^4.1.6",
