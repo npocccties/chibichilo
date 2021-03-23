@@ -5,7 +5,7 @@ node_modules/
 /eslint_report.json
 /public/api/v2/swagger/
 /public/storybook/
-/public/LICENSE.csv
+/public/LICENSE
 /server/dist/
 /server/prisma/json-schema.json
 /server/prisma/migrations/
