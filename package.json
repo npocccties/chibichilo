@@ -76,7 +76,7 @@
     "compile:pathpida": "pathpida",
     "build": "run-s compile build:static build:export build:server",
     "build:static": "run-p build:{license,storybook,next}",
-    "build:license": "yarn licenses generate-disclaimer > public/LICENSE",
+    "build:license": "NODE_ENV=development yarn licenses generate-disclaimer > public/LICENSE",
     "build:storybook": "build-storybook -o public/storybook",
     "build:next": "next build",
     "build:export": "next export -o server/dist/public",
