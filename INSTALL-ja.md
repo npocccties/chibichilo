@@ -68,7 +68,7 @@ server/dist
 yarn build:license
 ```
 
-成功すると CSV ファイル `public/LICENSE.csv` が得られます。
+成功するとテキストファイル `public/LICENSE` が得られます。
 
 ### ロゴ
 
