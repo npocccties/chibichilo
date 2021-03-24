@@ -14,6 +14,7 @@ import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
+import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
 
@@ -39,6 +40,7 @@ type Props = {
   onCancel(): void;
   onTopicEditClick(topic: TopicSchema): void;
   onSortChange?(sort: SortOrder): void;
+  onFilterChange?(filter: Filter): void;
   isTopicEditable(topic: TopicSchema): boolean | undefined;
 };
 
@@ -52,6 +54,7 @@ export default function TopicImport(props: Props) {
     onCancel,
     onTopicEditClick,
     onSortChange,
+    onFilterChange,
     isTopicEditable,
   } = props;
   const classes = useStyles();
@@ -92,9 +95,7 @@ export default function TopicImport(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            <CreatorFilter
-              disabled /* TODO: フィルタリング機能を追加したら有効化して */
-            />
+            <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="トピック検索"
               disabled // TODO: トピック検索機能追加したら有効化して

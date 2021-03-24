@@ -15,7 +15,7 @@ export type Query = BookEditQuery;
 function Import({ bookId, context }: BookEditQuery) {
   const { isBookEditable, isTopicEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isBookEditable, isTopicEditable);
-  const topicsProps = useTopics(isTopicEditable);
+  const topicsProps = useTopics();
   const router = useRouter();
   const bookEditQuery = { bookId, ...(context && { context }) };
   function back() {

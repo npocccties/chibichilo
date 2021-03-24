@@ -19,6 +19,7 @@ import { BookSchema } from "$server/models/book";
 import { SectionSchema } from "$server/models/book/section";
 import { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
+import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
 
@@ -57,6 +58,7 @@ type Props = {
   onTopicClick?(topic: TopicSchema): void;
   onTopicEditClick?(topic: TopicSchema): void;
   onSortChange?(sort: SortOrder): void;
+  onFilterChange?(filter: Filter): void;
   isBookEditable?(book: BookSchema): boolean | undefined;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
@@ -73,6 +75,7 @@ export default function BookImport(props: Props) {
     onTopicClick,
     onTopicEditClick,
     onSortChange,
+    onFilterChange,
     isBookEditable,
     isTopicEditable,
   } = props;
@@ -138,9 +141,7 @@ export default function BookImport(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            <CreatorFilter
-              disabled /* TODO: フィルタリング機能を追加したら有効化して */
-            />
+            <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="ブック・トピック検索"
               disabled // TODO: ブック・トピック検索機能追加したら有効化して

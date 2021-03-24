@@ -4,6 +4,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import { makeStyles } from "@material-ui/core/styles";
 import { gray } from "$theme/colors";
+import { Filter } from "$types/filter";
 
 const useStyles = makeStyles((theme) => ({
   fieldset: {
@@ -39,17 +40,13 @@ const useFormControlLabelStyles = makeStyles((theme) => ({
   },
 }));
 
-const filter = ["all", "self", "other"] as const;
-
-type Filter = typeof filter[number];
-
 const options: ReadonlyArray<{
   value: Filter;
   label: string;
 }> = [
-  { value: "all", label: "すべて" },
   { value: "self", label: "自分" },
   { value: "other", label: "自分以外" },
+  { value: "all", label: "すべて" },
 ];
 
 type Props = {
