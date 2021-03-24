@@ -8,7 +8,6 @@ import ActionHeader from "$organisms/ActionHeader";
 import TopicPreview from "$organisms/TopicPreview";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import SortSelect from "$atoms/SortSelect";
-import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
@@ -74,9 +73,8 @@ export default function Topics(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            <CreatorFilter
-              disabled /* TODO: フィルタリング機能を追加したら有効化して */
-            />
+            {/* TODO: https://github.com/npocccties/ChibiCHiLO/issues/183 */}
+            {/* <CreatorFilter /> */}
             <SearchTextField
               placeholder="トピック検索"
               disabled // TODO: ブック・トピック検索機能追加したら有効化して

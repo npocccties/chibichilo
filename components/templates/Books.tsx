@@ -7,7 +7,6 @@ import AddIcon from "@material-ui/icons/Add";
 import ActionHeader from "$organisms/ActionHeader";
 import BookAccordion from "$organisms/BookAccordion";
 import SortSelect from "$atoms/SortSelect";
-import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
@@ -75,9 +74,8 @@ export default function Books(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            <CreatorFilter
-              disabled /* TODO: フィルタリング機能を追加したら有効化して */
-            />
+            {/* TODO: https://github.com/npocccties/ChibiCHiLO/issues/183 */}
+            {/* <CreatorFilter /> */}
             <SearchTextField
               placeholder="ブック・トピック検索"
               disabled // TODO: ブック・トピック検索機能追加したら有効化して
