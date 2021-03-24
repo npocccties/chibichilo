@@ -4,7 +4,7 @@ import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$organisms/TopicNotFoundProblem";
 import { useSessionAtom } from "$store/session";
 import { updateBook, useBook } from "$utils/book";
-import { useBooks } from "$utils/books";
+import useBooks from "$utils/useBooks";
 import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
@@ -51,7 +51,7 @@ function Import({ bookId, context }: Query) {
     const action = isBookEditable(book) ? "edit" : "generate";
     return router.push(
       pagesPath.book[action].$url({
-        // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでマイブック画面に戻る
+        // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでブック一覧画面に戻る
         query: { bookId: book.id, context: "books" },
       })
     );

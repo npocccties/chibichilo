@@ -1,14 +1,11 @@
-import { useSWRInfinite } from "swr";
 import type { SortOrder } from "$server/models/sortOrder";
 import type { UserSchema } from "$server/models/user";
 import type { BookSchema } from "$server/models/book";
 import { api } from "./api";
-import useSortOrder from "./useSortOrder";
-import useInfiniteProps from "./useInfiniteProps";
 
 const key = "/api/v2/user/{user_id}/books";
 
-const makeKey = (userId: UserSchema["id"], sort: SortOrder) => (
+export const makeUserBooksKey = (userId: UserSchema["id"], sort: SortOrder) => (
   page: number,
   prev: BookSchema[] | null
 ): Parameters<typeof fetchUserBooks> | null => {
@@ -16,7 +13,7 @@ const makeKey = (userId: UserSchema["id"], sort: SortOrder) => (
   return [key, userId, sort, page];
 };
 
-async function fetchUserBooks(
+export async function fetchUserBooks(
   _: typeof key,
   userId: UserSchema["id"],
   sort: SortOrder,
@@ -24,14 +21,4 @@ async function fetchUserBooks(
 ) {
   const res = await api.apiV2UserUserIdBooksGet({ userId, sort, page });
   return res.books as BookSchema[];
-}
-
-export function useUserBooks(userId: UserSchema["id"]) {
-  const [sort, onSortChange] = useSortOrder();
-  const res = useSWRInfinite<BookSchema[]>(
-    makeKey(userId, sort),
-    fetchUserBooks
-  );
-  const books = res.data?.flatMap((books) => books) ?? [];
-  return { books, onSortChange, ...useInfiniteProps(res) };
 }

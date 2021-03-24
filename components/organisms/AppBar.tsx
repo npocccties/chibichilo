@@ -100,14 +100,14 @@ function AppBar(props: Props, ref: Ref<unknown>) {
             <AppBarNavButton
               color="inherit"
               icon={<MenuBookOutlinedIcon />}
-              label="マイブック"
+              label="ブック"
               onClick={onBooksClick}
               disabled={!onBooksClick}
             />
             <AppBarNavButton
               color="inherit"
               icon={<LibraryBooksOutlinedIcon />}
-              label="マイトピック"
+              label="トピック"
               onClick={onTopicsClick}
               disabled={!onTopicsClick}
             />

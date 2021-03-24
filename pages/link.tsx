@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import type { BookSchema } from "$server/models/book";
 import { useSessionAtom } from "$store/session";
 import { updateLtiResourceLink } from "$utils/ltiResourceLink";
-import { useBooks } from "$utils/books";
+import useBooks from "$utils/useBooks";
 import BookLink from "$templates/BookLink";
 import Placeholder from "$templates/Placeholder";
 import { pagesPath } from "$utils/$path";

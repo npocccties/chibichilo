@@ -8,9 +8,11 @@ import ActionHeader from "$organisms/ActionHeader";
 import TopicPreview from "$organisms/TopicPreview";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import SortSelect from "$atoms/SortSelect";
+import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
+import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
 
@@ -33,6 +35,7 @@ type Props = {
   onTopicEditClick(topic: TopicSchema): void;
   onTopicNewClick(): void;
   onSortChange?(sort: SortOrder): void;
+  onFilterChange?(filter: Filter): void;
 };
 
 export default function Topics(props: Props) {
@@ -44,6 +47,7 @@ export default function Topics(props: Props) {
     onTopicEditClick,
     onTopicNewClick,
     onSortChange,
+    onFilterChange,
   } = props;
   const classes = useStyles();
   const containerClasses = useContainerStyles();
@@ -63,7 +67,7 @@ export default function Topics(props: Props) {
       <ActionHeader
         title={
           <>
-            マイトピック
+            トピック
             <Button size="small" color="primary" onClick={onTopicNewClick}>
               <AddIcon className={classes.icon} />
               トピックの作成
@@ -73,8 +77,7 @@ export default function Topics(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            {/* TODO: https://github.com/npocccties/ChibiCHiLO/issues/183 */}
-            {/* <CreatorFilter /> */}
+            <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="トピック検索"
               disabled // TODO: ブック・トピック検索機能追加したら有効化して

@@ -4,5 +4,5 @@ import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import AppBarNavButton from "./AppBarNavButton";
 
 export const Default = () => (
-  <AppBarNavButton icon={<MenuBookOutlinedIcon />} label="マイブック" />
+  <AppBarNavButton icon={<MenuBookOutlinedIcon />} label="ブック" />
 );

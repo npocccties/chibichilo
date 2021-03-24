@@ -7,10 +7,12 @@ import AddIcon from "@material-ui/icons/Add";
 import ActionHeader from "$organisms/ActionHeader";
 import BookAccordion from "$organisms/BookAccordion";
 import SortSelect from "$atoms/SortSelect";
+import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
+import { Filter } from "$types/filter";
 import useContainerStyles from "styles/container";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +34,7 @@ export type Props = {
   onBookNewClick(): void;
   onTopicEditClick?(topic: TopicSchema): void;
   onSortChange?(sort: SortOrder): void;
+  onFilterChange?(filter: Filter): void;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
@@ -46,6 +49,7 @@ export default function Books(props: Props) {
     onBookNewClick,
     onTopicEditClick,
     onSortChange,
+    onFilterChange,
     isTopicEditable,
   } = props;
   const handleBookEditClick = (book: BookSchema) => () => onBookEditClick(book);
@@ -64,7 +68,7 @@ export default function Books(props: Props) {
         maxWidth="md"
         title={
           <>
-            マイブック
+            ブック
             <Button size="small" color="primary" onClick={handleBookNewClick}>
               <AddIcon className={classes.icon} />
               ブックの作成
@@ -74,8 +78,7 @@ export default function Books(props: Props) {
         action={
           <>
             <SortSelect onSortChange={onSortChange} />
-            {/* TODO: https://github.com/npocccties/ChibiCHiLO/issues/183 */}
-            {/* <CreatorFilter /> */}
+            <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="ブック・トピック検索"
               disabled // TODO: ブック・トピック検索機能追加したら有効化して

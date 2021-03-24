@@ -1,23 +1,18 @@
 import { useRouter } from "next/router";
-import type { UserSchema } from "$server/models/user";
 import type { BookSchema } from "$server/models/book";
 import { useSessionAtom } from "$store/session";
-import { useUserBooks } from "$utils/userBooks";
 import Books from "$templates/Books";
+import useBooks from "$utils/useBooks";
 import { pagesPath } from "$utils/$path";
 import { TopicSchema } from "$server/models/topic";
 
 const UserBooks = (
-  props: { userId: UserSchema["id"] } & Omit<
-    Parameters<typeof Books>[0],
-    keyof ReturnType<typeof useUserBooks>
-  >
-) => <Books {...props} {...useUserBooks(props.userId)} />;
+  props: Omit<Parameters<typeof Books>[0], keyof ReturnType<typeof useBooks>>
+) => <Books {...props} {...useBooks()} />;
 
 function Index() {
   const router = useRouter();
-  const { session, isTopicEditable } = useSessionAtom();
-  const userId = session?.user.id;
+  const { isTopicEditable } = useSessionAtom();
   const handlers = {
     onBookClick({ id }: Pick<BookSchema, "id">) {
       return router.push(pagesPath.book.$url({ query: { bookId: id } }));
@@ -42,11 +37,7 @@ function Index() {
     isTopicEditable,
   };
 
-  if (userId == null) {
-    return <Books books={[]} {...handlers} />;
-  }
-
-  return <UserBooks userId={userId} {...handlers} />;
+  return <UserBooks {...handlers} />;
 }
 
 export default Index;

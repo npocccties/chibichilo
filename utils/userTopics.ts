@@ -1,14 +1,11 @@
-import { useSWRInfinite } from "swr";
 import type { SortOrder } from "$server/models/sortOrder";
 import type { UserSchema } from "$server/models/user";
 import type { TopicSchema } from "$server/models/topic";
 import { api } from "./api";
-import useSortOrder from "./useSortOrder";
-import useInfiniteProps from "./useInfiniteProps";
 
 const key = "/api/v2/user/{user_id}/topics";
 
-const makeKey = (
+export const makeUserTopicsKey = (
   userId: UserSchema["id"],
   sort: SortOrder,
   perPage: number
@@ -16,11 +13,12 @@ const makeKey = (
   page: number,
   prev: TopicSchema[] | null
 ): Parameters<typeof fetchUserTopics> | null => {
+  if (Number.isNaN(userId)) return null;
   if (prev && prev.length === 0) return null;
   return [key, userId, sort, perPage, page];
 };
 
-async function fetchUserTopics(
+export async function fetchUserTopics(
   _: typeof key,
   userId: UserSchema["id"],
   sort: SortOrder,
@@ -34,14 +32,4 @@ async function fetchUserTopics(
     page,
   });
   return res.topics as TopicSchema[];
-}
-
-export function useUserTopics(userId: UserSchema["id"]) {
-  const [sort, onSortChange] = useSortOrder();
-  const res = useSWRInfinite<TopicSchema[]>(
-    makeKey(userId, sort, 20),
-    fetchUserTopics
-  );
-  const topics = res.data?.flatMap((topics) => topics) ?? [];
-  return { topics, onSortChange, ...useInfiniteProps(res) };
 }
