@@ -4,9 +4,11 @@ import type { TopicSchema } from "$server/models/topic";
 import type { UserSchema } from "$server/models/user";
 import type { Filter } from "$types/filter";
 import { useSessionAtom } from "$store/session";
+import { useSearchAtom } from "$store/search";
 import useSortOrder from "./useSortOrder";
 import useInfiniteProps from "./useInfiniteProps";
 import useFilter from "./useFilter";
+import topicSearch from "./search/topicSearch";
 import topicCreateBy from "./topicCreateBy";
 import { makeUserTopicsKey, fetchUserTopics } from "./userTopics";
 import { makeTopicsKey, fetchTopics } from "./topics";
@@ -32,6 +34,7 @@ const makeFilter = (
 
 function useTopics() {
   const { session, isTopicEditable } = useSessionAtom();
+  const { query } = useSearchAtom();
   const [sort, onSortChange] = useSortOrder();
   const [filter, onFilterChange] = useFilter();
   const userId = session?.user.id ?? NaN;
@@ -48,8 +51,16 @@ function useTopics() {
     [filter, userId, isTopicEditable]
   );
   const res = useSWRInfinite<TopicSchema[]>(key, fetch);
-  const topics = res.data?.flat().flatMap(topicFilter) ?? [];
-  return { topics, onSortChange, onFilterChange, ...useInfiniteProps(res) };
+  const topics = topicSearch(
+    res.data?.flat().flatMap(topicFilter) ?? [],
+    query
+  );
+  return {
+    topics,
+    onSortChange,
+    onFilterChange,
+    ...useInfiniteProps(res),
+  };
 }
 
 export default useTopics;

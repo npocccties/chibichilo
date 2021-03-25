@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import { ComponentProps, FormEvent, useCallback } from "react";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,15 +44,28 @@ const useInputLabelStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchTextField(
-  props: ComponentProps<typeof TextField>
-) {
+export default function SearchTextField({
+  onSearchInput,
+  ...props
+}: {
+  onSearchInput?: (input: string) => void;
+} & ComponentProps<typeof TextField>) {
   const outlinedInputClasses = useOutlinedInputStyles();
   const inputLabelClasses = useInputLabelStyles();
+  const handleInput = useCallback(
+    (event: FormEvent<HTMLInputElement>) => {
+      onSearchInput?.(event.currentTarget.value);
+    },
+    [onSearchInput]
+  );
   return (
     <div>
       <TextField
         variant="outlined"
+        inputProps={{
+          onInput: handleInput,
+          ...props.inputProps,
+        }}
         InputProps={{
           classes: outlinedInputClasses,
           endAdornment: (
@@ -60,8 +73,12 @@ export default function SearchTextField(
               <SearchIcon style={{ color: gray[700] }} />
             </InputAdornment>
           ),
+          ...props.InputProps,
         }}
-        InputLabelProps={{ classes: inputLabelClasses }}
+        InputLabelProps={{
+          classes: inputLabelClasses,
+          ...props.InputLabelProps,
+        }}
         {...props}
       />
     </div>

@@ -17,6 +17,7 @@ import { SortOrder } from "$server/models/sortOrder";
 import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
+import { useSearchAtom } from "$store/search";
 
 const useStyles = makeStyles((theme) => ({
   topics: {
@@ -60,6 +61,7 @@ export default function TopicImport(props: Props) {
   const classes = useStyles();
   const containerClasses = useContainerStyles();
   const [selectedIndexes, select] = useState<Set<number>>(new Set());
+  const { onSearchInput } = useSearchAtom();
   const handleChecked = (index: number) => () =>
     select((indexes) =>
       indexes.delete(index) ? new Set(indexes) : new Set(indexes.add(index))
@@ -98,7 +100,7 @@ export default function TopicImport(props: Props) {
             <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="トピック検索"
-              disabled // TODO: トピック検索機能追加したら有効化して
+              onSearchInput={onSearchInput}
             />
           </>
         }

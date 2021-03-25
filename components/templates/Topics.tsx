@@ -15,6 +15,7 @@ import { SortOrder } from "$server/models/sortOrder";
 import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
+import { useSearchAtom } from "$store/search";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -56,6 +57,7 @@ export default function Topics(props: Props) {
     dispatch: setPreviewTopic,
     ...dialogProps
   } = useDialogProps<TopicSchema>();
+  const { onSearchInput } = useSearchAtom();
   const handleTopicDetailClick = (topic: TopicSchema) => setPreviewTopic(topic);
   const infiniteRef = useInfiniteScroll<HTMLDivElement>({
     loading,
@@ -80,7 +82,7 @@ export default function Topics(props: Props) {
             <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="トピック検索"
-              disabled // TODO: ブック・トピック検索機能追加したら有効化して
+              onSearchInput={onSearchInput}
             />
           </>
         }

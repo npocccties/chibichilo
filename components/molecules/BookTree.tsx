@@ -11,6 +11,7 @@ import BookChildrenTree from "$molecules/BookChildrenTree";
 import useTreeItemStyle from "$styles/treeItem";
 import { BookSchema } from "$server/models/book";
 import { TopicSchema } from "$server/models/topic";
+import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 
 const useStyles = makeStyles((theme) => ({
   shared: {
@@ -25,6 +26,9 @@ type Props = {
   onTreeChange?(nodeId: string): void;
   onBookInfoClick(book: BookSchema): void;
   onBookEditClick?: ((book: BookSchema) => void) | false | undefined;
+  onLtiContextClick?(
+    ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
+  ): void;
   selectedIndexes?: Set<string>;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
@@ -37,6 +41,7 @@ export default function BookTree(props: Props) {
     onTreeChange,
     onBookInfoClick,
     onBookEditClick,
+    onLtiContextClick,
     selectedIndexes,
     isTopicEditable,
   } = props;
@@ -82,10 +87,11 @@ export default function BookTree(props: Props) {
               <EditOutlinedIcon />
             </IconButton>
           )}
-          {book.ltiResourceLinks.map((ltiResourceLink) => (
+          {book.ltiResourceLinks.map((ltiResourceLink, index) => (
             <CourseChip
-              key={ltiResourceLink.contextId}
+              key={index}
               ltiResourceLink={ltiResourceLink}
+              onLtiResourceLinkClick={onLtiContextClick}
             />
           ))}
         </>

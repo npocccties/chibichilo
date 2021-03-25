@@ -16,6 +16,7 @@ import BookItemDialog from "$organisms/BookItemDialog";
 import useCardStyle from "styles/card";
 import { BookSchema } from "$server/models/book";
 import { TopicSchema } from "$server/models/topic";
+import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getSectionsOutline } from "$utils/outline";
 import { gray, primary } from "$theme/colors";
 import useLineClampStyles from "$styles/lineClamp";
@@ -69,9 +70,18 @@ const useStyles = makeStyles((theme) => ({
 type Props = Parameters<typeof Radio>[0] & {
   book: BookSchema;
   onEditClick?: ((book: BookSchema) => void) | false | undefined;
+  onLtiContextClick?(
+    ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
+  ): void;
 };
 
-export default function BookPreview(props: Props) {
+export default function BookPreview({
+  book,
+  onEditClick,
+  onLtiContextClick,
+  checked,
+  ...radioProps
+}: Props) {
   const cardClasses = useCardStyle();
   const classes = useStyles();
   const titleClamp = useLineClampStyles({
@@ -84,7 +94,6 @@ export default function BookPreview(props: Props) {
     lineClamp: 3,
     lineHeight: 1.25,
   });
-  const { book, onEditClick, checked, ...radioProps } = props;
   const [topic] = useState<TopicSchema | undefined>(
     book.sections[0]?.topics[0]
   );
@@ -127,10 +136,11 @@ export default function BookPreview(props: Props) {
           )}
         </div>
         <div className={classes.chips}>
-          {book.ltiResourceLinks.map((ltiResourceLink) => (
+          {book.ltiResourceLinks.map((ltiResourceLink, index) => (
             <CourseChip
-              key={ltiResourceLink.contextId}
+              key={index}
               ltiResourceLink={ltiResourceLink}
+              onLtiResourceLinkClick={onLtiContextClick}
             />
           ))}
         </div>

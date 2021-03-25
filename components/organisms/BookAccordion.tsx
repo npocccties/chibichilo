@@ -19,6 +19,7 @@ import SharedIndicator from "$atoms/SharedIndicator";
 import BookItemDialog from "$organisms/BookItemDialog";
 import { BookSchema } from "$server/models/book";
 import { TopicSchema } from "$server/models/topic";
+import { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import useAccordionStyle from "styles/accordion";
 import useAccordionSummaryStyle from "styles/accordionSummary";
 import useAccordionDetailStyle from "styles/accordionDetail";
@@ -53,6 +54,9 @@ type Props = {
   onEditClick(book: BookSchema): void;
   onTopicClick(topic: TopicSchema): void;
   onTopicEditClick?(topic: TopicSchema): void;
+  onLtiContextClick?(
+    ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
+  ): void;
   isTopicEditable?(topic: TopicSchema): boolean | undefined;
 };
 
@@ -62,6 +66,7 @@ export default function BookAccordion(props: Props) {
     onEditClick,
     onTopicClick,
     onTopicEditClick,
+    onLtiContextClick,
     isTopicEditable,
   } = props;
   const classes = useStyles();
@@ -84,9 +89,6 @@ export default function BookAccordion(props: Props) {
     event.stopPropagation();
     onEditClick(book);
   };
-  const handleChipClick = (event: MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-  };
   return (
     <Accordion classes={accordionClasses}>
       <AccordionSummary
@@ -105,11 +107,11 @@ export default function BookAccordion(props: Props) {
       </AccordionSummary>
       <AccordionDetails classes={accordionDetailClasses}>
         <div className={classes.chips}>
-          {book.ltiResourceLinks.map((ltiResourceLink) => (
+          {book.ltiResourceLinks.map((ltiResourceLink, index) => (
             <CourseChip
-              key={ltiResourceLink.contextId}
+              key={index}
               ltiResourceLink={ltiResourceLink}
-              onClick={handleChipClick}
+              onLtiResourceLinkClick={onLtiContextClick}
             />
           ))}
         </div>

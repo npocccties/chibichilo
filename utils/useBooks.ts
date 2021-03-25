@@ -5,10 +5,12 @@ import type { TopicSchema } from "$server/models/topic";
 import type { UserSchema } from "$server/models/user";
 import type { Filter } from "$types/filter";
 import { useSessionAtom } from "$store/session";
+import { useSearchAtom } from "$store/search";
 import getDisplayableBook from "./getDisplayableBook";
 import useSortOrder from "./useSortOrder";
 import useInfiniteProps from "./useInfiniteProps";
 import useFilter from "./useFilter";
+import bookSearch from "./search/bookSearch";
 import bookCreateBy from "./bookCreateBy";
 import { makeUserBooksKey, fetchUserBooks } from "./userBooks";
 import { makeBooksKey, fetchBooks } from "./books";
@@ -28,9 +30,9 @@ const makeFilter = (
 
 function useBooks() {
   const { session, isBookEditable, isTopicEditable } = useSessionAtom();
+  const { query } = useSearchAtom();
   const [sort, onSortChange] = useSortOrder();
   const [filter, onFilterChange] = useFilter();
-
   const userId = session?.user.id ?? NaN;
   const isUserBooks = filter === "self";
   const { key, fetch } = useMemo(
@@ -45,8 +47,13 @@ function useBooks() {
     [filter, userId, isBookEditable, isTopicEditable]
   );
   const res = useSWRInfinite<BookSchema[]>(key, fetch);
-  const books = res.data?.flat().flatMap(bookFilter) ?? [];
-  return { books, onSortChange, onFilterChange, ...useInfiniteProps(res) };
+  const books = bookSearch(res.data?.flat().flatMap(bookFilter) ?? [], query);
+  return {
+    books,
+    onSortChange,
+    onFilterChange,
+    ...useInfiniteProps(res),
+  };
 }
 
 export default useBooks;

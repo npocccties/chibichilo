@@ -14,6 +14,7 @@ import type { TopicSchema } from "$server/models/topic";
 import { SortOrder } from "$server/models/sortOrder";
 import { Filter } from "$types/filter";
 import useContainerStyles from "styles/container";
+import { useSearchAtom } from "$store/search";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -52,6 +53,7 @@ export default function Books(props: Props) {
     onFilterChange,
     isTopicEditable,
   } = props;
+  const { query, onSearchInput, onLtiContextClick } = useSearchAtom();
   const handleBookEditClick = (book: BookSchema) => () => onBookEditClick(book);
   const handleTopicClick = (book: BookSchema) => () => onBookClick(book);
   const handleBookNewClick = () => onBookNewClick();
@@ -81,7 +83,8 @@ export default function Books(props: Props) {
             <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="ブック・トピック検索"
-              disabled // TODO: ブック・トピック検索機能追加したら有効化して
+              value={query.input}
+              onSearchInput={onSearchInput}
             />
           </>
         }
@@ -95,6 +98,7 @@ export default function Books(props: Props) {
               onEditClick={handleBookEditClick(book)}
               onTopicClick={handleTopicClick(book)}
               onTopicEditClick={onTopicEditClick}
+              onLtiContextClick={onLtiContextClick}
               isTopicEditable={isTopicEditable}
             />
           ))}

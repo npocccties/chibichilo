@@ -22,6 +22,7 @@ import { SortOrder } from "$server/models/sortOrder";
 import { Filter } from "$types/filter";
 import useContainerStyles from "$styles/container";
 import useDialogProps from "$utils/useDialogProps";
+import { useSearchAtom } from "$store/search";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -86,6 +87,7 @@ export default function BookImport(props: Props) {
     dispatch: setBook,
     ...dialogProps
   } = useDialogProps<BookSchema>();
+  const { query, onSearchInput, onLtiContextClick } = useSearchAtom();
   const [selectedNodeIds, select] = useState<Set<string>>(new Set());
   const handleTreeChange = (nodeId: string) => {
     select((nodeIds) =>
@@ -146,7 +148,8 @@ export default function BookImport(props: Props) {
             <CreatorFilter onFilterChange={onFilterChange} />
             <SearchTextField
               placeholder="ブック・トピック検索"
-              disabled // TODO: ブック・トピック検索機能追加したら有効化して
+              value={query.input}
+              onSearchInput={onSearchInput}
             />
           </>
         }
@@ -170,6 +173,7 @@ export default function BookImport(props: Props) {
               onItemEditClick={handleItem(onTopicEditClick)}
               onBookInfoClick={handleBookInfoClick}
               onBookEditClick={isBookEditable?.(book) && onBookEditClick}
+              onLtiContextClick={onLtiContextClick}
               isTopicEditable={isTopicEditable}
               onTreeChange={handleTreeChange}
             />
