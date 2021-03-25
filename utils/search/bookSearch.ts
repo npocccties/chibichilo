@@ -5,9 +5,9 @@ function getTextContent(book: BookSchema): string {
   let str = book.name;
 
   for (const section of book.sections) {
-    if (str && section.name) str += ` ${section.name}`;
+    if (section.name) str += ` ${section.name}`;
     for (const topic of section.topics) {
-      if (str && topic.name) str += ` ${topic.name}`;
+      if (topic.name) str += ` ${topic.name}`;
     }
   }
 
