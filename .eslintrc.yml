@@ -26,9 +26,12 @@ rules:
   tsc/config: [error, { configFile: "tsconfig.json" }]
 overrides:
   - files:
+      - jest.config.js
       - next.config.js
     env:
       node: true
+    rules:
+      "@typescript-eslint/no-var-requires": "off"
   - files:
       - samples/**
     rules:
