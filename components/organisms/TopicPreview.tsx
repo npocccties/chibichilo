@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
+import format from "date-fns/format";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import IconButton from "@material-ui/core/IconButton";
@@ -94,6 +95,11 @@ const useStyles = makeStyles((theme) => ({
   video: {
     margin: theme.spacing(0, -2),
   },
+  items: {
+    "& > * + *": {
+      marginLeft: theme.spacing(1.25),
+    },
+  },
   description: {
     color: gray[700],
     margin: 0,
@@ -155,7 +161,10 @@ export default function TopicPreview(props: Props) {
       {"providerUrl" in topic.resource && (
         <Video className={classes.video} {...topic.resource} />
       )}
-      <Item itemKey="作成者" value={topic.creator.name} />
+      <div className={classes.items}>
+        <Item itemKey="更新日" value={format(topic.updatedAt, "yyyy.MM.dd")} />
+        <Item itemKey="作成者" value={topic.creator.name} />
+      </div>
       <p
         className={clsx(
           classes.description,
