@@ -1,4 +1,7 @@
-export default { title: "templates/BookEdit" };
+export default {
+  title: "templates/BookEdit",
+  parameters: { layout: "fullscreen" },
+};
 
 import BookEdit from "./BookEdit";
 import { book } from "samples";

@@ -1,4 +1,7 @@
-export default { title: "templates/Books" };
+export default {
+  title: "templates/Books",
+  parameters: { layout: "fullscreen" },
+};
 
 import Books from "./Books";
 import Slide from "@material-ui/core/Slide";

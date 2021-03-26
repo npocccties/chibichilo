@@ -1,4 +1,7 @@
-export default { title: "templates/Topics" };
+export default {
+  title: "templates/Topics",
+  parameters: { layout: "fullscreen" },
+};
 
 import Topics from "./Topics";
 import Slide from "@material-ui/core/Slide";

@@ -1,4 +1,7 @@
-export default { title: "templates/BookNew" };
+export default {
+  title: "templates/BookNew",
+  parameters: { layout: "fullscreen" },
+};
 
 import BookNew from "./BookNew";
 import { book } from "$samples";

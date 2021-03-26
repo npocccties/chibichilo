@@ -1,4 +1,7 @@
-export default { title: "templates/Placeholder" };
+export default {
+  title: "templates/Placeholder",
+  parameters: { layout: "fullscreen" },
+};
 
 import Placeholder from "./Placeholder";
 

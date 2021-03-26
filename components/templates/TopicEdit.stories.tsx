@@ -1,4 +1,7 @@
-export default { title: "templates/TopicEdit" };
+export default {
+  title: "templates/TopicEdit",
+  parameters: { layout: "fullscreen" },
+};
 
 import TopicEdit from "./TopicEdit";
 import { topic } from "samples";

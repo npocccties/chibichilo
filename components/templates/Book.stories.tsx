@@ -1,4 +1,7 @@
-export default { title: "templates/Book" };
+export default {
+  title: "templates/Book",
+  parameters: { layout: "fullscreen" },
+};
 
 import { useEffect } from "react";
 import { useBookAtom } from "$store/book";

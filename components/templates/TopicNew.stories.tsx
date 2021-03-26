@@ -1,4 +1,7 @@
-export default { title: "templates/TopicNew" };
+export default {
+  title: "templates/TopicNew",
+  parameters: { layout: "fullscreen" },
+};
 
 import TopicNew from "./TopicNew";
 import { useVideoTrackAtom } from "$store/videoTrack";
