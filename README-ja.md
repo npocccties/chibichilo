@@ -30,3 +30,24 @@ git worktree を使う想定です。
 
 最終的には、GitHub Actions でpushされたら自動生成するようにしたいですが、現状は手でやることになるかと思います。
 可能なら、makeで再帰的にhtmlをbuildできたらいいなと思って、設定を書いていきたいと思います。
+
+## 各静的サイトジェネレータに関する設定情報
+
+お手元の環境および、GitHub Actions で設定する際に必要な情報
+
+### sphinx
+
+分かっている人向けの説明：「各ディレクトリの conf.py を確認すること。」
+
+さすがにちょっとひどいので、下記に利用する関連プログラムを列挙する。
+
+2021-03-30 時点において GitHub Actions は、Ubuntu 20.04 が最新の Linux Destribution である。
+様々な作法があると思うが、Ubuntu の package をつかって必要なプログラムを揃えることにする。
+足りない場合は、pip を使って補う。
+
+- python3-sphinx
+- python3-sphinx-rtd-theme
+- python3-sphinxcontrib.plantuml
+
+上記を入れると、Read the Docs のテーマと、plantuml の記法が使えるようになる。 pdfの生成は、luaLaTeX などを
+設定する必要があるため、当分手動でいいと思います。
