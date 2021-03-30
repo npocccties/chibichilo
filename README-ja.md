@@ -14,6 +14,10 @@ Moodle や BlackBoard などの LTI と連携して、Wowza, YouTube, Vimeo 上�
 
 [インストール方法](INSTALL-ja.md)を読んでください。
 
+## アーキテクチャ
+
+[アーキテクチャの概要](ARCHITECTURE.md)を参照してください。
+
 ## ドキュメント
 
 インストールしたあと、下記の URL から操作方法を学んでください。
