@@ -36,11 +36,11 @@ TypeScript における型注釈。server/models と若干役割が被ってし�
 
 サーバーの構成。
 
-### server/config/app.ts ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/config/app.ts))
+### server/config/app.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/server/config/app.ts))
 
 サーバー起動時の全般的な構成。Fastify インスタンスへのハンドラーの注入。
 
-### server/config/roles.ts ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/config/roles.ts))
+### server/config/roles.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/server/config/roles.ts))
 
 利用者と LTI v1.1 ロールの完全修飾 URN との対応関係。
 
@@ -64,7 +64,7 @@ URL と動画配信プロバイダーの URL との対応関係。
 
 ユーティリティやヘルパー関数。補助的な機能の提供。
 
-### server/main.ts ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/main.ts))
+### server/main.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/server/main.ts))
 
 サーバー起動時に実行されるエントリーポイント。Fastify インスタンス生成と実行、およびサーバーの構成 (server/config) の注入。
 
@@ -128,7 +128,7 @@ OpenAPI Generator (`yarn build:openapi` コマンド) によって生成する�
 
 StoryBook におけるストーリのためのサンプルデータ。
 
-### api/v2.ts ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/api/v2.ts))
+### api/v2.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/api/v2.ts))
 
 [vercel.json](https://github.com/npocccties/ChibiCHiLO/tree/master/vercel.json)とともに [Vercel](https://vercel.com/) のためのファイル。[Vercel の公式ドキュメント](https://vercel.com/docs/configuration)を参照してください。
 
