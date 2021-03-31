@@ -10,7 +10,7 @@
 
 ### server ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server), [docs](https://github.com/npocccties/ChibiCHiLO/tree/master/server#readme))
 
-REST API の提供と静的ファイルの配信を担うサーバー。[Node.js](https://nodejs.org/) で実行。
+[REST API](https://developer.mozilla.org/ja/docs/Glossary/REST) の提供と静的ファイルの配信を担うサーバー。[Node.js](https://nodejs.org/) で実行。
 
 ### server/models ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/models))
 
@@ -22,11 +22,11 @@ TypeScript における型注釈。server/models と若干役割が被ってし�
 
 ### server/services ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/services))
 
-リクエストの処理と制御を行う。
+REST API の仕様と権限の宣言、主要なリクエストの処理と制御を行う。
 
 ### server/auth ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/auth))
 
-認証処理を行う。
+リクエストの処理と制御のうち、認証に関わる処理を行う。
 
 ### server/prisma ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/prisma))
 
@@ -42,7 +42,7 @@ TypeScript における型注釈。server/models と若干役割が被ってし�
 
 ### server/config/roles.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/server/config/roles.ts))
 
-利用者と LTI v1.1 ロールの完全修飾 URN との対応関係。
+利用者と LTI v1.1 ロールの完全修飾 URN との対応関係。権限の制御に利用。
 
 ### server/config/routes ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/server/config/routes))
 
@@ -75,6 +75,10 @@ TypeScript における型注釈。server/models と若干役割が被ってし�
 ### store ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/store))
 
 UI の状態管理用。[jotai](https://github.com/pmndrs/jotai)を使用。components/atoms、components/molecules からは依存されない。
+
+### store/session.ts ([code](https://github.com/npocccties/ChibiCHiLO/blob/master/store/session.ts))
+
+セッションと権限の管理。
 
 ### theme ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/theme))
 
@@ -114,7 +118,7 @@ OpenAPI Generator (`yarn build:openapi` コマンド) によって生成する�
 
 ### public ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/public))
 
-画像など静的ファイルの提供。UI のために使用。
+画像など静的ファイルの提供。UI のために使用。ロゴ画像の差し替えは[ビルド手順](INSTALL-ja.md)を参照してください。
 
 ### .github ([code](https://github.com/npocccties/ChibiCHiLO/tree/master/.github))
 
