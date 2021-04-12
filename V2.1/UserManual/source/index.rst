@@ -14,9 +14,9 @@ CHiBi-CHiLOマニュアル
    :glob:
    :caption: Contents:
 
+
    OverView
    CreateLearningMaterial
-   Glossary
 
 
 索引と表
