@@ -3,18 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CHiBi-CHiLO's documentation!
+CHiBi-CHiLOマニュアル
 =======================================
 
+* :ref:`genindex`
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
+   :numbered:
+   :glob:
    :caption: Contents:
 
 
+   OverView
+   CreateLearningMaterial
 
-Indices and tables
+
+索引と表
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
