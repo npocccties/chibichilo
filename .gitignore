@@ -4,3 +4,8 @@ README.md
 README-ja.md
 V2.1/UserManual/source/
 V2.1/Design/source/
+V2.1/Design/Makefile
+V2.1/Design/build/doctrees/
+V2.1/Design/build/html/.buildinfo
+V2.1/Design/make.bat
+
