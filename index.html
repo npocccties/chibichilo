@@ -33,33 +33,38 @@
 			background-color: #FFF;
 			color:#666666;
 			width:800px;
-			height: 1000px;
+			height: 1800px;
 			font-family:Arial, Helvetica, "sans-serif";
 			padding-top: 20px;
 			padding-left: 50px;
 			padding-right: 50px}
 		h1{
 			font-size: 2.2em;
-			font-weight: lighter
-
+			line-height:10px;
+			font-weight: lighter;
+			color:#2d8fdd;
+		}
+		h2,h3{
+			color:#2d8fdd;
+			font-weight: lighter;
 		}
 		.text{
-			margin-top: 10px;
-			margin-bottom: 60px;
-			margin-left: 40px;
-			margin-right: 40px;
+			margin-top: 2.5em;
+			#margin-left: 40px;
+			#margin-right: 40px;
 			color:#666666;
 		}
 		img{
-			margin-top: 30px;
+			margin-top: 10px;
 			margin-bottom: 10px;
 		}
 		ul {
   			border: solid 2px #2d8fdd;
   			padding: 0.5em;
   			position: relative;
-  			margin-top: 2em;
-			width:60%;
+  			margin-top: 3.5em;
+			margin-bottom: 2em;
+			width:100%;
 			text-align: left;
 		}
 		ul li {
@@ -98,17 +103,13 @@
 </head>
 
 <body>
-	<div class="header-menu">CHiBi-CHiLO</div>
+<div class="header-menu">CHiBi-CHiLO</div>
 	<div class="body" align="center">
-	<div class="menu-body" align="left">
+		<div class="menu-body" align="left">
 		<h1>CHiBi-CHiLO  Documentation</h1>
 		<hr>
-		<img src="logo.png" width="100%" alt="CHiBi-CHiLOの概念図">
 		<div class="text">
-			<p>メディアサービスの普及により，ビデオ教材は比較的手軽に作成できるようになってきました．しかし，苦労して作成したビデオ教材を，修正して使い続けたり，抜粋して他の目的で利用したり，共有したりといった再利用は進んでいません．</p>
-			<p>CHiBi-CHiLOは，ビデオをトピック単位で管理することで，ビデオ教材の共有・再利用を容易にするオープンソースのオンライン学習支援ツールです．</p>
-		</div>		
-		<div align="center">
+			<p>CHiBi-CHiLOは，YouTubeやVimeoといったインターネットに散在するビデオを，トピック単位で整理，管理し，組み合わせて，MoodleなどのLMSの学習者に提供するオンライン学習支援ツールです．</p>
 			<ul>
 			<li><a href="https://cccties.gitbook.io/chibi-chilo/-MYxgKprRrRXXJsZ2JP6/">CHiBi-CHiLOユーザマニュアル</a></li>
 			<li><a href="https://github.com/npocccties/chibichilo/blob/master/ARCHITECTURE.md">アーキテクチャ</a></li>
@@ -116,7 +117,28 @@
 			<li><a href="https://github.com/npocccties/ChibiCHiLO">CHiBi-CHiLOソース（OSS）</a></li>
 			</ul>
 		</div>
-		</div>
-		</div>
+		<img src="logo.png" width="100%" alt="CHiBi-CHiLOの概念図">
+		<div class="text">
+			<h2>我々が考えるオープンソースCHiBi-CHiLOの用途</h2>
+			<p>我々は，ビデオ教材を共有・再利用することで，付加価値を高め，オープンなオンライン学習を実現するために，CHiBi-CHiLOを開発し，オープンソースで提供しています．
+				我々が，考えるCHiBi-CHiLOの用途は次の通りです．しかし，CHiBi-CHiLOの利用目的や用途は，利用者が自ら考え，決める事ができます．</p>
+			
+			<h3>◆ ビデオ教材のメンテナンス性を向上する</h3>
+			CHiBi-CHiLOでビデオをトピック毎に整理，管理することで，ビデオ教材の改修，一部変更が効率的に行えるようになります．
+
+			<h3>◆ 視聴ログの取得する</h3>
+			YouTubeやVimeoといったインターネット上のビデオ配信サービスで提供されているビデオであっても，学習者毎の視聴ログを取得できます．
+			
+			<h3>◆ ビデオ教材の再利用性を向上する</h3>
+			ビデオをトピック毎に整理，管理し，目録化することで，ビデオの再利用性が高まります．また，それらビデオを目的別，あるいは学習者毎に自由に組み合わせることで多様な学習が実現できます．
+			
+			<h3>◆ ビデオ教材の質を向上する</h3>
+			ビデオをこまめにメンテナンスし，再利用することで内容の陳腐化を防ぎます，また常に手入れすることで教材の質が向上します．
+			
+			<h3>◆ 学習資源を共有する</h3>
+			ビデオ教材を共有することで，学習者に，多様のビデオ教材を効率的に提供することができます．
+		</div>		
+	</div>
+</div>
 </body>
 </html>
