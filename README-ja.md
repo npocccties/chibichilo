@@ -37,6 +37,8 @@ GitHub Action を整備して、docsブランチにpushされたら、動くよ�
 トップページのindex.htmlやlogo.pngもdocsブランチにある内容がdeploy されるようになっています。変更ををかけるなら
 docsブランチにある内容に対して変更をかけてください。
 
+既存にあるページは消去しないようですが、2重管理にならないように、docs branch で管理するようにしてください。
+
 
 docs ブランチで、RestructuredText を書いて、htmlを生成してもらい、生成した結果をコミットして、gh-pages にマージ
 するかたちになります。
