@@ -28,7 +28,7 @@ jobs:
           pip3 -V
       - name: build sphinx document
         run: |
-          dash ./V2.1/DocumentBuild.sh
+          (cd  ./V2.1/;dash ./DocumentBuild.sh)
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
