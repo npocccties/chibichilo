@@ -1,0 +1,37 @@
+name: build sphinx document
+on: 
+  push:
+    branches:
+      - 'docs'
+jobs:
+  main:
+    name: build sphinx document
+    runs-on: ubuntu-latest
+    steps:
+      # 自分の repository を checkout する。
+      # 高速化は、ディフォルト値をあとで確認する。
+      # --depth 1 だったはず?
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: docs
+      # Identity を設定
+      - name: set identity
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "bot"
+      - name: Set up Ubuntu 20.04 environment
+        run: |
+          sudo apt update
+          sudo apt -y upgrade
+          sudo apt install python3-sphinx python3-sphinx-rtd-theme python3-sphinxcontrib.plantuml python3-pip
+          pip3 -V
+      - name: build sphinx document
+        run: |
+          ./V2.1/DocumentBuild.sh
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+
