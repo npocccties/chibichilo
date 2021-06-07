@@ -24,7 +24,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt -y upgrade
-          sudo apt install python3-sphinx python3-sphinx-rtd-theme python3-sphinxcontrib.plantuml python3-pip
+          # 日本語が豆腐になるので、ipafont と ipaexfont を入れる。
+          sudo apt install python3-sphinx python3-sphinx-rtd-theme python3-sphinxcontrib.plantuml python3-pip fonts-ipafont fonts-ipaexfont
           pip3 -V
       - name: build sphinx document
         run: |
