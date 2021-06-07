@@ -1,11 +1,13 @@
 用語集
 ========
 
+並び順の関係で索引に与える文字は英語ならそのまま、日本語ならひらかなの最初の１文字/日本語の並びにしてください。
+
 .. index::
   single: は/配布
 
 配布
-  LTI連携を利用して、　LMSで学習者に提供すること。 定義元 `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247>`_
+  LTI連携を利用して、　LMSで学習者に提供すること。 定義元 `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247>`__
 
 .. index::
   single: ふ/フォーク
@@ -49,10 +51,10 @@
   single: さ/参照利用
 
 参照利用
- ブック，トピックの再利用の方法の一つで，ブックやトピックを参照して利用すること．編集はできない．`用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`_
+ ブック，トピックの再利用の方法の一つで，ブックやトピックを参照して利用すること．編集はできない．`用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`__
 
 .. index::
   pair: と/トピックの再利用; ぶ/ブックの再利用
 
 トピック，ブックの再利用
- 参照利用とフォークして利用の2種類がある．`用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`_
+ 参照利用とフォークして利用の2種類がある．`用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`__

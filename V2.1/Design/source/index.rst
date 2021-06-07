@@ -15,6 +15,7 @@ Micro Contents System --- CHiBi-CHiLO の設計文書
    :caption: Contents:
 
    Overview
+   Database
    Glossary
 
 
