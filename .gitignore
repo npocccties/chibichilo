@@ -1,10 +1,11 @@
 *.swp
 tags
-V2.1/Design/build/
 # vscode の設定を強制したいならコメントにすること
 V2.1/Design/source/.vscode/settings.json
 # gh-pages にも、この .gitignore は copy されるので下記は設定してはダメ
 # 下記の ignore は docs branch の repo root 以外でやること。
 # 自分の clone してきた .git/info/exclude など。
 V2.1/Design/source/_build/
+# V2.1/Design/build/
 # V2.1/UserManual/build/
+V2.1/UserManual/source/_build/
