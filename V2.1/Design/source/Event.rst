@@ -10,7 +10,7 @@
 #. video.js
 #. ChibiCHiLOのフロントエンド が、ChangePage Eventを送出している。
 
-がある。video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下位のイベントのみをログに書き出す。
+がある。video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下記のイベントのみをログに書き出す。
 
 ` <https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88>`_
 2020/10/05時点での閲覧
