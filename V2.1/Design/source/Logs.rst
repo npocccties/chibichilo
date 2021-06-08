@@ -47,7 +47,7 @@
 syslogへ出力する。
 
 ログの出力タイミング
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------------
 
 イベントのタイミングで、出力する。
 
@@ -58,7 +58,7 @@ syslogへ出力する。
 .. @suppress SentenceLength KatakanaEndHyphen InvalidSymbol
 
 ログのフォーマット
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------------
 
 .. Cspell:ignore tnah wowzatokencustomparameter videoplayerlog videoplayer
 
