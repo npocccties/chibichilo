@@ -4,8 +4,8 @@ on:
     branches:
       - 'docs'
     paths:
-      - 'V2.1/Design/'
-      - 'V2.1/UserManual/'
+      - 'V2.1/Design/**'
+      - 'V2.1/UserManual/**'
       # build対象は、V2.1/Design/* と V2.1/UserManual/* とする。
       # 個別 build への布石
 jobs:
