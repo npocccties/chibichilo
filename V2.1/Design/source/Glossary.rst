@@ -14,6 +14,7 @@
 
 フォーク
  今の定義: ブック，トピックの再利用の方法の一つで，ブックやトピックを編集可能な状態で複製しすること `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`__
+
  以前の定義: 第三者のブック・トピックを複製して、以降はこれを元に別のブック・トピックとして改訂していくこと。定義元 `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247>`__
 
 .. index::
@@ -27,6 +28,7 @@
 
 シェア
  今の定義: 作成者がブックやトピックの再利用を他の作成者に許可すること `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247#issuecomment-847509661>`__ 
+
  以前の定義: トピック，ブックを第三者が再利用できるようにすること．現在の共有です。定義元 `用語定義 · Issue #247 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/247>`__
 
 .. index::
