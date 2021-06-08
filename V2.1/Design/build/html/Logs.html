@@ -89,11 +89,9 @@
 <li class="toctree-l1"><a class="reference internal" href="Event.html">3. イベント</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. ログデータ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">4.1. ログ出力をする対象者</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. ログの出力先</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">4.2.1. ログの出力タイミング</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">4.2.2. ログのフォーマット</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. ログの出力先</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">4.3. ログの出力タイミング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">4.4. ログのフォーマット</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Glossary.html">5. 用語集</a></li>
@@ -224,13 +222,14 @@
 <div class="section" id="id3">
 <h2>4.2. ログの出力先<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>syslogへ出力する。</p>
+</div>
 <div class="section" id="id4">
-<h3>4.2.1. ログの出力タイミング<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h2>4.3. ログの出力タイミング<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>イベントのタイミングで、出力する。</p>
 <p>なので、学生がVideo視聴している間10sec毎を基本として、各種イベントが起きた時には、下記のログフォーマットで書き出す。</p>
 </div>
 <div class="section" id="id5">
-<h3>4.2.2. ログのフォーマット<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h2>4.4. ログのフォーマット<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>syslogへ、TSV(タブ区切り)で出力する。</p>
 <p>フォーマットについては、 <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO/issues/18">ログ出力の仕様を整理・定義する · Issue #18 · npocccties/ChibiCHiLO</a> でも議論しているので、必要に応じて参照すること。</p>
 <span id="table"></span><table border="1" class="colwidths-given docutils" id="id7">
@@ -420,7 +419,6 @@ moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126
 <dt>video種別</dt>
 <dd><span class="strike">YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加</span> この部分の追加は、次期log開発時に追加する。</dd>
 </dl>
-</div>
 </div>
 </div>
 
