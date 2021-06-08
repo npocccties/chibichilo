@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. イベント &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="4. ログデータ" href="Logs.html" />
+    <link rel="prev" title="2. DataBase" href="Database.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">1. CHiBi-CHiLO --- マイクロ・コンテンツ・システム 設計文書</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Database.html">2. DataBase</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. イベント</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Logs.html">4. ログデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glossary.html">5. 用語集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CHiBi-CHiLO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>3. イベント</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Event.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sect-event">
+<span id="id1"></span><h1>3. イベント<a class="headerlink" href="#sect-event" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>イベントとは、LTIシステムで、学生が学習コンテンツを視聴した時と行動を記録するために定義された「きっかけ」を記録する。イベントの発生源は、</p>
+<ol class="arabic simple">
+<li>video.js</li>
+<li>ChibiCHiLOのフロントエンド が、ChangePage Eventを送出している。</li>
+</ol>
+<p>がある。video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下位のイベントのみをログに書き出す。</p>
+<p>` &lt;<a class="reference external" href="https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88">https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88</a>&gt;`_
+2020/10/05時点での閲覧</p>
+<p>詳細は、個別に記述する。</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="31%" />
+<col width="6%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">イベント</th>
+<th class="head">イベントとは別に取得した情報</th>
+<th class="head">video.jsとの対応</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>firstplay</td>
+<td>なし</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:firstplay">firstplay</a></td>
+</tr>
+<tr class="row-odd"><td>play</td>
+<td>なし</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:play">play</a></td>
+</tr>
+<tr class="row-even"><td>pause</td>
+<td>なし</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:pause">pause</a></td>
+</tr>
+<tr class="row-odd"><td>seeked</td>
+<td>シーク操作前のビデオ再生位置</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:seeked">seeked</a></td>
+</tr>
+<tr class="row-even"><td>ended</td>
+<td>なし</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:ended">ended</a></td>
+</tr>
+<tr class="row-odd"><td>ratechange</td>
+<td>変更した再生速度倍率</td>
+<td><a class="reference external" href="https://docs.videojs.com/player#event:ratechange">ratechange</a></td>
+</tr>
+<tr class="row-even"><td>trackchange</td>
+<td>字幕切り替え後の言語</td>
+<td><a class="reference external" href="https://docs.videojs.com/texttracklist#event:change">change</a></td>
+</tr>
+<tr class="row-odd"><td>forward</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>back</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>beforeunload-ended</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>pagehide-ended</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>unload-ended</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>hidden-ended</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>current-time</td>
+<td>なし</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>changepage</td>
+<td>切り替え先のマイクロコンテンツID</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>以下の目的で取得している</p>
+<dl class="docutils">
+<dt>firstplay</dt>
+<dd><p class="first">学習者がページを開いて最初にビデオを再生開始した時間</p>
+<p>videojsのイベントを利用</p>
+<p class="last">videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．</p>
+</dd>
+<dt>play</dt>
+<dd><p class="first">学習者がビデオを再生開始した時間</p>
+<p>videojsのイベントを利用</p>
+<p class="last">videojsでは，ビデオを一時停止した後，再生開始すると，firstplayのイベントはとれず，playのイベントだけとれる．</p>
+</dd>
+<dt>pause</dt>
+<dd><p class="first">学習者がビデオを一時停止した時間</p>
+<p class="last">videojsのイベントを利用</p>
+</dd>
+<dt>seeked</dt>
+<dd><p class="first">学習者がビデオのシークバーを操作した時間</p>
+<p>videojsのイベントを利用</p>
+<p>シークを始めたビデオの再生位置も知りたくて，以下のように書いて，シーク操作前のビデオ再生位置を別途取得</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>/* Record the start and end of seek time */
+let previousTime = 0;
+let currentTime = 0;
+let seekStart: number | null;
+player.on(&quot;timeupdate&quot;, function () {
+   previousTime = currentTime;
+   currentTime = player.currentTime();
+});
+player.on(&quot;|&quot;, function () {
+   if (seekStart === null) {
+      seekStart = previousTime;
+   }
+});
+player.on(&quot;seeked&quot;, function () {
+   sendLog(&quot;seeked&quot;, player, seekStart?.toString());
+   seekStart = null;
+});
+</pre></div>
+</div>
+</dd>
+<dt>ended</dt>
+<dd><p class="first">学習者がビデオを最後まで視聴した時間</p>
+<p class="last">videojsのイベントを利用</p>
+</dd>
+<dt>ratechange</dt>
+<dd><p class="first">学習者がビデオの再生速度を変更した時間</p>
+<p>videojsのイベントを利用</p>
+<p class="last">何倍速に変更したのかも知りたくて， <a class="reference external" href="https://docs.videojs.com/player#playbackRate">playbackRate</a>　から，再生速度倍率を別途取得</p>
+</dd>
+<dt>trackchange</dt>
+<dd><p class="first">学習者がビデオの字幕を変更した時間</p>
+<p>videojsのイベントを利用</p>
+<p>どの字幕に変更したのかも知りたくて， 以下のように書いて，字幕切り替え後の言語を別途取得</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">Record</span> <span class="n">subtitle</span> <span class="n">information</span> <span class="o">*/</span>
+<span class="n">let</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">number</span><span class="p">;</span>
+<span class="n">player</span><span class="o">.</span><span class="n">remoteTextTracks</span><span class="p">()</span><span class="o">.</span><span class="n">addEventListener</span><span class="p">(</span><span class="s2">&quot;change&quot;</span><span class="p">,</span> <span class="n">function</span> <span class="n">action</span><span class="p">()</span> <span class="p">{</span>
+   <span class="n">window</span><span class="o">.</span><span class="n">clearTimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">);</span>
+   <span class="n">let</span> <span class="n">showing</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">from</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">remoteTextTracks</span><span class="p">())</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">function</span> <span class="p">(</span>
+      <span class="n">track</span>
+   <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">track</span><span class="o">.</span><span class="n">kind</span> <span class="o">===</span> <span class="s2">&quot;subtitles&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">track</span><span class="o">.</span><span class="n">mode</span> <span class="o">===</span> <span class="s2">&quot;showing&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
+      <span class="p">}</span>
+   <span class="p">})[</span><span class="mi">0</span><span class="p">];</span>
+   <span class="n">timeout</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="n">player</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="s2">&quot;subtitleChanged&quot;</span><span class="p">,</span> <span class="n">showing</span><span class="p">);</span>
+   <span class="p">},</span> <span class="mi">10</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">player</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;subtitleChanged&quot;</span><span class="p">,</span> <span class="n">function</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">track</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">sendLog</span><span class="p">(</span><span class="s2">&quot;trackchange&quot;</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">language</span><span class="p">);</span>
+   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">sendLog</span><span class="p">(</span><span class="s2">&quot;trackchange&quot;</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="s2">&quot;off&quot;</span><span class="p">);</span>
+   <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</dd>
+<dt>forward</dt>
+<dd><p class="first">学習者がビデオの早送りをした時間</p>
+<p>videojsの標準機能になかったので，<a class="reference external" href="https://www.npmjs.com/package/videojs-seek-buttons">videojs-seek-buttons</a> で機能を実装した．</p>
+<p>早送り処理の途中で '<a href="#id2"><span class="problematic" id="id3">this.options_</span></a>.direction' の値が forward か back になっていたので，これをイベントとしてログに飛ばす処理を追加した．</p>
+<p>後から追加しなくてもいいようにしたい．</p>
+<p>（ /lti/node_modules/videojs-seek-buttons/dist/videojs-seek-buttons.es.js　に追加）</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>function postForm(req) {
+   const form = new FormData();
+   Object.entries(req).forEach(([key, value]) =&gt; form.append(key, value));
+   return {
+   method: &quot;POST&quot;,
+   body: form,
+   };
+}
+const sendLogPath = `/lti//call/log.php`;
+const player = this.player_;
+const currentSrc = player.currentSrc();
+const youtubeQuery = currentSrc.split(&quot;?&quot;)[1];
+const youtubeVideoId =
+   new URLSearchParams(youtubeQuery).get(&quot;v&quot;);
+const currentTime = player.currentTime();
+const sessionStorageKey = &quot;session&quot;;
+const res = sessionStorage.getItem(sessionStorageKey);
+const session = JSON.parse(res);
+const req = {
+   event: this.options_.direction,
+   detail: &quot;-&quot;,
+   file: youtubeVideoId,
+   query: youtubeQuery,
+   current: currentTime.toString(),
+   rid: session.lmsResource,
+   uid: session.id,
+   cid: session.lmsCourse,
+   nonce: session.nonce,
+};
+if(!session.role){
+   fetch(sendLogPath, postForm(req));
+}
+</pre></div>
+</div>
+</dd>
+<dt>back</dt>
+<dd><p class="first">学習者がビデオの巻き戻しをした時間</p>
+<p class="last">他は forward と同様</p>
+</dd>
+<dt>beforeunload-ended</dt>
+<dd><p class="first">学習者がビデオをどこまで視聴したか</p>
+<p>ブラウザのイベントを利用</p>
+<p class="last">ブラウザを閉じたり，別のウィンドウやタブに切り替えたイベントで目的が達成できそうだったので採用した．</p>
+</dd>
+<dt>pagehide-ended</dt>
+<dd>beforeunload-endedと同様</dd>
+<dt>unload-ended</dt>
+<dd>beforeunload-endedと同様</dd>
+<dt>hidden-ended</dt>
+<dd>beforeunload-endedと同様</dd>
+<dt>current-time</dt>
+<dd><p class="first">学習者がビデオをどこまで視聴したか</p>
+<p>スクリプトを作成した．</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setInterval</span><span class="p">(</span><span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+   <span class="n">sendLog</span><span class="p">(</span><span class="s2">&quot;current-time&quot;</span><span class="p">,</span> <span class="n">player</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">10000</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>ブラウザのイベント利用は不安だったので，現在の再生位置を把握できるように一定周期でログをとったほうが安心かなと思い作成した</p>
+<p class="last">現在は，プレイヤーの再生停止の有無に関係なく10秒毎に取得しつづけている</p>
+</dd>
+<dt>changepage</dt>
+<dd><p class="first">学習者が学習コンテンツにある，別のマイクロコンテンツに切り替えた時間
+(時間とするとフォーマットと例が欲しいです。)</p>
+<p>スクリプトを作成した．</p>
+<p>どのマイクロコンテンツに変更したのかも知りたくて， マイクロコンテンツのIDを別途取得 （現在のマイクロコンテンツIDなのか、遷移先のマイクロコンテンツIDなのかとか、説明と具体例が必要かと)
+(現在のchangepageのフォーマットは、変更した時刻+遷移元のマイクロコンテンツIDという理解でいいのでしたっけ)</p>
+<p class="last">現在は，自動遷移か手動遷移の区別はついていない．区別が必用かは検討事項とする．</p>
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Logs.html" class="btn btn-neutral float-right" title="4. ログデータ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Database.html" class="btn btn-neutral float-left" title="2. DataBase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, CCC-TIES
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -16,6 +16,8 @@ Micro Contents System --- CHiBi-CHiLO の設計文書
 
    Overview
    Database
+   Event
+   Logs
    Glossary
 
 
