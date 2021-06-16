@@ -5,7 +5,7 @@ import BooksTemplate from "$templates/Books";
 import Book from "$templates/Book";
 import BookPreviewDialog from "$organisms/BookPreviewDialog";
 import useBooks from "$utils/useBooks";
-import { useLinkedBook } from "$utils/book";
+import useLinkedBook from "$utils/useLinkedBook";
 import { pagesPath } from "$utils/$path";
 import { updateLtiResourceLink } from "$utils/ltiResourceLink";
 import getLtiResourceLink from "$utils/getLtiResourceLink";
@@ -20,12 +20,8 @@ const Books = (
 
 function Index() {
   const router = useRouter();
-  const { session, isBookEditable, isTopicEditable } = useSessionAtom();
-  const { linkedBook } = useLinkedBook(
-    session?.ltiResourceLink?.bookId,
-    isBookEditable,
-    isTopicEditable
-  );
+  const { session, isBookEditable } = useSessionAtom();
+  const { linkedBook } = useLinkedBook();
   const {
     data: dialog,
     open,

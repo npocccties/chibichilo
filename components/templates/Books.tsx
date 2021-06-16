@@ -11,6 +11,7 @@ import SortSelect from "$atoms/SortSelect";
 import CreatorFilter from "$atoms/CreatorFilter";
 import SearchTextField from "$atoms/SearchTextField";
 import type { BookSchema } from "$server/models/book";
+import type { LinkedBook } from "$types/linkedBook";
 import { SortOrder } from "$server/models/sortOrder";
 import { Filter } from "$types/filter";
 import useContainerStyles from "styles/container";
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 export type Props = {
   books: BookSchema[];
-  linkedBook?: BookSchema;
+  linkedBook?: LinkedBook;
   loading?: boolean;
   hasNextPage?: boolean;
   onLoadMore?(): void;
@@ -90,7 +91,11 @@ export default function Books(props: Props) {
               <BookPreview
                 book={linkedBook}
                 onBookClick={handleBookClick(linkedBook)}
-                onBookEditClick={handleBookEditClick(linkedBook)}
+                onBookEditClick={
+                  linkedBook.editable
+                    ? handleBookEditClick(linkedBook)
+                    : undefined
+                }
                 onLtiContextClick={onLtiContextClick}
               />
             )}
