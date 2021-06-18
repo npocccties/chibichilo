@@ -5,9 +5,13 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Fab from "@material-ui/core/Fab";
+import Tooltip from "@material-ui/core/Tooltip";
 import Container from "@material-ui/core/Container";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
+import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import LinkIcon from "@material-ui/icons/Link";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import BookChildren from "$organisms/BookChildren";
@@ -79,6 +83,12 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
     height: `calc(100vh - ${offset}px)`,
   }),
+  fab: {
+    position: "fixed",
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+    zIndex: 1,
+  },
   desktop: {},
   mobile: {},
 }));
@@ -140,6 +150,8 @@ export default function Book(props: Props) {
           if (topic) onTopicEditClick?.(topic);
         }
       : undefined;
+  const [minimize, setMinimize] = useState(false);
+  const handleFabClick = () => setMinimize(!minimize);
 
   return (
     <Container maxWidth="lg">
@@ -195,7 +207,12 @@ export default function Book(props: Props) {
       >
         <div className={clsx(classes.main, { [classes.desktop]: matches })}>
           {topic && (
-            <TopicViewer topic={topic} onEnded={onTopicEnded} offset={offset} />
+            <TopicViewer
+              topic={topic}
+              onEnded={onTopicEnded}
+              offset={offset}
+              minimize={matches && minimize}
+            />
           )}
         </div>
         <div
@@ -215,6 +232,13 @@ export default function Book(props: Props) {
           />
         </div>
       </div>
+      {matches && (
+        <Tooltip title={minimize ? "動画を拡大" : "動画を縮小"}>
+          <Fab className={classes.fab} color="primary" onClick={handleFabClick}>
+            {minimize ? <FullscreenIcon /> : <PictureInPictureIcon />}
+          </Fab>
+        </Tooltip>
+      )}
       {book && <BookItemDialog open={open} onClose={handleClose} book={book} />}
     </Container>
   );

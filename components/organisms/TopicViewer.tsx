@@ -16,15 +16,15 @@ type Props = {
   topic: TopicSchema;
   onEnded?: () => void;
   offset?: number;
+  minimize?: boolean;
 };
 
-export default function TopicViewer(props: Props) {
+export default function TopicViewer({ className, ...others }: Props) {
   const classes = useStyles();
   const cardClasses = useCardStyles();
-  const { className, topic, onEnded, offset } = props;
   return (
     <Card classes={cardClasses} className={clsx(classes.root, className)}>
-      <TopicViewerContent topic={topic} onEnded={onEnded} offset={offset} />
+      <TopicViewerContent {...others} />
     </Card>
   );
 }

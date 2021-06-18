@@ -36,11 +36,26 @@ const useStyles = makeStyles((theme) => ({
       /* NOTE: 各動画プレイヤーのレスポンシブ対応により、高さはpaddingTopによってwidthのpercentage分
        * 確保されるため、heightによる制限ではなくwidthによる制限をおこなう必要がある */
       // NOTE: 16:9前提になっているが本当はアスペクト比に応じて最大高さを変えたい
+      width: "100%",
       maxWidth:
         NEXT_PUBLIC_VIDEO_MAX_HEIGHT === "unset"
           ? "unset"
           : `calc(${NEXT_PUBLIC_VIDEO_MAX_HEIGHT} * 16 / 9)`,
       margin: "0 auto",
+      transition: theme.transitions.create("width", {
+        duration: theme.transitions.duration.standard,
+        easing: theme.transitions.easing.easeOut,
+      }),
+    },
+    "&$minimize": {
+      marginLeft: 0,
+      backgroundColor: "transparent",
+      "& > *": {
+        width: 400,
+        maxWidth: "unset",
+        margin: "0",
+        marginLeft: "auto",
+      },
     },
   },
   title: {
@@ -56,16 +71,22 @@ const useStyles = makeStyles((theme) => ({
   description: {
     margin: theme.spacing(2.5, 0, 2),
   },
+  minimize: {},
 }));
 
 type Props = {
   topic: TopicSchema;
   onEnded?: () => void;
   offset?: number;
+  minimize?: boolean;
 };
 
-export default function TopicViewerContent(props: Props) {
-  const { topic, onEnded, offset } = props;
+export default function TopicViewerContent({
+  topic,
+  onEnded,
+  offset,
+  minimize = false,
+}: Props) {
   const classes = useStyles();
   const theme = useTheme();
   const sticky = useSticky({
@@ -78,7 +99,9 @@ export default function TopicViewerContent(props: Props) {
     <>
       {"providerUrl" in topic.resource && (
         <Video
-          className={clsx(classes.video, sticky)}
+          className={clsx(classes.video, sticky, {
+            [classes.minimize]: minimize,
+          })}
           {...topic.resource}
           onEnded={onEnded}
           autoplay
