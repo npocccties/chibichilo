@@ -1,5 +1,16 @@
+##############################################
+#
+# Genreral
+#
+##############################################
 *.swp
 tags
+.DS_Store
+##############################################
+#
+# Design
+#
+##############################################
 # vscode の設定を強制したいならコメントにすること
 V2.1/Design/source/.vscode/settings.json
 # gh-pages にも、この .gitignore は copy されるので下記は設定してはダメ
@@ -7,6 +18,18 @@ V2.1/Design/source/.vscode/settings.json
 # 自分の clone してきた .git/info/exclude など。
 V2.1/Design/source/_build/
 # V2.1/Design/build/
+##############################################
+#
+# UserManual
+#
+##############################################
 # V2.1/UserManual/build/
 V2.1/UserManual/source/_build/
-.DS_Store
+##############################################
+#
+# OnBoarding
+#
+##############################################
+V2.1/OnBorading/source/_build/
+# vscode の設定を強制したいならコメントにすること
+V2.1/OnBoarding/source/.vscode/settings.json
