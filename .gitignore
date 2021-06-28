@@ -9,3 +9,4 @@ V2.1/Design/source/_build/
 # V2.1/Design/build/
 # V2.1/UserManual/build/
 V2.1/UserManual/source/_build/
+.DS_Store

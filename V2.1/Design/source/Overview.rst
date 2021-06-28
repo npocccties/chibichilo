@@ -6,113 +6,42 @@ CHiBi-CHiLO --- マイクロ・コンテンツ・システム 設計文書
 本システムの目的
 -----------------------------------------------------------------
 
-本システムは、学習コンテンツの再利用を促進することを目的とする。
-
-この考え方のは背景には、下記の5Rがある。
-
-* Retain(保持)
-* Reuse(再利用)
-* Revise(改版)
-* Remix(組み合わせ)
-* Redistrubtion(再配布)
+本システムは、学習コンテンツをレゴブロックのように組み立てて再利用することを目的とする。
+なお本システムで扱う学習コンテンツは動画コンテンツとする．
 
 本システムを構成する概念
 ----------------------------------------------------------------
 
-.. image:: ./_images/image1.png
-
-概念図
+学習オブジェクト
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+学習オブジェクト（Learning Object，LO）とは，
+組み立て統合し，取り外し，修正し，交換することのできる学習コンテンツの形態で，
+それにより，学習コンテンツの制作，修正の労力を節約し，多様化できる．
+
+LOは，学習コンテンツの共有再利用の概念であるが，その定義は，以下のようにさまざまである．
+
+* “さまざまな学習環境での（再）利用を目的に，教育コンテンツを小さなチャンクに分割したもの[ ]”
+* “複数の教育コンテキストで，再利用することのできる独立性，自立性の高い学習ユニットである[ ]”
+* カプセル化，抽象化，継承，ポリモーフィズムのなど，ソフトウェア開発における「オブジェクト指向」を強く意識したもの
+* “any entity, digital or non digital, that can be used for learning, education or training”
+
+
+本システムのLO
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.1.2 フィッシュボーン構造
+本システムは，Topic Object（TO），Book Object（BO），Linked Object（LdO）の3種類のLOで構成されている．
+同じ種類のLO同士は互いに参照することはなく独立し，LdOはBO参照し，BOはTOを参照するという階層構造をもっている
+
+電子書籍の仕様により，トピックのシーケンシング（順序立て）は次に進む，前に戻るといった線形的になる．
+また1冊あたり，講義1回分の学習内容を含み，複数のCHiLO Bookを順に学習することで，一連の学習を終了することとしている．
+これは，すなわち，学習リソースがフィッシュボーン構造（図1）をとることになり，1つのCHiLO Bookが終了するまで，次には進まないことを原則とする，ID分野のトピカルシーケンシングと呼ばれるシーケンシングと同様であり，学習者が1つのトピックに徹底的に集中して学習できる，また，次に進む，戻ると言った操作のみなで[ ]，学習しやすさ（learnability）に優れているという長所がある[ ]．
+
+
+.. image:: ./_images/image1.png
+
 .. _fig概念図:
-
-.. uml::
-
-    left to right direction
-
-    rectangle "Repository layer" as Repository {
-        usecase "OER" as OER1
-        usecase "OER" as OER2
-        usecase "OER" as OER3
-        usecase "OER" as OER4
-
-    }
-
-    rectangle "Referatry layer" as Referatry {
-      usecase "RO" as RO1
-      usecase "RO" as RO2
-      usecase "RO" as RO3
-      usecase "RO" as RO4
-
-    }
-
-    rectangle "Topic layer" as Topic {
-      usecase "TO" as TO1
-      usecase "TO" as TO2
-      usecase "TO" as TO3
-      usecase "TO" as TO4
-      usecase "TO" as TO5
-      usecase "TO" as TO6
-
-    }
-
-    rectangle "Construction layer" as Construction {
-      usecase "学習目標" as goal
-      usecase "TO" as TO7
-      usecase "TO" as TO8
-      usecase "TO" as TO9
-      usecase "TO" as TO11
-      usecase "TO" as TO12
-      usecase "TO" as TO13
-      usecase "TO" as TO14
-      usecase "TO" as TO15
-      usecase "TO" as TO16
-      usecase "TO" as TO17
-
-    }
-
-    rectangle "Output layer" as Output {
-      usecase "LC" as LC1
-      usecase "LC" as LC2
-      usecase "LC" as LC3
-
-    }
-
-    OER1 <-- RO1
-    OER2 <-- RO2
-    OER3 <-- RO3
-    OER4 <-- RO4
-
-    RO1 <-- TO1
-    RO2 <-- TO1
-    RO3 <-- TO2
-    RO4 <-- TO2
-    RO3 <-- TO3
-    RO1 <-- TO4
-    RO3 <-- TO5
-    RO4 <-- TO6
-
-    goal -- TO7
-    goal -- TO8
-    goal -- TO9
-    TO7 -- TO11
-    TO7 -- TO12
-    TO8 -- TO13
-    TO8 -- TO14
-    TO9 -- TO15
-    TO9 -- TO16
-    TO9 -- TO17
-
-    Topic --> Construction
-    Construction --> Output
-
-
-上記の図における略号
-
-* OER: Open Educational Resources
-* RO: Resource Object
-* TO: Topic Object
-* LC: Learning Content
+.. image:: ./_images/image2.png
 
 Micro CHiLOにおいて，実体はリソースレイヤーのOERとアウトプットレイヤーの学習コンテンツのみである．
 それ以外は，全てデータセットである．
