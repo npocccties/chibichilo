@@ -6,7 +6,8 @@ on:
     paths:
       - 'V2.1/Design/**'
       - 'V2.1/UserManual/**'
-      # build対象は、V2.1/Design/* と V2.1/UserManual/* とする。
+      - 'V2.1/OnBoarding/**'
+      # build対象は、V2.1/Design/* と V2.1/UserManual/* V2.1/OnBoarding/* とする。
       # 個別 build への布石
 jobs:
   main:
