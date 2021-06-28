@@ -21,4 +21,4 @@ chibi-chilo の開発に参加したいが、様子がわからない人
 ドキュメント関係
 -----------------------------------------------------------------
 
-
+* `Documentation layout · Issue #357 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/357>`_
