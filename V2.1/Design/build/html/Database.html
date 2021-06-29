@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. DataBase &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="3. イベント" href="Event.html" />
+    <link rel="prev" title="1. CHiBi-CHiLO --- マイクロ・コンテンツ・システム 設計文書" href="Overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">1. CHiBi-CHiLO --- マイクロ・コンテンツ・システム 設計文書</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. DataBase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#er">2.1. ER図</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Event.html">3. イベント</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Logs.html">4. ログデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glossary.html">5. 用語集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CHiBi-CHiLO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>2. DataBase</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Database.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="database">
+<h1>2. DataBase<a class="headerlink" href="#database" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="er">
+<h2>2.1. ER図<a class="headerlink" href="#er" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>詳細は、個別に記述する。下記は、ER図の例</p>
+<p class="plantuml">
+<img src="_images/plantuml-53a8f5f63580f39ecc1bd45bdb0a43826991b85c.png" alt="skinparam monochrome true
+
+entity &quot;1. Resource/教育用外部リソース&quot; {
+* id: Int
+topics: &quot;Topic/トピック&quot;[]?
+video: &quot;Video/ビデオ&quot;?
+videoId: Int?
+* &quot;url/外部リソースのアドレス&quot;: String
+* &quot;details/詳細&quot;: Json
+}
+
+entity &quot;2. Video/ビデオ&quot; {
+* id: Int
+* resource: &quot;Resource/教育用外部リソース&quot;
+tracks: &quot;Track/ビデオのトラック (字幕・キャプション)&quot;[]?
+&quot;providerUrl/動画プロバイダーの識別子&quot;: String?
+}
+
+entity &quot;3. Track/ビデオのトラック (字幕・キャプション)&quot; {
+* id: Int
+* video: &quot;Video/ビデオ&quot;
+* videoId: Int
+* &quot;kind/種別 subtitles&quot;: String
+* &quot;language/言語 ISO 639-1 code&quot;: String
+}
+
+entity &quot;4. Topic/トピック&quot; {
+* id: Int
+* resource: &quot;Resource/教育用外部リソース&quot;
+* resourceId: Int
+keywords: &quot;Keyword/キーワード&quot;[]?
+topicSection: &quot;TopicSection/セクション内トピック&quot;[]?
+activities: &quot;Activity/学習活動&quot;[]?
+* &quot;name/トピック名称&quot;: String
+* &quot;description/説明&quot;: String
+* &quot;timeRequired/学習所要時間 (秒)&quot;: Int
+* &quot;creator/作成者&quot;: &quot;User/利用者&quot;
+* creatorId: Int
+* &quot;createdAt/作成日&quot;: DateTime
+* &quot;updatedAt/更新日&quot;: DateTime
+* &quot;details/詳細&quot;: Json
+}
+
+entity &quot;5. Keyword/キーワード&quot; {
+* id: Int
+topics: &quot;Topic/トピック&quot;[]?
+books: &quot;Book/ブック&quot;[]?
+* &quot;name/名称 (カンマ , を含めない)&quot;: String
+}
+
+entity &quot;6. LtiContext&quot; {
+* id: String
+resourceLinks: LtiResourceLink[]?
+* title: String
+}
+
+entity &quot;7. LtiResourceLink&quot; {
+* id: String
+* context: LtiContext
+* contextId: String
+* title: String
+* book: Book
+* bookId: Int
+}
+
+entity &quot;8. Book/ブック&quot; {
+* id: Int
+keywords: &quot;Keyword/キーワード&quot;[]?
+sections: &quot;Section/セクション&quot;[]?
+ltiResourceLinks: LtiResourceLink[]?
+* &quot;name/題名&quot;: String
+* &quot;abstruct/概要&quot;: String
+* &quot;author/著作者&quot;: &quot;User/利用者&quot;
+* authorId: Int
+* &quot;publishedAt/公開日&quot;: DateTime
+* &quot;createdAt/作成日&quot;: DateTime
+* &quot;updatedAt/更新日&quot;: DateTime
+* &quot;details/詳細&quot;: Json
+}
+
+entity &quot;9. Section/セクション&quot; {
+* id: Int
+* book: &quot;Book/ブック&quot;
+* bookId: Int
+topicSections: &quot;TopicSection/セクション内トピック&quot;[]?
+* &quot;order/順番 (昇順)&quot;: Int
+&quot;name/名称 (NULLならば匿名のトピックの集まり)&quot;: String?
+}
+
+entity &quot;19. TopicSection/セクション内トピック&quot; {
+* id: Int
+* section: &quot;Section/セクション&quot;
+* sectionId: Int
+* topic: &quot;Topic/トピック&quot;
+* topicId: Int
+* &quot;order/順番 (昇順)&quot;: Int
+}
+
+entity &quot;11. User/利用者&quot; {
+* id: Int
+createdTopics: &quot;Topic/トピック&quot;[]?
+writtenBooks: &quot;Book/ブック&quot;[]?
+* ltiUserId: String
+activities: &quot;Activity/学習活動&quot;[]?
+* &quot;name/氏名&quot;: String
+}
+
+entity &quot;12. Activity/学習活動&quot; {
+* id: Int
+* topic: &quot;Topic/トピック&quot;
+* topicId: Int
+* learner: &quot;User/利用者&quot;
+* learnerId: Int
+* &quot;type/学習活動種別 completed&quot;: String
+* &quot;createdAt/作成日&quot;: DateTime
+* &quot;updatedAt/更新日&quot;: DateTime
+}
+
+&quot;Resource/教育用外部リソース&quot; ||..o{ &quot;Topic/トピック&quot;
+&quot;Resource/教育用外部リソース&quot; ||..o| &quot;Video/ビデオ&quot;
+&quot;Video/ビデオ&quot; ||..o{ &quot;Track/ビデオのトラック (字幕・キャプション)&quot;
+&quot;Topic/トピック&quot; }o..o{ &quot;Keyword/キーワード&quot;
+LtiContext ||..o{ LtiResourceLink
+&quot;Book/ブック&quot; ||..o{ LtiResourceLink
+&quot;Book/ブック&quot; }o..o{ &quot;Keyword/キーワード&quot;
+&quot;Book/ブック&quot; ||..o{ &quot;Section/セクション&quot;
+&quot;Section/セクション&quot; ||..o{ &quot;TopicSection/セクション内トピック&quot;
+&quot;Topic/トピック&quot; ||..o| &quot;TopicSection/セクション内トピック&quot;
+&quot;Book/ブック&quot; }o..|| &quot;User/利用者&quot;
+&quot;Topic/トピック&quot; }o..|| &quot;User/利用者&quot;
+&quot;Topic/トピック&quot; ||..o{ &quot;Activity/学習活動&quot;
+&quot;User/利用者&quot; ||..o{ &quot;Activity/学習活動&quot;" />
+</p>
+<p>上記プロパティの詳細は <a class="reference external" href="https://github.com/cccties/ChibiCHiLO/blob/54bcd12465eb74a33dab9b1b037ce954fdf6df52/server/prisma/schema.prisma">ChibiCHiLO/schema.prisma</a> にコメントしてあります。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Event.html" class="btn btn-neutral float-right" title="3. イベント" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Overview.html" class="btn btn-neutral float-left" title="1. CHiBi-CHiLO --- マイクロ・コンテンツ・システム 設計文書" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, CCC-TIES
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
