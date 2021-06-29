@@ -71,8 +71,23 @@ TypeScript は、JavaScript に派生したプログラム言語なので、Java
 Dawtabase
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+開発環境
+------------------------------------------------------------------
 
-テスト関係
+こだわりがないなら、 `TypeScript Programming with Visual Studio Code <https://code.visualstudio.com/docs/languages/typescript>`_ で良いとおもいます。
+
+開発時には、docker を使ってデータベースを利用しています。
+
+Deploy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+主に、Vercel を使っていますが、差異を吸収できるなら、netlify などの別のサービスでも構わないでしょう。
+
+* `Develop. Preview. Ship. For the best frontend teams – Vercel <https://vercel.com/>`_
+* `Netlify: Develop & deploy the best web experiences in record time <https://www.netlify.com/>`_
+
+
+ テスト関係
 ------------------------------------------------------------------
 
 テストサーバリスト、および、テスト用ID一覧は、wiki にまとまっているが、外部には公開していない。アクセスしたければ要申請です。
