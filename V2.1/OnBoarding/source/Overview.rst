@@ -60,6 +60,25 @@ GitHub Action を整備して、docsブランチにpushされたら、動くよ�
 
 docs ブランチで、RestructuredText を書いて、htmlを生成してもらい、生成した結果をコミットして、gh-pages にdeployするかたちになります。
 
+静的サイトジェネレータに関する設定情報
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* `chibichilo/sphinx-build.yml at docs · npocccties/chibichilo <https://github.com/npocccties/chibichilo/blob/docs/.github/workflows/sphinx-build.yml>`_
+  * 上記をを参考にbuild環境を整えてください。
+
+分かっている人向けの説明：「各ディレクトリの conf.py を確認すること。」
+
+さすがにちょっとひどいので、下記に利用する関連プログラムを列挙する。
+
+2021-03-30 時点において GitHub Actions は、Ubuntu 20.04 が最新の Linux Destribution である。
+様々な作法があると思うが、Ubuntu の package をつかって必要なプログラムを揃えることにする。
+足りない場合は、pip を使って補う。
+
+* python3-sphinx
+* python3-sphinx-rtd-theme
+* python3-sphinxcontrib.plantuml
+
+上記を入れると、Read the Docs のテーマと、plantuml の記法が使えるようになる。 pdfの生成は、luaLaTeX などを設定する必要があるため、pdfの生成は当分手動でいいと思います
 
 開発に参加する
 -----------------------------------------------------------------
