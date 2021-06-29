@@ -9,8 +9,8 @@ CHiBi-CHiLO --- マイクロ・コンテンツ・システム Onboarding 文書
 あたって、いくつか知っておいた方が良い知識を伝達するための文書です。
 
 * ドキュメント関係
+* 開発関係
 * テスト関係
-* プログラム関係
 
 
 対象者
@@ -18,6 +18,9 @@ CHiBi-CHiLO --- マイクロ・コンテンツ・システム Onboarding 文書
 
 chibi-chilo の開発に参加したいが、様子がわからない人
 
+chibi-chilo には、下記に挙げているような技術背景をもっており、相当な知識量が必要です。
+
+当初は全部を知る必要はないかもしれませんが、最終的にはすべてを知ることになるでしょう。
 
 開発に参加する
 -----------------------------------------------------------------
@@ -29,3 +32,48 @@ chibi-chilo の開発に参加したいが、様子がわからない人
 -----------------------------------------------------------------
 
 * `Documentation layout · Issue #357 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/357>`_
+
+開発関係
+------------------------------------------------------------------
+
+
+
+言語
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TypeScript を使っています。もし、あなたが TypeScript に慣れていないなら、
+
+* `仕事ですぐに使えるTypeScript — 仕事ですぐに使えるTypeScript ドキュメント <https://future-architect.github.io/typescript-guide/index.html#>`_
+
+* `TypeScript Deep Dive 日本語版について - TypeScript Deep Dive 日本語版 <https://typescript-jp.gitbook.io/deep-dive/>`_
+
+などを参考にすると良いかも知れません。
+
+TypeScript は、JavaScript に派生したプログラム言語なので、JavaScript の知識も必要です。もし知識が足りない場合は、下記のようなドキュメントを参照するのが良いでしょう。
+
+* `JavaScript | MDN <https://developer.mozilla.org/ja/docs/Web/JavaScript>`_
+* `JavaScript Primer - 迷わないための入門書 #jsprimer <https://jsprimer.net/>`_
+
+
+フレームワークなどの使っている技術
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* `React – ユーザインターフェース構築のための JavaScript ライブラリ <https://ja.reactjs.org/>`_
+* `Next.js by Vercel - The React Framework <https://nextjs.org/>`_
+* `Prisma - Next-generation Node.js and TypeScript ORM for Databases <https://www.prisma.io/>`_
+* `Home - OpenAPI Initiative <https://www.openapis.org/>`_
+
+  *  旧名 swagger
+
+* Atomic Design
+
+
+Dawtabase
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+テスト関係
+------------------------------------------------------------------
+
+テストサーバリスト、および、テスト用ID一覧は、wiki にまとまっているが、外部には公開していない。アクセスしたければ要申請です。
+
