@@ -44,6 +44,21 @@ chibi-chilo には、下記に挙げているような技術背景をもって�
 >   + APIs(予定)
 >   + その他追加すべきドキュメント
 
+docsブランチと、gh-pages ブランチの関係
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+本ブランチは、静的サイトジェネレータなどでhtmlを生成する「コンテンツのソース」を管理するブランチです。
+
+GitHub Actions でpushされたら自動生成にしています。 see `chibichilo/sphinx-build.yml at docs · npocccties/chibichilo <https://github.com/npocccties/chibichilo/blob/docs/.github/workflows/sphinx-build.yml>`_
+makeで再帰的にhtmlをbuildできたらいいなと思って、設定を書います。
+
+GitHub Action を整備して、docsブランチにpushされたら、動くようにしました。docsブランチの内容を読み取って、gh-pagesブランチ に書き込む形になります。
+
+トップページのindex.htmlやlogo.pngもdocsブランチにある内容がdeploy されるようになっています。変更ををかけるなら docsブランチにある内容に対して変更をかけてください。
+
+既存にあるページは消去しないようですが、2重管理にならないように、docs branch で管理するようにしてください。
+
+docs ブランチで、RestructuredText を書いて、htmlを生成してもらい、生成した結果をコミットして、gh-pages にdeployするかたちになります。
 
 
 開発に参加する

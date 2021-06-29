@@ -86,7 +86,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. CHiBi-CHiLO --- マイクロ・コンテンツ・システム Onboarding 文書</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id1">1.1. 本システムの目的</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">1.2. 対象者</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">1.3. 本ドキュメントの更新方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">1.3. 本ドキュメントの更新方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#docsgh-pages">1.3.1. docsブランチと、gh-pages ブランチの関係</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#id4">1.4. 開発に参加する</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id5">1.5. ドキュメント関係</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id6">1.6. 開発関係</a><ul>
@@ -203,6 +206,16 @@
 &gt;   + OnBoarding(この文書)
 &gt;   + APIs(予定)
 &gt;   + その他追加すべきドキュメント</p>
+<div class="section" id="docsgh-pages">
+<h3>1.3.1. docsブランチと、gh-pages ブランチの関係<a class="headerlink" href="#docsgh-pages" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>本ブランチは、静的サイトジェネレータなどでhtmlを生成する「コンテンツのソース」を管理するブランチです。</p>
+<p>GitHub Actions でpushされたら自動生成にしています。 see <a class="reference external" href="https://github.com/npocccties/chibichilo/blob/docs/.github/workflows/sphinx-build.yml">chibichilo/sphinx-build.yml at docs · npocccties/chibichilo</a>
+makeで再帰的にhtmlをbuildできたらいいなと思って、設定を書います。</p>
+<p>GitHub Action を整備して、docsブランチにpushされたら、動くようにしました。docsブランチの内容を読み取って、gh-pagesブランチ に書き込む形になります。</p>
+<p>トップページのindex.htmlやlogo.pngもdocsブランチにある内容がdeploy されるようになっています。変更ををかけるなら docsブランチにある内容に対して変更をかけてください。</p>
+<p>既存にあるページは消去しないようですが、2重管理にならないように、docs branch で管理するようにしてください。</p>
+<p>docs ブランチで、RestructuredText を書いて、htmlを生成してもらい、生成した結果をコミットして、gh-pages にdeployするかたちになります。</p>
+</div>
 </div>
 <div class="section" id="id4">
 <h2>1.4. 開発に参加する<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
