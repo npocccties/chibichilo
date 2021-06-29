@@ -17,19 +17,20 @@ V2.1/Design/source/.vscode/settings.json
 # 下記の ignore は docs branch の repo root 以外でやること。
 # 自分の clone してきた .git/info/exclude など。
 V2.1/Design/source/_build/
-# V2.1/Design/build/
+V2.1/Design/build/
 ##############################################
 #
 # UserManual
 #
 ##############################################
-# V2.1/UserManual/build/
 V2.1/UserManual/source/_build/
+V2.1/UserManual/build/
 ##############################################
 #
 # OnBoarding
 #
 ##############################################
+V2.1/OnBoarding/build/
 V2.1/OnBoarding/source/_build/
 # vscode の設定を強制したいならコメントにすること
 V2.1/OnBoarding/source/.vscode/settings.json
