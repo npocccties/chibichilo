@@ -86,6 +86,7 @@ docs ブランチで、RestructuredText を書いて、htmlを生成してもら
 
 * `最初のコントリビューション · Issue #343 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/343>`_
 
+* `CHiBi-CHiLO Document <https://npocccties.github.io/chibichilo/>`_ 再帰的で申し訳ないが、先にココにあるドキュメントは先に読んでおいてほしい。
 
 ドキュメント関係
 -----------------------------------------------------------------
