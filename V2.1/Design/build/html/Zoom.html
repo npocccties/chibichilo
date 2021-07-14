@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="6. 用語集" href="Glossary.html" />
+    <link rel="next" title="5. 用語集" href="Glossary.html" />
     <link rel="prev" title="3. 視聴ログ出力機能" href="Logs.html" /> 
 </head>
 
@@ -88,18 +88,19 @@
 <li class="toctree-l1"><a class="reference internal" href="Database.html">2. DataBase</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Logs.html">3. 視聴ログ出力機能</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. ZOOM連携機能</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">4.1. 本システムの目的</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">4.2. 本システムを構成する概念</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">4.2.1. 学習オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">4.1. ZOOM連携機能の概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.2. ZOOM連携機能の流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.3. 想定している条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chibi-chilo">4.4. CHiBi-CHiLOの改良</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">4.5. 検討事項</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#zoomapi">4.5.1. ZoomのAPIによる動画の複製，削除</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">4.5.2. 自動登録のタイミング</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lmschibi-chilo">4.5.3. 複数のLMSからのCHiBi-CHiLOにアクセスした場合のユーザー突き合わせへの応用</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#id4">5. プロセス</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id5">5.1. 内容</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Glossary.html">6. 用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glossary.html">5. 用語集</a></li>
 </ul>
 
             
@@ -166,25 +167,90 @@
             
   <div class="section" id="zoom">
 <h1>4. ZOOM連携機能<a class="headerlink" href="#zoom" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>この文書は、本システム CHiBi-CHiLO(呼称、ちびちろ)を設計するにあたって考慮した内容と、決定した内容を記録した文書です。</p>
+<p>Zoomでクラウド録画した動画ファイルを，CHiBi-CHiLOのトピックとして自動登録し，LMSで利用する機能である．</p>
 <div class="section" id="id1">
-<h2>4.1. 本システムの目的<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>本システムは、学習コンテンツをレゴブロックのように組み立てて再利用することを目的とする。
-なお本システムで扱う学習コンテンツは動画コンテンツとする．</p>
+<h2>4.1. ZOOM連携機能の概要<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>本機能の概要は次の通り．</p>
+<img alt="_images/image3.png" src="_images/image3.png" />
 </div>
 <div class="section" id="id2">
-<h2>4.2. 本システムを構成する概念<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>4.2. ZOOM連携機能の流れ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>本機能の流れは次の通り．</p>
+<p class="plantuml">
+<img src="_images/plantuml-992f27ce3266908eec272b60ea6adda1c06aa8f2.png" alt="actor 学習者
+actor 教師
+database VOD
+collections &quot;RO&quot;
+collections &quot;TO&quot;
+collections &quot;BO&quot;
+collections &quot;LdO&quot;
+database LMS
+教師 -&gt; VOD : ビデオファイルのアップロード
+教師 -&gt; TO : 作成
+TO -&gt; RO : 自動登録
+教師-&gt; BO : 作成
+教師-&gt; LMS : 作成
+LMS -&gt; LdO : 自動登録
+学習者 -&gt; LMS : 学習
+LMS -&gt; LdO: 参照（1:1）
+LdO -&gt; BO: 参照（1:1）
+BO -&gt; TO: 参照（n:n）
+TO -&gt; RO: 参照（1:1）
+RO -&gt; VOD : 参照（1:n）" />
+</p>
+<ol class="arabic simple">
+<li>Zoom動画をZoom APIを利用してWowzaサーバーに自動複製する．</li>
+<li>Zoom動画は，Zoomアカウント（メールアドレス）毎に分類されてVODに保管される．</li>
+<li>VODに登録されたビデオは，メールアドレスをキーにしてCHiBi-CHiLOユーザーごとにトピックとして自動登録される。</li>
+<li>教師は自動登録されたトピックを選択しブックを作成し，LMSで提供する．</li>
+</ol>
+</div>
 <div class="section" id="id3">
-<h3>4.2.1. 学習オブジェクト<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
-<hr class="docutils" />
-<p>本機能はZOOMにクラウド録画された動画をCHiBi-CHiLOに取り込むものである。</p>
+<h2>4.3. 想定している条件<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li>VODは、当面、Wowzaのみを想定しているが将来的にはVimeo等にも拡張できるよう配慮すること．</li>
+<li>Zoomライセンスはアカデミックライセンス，ビジネスライセンス等有料ライセンスを想定している．</li>
+<li>CHiBi-CHiLOにLTIで送信されたメールアドレスと，Wowzaに登録されたZoom動画のメールアドレスを突合し，CHiBi-CHiLOのトピックとして登録する．</li>
+</ul>
 </div>
-</div>
+<div class="section" id="chibi-chilo">
+<h2>4.4. CHiBi-CHiLOの改良<a class="headerlink" href="#chibi-chilo" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ol class="arabic simple">
+<li>CHiBi-CHiLOのユーザーテーブルにはメールアドレスをもうもうける．</li>
+<li>Zoom録画で作成したトピックはそれがわかるようにアイコン等つける．</li>
+<li>トピックを容易にMoodleに提供するため，CHiBi-CHiLOのブック作成手順を改良する．</li>
+<li>トピック一覧画面で，トピックを選択してブックを作成できるようにする．</li>
+</ol>
+<p>制限事項（開発概要B）が行われない．
+* 上記①のが発生した場合，管理者が手作業にて，所定の場所にZoom動画を複製するなどすることとし，そのための管理機能は開発対象外とする．
+* Wowzaに登録されたビデオのアクセス制限は，Wowzaが提供するSecureTokenにより行うことする．そのため，CHiBi-CHiLOのトピックにWowzaのURLを直接記載すると，本人以外のビデオを参照できる．</p>
 </div>
 <div class="section" id="id4">
-<h1>5. プロセス<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<h2>4.5. 検討事項<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="zoomapi">
+<h3>4.5.1. ZoomのAPIによる動画の複製，削除<a class="headerlink" href="#zoomapi" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>Zoom APIによるクラウド録画へのアクセスは，管理者アカウントで可能か</li>
+<li>管理者アカウントで行うことで，工数の節約ができるか</li>
+<li>複製した後のZoomクラウドにのこされた動画ファイルを削除すべきか</li>
+<li>削除しない場合は，同じ動画ファイルを重複して複製することをどう防ぐか</li>
+</ul>
+</div>
 <div class="section" id="id5">
-<h2>5.1. 内容<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h3>4.5.2. 自動登録のタイミング<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Zoom動画動画のVODへの自動複製，VODからトピックの自動登録はどのようなタイミングでおこなうのか</p>
+<ul class="simple">
+<li>何らかのイベントをハックする</li>
+<li>ユーザーがCHiBi-CHiLOにアクセスし，Zoomデータを取得する，等のアクションを行う</li>
+<li>バッチ等で定期的に行う</li>
+</ul>
+</div>
+<div class="section" id="lmschibi-chilo">
+<h3>4.5.3. 複数のLMSからのCHiBi-CHiLOにアクセスした場合のユーザー突き合わせへの応用<a class="headerlink" href="#lmschibi-chilo" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>CHiBi-CHiLOのユーザーテーブルにメールアドレスを記録することで，メールアドレスでユーザーを付き合わせることで，複数のLMSからCHiBi-CHiLOのリソースにアクセスできるようになるのではないか．</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -196,7 +262,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Glossary.html" class="btn btn-neutral float-right" title="6. 用語集" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Glossary.html" class="btn btn-neutral float-right" title="5. 用語集" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Logs.html" class="btn btn-neutral float-left" title="3. 視聴ログ出力機能" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
