@@ -185,8 +185,6 @@
 <div class="section" id="id4">
 <h3>3.1.2. ログとして出力するイベント<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下記のイベントのみをログに書き出す。</p>
-<p>` &lt;<a class="reference external" href="https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88">https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88</a>&gt;`_
-2020/10/05時点での閲覧</p>
 <p>詳細は、個別に記述する。</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
@@ -310,7 +308,8 @@ player.on(&quot;seeked&quot;, function () {
 <dt>ratechange</dt>
 <dd><p class="first">学習者がビデオの再生速度を変更した時間</p>
 <p>videojsのイベントを利用</p>
-<p class="last">何倍速に変更したのかも知りたくて， <a class="reference external" href="https://docs.videojs.com/player#playbackRate">playbackRate</a>　から，再生速度倍率を別途取得</p>
+<p>何倍速に変更したのかも知りたくて， <a class="reference external" href="https://docs.videojs.com/player#playbackRate">playbackRate</a>　から，再生速度倍率を別途取得</p>
+<p class="last">YouTubeを視聴する場合，firstplayの直前に等速処理が入り，その時はユーザが視聴している現在のビデオ再生位置がなく - で記録される．</p>
 </dd>
 <dt>trackchange</dt>
 <dd><p class="first">学習者がビデオの字幕を変更した時間</p>

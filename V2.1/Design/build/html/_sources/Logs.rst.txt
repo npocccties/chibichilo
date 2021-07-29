@@ -26,9 +26,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下記のイベントのみをログに書き出す。
 
-` <https://github.com/webdino-butterfly/butterfly/blob/master/docs/log.md#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88>`_
-2020/10/05時点での閲覧
-
 詳細は、個別に記述する。
 
 .. Cspell:ignore firstplay seeked ratechange trackchange beforeunload pagehide changepage currenttime timeupdate videojs youtube
@@ -114,6 +111,8 @@ ratechange
    videojsのイベントを利用
 
    何倍速に変更したのかも知りたくて， `playbackRate <https://docs.videojs.com/player#playbackRate>`_　から，再生速度倍率を別途取得
+
+   YouTubeを視聴する場合，firstplayの直前に等速処理が入り，その時はユーザが視聴している現在のビデオ再生位置がなく - で記録される．
 
 trackchange
    学習者がビデオの字幕を変更した時間
