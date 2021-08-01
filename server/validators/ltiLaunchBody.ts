@@ -68,6 +68,10 @@ export class LtiLaunchBody {
 
   @IsOptional()
   @IsString()
+  lis_person_contact_email_primary?: string;
+
+  @IsOptional()
+  @IsString()
   launch_presentation_return_url?: string;
 }
 

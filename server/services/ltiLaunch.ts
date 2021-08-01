@@ -50,6 +50,7 @@ export async function post({ session }: FastifyRequest) {
     ltiConsumerId: ltiLaunchBody.oauth_consumer_key,
     ltiUserId: ltiLaunchBody.user_id,
     name: ltiLaunchBody.lis_person_name_full ?? "",
+    email: ltiLaunchBody.lis_person_contact_email_primary ?? "",
   });
 
   Object.assign(session, { ltiResourceLink, user });

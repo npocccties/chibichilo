@@ -128,6 +128,7 @@ export interface ApiV2LtiLaunchPostRequest {
     contextTitle?: string;
     contextLabel?: string;
     lisPersonNameFull?: string;
+    lisPersonContactEmailPrimary?: string;
     launchPresentationReturnUrl?: string;
 }
 
@@ -578,6 +579,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.lisPersonNameFull !== undefined) {
             formParams.append('lis_person_name_full', requestParameters.lisPersonNameFull as any);
+        }
+
+        if (requestParameters.lisPersonContactEmailPrimary !== undefined) {
+            formParams.append('lis_person_contact_email_primary', requestParameters.lisPersonContactEmailPrimary as any);
         }
 
         if (requestParameters.launchPresentationReturnUrl !== undefined) {

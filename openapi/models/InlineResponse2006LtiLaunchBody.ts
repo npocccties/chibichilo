@@ -120,6 +120,12 @@ export interface InlineResponse2006LtiLaunchBody {
      * @type {string}
      * @memberof InlineResponse2006LtiLaunchBody
      */
+    lisPersonContactEmailPrimary?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2006LtiLaunchBody
+     */
     launchPresentationReturnUrl?: string;
 }
 
@@ -149,6 +155,7 @@ export function InlineResponse2006LtiLaunchBodyFromJSONTyped(json: any, ignoreDi
         'contextTitle': !exists(json, 'context_title') ? undefined : json['context_title'],
         'contextLabel': !exists(json, 'context_label') ? undefined : json['context_label'],
         'lisPersonNameFull': !exists(json, 'lis_person_name_full') ? undefined : json['lis_person_name_full'],
+        'lisPersonContactEmailPrimary': !exists(json, 'lis_person_contact_email_primary') ? undefined : json['lis_person_contact_email_primary'],
         'launchPresentationReturnUrl': !exists(json, 'launch_presentation_return_url') ? undefined : json['launch_presentation_return_url'],
     };
 }
@@ -178,6 +185,7 @@ export function InlineResponse2006LtiLaunchBodyToJSON(value?: InlineResponse2006
         'context_title': value.contextTitle,
         'context_label': value.contextLabel,
         'lis_person_name_full': value.lisPersonNameFull,
+        'lis_person_contact_email_primary': value.lisPersonContactEmailPrimary,
         'launch_presentation_return_url': value.launchPresentationReturnUrl,
     };
 }

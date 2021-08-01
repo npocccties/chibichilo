@@ -220,6 +220,10 @@ model User {
   activities       Activity[]
   /// 氏名
   name             String
+  /// メールアドレス
+  email            String            @default("")
+  /// 詳細
+  settings         Json              @default("{}")
 
   @@unique([ltiConsumerId, ltiUserId])
   @@map("users")
