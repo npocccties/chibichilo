@@ -18,6 +18,7 @@ Micro Contents System --- CHiBi-CHiLO の設計文書
    Database
    Logs
    Zoom
+   face
    Glossary
 
 
