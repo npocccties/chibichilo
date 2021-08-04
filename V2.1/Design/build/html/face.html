@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>顔認証 &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">1. CHiBi-CHiLO 設計文書</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Database.html">2. DataBase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Logs.html">3. 視聴ログ出力機能</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Zoom.html">4. ZOOM連携機能</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glossary.html">5. 用語集</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CHiBi-CHiLO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>顔認証</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/face.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>顔認証<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id2">
+<h2>概要<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>想定している顔認証システムは， Moodleプラグイン，Webカメラ制御プログラム，顔画像サーバーから構成される（図1）．
+本開発の範囲は図1のうち顔画像サーバー部分とする．</p>
+<img alt="_images/image4.png" src="_images/image4.png" />
+<p>図1：顔認証システム概要</p>
+<ol class="arabic simple">
+<li>修了試験は，Moodleの標準モジュールである小テストモジュールを利用する．</li>
+<li>Moodleプラグインは，Moodle小テストモジュールに対するアクセスを制御する．</li>
+<li>Webカメラの制御は， Web制御プログラムによりWebブラウザが行う．また，顔認証は，別途設置する顔画像サーバーにより提供する．</li>
+<li>顔画像サーバーはMoodleプラグインから，教育ITの標準規格であるIMS LTI （以下，LTI）で呼び出され，外部の顔認証APIに画像の比較を依頼し，その結果を受け取ってLTIにて顔認証結果をMoodleに返す．</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>顔認証システムの処理について<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>想定している顔認証システムの処理を図2に示す．</p>
+<img alt="_images/image5.png" src="_images/image5.png" />
+<p>図2： 顔認証システムのプロセス</p>
+<div class="section" id="id4">
+<h3>顔画像サーバーの処理<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>本開発範囲である顔画像サーバーの処理は以下の通りである．
+1. MoodleプラグインからLTIにより受講者ID等の学習者の属性情報を受け取る．
+2. 登録画像がなければ，登録を求める．
+3. Webカメラ制御プログラムからカメラ画像を照合画像として，受け取る．
+4. 学習者のIDを手がかりにして顔画像データーベースから登録画像を取り出しカメラ画像と共に顔認証APIに送信し，顔認証の問い合わせを行う．
+5. 顔認証APIの問合せ結果を，LTI経由で，Moodleプラグインに返す．
+6. 認証結果を，受講者ID，講習ID，照合画像，タイムスタンプと共に顔データベースに記録する．</p>
+</div>
+<div class="section" id="moodle">
+<h3>Moodleプラグインの処理<a class="headerlink" href="#moodle" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Moodleプラグインの処理を参考までに記載する．
+Moodleプラグインでは顔認証機能等を実装せず，小テストモジュールと顔画像サーバーの通信を以下のように媒介する．</p>
+<ol class="arabic simple">
+<li>Moodleの小テストモジュールにて，試験が開始されると，Moodleプラグインが呼び出される．</li>
+<li>Moodleプラグインは，Webカメラ制御プログラムを呼び出し，カメラ画像の撮影を依頼する．その後，カメラ画像はWebカメラ制御プログラムが直接顔画像サーバーに渡すため，Moodleプラグインはカメラ画像の送受信に関与しない．</li>
+<li>Moodleプラグインは，顔画像サーバーに対して，LTIプロトコルにて接続します．LTIの機能により，学習者がMoodleにログインしていると，受講者ID，講習IDなどの情報が顔画像サーバーに渡る．</li>
+<li>顔画像サーバーが認証の可否をMoodleプラグインに伝える．</li>
+<li>Moodleプラグインは，認証結果の成功を受け取ると，Moodle小テストモジュールに学習者のアクセス許可を与える．失敗した場合には，テスト開始時には，再度の認証を要求し．試験実施中は認証結果が失敗していても再認証は要求しない．</li>
+</ol>
+</div>
+<div class="section" id="web">
+<h3>Webカメラ制御プログラムの処理<a class="headerlink" href="#web" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Webカメラの制御は，Webブラウザから行うこととし，開発ツールとしてWebRTCを利用する．
+1. webカメラ制御プログラムは，Moodleプラグインからカメラ画像の撮影依頼を受け取る．
+2. Webでカメラ撮影を実施する．
+3. 撮影されたカメラ画像を顔画像サーバーに送信する．</p>
+</div>
+<div class="section" id="id5">
+<h3>エラー処理<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>以下のエラー処理を行うことを想定している．なお，この処理は，小テストモジュールが最初に認証を求めた時点（試験の開始時）でのみ行う．</p>
+<ol class="arabic simple">
+<li>顔認証に失敗し，試験が開始できないというエラーを返す．</li>
+<li>正しい位置でカメラに向かうようアラートを表示する．</li>
+<li>上記②のアラートを特定回数表示し，それでも認証されない場合は，顔画像の再登録申請をするか問い合わせるアラートを表示する</li>
+</ol>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>検討事項<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li>Webカメラ制御プログラムの開発を行わず，顔認証サーバーの開発がおこなえるのか</li>
+<li>開発範囲として，エラー処理の配慮まで必要なのか</li>
+<li>LTIプロトコル対応に開発工数は発生するのか</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, CCC-TIES
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
