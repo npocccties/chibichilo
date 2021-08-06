@@ -13,6 +13,18 @@ import {
   topicToTopicSchema,
 } from "./topic/topicToTopicSchema";
 
+export async function findUser(
+  ltiConsumerId: string,
+  ltiUserId: string
+): Promise<User | null> {
+  return await prisma.user.findFirst({
+    where: {
+      ltiConsumerId: ltiConsumerId,
+      ltiUserId: ltiUserId,
+    },
+  });
+}
+
 export async function upsertUser({ ltiConsumerId, ...user }: UserProps) {
   return await prisma.user.upsert({
     where: {

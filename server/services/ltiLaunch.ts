@@ -1,7 +1,7 @@
 import { FastifyRequest } from "fastify";
 import { outdent } from "outdent";
 import authLtiLaunch from "$server/auth/authLtiLaunch";
-import { upsertUser } from "$server/utils/user";
+import { upsertUser, findUser } from "$server/utils/user";
 import { FRONTEND_ORIGIN, FRONTEND_PATH } from "$server/utils/env";
 import { ltiLaunchBodySchema } from "$server/validators/ltiLaunchBody";
 import {
@@ -46,11 +46,17 @@ export async function post({ session }: FastifyRequest) {
     });
   }
 
+  const existUser = await findUser(
+    ltiLaunchBody.oauth_consumer_key,
+    ltiLaunchBody.user_id
+  );
+
   const user = await upsertUser({
     ltiConsumerId: ltiLaunchBody.oauth_consumer_key,
     ltiUserId: ltiLaunchBody.user_id,
     name: ltiLaunchBody.lis_person_name_full ?? "",
     email: ltiLaunchBody.lis_person_contact_email_primary ?? "",
+    settings: existUser?.settings ?? {},
   });
 
   Object.assign(session, { ltiResourceLink, user });

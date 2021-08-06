@@ -10,7 +10,14 @@ test("トピック名による絞り込み", () => {
     timeRequired: 10,
     shared: true,
     license: "",
-    creator: { id: 1, name: "", ltiConsumerId: "", ltiUserId: "" },
+    creator: {
+      id: 1,
+      name: "",
+      ltiConsumerId: "",
+      ltiUserId: "",
+      email: "",
+      settings: {},
+    },
     createdAt: new Date(),
     updatedAt: new Date(),
     resource: {

@@ -3,6 +3,8 @@ const user = {
   ltiConsumerId: "test",
   ltiUserId: "1",
   name: "山田太郎",
+  email: "",
+  settings: {},
 };
 
 export default user;
