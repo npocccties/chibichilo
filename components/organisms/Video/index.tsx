@@ -17,8 +17,8 @@ export default function Video({
   autoplay = false,
   ...other
 }: Props) {
-  const videoInstance = useMemo(() => {
-    return getVideoInstance(
+  const videoInstance = useMemo(async () => {
+    return await getVideoInstance(
       { providerUrl, url, tracks: resourceTracks },
       autoplay
     );

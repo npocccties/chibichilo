@@ -13,13 +13,11 @@ import getVimeoPlayer from "./getVimeoPlayer";
 function getVideoInstance(
   resource: Pick<VideoResourceSchema, "providerUrl" | "url" | "tracks">,
   autoplay = false
-): VideoInstance {
-  switch (resource.providerUrl) {
-    case "https://www.youtube.com/":
-      return {
-        type: "youtube",
-        url: resource.url,
-        ...getVideoJsPlayer({
+): Promise<VideoInstance> {
+  return new Promise((resolve) => {
+    switch (resource.providerUrl) {
+      case "https://www.youtube.com/": {
+        const { element, player } = getVideoJsPlayer({
           techOrder: ["youtube"],
           sources: [
             {
@@ -28,28 +26,53 @@ function getVideoInstance(
             },
           ],
           autoplay,
-        }),
-        tracks: buildTracks(resource.tracks),
-      };
-    case "https://vimeo.com/":
-      return {
-        type: "vimeo",
-        url: resource.url,
-        ...getVimeoPlayer({ url: resource.url, autoplay }),
-      };
-    default:
-      return {
-        type: "wowza",
-        url: resource.url,
-        ...getVideoJsPlayer({
+        });
+        player.ready(() => {
+          resolve({
+            type: "youtube",
+            url: resource.url,
+            element,
+            player,
+            tracks: buildTracks(resource.tracks),
+          });
+        });
+        break;
+      }
+      case "https://vimeo.com/": {
+        const { element, player } = getVimeoPlayer({
+          url: resource.url,
+          autoplay,
+        });
+        player.ready().then(() => {
+          resolve({
+            type: "vimeo",
+            url: resource.url,
+            element,
+            player,
+          });
+        });
+        break;
+      }
+      default: {
+        const { element, player } = getVideoJsPlayer({
           sources: [
             { type: "application/vnd.apple.mpegurl", src: resource.url },
           ],
           autoplay,
-        }),
-        tracks: buildTracks(resource.tracks),
-      };
-  }
+        });
+        player.ready(() => {
+          resolve({
+            type: "wowza",
+            url: resource.url,
+            element,
+            player,
+            tracks: buildTracks(resource.tracks),
+          });
+        });
+        break;
+      }
+    }
+  });
 }
 
 export default getVideoInstance;

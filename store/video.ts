@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { atom, useAtom } from "jotai";
 import { RESET, atomWithReset, useUpdateAtom } from "jotai/utils";
 import type { ResourceSchema } from "$server/models/resource";
+import type { VideoResourceSchema } from "$server/models/videoResource";
 import type { SectionSchema } from "$server/models/book/section";
 import type { VideoInstance } from "$types/videoInstance";
 import { isVideoResource } from "$utils/videoResource";
@@ -20,13 +21,15 @@ const updateVideoAtom = atom(
     const resources = sections.flatMap(({ topics }) =>
       topics.map(({ resource }) => resource)
     );
-    for (const resource of resources) {
-      if (!isVideoResource(resource)) {
-        video.delete(resource.url);
-        continue;
-      }
-      video.set(resource.url, getVideoInstance(resource));
-    }
+    Promise.all(
+      resources
+        .filter((resource): resource is VideoResourceSchema =>
+          isVideoResource(resource)
+        )
+        .map(async (resource) => {
+          video.set(resource.url, await getVideoInstance(resource));
+        })
+    );
     set(videoAtom, { video });
   }
 );
