@@ -281,6 +281,8 @@ changepage
 
 syslogへ出力する。
 
+本ログの識別子として、固定値で 'videoplayerlog' を出力している。
+
 ログの出力タイミング
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -452,4 +454,29 @@ LTIに送られたnonce
 
 video種別
    :strike:`YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加` この部分の追加は、次期log開発時に追加する。
+
+ログの整形
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+syslog出力時、ログのフォーマット以外の不要な情報が含まれている場合があるのでバッチ等で別途除去する。
+
+   例：シェルスクリプトで前日のログを整形する
+
+   ( cron )
+
+   ::
+
+      30 3 * * * /var/log/chibichilo/log.sh
+
+   ( /var/log/chibichilo/log.sh )
+
+   ::
+
+      #!/bin/sh
+
+      LOGA=/var/log/chibichilo/log_`date --date '1 day ago' +%Y%m%d`.log
+      LOGB=/var/log/chibichilo_parse/log_`date --date '1 day ago' +%Y%m%d`.log
+
+      sed -e 's/^.*php.*: //g' -e 's/^.*httpd.*: //g' -e 's/^.*www.*: //g' -e 's/^.*line=//g' -e 's/#012/\n/g' -e 's/#011/	/g'  -e 's/\\x09/	/g'  -e '/current-time	-	-	/d' -e 's@https://youtu.be/@@g' -e 's/::ffff://g' $LOGA > $LOGB
+      
 

@@ -97,6 +97,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#id7">3.2.2. ログの出力先</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id8">3.2.3. ログの出力タイミング</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id9">3.2.4. ログのフォーマット</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">3.2.5. ログの整形</a></li>
 </ul>
 </li>
 </ul>
@@ -346,7 +347,7 @@ player.on(&quot;seeked&quot;, function () {
 <dt>forward</dt>
 <dd><p class="first">学習者がビデオの早送りをした時間</p>
 <p>videojsの標準機能になかったので，<a class="reference external" href="https://www.npmjs.com/package/videojs-seek-buttons">videojs-seek-buttons</a> で機能を実装した．</p>
-<p>早送り処理の途中で '<a href="#id12"><span class="problematic" id="id13">this.options_</span></a>.direction' の値が forward か back になっていたので，これをイベントとしてログに飛ばす処理を追加した．</p>
+<p>早送り処理の途中で '<a href="#id13"><span class="problematic" id="id14">this.options_</span></a>.direction' の値が forward か back になっていたので，これをイベントとしてログに飛ばす処理を追加した．</p>
 <p>後から追加しなくてもいいようにしたい．</p>
 <p>（ /lti/node_modules/videojs-seek-buttons/dist/videojs-seek-buttons.es.js　に追加）</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>function postForm(req) {
@@ -425,8 +426,8 @@ if(!session.role){
 <h2>3.2. ログ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <div class="section" id="id6">
 <h3>3.2.1. ログ出力をする対象者<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
-<span id="table-definition-of-logging-user"></span><table border="1" class="colwidths-given docutils" id="id10">
-<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id10" title="このテーブルへのパーマリンク">¶</a></caption>
+<span id="table-definition-of-logging-user"></span><table border="1" class="colwidths-given docutils" id="id11">
+<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="12%" />
 <col width="5%" />
@@ -482,6 +483,7 @@ if(!session.role){
 <div class="section" id="id7">
 <h3>3.2.2. ログの出力先<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>syslogへ出力する。</p>
+<p>本ログの識別子として、固定値で 'videoplayerlog' を出力している。</p>
 </div>
 <div class="section" id="id8">
 <h3>3.2.3. ログの出力タイミング<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
@@ -492,8 +494,8 @@ if(!session.role){
 <h3>3.2.4. ログのフォーマット<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>syslogへ、TSV(タブ区切り)で出力する。</p>
 <p>フォーマットについては、 <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO/issues/18">ログ出力の仕様を整理・定義する · Issue #18 · npocccties/ChibiCHiLO</a> でも議論しているので、必要に応じて参照すること。</p>
-<span id="table"></span><table border="1" class="colwidths-given docutils" id="id11">
-<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク">¶</a></caption>
+<span id="table"></span><table border="1" class="colwidths-given docutils" id="id12">
+<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id12" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="5%" />
 <col width="11%" />
@@ -647,7 +649,7 @@ if(!session.role){
 wowzaだと動画のファイル名．
 vimeo は未対応だが，対応するならvimeoのビデオIDを想定している。</dd>
 <dt>URLパラメータ</dt>
-<dd>URLのパラメータを記述する。YouTube, vimeo, wowza で入るものが異なる。 <a href="#id14"><span class="problematic" id="id15">`この辺の議論を参照せよ。&lt;https://github.com/npocccties/ChibiCHiLO/issues/18#issuecomment-758419047&gt;`_</span></a></dd>
+<dd>URLのパラメータを記述する。YouTube, vimeo, wowza で入るものが異なる。 <a href="#id15"><span class="problematic" id="id16">`この辺の議論を参照せよ。&lt;https://github.com/npocccties/ChibiCHiLO/issues/18#issuecomment-758419047&gt;`_</span></a></dd>
 <dt>ビデオ再生位置</dt>
 <dd>これは、暗黙の了解として「ユーザが視聴している現在のビデオ再生位置」というのが正確な表現になります。
 位置の単位はコンマ秒含む秒単位（0 や16.462621 など）最大値はTypeScript,JavaScriptにて表現できる範囲でお願いします。</dd>
@@ -679,6 +681,26 @@ moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126
 <dt>video種別</dt>
 <dd><span class="strike">YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加</span> この部分の追加は、次期log開発時に追加する。</dd>
 </dl>
+</div>
+<div class="section" id="id10">
+<h3>3.2.5. ログの整形<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>syslog出力時、ログのフォーマット以外の不要な情報が含まれている場合があるのでバッチ等で別途除去する。</p>
+<blockquote>
+<div><p>例：シェルスクリプトで前日のログを整形する</p>
+<p>( cron )</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">30</span> <span class="mi">3</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">chibichilo</span><span class="o">/</span><span class="n">log</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>( /var/log/chibichilo/log.sh )</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/sh
+
+LOGA=/var/log/chibichilo/log_`date --date &#39;1 day ago&#39; +%Y%m%d`.log
+LOGB=/var/log/chibichilo_parse/log_`date --date &#39;1 day ago&#39; +%Y%m%d`.log
+
+sed -e &#39;s/^.*php.*: //g&#39; -e &#39;s/^.*httpd.*: //g&#39; -e &#39;s/^.*www.*: //g&#39; -e &#39;s/^.*line=//g&#39; -e &#39;s/#012/\n/g&#39; -e &#39;s/#011/      /g&#39;  -e &#39;s/\\x09/       /g&#39;  -e &#39;/current-time  -       -       /d&#39; -e &#39;s@https://youtu.be/@@g&#39; -e &#39;s/::ffff://g&#39; $LOGA &gt; $LOGB
+</pre></div>
+</div>
+</div></blockquote>
 </div>
 </div>
 </div>
