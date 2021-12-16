@@ -31,6 +31,7 @@ function Show(query: Query) {
     useBookAtom();
   useEffect(() => {
     if (book) updateBook(book);
+    return updateBook(undefined);
   }, [book, updateBook]);
   useActivityTracking();
   const { video } = useVideoAtom();

@@ -59,6 +59,7 @@ export default function BookPreviewDialog(props: Props) {
   const { session } = useSessionAtom();
   useEffect(() => {
     updateBook(book);
+    return updateBook(undefined);
   }, [book, updateBook]);
   return (
     <Dialog

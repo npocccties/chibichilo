@@ -28,14 +28,14 @@ const nextItemIndexAtom = atom((get) => {
   return itemIndex;
 });
 
-const updateBookAtom = atom<undefined, BookSchema>(
+const updateBookAtom = atom<undefined, BookState["book"]>(
   () => undefined,
   (_, set, book) => {
     set(bookAtom, {
       book,
       itemIndex: [0, 0],
       itemExists: ([sectionIndex, topicIndex]) =>
-        book.sections[sectionIndex]?.topics[topicIndex],
+        book?.sections[sectionIndex]?.topics[topicIndex],
     });
   }
 );
