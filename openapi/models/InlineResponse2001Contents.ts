@@ -140,6 +140,18 @@ export interface InlineResponse2001Contents {
     resource?: InlineResponse2001Resource;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse2001Contents
+     */
+    publishCondition?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2001Contents
+     */
+    publicUrl?: string;
+    /**
+     * 
      * @type {Date}
      * @memberof InlineResponse2001Contents
      */
@@ -184,6 +196,8 @@ export function InlineResponse2001ContentsFromJSONTyped(json: any, ignoreDiscrim
         'authors': !exists(json, 'authors') ? undefined : ((json['authors'] as Array<any>).map(InlineResponse2001AuthorsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(InlineResponse2001KeywordsFromJSON)),
         'resource': !exists(json, 'resource') ? undefined : InlineResponse2001ResourceFromJSON(json['resource']),
+        'publishCondition': !exists(json, 'publishCondition') ? undefined : json['publishCondition'],
+        'publicUrl': !exists(json, 'publicUrl') ? undefined : json['publicUrl'],
         'publishedAt': !exists(json, 'publishedAt') ? undefined : (new Date(json['publishedAt'])),
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(InlineResponse2001SectionsFromJSON)),
         'ltiResourceLinks': !exists(json, 'ltiResourceLinks') ? undefined : ((json['ltiResourceLinks'] as Array<any>).map(InlineResponse200FromJSON)),
@@ -215,6 +229,8 @@ export function InlineResponse2001ContentsToJSON(value?: InlineResponse2001Conte
         'authors': value.authors === undefined ? undefined : ((value.authors as Array<any>).map(InlineResponse2001AuthorsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(InlineResponse2001KeywordsToJSON)),
         'resource': InlineResponse2001ResourceToJSON(value.resource),
+        'publishCondition': value.publishCondition,
+        'publicUrl': value.publicUrl,
         'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt.toISOString()),
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(InlineResponse2001SectionsToJSON)),
         'ltiResourceLinks': value.ltiResourceLinks === undefined ? undefined : ((value.ltiResourceLinks as Array<any>).map(InlineResponse200ToJSON)),

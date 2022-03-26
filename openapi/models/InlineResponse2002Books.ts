@@ -76,6 +76,18 @@ export interface InlineResponse2002Books {
     shared?: boolean;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse2002Books
+     */
+    publishCondition?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2002Books
+     */
+    publicUrl?: string;
+    /**
+     * 
      * @type {Date}
      * @memberof InlineResponse2002Books
      */
@@ -140,6 +152,8 @@ export function InlineResponse2002BooksFromJSONTyped(json: any, ignoreDiscrimina
         'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'publishCondition': !exists(json, 'publishCondition') ? undefined : json['publishCondition'],
+        'publicUrl': !exists(json, 'publicUrl') ? undefined : json['publicUrl'],
         'publishedAt': !exists(json, 'publishedAt') ? undefined : (new Date(json['publishedAt'])),
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
@@ -166,6 +180,8 @@ export function InlineResponse2002BooksToJSON(value?: InlineResponse2002Books | 
         'language': value.language,
         'timeRequired': value.timeRequired,
         'shared': value.shared,
+        'publishCondition': value.publishCondition,
+        'publicUrl': value.publicUrl,
         'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt.toISOString()),
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),

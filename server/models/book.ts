@@ -11,11 +11,13 @@ export type BookProps = {
   description?: string;
   language?: string;
   shared?: boolean;
+  publishCondition?: string;
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
 };
 
 export type BookSchema = Book & {
+  publicUrl?: string;
   authors: AuthorSchema[];
   sections: SectionSchema[];
   ltiResourceLinks: LtiResourceLinkSchema[];
@@ -29,6 +31,7 @@ export const bookPropsSchema = {
     description: { type: "string" },
     language: { type: "string", nullable: true },
     shared: { type: "boolean", nullable: true },
+    publishCondition: { type: "string" },
     sections: {
       type: "array",
       items: sectionPropsSchema,
@@ -49,6 +52,8 @@ export const bookSchema = {
     language: { type: "string" },
     timeRequired: { type: "integer", nullable: true },
     shared: { type: "boolean" },
+    publishCondition: { type: "string" },
+    publicUrl: { type: "string" },
     publishedAt: { type: "string", format: "date-time" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },

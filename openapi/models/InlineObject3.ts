@@ -56,6 +56,12 @@ export interface InlineObject3 {
     shared?: boolean;
     /**
      * 
+     * @type {string}
+     * @memberof InlineObject3
+     */
+    publishCondition?: string;
+    /**
+     * 
      * @type {Array<ApiV2BookBookIdSections>}
      * @memberof InlineObject3
      */
@@ -82,6 +88,7 @@ export function InlineObject3FromJSONTyped(json: any, ignoreDiscriminator: boole
         'description': !exists(json, 'description') ? undefined : json['description'],
         'language': !exists(json, 'language') ? undefined : json['language'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'publishCondition': !exists(json, 'publishCondition') ? undefined : json['publishCondition'],
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
     };
@@ -100,6 +107,7 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
         'description': value.description,
         'language': value.language,
         'shared': value.shared,
+        'publishCondition': value.publishCondition,
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
     };

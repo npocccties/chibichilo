@@ -205,6 +205,8 @@ model Book {
   authors          Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license          String            @default("")
+  /// 公開URL条件
+  publishCondition String            @default("") @map("publish_condition")
   /// 公開日
   publishedAt      DateTime          @default(now()) @map("published_at")
   /// 作成日
