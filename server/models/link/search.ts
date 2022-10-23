@@ -15,4 +15,17 @@ export const LinkSearchResultSchema = {
   },
 } as const;
 
-export type LinkSearchResultSchema = FromSchema<typeof LinkSearchResultSchema>;
+export type LinkSearchResultSchema = FromSchema<
+  typeof LinkSearchResultSchema,
+  {
+    deserialize: [
+      {
+        pattern: {
+          type: "string";
+          format: "date-time";
+        };
+        output: Date;
+      }
+    ];
+  }
+>;

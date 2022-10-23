@@ -5,9 +5,16 @@ import { bookSchema } from "$server/models/book";
 
 export const LinkSchema = {
   type: "object",
-  required: ["oauthClientId", "ltiContext", "ltiResourceLink", "book"],
+  required: [
+    "oauthClientId",
+    "createdAt",
+    "ltiContext",
+    "ltiResourceLink",
+    "book",
+  ],
   properties: {
     oauthClientId: { type: "string" },
+    createdAt: { type: "string", format: "date-time" },
     ltiContext: LtiContextSchema,
     ltiResourceLink: LtiResourceLinkRequestSchema,
     book: {
@@ -25,4 +32,17 @@ export const LinkSchema = {
   additionalProperties: false,
 } as const;
 
-export type LinkSchema = FromSchema<typeof LinkSchema>;
+export type LinkSchema = FromSchema<
+  typeof LinkSchema,
+  {
+    deserialize: [
+      {
+        pattern: {
+          type: "string";
+          format: "date-time";
+        };
+        output: Date;
+      }
+    ];
+  }
+>;
