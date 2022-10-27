@@ -31,18 +31,20 @@ export default function VideoResource({
   ...other
 }: Props) {
   const videoInstance = useMemo(() => {
-    return getVideoInstance(
-      { providerUrl, url, accessToken, tracks },
-      thumbnailUrl
-    );
-  }, [providerUrl, url, accessToken, tracks, thumbnailUrl]);
+    return getVideoInstance({
+      providerUrl,
+      url,
+      accessToken,
+      tracks,
+      autoplay,
+      thumbnailUrl,
+    });
+  }, [providerUrl, url, accessToken, tracks, autoplay, thumbnailUrl]);
 
   const { video } = useVideoAtom();
   useEffect(() => {
     video.set(identifier, videoInstance);
   }, [video, identifier, videoInstance]);
 
-  return (
-    <VideoPlayer videoInstance={videoInstance} autoplay={autoplay} {...other} />
-  );
+  return <VideoPlayer videoInstance={videoInstance} {...other} />;
 }

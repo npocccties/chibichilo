@@ -14,9 +14,12 @@ function getVideoInstance(
   resource: Pick<
     VideoResourceSchema,
     "providerUrl" | "url" | "accessToken" | "tracks"
-  >,
-  thumbnailUrl?: OembedSchema["thumbnail_url"]
+  > & {
+    autoplay?: boolean;
+    thumbnailUrl?: OembedSchema["thumbnail_url"];
+  }
 ): VideoInstance {
+  const { autoplay, thumbnailUrl } = resource;
   switch (resource.providerUrl) {
     case "https://www.youtube.com/":
       return {
@@ -30,6 +33,7 @@ function getVideoInstance(
               src: resource.url,
             },
           ],
+          autoplay,
         }),
         tracks: buildTracks(resource.tracks),
         stopTimeOver: false,
@@ -38,7 +42,10 @@ function getVideoInstance(
       return {
         type: "vimeo",
         url: resource.url,
-        ...getVimeoPlayer({ url: resource.url }),
+        ...getVimeoPlayer({
+          url: resource.url,
+          autoplay,
+        }),
       };
     default: {
       const url = `${resource.url}?accessToken=${resource.accessToken}`;
@@ -47,6 +54,7 @@ function getVideoInstance(
         url,
         ...getVideoJsPlayer({
           sources: [{ type: "application/vnd.apple.mpegurl", src: url }],
+          autoplay,
           poster: thumbnailUrl,
         }),
         tracks: buildTracks(resource.tracks),
