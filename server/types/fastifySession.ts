@@ -11,6 +11,7 @@ declare module "fastify" {
     ltiContext: SessionSchema["ltiContext"];
     ltiLaunchPresentation: SessionSchema["ltiLaunchPresentation"];
     ltiAgsEndpoint: SessionSchema["ltiAgsEndpoint"];
+    ltiNrpsParameter: SessionSchema["ltiNrpsParameter"];
     ltiResourceLink: SessionSchema["ltiResourceLink"];
     user: SessionSchema["user"];
     systemSettings: SessionSchema["systemSettings"];

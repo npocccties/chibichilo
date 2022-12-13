@@ -29,6 +29,12 @@ export class LtiClaims {
         new AgsEndpointClaim(
           props?.["https://purl.imsglobal.org/spec/lti-ags/claim/endpoint"]
         ),
+      "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice":
+        new NrpsParameterClaim(
+          props?.[
+            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+          ]
+        ),
     });
   }
   @Equals("LtiResourceLinkRequest")
@@ -59,6 +65,9 @@ export class LtiClaims {
   @IsOptional()
   @ValidateNested()
   "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint"?: AgsEndpointClaim;
+  @IsOptional()
+  @ValidateNested()
+  "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"?: NrpsParameterClaim;
   @IsOptional()
   "https://purl.imsglobal.org/spec/lti/claim/lis"?: unknown;
   @IsOptional()
@@ -114,4 +123,14 @@ class AgsEndpointClaim {
   @IsOptional()
   @IsString({ each: true })
   scope?: string[];
+}
+
+class NrpsParameterClaim {
+  constructor(props?: Partial<NrpsParameterClaim>) {
+    Object.assign(this, props);
+  }
+  @IsString()
+  context_memberships_url!: string;
+  @IsString({ each: true })
+  service_versions!: string[];
 }

@@ -2107,7 +2107,11 @@ export class DefaultApi extends runtime.BaseAPI {
     */
 export enum ApiV2LtiSearchGetSortEnum {
     created = 'created',
-    reverse_created = 'reverse-created'
+    reverse_created = 'reverse-created',
+    updated = 'updated',
+    reverse_updated = 'reverse-updated',
+    title = 'title',
+    reverse_title = 'reverse-title'
 }
 /**
     * @export

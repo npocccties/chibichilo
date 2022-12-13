@@ -4,6 +4,7 @@ import { validateOrReject } from "class-validator";
 import type { SessionSchema } from "$server/models/session";
 import type { LtiLaunchPresentationSchema } from "$server/models/ltiLaunchPresentation";
 import type { LtiAgsEndpointSchema } from "$server/models/ltiAgsEndpoint";
+import type { LtiNrpsParameterSchema } from "$server/models/ltiNrpsParameter";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import init from "./init";
 import { LtiCallbackBody } from "$server/validators/ltiCallbackBody";
@@ -74,12 +75,16 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
     }
     const ltiAgsEndpoint: undefined | LtiAgsEndpointSchema =
       ltiClaims["https://purl.imsglobal.org/spec/lti-ags/claim/endpoint"];
-
+    const ltiNrpsParameter: undefined | LtiNrpsParameterSchema =
+      ltiClaims[
+        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+      ];
     Object.assign(req.session, {
       state: undefined,
       ...session,
       ...(ltiLaunchPresentation && { ltiLaunchPresentation }),
       ...(ltiAgsEndpoint && { ltiAgsEndpoint }),
+      ...(ltiNrpsParameter && { ltiNrpsParameter }),
     });
 
     return await init(req);

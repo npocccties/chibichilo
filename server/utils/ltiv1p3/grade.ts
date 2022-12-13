@@ -28,7 +28,10 @@ async function grant(client: Client): Promise<string> {
   try {
     const tokens = await client.grant({
       grant_type: "client_credentials",
-      scope: "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+      scope: [
+        "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+        "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+      ],
     });
     return tokens.access_token ?? "";
   } catch {
@@ -89,6 +92,60 @@ export async function publishScore(
 
     if (retry) {
       await publishScore(client, lineItemUrl, score, false);
+      return;
+    }
+  }
+
+  if (!successCode.includes(statusCode)) {
+    throw new Error(`${res.statusCode} ${res.statusMessage}`);
+  }
+}
+
+/**
+ * LTI-NRPS 受講者の取得
+ * https://www.imsglobal.org/spec/lti-nrps/v2p0
+ * @param client OpenID Connect Client
+ * @param contextMembershipsUrl LTI claim に含まれる context_memberships_url
+ * @param retry リトライを行うか否か (デフォルト: true 行う)
+ */
+export async function getMemberships(
+  client: Client,
+  contextMembershipsUrl: string,
+  retry = true
+) {
+  const clientId = client.metadata.client_id;
+
+  let { accessToken } = await prisma.ltiConsumer.findUniqueOrThrow({
+    where: { id: clientId },
+  });
+
+  if (!accessToken) {
+    accessToken = await grant(client);
+
+    if (!accessToken) {
+      throw new Error(
+        `Failed to grant access token: client ${client.metadata.client_id}`
+      );
+    }
+
+    await prisma.ltiConsumer.update({
+      where: { id: clientId },
+      data: { accessToken },
+    });
+  }
+
+  const res = await client.requestResource(contextMembershipsUrl, accessToken);
+
+  const statusCode = Number(res.statusCode);
+
+  if (authFailureCode.includes(statusCode)) {
+    await prisma.ltiConsumer.update({
+      where: { id: clientId },
+      data: { accessToken: "" },
+    });
+
+    if (retry) {
+      await getMemberships(client, contextMembershipsUrl, false);
       return;
     }
   }
