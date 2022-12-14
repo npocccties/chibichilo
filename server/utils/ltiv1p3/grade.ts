@@ -1,5 +1,6 @@
 import type { Client } from "openid-client";
 import prisma from "$server/utils/prisma";
+import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
 
 type Score = {
   userId: string;
@@ -112,7 +113,7 @@ export async function getMemberships(
   client: Client,
   contextMembershipsUrl: string,
   retry = true
-) {
+): Promise<LtiMemberShipSchema | undefined> {
   const clientId = client.metadata.client_id;
 
   let { accessToken } = await prisma.ltiConsumer.findUniqueOrThrow({
@@ -153,4 +154,10 @@ export async function getMemberships(
   if (!successCode.includes(statusCode)) {
     throw new Error(`${res.statusCode} ${res.statusMessage}`);
   }
+
+  if (!res.body) {
+    return;
+  }
+  const memberShips = JSON.parse(res.body.toString()) as LtiMemberShipSchema;
+  return memberShips;
 }

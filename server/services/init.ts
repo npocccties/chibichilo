@@ -5,9 +5,9 @@ import {
   findLtiResourceLink,
   upsertLtiResourceLink,
 } from "$server/utils/ltiResourceLink";
-import { isInstructor } from "$server/utils/session";
+// import { isInstructor } from "$server/utils/session";
 import { getSystemSettings } from "$server/utils/systemSettings";
-import { upsertLtiMember } from "$server/utils/ltiMember";
+// import { upsertLtiMember } from "$server/utils/ltiMember";
 
 const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 
@@ -35,13 +35,15 @@ async function init({ session }: FastifyRequest) {
     email: session.ltiUser.email ?? "",
   });
 
-  if (ltiResourceLink && !isInstructor(session)) {
-    await upsertLtiMember(
-      ltiResourceLink.consumerId,
-      ltiResourceLink.contextId,
-      user.ltiUserId
-    );
-  }
+  // TODO：削除
+  // ユーザー同期はLTI Names and Role Provisioning Servicesで行うのでコメントアウト
+  // if (ltiResourceLink && !isInstructor(session)) {
+  //   await upsertLtiMember(
+  //     ltiResourceLink.consumerId,
+  //     ltiResourceLink.contextId,
+  //     user.ltiUserId
+  //   );
+  // }
 
   Object.assign(session, { ltiResourceLink, user, systemSettings });
 
