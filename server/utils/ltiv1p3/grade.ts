@@ -111,10 +111,13 @@ export async function publishScore(
  */
 export async function getMemberships(
   client: Client,
-  contextMembershipsUrl: string,
+  contextMembershipsUrl?: string,
   retry = true
 ): Promise<LtiMemberShipSchema | undefined> {
   const clientId = client.metadata.client_id;
+  if (!contextMembershipsUrl) {
+    throw new Error(`Failed to get contextMembershipsUrl`);
+  }
 
   let { accessToken } = await prisma.ltiConsumer.findUniqueOrThrow({
     where: { id: clientId },
@@ -158,6 +161,6 @@ export async function getMemberships(
   if (!res.body) {
     return;
   }
-  const memberShips = JSON.parse(res.body.toString()) as LtiMemberShipSchema;
+  const memberShips = JSON.parse(res.body.toString());
   return memberShips;
 }

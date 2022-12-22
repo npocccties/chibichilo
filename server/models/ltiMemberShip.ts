@@ -3,11 +3,12 @@ import { LtiContextSchema } from "./ltiContext";
 import { MemberSchema } from "./member";
 
 export const LtiMemberShipSchema = {
-  title: "LTI Names and Role Provisioning Service Parameterで取得できるLMSメンバー一覧",
+  title:
+    "LTI Names and Role Provisioning Service Parameterで取得できるLMSメンバー一覧",
   type: "object",
   required: ["id", "context", "members"],
   properties: {
-    id: {type: "string"},
+    id: { title: "LMS memberships URL", type: "string" },
     context: LtiContextSchema,
     members: { type: "array", items: MemberSchema },
   },

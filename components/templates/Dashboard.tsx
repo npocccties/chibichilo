@@ -26,6 +26,7 @@ import label from "$utils/learningStatusLabel";
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import useDialogProps from "$utils/useDialogProps";
+// import useMemberships from "$utils/useMemberships";
 
 type TabPanelProps = {
   className?: string;
@@ -104,6 +105,7 @@ type Props = {
 
 export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities } = props;
+  // const { data: memberships } = useMemberships();
   const classes = useStyles();
   const cardClasses = useCardStyles();
   const [tabIndex, setTabIndex] = useState(0);
