@@ -5,6 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import GetAppOutlinedIcon from "@mui/icons-material/GetAppOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import makeStyles from "@mui/styles/makeStyles";
 import Container from "$atoms/Container";
 import ActionHeader from "$organisms/ActionHeader";
@@ -26,7 +27,9 @@ import label from "$utils/learningStatusLabel";
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import useDialogProps from "$utils/useDialogProps";
-// import useMemberships from "$utils/useMemberships";
+import useMemberships from "$utils/useMemberships";
+import MembershipsDialog from "$organisms/MembershipsDialog";
+import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
 
 type TabPanelProps = {
   className?: string;
@@ -105,7 +108,7 @@ type Props = {
 
 export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities } = props;
-  // const { data: memberships } = useMemberships();
+  const { data: memberships } = useMemberships();
   const classes = useStyles();
   const cardClasses = useCardStyles();
   const [tabIndex, setTabIndex] = useState(0);
@@ -136,6 +139,13 @@ export default function Dashboard(props: Props) {
     learner: LearnerSchema;
     bookActivities: Array<BookActivitySchema>;
   }>();
+  const {
+    data: membershipData,
+    dispatch: membershipDispatch,
+    ...membershipDialogProps
+  } = useDialogProps<{
+    memberships: LtiMemberShipSchema;
+  }>();
   const handleLearnerClick = useCallback(
     (book: Pick<BookSchema, "id">) => (learner: LearnerSchema) =>
       dispatch({
@@ -151,6 +161,12 @@ export default function Dashboard(props: Props) {
       dispatch({ learner, bookActivities }),
     [dispatch]
   );
+  const handleMembershipClick = useCallback(
+    (memberships: LtiMemberShipSchema) => () =>
+      // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
+      membershipDispatch({ memberships }),
+    [membershipDispatch]
+  );
   return (
     <Container maxWidth="md">
       <Typography sx={{ mt: 5 }} variant="h4">
@@ -165,7 +181,7 @@ export default function Dashboard(props: Props) {
         />
         <Button
           onClick={handleDownloadClick}
-          color="primary"
+          color="secondary"
           variant="contained"
           size="small"
           disabled={bookActivities.length === 0}
@@ -173,6 +189,18 @@ export default function Dashboard(props: Props) {
           <GetAppOutlinedIcon fontSize="small" />
           分析データをダウンロード
         </Button>
+        {memberships && (
+          <Button
+            onClick={handleMembershipClick(memberships)}
+            color="primary"
+            variant="contained"
+            size="small"
+            disabled={bookActivities.length === 0}
+          >
+            <GroupOutlinedIcon fontSize="small" />
+            受講者を同期
+          </Button>
+        )}
       </ActionHeader>
       <Card classes={cardClasses} className={classes.card}>
         <Tabs
@@ -229,6 +257,13 @@ export default function Dashboard(props: Props) {
           learner={data.learner}
           bookActivities={data.bookActivities}
           {...dialogProps}
+        />
+      )}
+      {membershipData && (
+        <MembershipsDialog
+          // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
+          memberships={membershipData.memberships}
+          {...membershipDialogProps}
         />
       )}
     </Container>
