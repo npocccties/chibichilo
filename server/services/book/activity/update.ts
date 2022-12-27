@@ -74,6 +74,7 @@ export async function update(
   const completed = topics.filter((t) => completedSet.has(t.id));
   // https://www.imsglobal.org/sites/default/files/lti/ltiv2p1/model/mediatype/application/vnd/ims/lis/v1/score+json/index.html
   const score = {
+    // TODO:Names and Role Provisioning ServicesのuserIdで更新する
     userId: req.session.user.ltiUserId,
     timestamp: new Date().toISOString(),
     scoreGiven: completed.length,

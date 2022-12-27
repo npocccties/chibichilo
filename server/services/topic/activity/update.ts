@@ -57,6 +57,7 @@ export async function update({
   if (ltiContextActivity == null) return { status: 400 };
 
   const topicActivity = await upsertTopicActivity({
+    // TODO:Names and Role Provisioning ServicesのuserIdで更新する
     learnerId: session.user.id,
     topicId: params.topic_id,
     activity: body,

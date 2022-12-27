@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
+import { Button, DialogActions } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -46,12 +47,20 @@ export default function MembershipsDialog(props: Props) {
           return (
             <div key={member.user_id}>
               <p>{member.user_id}</p>
-              <p>{member.status}</p>
             </div>
           );
         })}
-        {/* TODO：同期するボタンを設置して、更新処理を実行する */}
       </DialogContent>
+      <DialogActions>
+        {/* TODO：更新処理を実行する */}
+        <Button
+            onClick={() => console.log("upsert member db!!")}
+            color="primary"
+            size="small"
+          >
+            受講者を同期
+          </Button>
+        </DialogActions>
     </Dialog>
   );
 }
