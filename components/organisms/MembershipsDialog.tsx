@@ -54,13 +54,13 @@ export default function MembershipsDialog(props: Props) {
       <DialogActions>
         {/* TODO：更新処理を実行する */}
         <Button
-            onClick={() => console.log("upsert member db!!")}
-            color="primary"
-            size="small"
-          >
-            受講者を同期
-          </Button>
-        </DialogActions>
+          onClick={() => console.log("upsert member db!!")}
+          color="primary"
+          size="small"
+        >
+          受講者を同期
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }
