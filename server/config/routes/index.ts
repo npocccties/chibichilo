@@ -15,6 +15,7 @@ import * as wowza from "./wowza";
 import * as activity from "./activity";
 import session from "./session";
 import * as ltiMembership from "./ltiMembership";
+import * as ltiMember from "./ltiMember";
 
 const routers = [
   lti,
@@ -32,6 +33,7 @@ const routers = [
   wowza,
   activity,
   ltiMembership,
+  ltiMember,
 ];
 
 async function routes(fastify: FastifyInstance) {
