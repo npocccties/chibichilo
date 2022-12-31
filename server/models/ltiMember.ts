@@ -15,7 +15,7 @@ export const LtiMembersSchema = {
       context: LtiContextSchema,
     },
     additionalProperties: false,
-  }
+  },
 } as const;
 
 /** LTI Members */
