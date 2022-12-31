@@ -1,11 +1,11 @@
 import type { FromSchema } from "json-schema-to-ts";
 
-export const LtiMemberParamsSchema = {
+export const LtiMemberBodySchema = {
   title: "LTI v1.3 LtiMemberの更新のParams",
   type: "object",
-  required: ["userIds"],
+  required: ["user_ids"],
   properties: {
-    userIds: {
+    user_ids: {
       type: "array",
       items: {
         type: "string",
@@ -14,4 +14,4 @@ export const LtiMemberParamsSchema = {
   },
 } as const;
 
-export type LtiMemberParamsSchema = FromSchema<typeof LtiMemberParamsSchema>;
+export type LtiMemberBodySchema = FromSchema<typeof LtiMemberBodySchema>;

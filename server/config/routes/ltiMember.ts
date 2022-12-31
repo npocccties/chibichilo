@@ -10,6 +10,6 @@ export async function ltiMember(fastify: FastifyInstance) {
   const hooks = makeHooks(fastify, service.hooks);
 
   fastify.put<{
-    Params: service.Params;
+    Body: service.Body;
   }>(basePath, { schema: method.put, ...hooks.put }, handler(update));
 }

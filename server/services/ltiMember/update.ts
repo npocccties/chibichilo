@@ -1,27 +1,27 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
 import { outdent } from "outdent";
-import { LtiMemberParamsSchema } from "$server/validators/ltiMemberParams";
+import { LtiMemberBodySchema } from "$server/validators/ltiMemberParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isInstructor } from "$server/utils/session";
 import { findLtiResourceLink } from "$server/utils/ltiResourceLink";
 import { upsertLtiMember } from "$server/utils/ltiMember";
-import { LearnerSchema } from "$server/models/learner";
+import { LtiMembersSchema } from "$server/models/ltiMember";
 
 export const updateSchema: FastifySchema = {
   summary: "LTI Member のデータの更新",
   description: outdent`
     LTI Memberを更新します。
     教員または管理者でなければなりません。`,
-  params: LtiMemberParamsSchema,
+  body: LtiMemberBodySchema,
   response: {
-    201: LearnerSchema,
+    201: LtiMembersSchema,
     400: {},
     403: {},
   },
 };
 
-export type Params = LtiMemberParamsSchema;
+export type Body = LtiMemberBodySchema;
 
 export const updateHooks = {
   auth: [authUser, authInstructor],
@@ -29,7 +29,7 @@ export const updateHooks = {
 
 export async function update(
   req: FastifyRequest<{
-    Params: Params;
+    Body: Body;
   }>
 ) {
   const ltiResourceLink = await findLtiResourceLink({
@@ -52,7 +52,7 @@ export async function update(
   const ltiMembers = await upsertLtiMember(
     ltiResourceLink.consumerId,
     ltiResourceLink.contextId,
-    req.params.userIds
+    req.body.user_ids
   );
 
   return {

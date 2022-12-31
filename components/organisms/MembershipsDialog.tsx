@@ -20,12 +20,15 @@ type Props = {
   memberships: LtiMemberShipSchema;
   open: boolean;
   onClose: React.MouseEventHandler;
+  updateLtiMembers: ({ userIds }: { userIds: string[] }) => Promise<unknown>;
 };
 
 // TODO：storybook対応
 export default function MembershipsDialog(props: Props) {
-  const { memberships, open, onClose } = props;
+  const { memberships, open, onClose, updateLtiMembers } = props;
   const classes = useStyles();
+
+  const userIds = memberships.members.map((member) => member.user_id);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -52,9 +55,8 @@ export default function MembershipsDialog(props: Props) {
         })}
       </DialogContent>
       <DialogActions>
-        {/* TODO：更新処理を実行する */}
         <Button
-          onClick={() => console.log("upsert member db!!")}
+          onClick={async () => await updateLtiMembers({ userIds })}
           color="primary"
           size="small"
         >

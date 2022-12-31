@@ -53,5 +53,7 @@ export * from './InlineResponse2008Topic';
 export * from './InlineResponse2009';
 export * from './InlineResponse201';
 export * from './InlineResponse2011';
+export * from './InlineResponse2012';
 export * from './LTIContext';
 export * from './LTIResourceLinkRequest';
+export * from './LTIV13LtiMemberParams';

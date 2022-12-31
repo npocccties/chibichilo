@@ -114,6 +114,12 @@ import {
     InlineResponse2011,
     InlineResponse2011FromJSON,
     InlineResponse2011ToJSON,
+    InlineResponse2012,
+    InlineResponse2012FromJSON,
+    InlineResponse2012ToJSON,
+    LTIV13LtiMemberParams,
+    LTIV13LtiMemberParamsFromJSON,
+    LTIV13LtiMemberParamsToJSON,
 } from '../models';
 
 export interface ApiV2ActivityGetRequest {
@@ -236,7 +242,7 @@ export interface ApiV2LtiLtiConsumerIdResourceLinkLtiResourceLinkIdPutRequest {
 }
 
 export interface ApiV2LtiMemberPutRequest {
-    userIds: Array<string>;
+    body?: LTIV13LtiMemberParams;
 }
 
 export interface ApiV2LtiSearchGetRequest {
@@ -1324,30 +1330,29 @@ export class DefaultApi extends runtime.BaseAPI {
      * LTI Memberを更新します。 教員または管理者でなければなりません。
      * LTI Member のデータの更新
      */
-    async apiV2LtiMemberPutRaw(requestParameters: ApiV2LtiMemberPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
-        if (requestParameters.userIds === null || requestParameters.userIds === undefined) {
-            throw new runtime.RequiredError('userIds','Required parameter requestParameters.userIds was null or undefined when calling apiV2LtiMemberPut.');
-        }
-
+    async apiV2LtiMemberPutRaw(requestParameters: ApiV2LtiMemberPutRequest): Promise<runtime.ApiResponse<Array<InlineResponse2012>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        headerParameters['Content-Type'] = 'application/json';
+
         const response = await this.request({
-            path: `/api/v2/ltiMember`.replace(`{${"userIds"}}`, encodeURIComponent(String(requestParameters.userIds))),
+            path: `/api/v2/ltiMember`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
+            body: LTIV13LtiMemberParamsToJSON(requestParameters.body),
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2012FromJSON));
     }
 
     /**
      * LTI Memberを更新します。 教員または管理者でなければなりません。
      * LTI Member のデータの更新
      */
-    async apiV2LtiMemberPut(requestParameters: ApiV2LtiMemberPutRequest): Promise<{ [key: string]: object; }> {
+    async apiV2LtiMemberPut(requestParameters: ApiV2LtiMemberPutRequest): Promise<Array<InlineResponse2012>> {
         const response = await this.apiV2LtiMemberPutRaw(requestParameters);
         return await response.value();
     }

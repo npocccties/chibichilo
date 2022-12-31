@@ -30,6 +30,7 @@ import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
 import MembershipsDialog from "$organisms/MembershipsDialog";
 import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
+import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 
 type TabPanelProps = {
   className?: string;
@@ -109,6 +110,7 @@ type Props = {
 export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities } = props;
   const { data: memberships } = useMemberships();
+  const updateLtiMembers = useLtiMembersHandler();
   const classes = useStyles();
   const cardClasses = useCardStyles();
   const [tabIndex, setTabIndex] = useState(0);
@@ -263,6 +265,7 @@ export default function Dashboard(props: Props) {
         <MembershipsDialog
           // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
           memberships={membershipData.memberships}
+          updateLtiMembers={updateLtiMembers}
           {...membershipDialogProps}
         />
       )}

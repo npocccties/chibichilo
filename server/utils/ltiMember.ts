@@ -9,25 +9,23 @@ export async function upsertLtiMember(
 ) {
   const ltiMembers = [];
   for (const userId of userIds) {
-    // TODO:削除。テストしやすくするため、prefixをつける
-    const membershipId = `membership#${userId}`;
     const created = await prisma.ltiMember.upsert({
       where: {
         consumerId_contextId_userId: {
           consumerId,
           contextId,
-          userId: membershipId,
+          userId,
         },
       },
       update: {
         consumerId,
         contextId,
-        userId: membershipId,
+        userId,
       },
       create: {
         consumerId,
         contextId,
-        userId: membershipId,
+        userId,
       },
     });
     ltiMembers.push(created);
