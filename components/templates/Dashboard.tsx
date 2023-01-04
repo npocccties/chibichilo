@@ -29,8 +29,8 @@ import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
 import MembershipsDialog from "$organisms/MembershipsDialog";
-import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
 import useLtiMembersHandler from "$utils/useLtiMembersHandler";
+import type { MemberSchema } from "$server/models/member";
 
 type TabPanelProps = {
   className?: string;
@@ -110,6 +110,11 @@ type Props = {
 export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities } = props;
   const { data: memberships } = useMemberships();
+  const newLtiMembers = useMemo(() => {
+    return memberships?.members.filter((member) => {
+      return learners.find((learner) => learner.id !== Number(member.user_id));
+    });
+  }, [learners, memberships]);
   const updateLtiMembers = useLtiMembersHandler();
   const classes = useStyles();
   const cardClasses = useCardStyles();
@@ -143,10 +148,10 @@ export default function Dashboard(props: Props) {
   }>();
   const {
     data: membershipData,
-    dispatch: membershipDispatch,
+    dispatch: membersDispatch,
     ...membershipDialogProps
   } = useDialogProps<{
-    memberships: LtiMemberShipSchema;
+    members: MemberSchema[];
   }>();
   const handleUpdateLtiMembers = useCallback(
     async (userIds: string[]) => {
@@ -171,10 +176,8 @@ export default function Dashboard(props: Props) {
     [dispatch]
   );
   const handleMembershipClick = useCallback(
-    (memberships: LtiMemberShipSchema) => () =>
-      // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
-      membershipDispatch({ memberships }),
-    [membershipDispatch]
+    (members: MemberSchema[]) => () => membersDispatch({ members }),
+    [membersDispatch]
   );
   return (
     <Container maxWidth="md">
@@ -198,9 +201,9 @@ export default function Dashboard(props: Props) {
           <GetAppOutlinedIcon fontSize="small" />
           分析データをダウンロード
         </Button>
-        {memberships && (
+        {newLtiMembers && (
           <Button
-            onClick={handleMembershipClick(memberships)}
+            onClick={handleMembershipClick(newLtiMembers)}
             color="primary"
             variant="contained"
             size="small"
@@ -270,8 +273,7 @@ export default function Dashboard(props: Props) {
       )}
       {membershipData && (
         <MembershipsDialog
-          // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
-          memberships={membershipData.memberships}
+          members={membershipData.members}
           handleUpdateLtiMembers={handleUpdateLtiMembers}
           {...membershipDialogProps}
         />

@@ -5,8 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
-import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
 import { Button, DialogActions } from "@mui/material";
+import type { MemberSchema } from "$server/models/member";
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  memberships: LtiMemberShipSchema;
+  members: MemberSchema[];
   open: boolean;
   onClose: React.MouseEventHandler;
   handleUpdateLtiMembers: (userIds: string[]) => Promise<void>;
@@ -25,10 +25,10 @@ type Props = {
 
 // TODO：storybook対応
 export default function MembershipsDialog(props: Props) {
-  const { memberships, open, onClose, handleUpdateLtiMembers } = props;
+  const { members, open, onClose, handleUpdateLtiMembers } = props;
   const classes = useStyles();
 
-  const userIds = memberships.members.map((member) => member.user_id);
+  const userIds = members.map((member) => member.user_id);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -46,7 +46,7 @@ export default function MembershipsDialog(props: Props) {
       </DialogTitle>
       <DialogContent>
         {/* TODO：ユーザー名をLMSから取得してここで表示する（LMSから取得できない場合、Userデータで表示？） */}
-        {memberships.members.map((member) => {
+        {members.map((member) => {
           return (
             <div key={member.user_id}>
               <p>{member.user_id}</p>
