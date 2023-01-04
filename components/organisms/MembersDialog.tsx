@@ -24,7 +24,7 @@ type Props = {
 };
 
 // TODO：storybook対応
-export default function MembershipsDialog(props: Props) {
+export default function MembersDialog(props: Props) {
   const { members, open, onClose, handleUpdateLtiMembers } = props;
   const classes = useStyles();
 

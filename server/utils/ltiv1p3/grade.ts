@@ -161,6 +161,14 @@ export async function getMemberships(
   if (!res.body) {
     return;
   }
-  const memberShips = JSON.parse(res.body.toString());
-  return memberShips;
+  const memberShips = JSON.parse(res.body.toString()) as LtiMemberShipSchema;
+
+  // 教師を除く、学習者のみのデータを返す
+  const memberShipsOnlyLearner = {
+    ...memberShips,
+    members: memberShips.members.filter(
+      (member) => !member.roles.includes("Instructor")
+    ),
+  };
+  return memberShipsOnlyLearner;
 }

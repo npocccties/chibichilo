@@ -28,7 +28,7 @@ import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
-import MembershipsDialog from "$organisms/MembershipsDialog";
+import MembersDialog from "$organisms/MembersDialog";
 import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { MemberSchema } from "$server/models/member";
 
@@ -111,10 +111,14 @@ export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities } = props;
   const { data: memberships } = useMemberships();
   const newLtiMembers = useMemo(() => {
+    if (!memberships) {
+      return [];
+    }
     return memberships?.members.filter((member) => {
       return learners.find((learner) => learner.id !== Number(member.user_id));
     });
   }, [learners, memberships]);
+  console.log(newLtiMembers);
   const updateLtiMembers = useLtiMembersHandler();
   const classes = useStyles();
   const cardClasses = useCardStyles();
@@ -147,18 +151,18 @@ export default function Dashboard(props: Props) {
     bookActivities: Array<BookActivitySchema>;
   }>();
   const {
-    data: membershipData,
+    data: membersData,
     dispatch: membersDispatch,
-    ...membershipDialogProps
+    ...membersDialogProps
   } = useDialogProps<{
     members: MemberSchema[];
   }>();
   const handleUpdateLtiMembers = useCallback(
     async (userIds: string[]) => {
       await updateLtiMembers({ userIds });
-      membershipDialogProps.onClose();
+      membersDialogProps.onClose();
     },
-    [membershipDialogProps, updateLtiMembers]
+    [membersDialogProps, updateLtiMembers]
   );
   const handleLearnerClick = useCallback(
     (book: Pick<BookSchema, "id">) => (learner: LearnerSchema) =>
@@ -201,7 +205,7 @@ export default function Dashboard(props: Props) {
           <GetAppOutlinedIcon fontSize="small" />
           分析データをダウンロード
         </Button>
-        {newLtiMembers && (
+        {newLtiMembers.length > 0 && (
           <Button
             onClick={handleMembershipClick(newLtiMembers)}
             color="primary"
@@ -271,11 +275,11 @@ export default function Dashboard(props: Props) {
           {...dialogProps}
         />
       )}
-      {membershipData && (
-        <MembershipsDialog
-          members={membershipData.members}
+      {membersData && (
+        <MembersDialog
+          members={membersData.members}
           handleUpdateLtiMembers={handleUpdateLtiMembers}
-          {...membershipDialogProps}
+          {...membersDialogProps}
         />
       )}
     </Container>
