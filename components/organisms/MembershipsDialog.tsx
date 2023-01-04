@@ -20,12 +20,12 @@ type Props = {
   memberships: LtiMemberShipSchema;
   open: boolean;
   onClose: React.MouseEventHandler;
-  updateLtiMembers: ({ userIds }: { userIds: string[] }) => Promise<unknown>;
+  handleUpdateLtiMembers: (userIds: string[]) => Promise<void>;
 };
 
 // TODO：storybook対応
 export default function MembershipsDialog(props: Props) {
-  const { memberships, open, onClose, updateLtiMembers } = props;
+  const { memberships, open, onClose, handleUpdateLtiMembers } = props;
   const classes = useStyles();
 
   const userIds = memberships.members.map((member) => member.user_id);
@@ -56,7 +56,7 @@ export default function MembershipsDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={async () => await updateLtiMembers({ userIds })}
+          onClick={async () => await handleUpdateLtiMembers(userIds)}
           color="primary"
           size="small"
         >

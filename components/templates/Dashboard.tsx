@@ -148,6 +148,13 @@ export default function Dashboard(props: Props) {
   } = useDialogProps<{
     memberships: LtiMemberShipSchema;
   }>();
+  const handleUpdateLtiMembers = useCallback(
+    async (userIds: string[]) => {
+      await updateLtiMembers({ userIds });
+      membershipDialogProps.onClose();
+    },
+    [membershipDialogProps, updateLtiMembers]
+  );
   const handleLearnerClick = useCallback(
     (book: Pick<BookSchema, "id">) => (learner: LearnerSchema) =>
       dispatch({
@@ -265,7 +272,7 @@ export default function Dashboard(props: Props) {
         <MembershipsDialog
           // TODO：membershipのデータを渡すのではなく、LSMユーザーとchibi-chiloのltiMemberとの差分のデータを渡す
           memberships={membershipData.memberships}
-          updateLtiMembers={updateLtiMembers}
+          handleUpdateLtiMembers={handleUpdateLtiMembers}
           {...membershipDialogProps}
         />
       )}
