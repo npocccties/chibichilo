@@ -6,7 +6,7 @@ import { ActivitySchema } from "$server/models/activity";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import authUser from "$server/auth/authUser";
 import { show } from "./show";
-import { publishScore } from "$server/utils/ltiv1p3/grade";
+import { getMemberships, publishScore } from "$server/utils/ltiv1p3/grade";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import findBook from "$server/utils/book/findBook";
 import { getDisplayableBook } from "$server/utils/displayableBook";
@@ -72,10 +72,21 @@ export async function update(
     activity.filter((a) => a.completed).map((a) => a.topic.id)
   );
   const completed = topics.filter((t) => completedSet.has(t.id));
+
+  const membership = await getMemberships(
+    client,
+    req.session.ltiNrpsParameter?.context_memberships_url
+  );
+  const member = membership?.members.find((member) => {
+    return member.user_id === req.session.user.ltiUserId;
+  });
+  if (!member) {
+    return { status: 401 };
+  }
+
   // https://www.imsglobal.org/sites/default/files/lti/ltiv2p1/model/mediatype/application/vnd/ims/lis/v1/score+json/index.html
   const score = {
-    // TODO:Names and Role Provisioning ServicesのuserIdで更新する
-    userId: req.session.user.ltiUserId,
+    userId: member.user_id,
     timestamp: new Date().toISOString(),
     scoreGiven: completed.length,
     scoreMaximum: topics.length,
