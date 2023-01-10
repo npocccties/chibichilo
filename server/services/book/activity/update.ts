@@ -6,7 +6,7 @@ import { ActivitySchema } from "$server/models/activity";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import authUser from "$server/auth/authUser";
 import { show } from "./show";
-import { getMemberships, publishScore } from "$server/utils/ltiv1p3/grade";
+import { publishScore } from "$server/utils/ltiv1p3/grade";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import findBook from "$server/utils/book/findBook";
 import { getDisplayableBook } from "$server/utils/displayableBook";
@@ -73,20 +73,9 @@ export async function update(
   );
   const completed = topics.filter((t) => completedSet.has(t.id));
 
-  const membership = await getMemberships(
-    client,
-    req.session.ltiNrpsParameter?.context_memberships_url
-  );
-  const member = membership?.members.find((member) => {
-    return member.user_id === req.session.user.ltiUserId;
-  });
-  if (!member) {
-    return { status: 401 };
-  }
-
   // https://www.imsglobal.org/sites/default/files/lti/ltiv2p1/model/mediatype/application/vnd/ims/lis/v1/score+json/index.html
   const score = {
-    userId: member.user_id,
+    userId: req.session.user.ltiUserId,
     timestamp: new Date().toISOString(),
     scoreGiven: completed.length,
     scoreMaximum: topics.length,
