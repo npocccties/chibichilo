@@ -114,11 +114,10 @@ export default function Dashboard(props: Props) {
     if (!memberships) {
       return [];
     }
-    return memberships?.members.filter((member) => {
-      return learners.find((learner) => learner.id !== Number(member.user_id));
+    return memberships.members.filter((member) => {
+      return learners.every((learner) => learner.id !== Number(member.user_id));
     });
   }, [learners, memberships]);
-  console.log(newLtiMembers);
   const updateLtiMembers = useLtiMembersHandler();
   const classes = useStyles();
   const cardClasses = useCardStyles();
