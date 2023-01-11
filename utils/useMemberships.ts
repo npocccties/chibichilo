@@ -5,7 +5,7 @@ import { api } from "./api";
 const key = "/api/v2/memberships";
 
 async function fetchMemberships(_: typeof key) {
-  const memberships: unknown = await api.apiV2LtiMembershipGet();
+  const memberships: unknown = await api.apiV2LtiMembersGet();
   return memberships as LtiNrpsContextMembershipSchema;
 }
 

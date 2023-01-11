@@ -89,8 +89,10 @@ export async function ltiSearch(fastify: FastifyInstance) {
 
 export async function ltiMembers(fastify: FastifyInstance) {
   const path = "/lti/members";
-  const { method, update } = ltiMembersService;
+  const { method, update, show } = ltiMembersService;
   const hooks = makeHooks(fastify, ltiMembersService.hooks);
+
+  fastify.get(path, { schema: method.get, ...hooks.get }, handler(show));
 
   fastify.put<{
     Body: ltiMembersService.Body;
