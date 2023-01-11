@@ -179,7 +179,8 @@ export default function Dashboard(props: Props) {
     [dispatch]
   );
   const handleMembershipClick = useCallback(
-    (members: LtiNrpsContextMemberSchema[]) => () => membersDispatch({ members }),
+    (members: LtiNrpsContextMemberSchema[]) => () =>
+      membersDispatch({ members }),
     [membersDispatch]
   );
   return (
