@@ -4,7 +4,7 @@ import authInstructor from "$server/auth/authInstructor";
 import { getMemberships } from "$server/utils/ltiv1p3/services";
 import type { FastifyRequest } from "fastify";
 import findClient from "$server/utils/ltiv1p3/findClient";
-import { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
+import { LtiNrpsContextMembershipSchema } from "$server/models/ltiNrpsContextMembership";
 
 export const method = {
   get: {
@@ -13,7 +13,7 @@ export const method = {
       LTI Names and Role Provisioning Serviceを用いて、LMSメンバーを取得
       教員または管理者でなければなりません。`,
     response: {
-      200: LtiMemberShipSchema,
+      200: LtiNrpsContextMembershipSchema,
       401: {},
     },
   },

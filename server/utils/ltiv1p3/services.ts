@@ -1,6 +1,6 @@
 import type { Client } from "openid-client";
 import prisma from "$server/utils/prisma";
-import type { LtiMemberShipSchema } from "$server/models/ltiMemberShip";
+import type { LtiNrpsContextMembershipSchema } from "$server/models/ltiNrpsContextMembership";
 
 type Score = {
   userId: string;
@@ -113,7 +113,7 @@ export async function getMemberships(
   client: Client,
   contextMembershipsUrl?: string,
   retry = true
-): Promise<LtiMemberShipSchema> {
+): Promise<LtiNrpsContextMembershipSchema> {
   const clientId = client.metadata.client_id;
   if (!contextMembershipsUrl) {
     throw new Error(`Failed to get contextMembershipsUrl`);
@@ -161,7 +161,9 @@ export async function getMemberships(
     throw new Error("Failed to request memberships resource");
   }
 
-  const memberShips = JSON.parse(res.body.toString()) as LtiMemberShipSchema;
+  const memberShips = JSON.parse(
+    res.body.toString()
+  ) as LtiNrpsContextMembershipSchema;
 
   // 教師を除く、学習者のみのデータを返す
   const memberShipsOnlyLearner = {
