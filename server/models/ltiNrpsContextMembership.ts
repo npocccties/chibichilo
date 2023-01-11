@@ -1,21 +1,21 @@
 import type { FromSchema } from "json-schema-to-ts";
 import { LtiContextSchema } from "./ltiContext";
-import { MemberSchema } from "./member";
+import { LtiNrpsContextMemberSchema } from "./ltiNrpsContextMember";
 
 export const LtiNrpsContextMembershipSchema = {
   title:
-    "LTI Names and Role Provisioning Service Parameterで取得できるLMSメンバー一覧",
+    "Learning Tools Interoperability Names and Role Provisioning Services 2.0 Context Memberships",
   type: "object",
   required: ["id", "context", "members"],
   properties: {
     id: { title: "LMS memberships URL", type: "string" },
     context: LtiContextSchema,
-    members: { type: "array", items: MemberSchema },
+    members: { type: "array", items: LtiNrpsContextMemberSchema },
   },
   additionalProperties: false,
 } as const;
 
-/** LTI Names and Role Provisioning Service Parameterで取得できるLMSメンバー一覧 */
+/** Learning Tools Interoperability Names and Role Provisioning Services 2.0 Context Memberships */
 export type LtiNrpsContextMembershipSchema = FromSchema<
   typeof LtiNrpsContextMembershipSchema
 >;

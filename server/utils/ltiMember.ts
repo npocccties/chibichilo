@@ -1,11 +1,11 @@
 import prisma from "$server/utils/prisma";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
-import type { MemberSchema } from "$server/models/member";
+import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
 export async function upsertLtiMember(
   consumerId: LtiResourceLinkSchema["consumerId"],
   contextId: LtiResourceLinkSchema["contextId"],
-  userIds: MemberSchema["user_id"][]
+  userIds: LtiNrpsContextMemberSchema["user_id"][]
 ) {
   const ltiMembers = [];
   for (const userId of userIds) {

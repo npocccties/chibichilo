@@ -30,7 +30,7 @@ import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
 import MembersDialog from "$organisms/MembersDialog";
 import useLtiMembersHandler from "$utils/useLtiMembersHandler";
-import type { MemberSchema } from "$server/models/member";
+import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
 type TabPanelProps = {
   className?: string;
@@ -154,7 +154,7 @@ export default function Dashboard(props: Props) {
     dispatch: membersDispatch,
     ...membersDialogProps
   } = useDialogProps<{
-    members: MemberSchema[];
+    members: LtiNrpsContextMemberSchema[];
   }>();
   const handleUpdateLtiMembers = useCallback(
     async (userIds: string[]) => {
@@ -179,7 +179,7 @@ export default function Dashboard(props: Props) {
     [dispatch]
   );
   const handleMembershipClick = useCallback(
-    (members: MemberSchema[]) => () => membersDispatch({ members }),
+    (members: LtiNrpsContextMemberSchema[]) => () => membersDispatch({ members }),
     [membersDispatch]
   );
   return (

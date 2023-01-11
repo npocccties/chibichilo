@@ -3,10 +3,9 @@ import { outdent } from "outdent";
 import { LtiMemberBodySchema } from "$server/validators/ltiMemberParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
-import { isInstructor } from "$server/utils/session";
 import { findLtiResourceLink } from "$server/utils/ltiResourceLink";
 import { upsertLtiMember } from "$server/utils/ltiMember";
-import { LtiMembersSchema } from "$server/models/ltiMember";
+import { LtiMembersSchema } from "$server/models/ltiMembers";
 
 export const updateSchema: FastifySchema = {
   summary: "LTI Member のデータの更新",
@@ -40,12 +39,6 @@ export async function update(
   if (!ltiResourceLink) {
     return {
       status: 400,
-    };
-  }
-
-  if (!isInstructor(req.session)) {
-    return {
-      status: 403,
     };
   }
 

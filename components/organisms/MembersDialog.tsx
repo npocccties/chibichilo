@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import { Button, DialogActions } from "@mui/material";
-import type { MemberSchema } from "$server/models/member";
+import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  members: MemberSchema[];
+  members: LtiNrpsContextMemberSchema[];
   open: boolean;
   onClose: React.MouseEventHandler;
   handleUpdateLtiMembers: (userIds: string[]) => Promise<void>;
