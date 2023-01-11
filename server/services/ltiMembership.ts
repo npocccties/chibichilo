@@ -1,7 +1,7 @@
 import { outdent } from "outdent";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
-import { getMemberships } from "$server/utils/ltiv1p3/grade";
+import { getMemberships } from "$server/utils/ltiv1p3/services";
 import type { FastifyRequest } from "fastify";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import { LtiMemberShipSchema } from "$server/models/ltiMemberShip";

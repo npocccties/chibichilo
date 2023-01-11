@@ -6,7 +6,7 @@ import { ActivitySchema } from "$server/models/activity";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import authUser from "$server/auth/authUser";
 import { show } from "./show";
-import { publishScore } from "$server/utils/ltiv1p3/grade";
+import { publishScore } from "$server/utils/ltiv1p3/services";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import findBook from "$server/utils/book/findBook";
 import { getDisplayableBook } from "$server/utils/displayableBook";

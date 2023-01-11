@@ -103,7 +103,7 @@ export async function publishScore(
 }
 
 /**
- * LTI-NRPS 受講者の取得
+ * LTI-NRPS 2.0 受講者の取得
  * https://www.imsglobal.org/spec/lti-nrps/v2p0
  * @param client OpenID Connect Client
  * @param contextMembershipsUrl LTI claim に含まれる context_memberships_url
@@ -113,7 +113,7 @@ export async function getMemberships(
   client: Client,
   contextMembershipsUrl?: string,
   retry = true
-): Promise<LtiMemberShipSchema | undefined> {
+): Promise<LtiMemberShipSchema> {
   const clientId = client.metadata.client_id;
   if (!contextMembershipsUrl) {
     throw new Error(`Failed to get contextMembershipsUrl`);
@@ -149,8 +149,7 @@ export async function getMemberships(
     });
 
     if (retry) {
-      await getMemberships(client, contextMembershipsUrl, false);
-      return;
+      return await getMemberships(client, contextMembershipsUrl, false);
     }
   }
 
@@ -159,8 +158,9 @@ export async function getMemberships(
   }
 
   if (!res.body) {
-    return;
+    throw new Error("Failed to request memberships resource");
   }
+
   const memberShips = JSON.parse(res.body.toString()) as LtiMemberShipSchema;
 
   // 教師を除く、学習者のみのデータを返す
