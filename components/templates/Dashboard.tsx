@@ -204,18 +204,16 @@ export default function Dashboard(props: Props) {
           <GetAppOutlinedIcon fontSize="small" />
           分析データをダウンロード
         </Button>
-        {newLtiMembers.length > 0 && (
-          <Button
-            onClick={handleMembershipClick(newLtiMembers)}
-            color="primary"
-            variant="contained"
-            size="small"
-            disabled={bookActivities.length === 0}
-          >
-            <GroupOutlinedIcon fontSize="small" />
-            受講者を同期
-          </Button>
-        )}
+        <Button
+          onClick={handleMembershipClick(newLtiMembers)}
+          color="primary"
+          variant="contained"
+          size="small"
+          disabled={newLtiMembers.length === 0}
+        >
+          <GroupOutlinedIcon fontSize="small" />
+          受講者の同期
+        </Button>
       </ActionHeader>
       <Card classes={cardClasses} className={classes.card}>
         <Tabs

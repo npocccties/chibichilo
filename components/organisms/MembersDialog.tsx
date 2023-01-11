@@ -37,11 +37,10 @@ export default function MembersDialog(props: Props) {
       </IconButton>
       <DialogTitle>
         <Typography variant="h5" component="p">
-          {"受講者を同期"}
+          受講者の同期
         </Typography>
         <Typography variant="subtitle1" component="p">
-          {/* TODO：文言調整 */}
-          {"LMSのユーザーと学習分析データを同期します。"}
+          LMSからコースの受講者に関する情報を取得し、反映します。
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -60,7 +59,7 @@ export default function MembersDialog(props: Props) {
           color="primary"
           size="small"
         >
-          受講者を同期
+          同期
         </Button>
       </DialogActions>
     </Dialog>
