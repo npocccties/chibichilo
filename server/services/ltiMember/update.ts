@@ -4,13 +4,13 @@ import { LtiMemberBodySchema } from "$server/validators/ltiMemberParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { findLtiResourceLink } from "$server/utils/ltiResourceLink";
-import { upsertLtiMember } from "$server/utils/ltiMember";
+import { upsertLtiMembers } from "$server/utils/ltiMembers";
 import { LtiMembersSchema } from "$server/models/ltiMembers";
 
 export const updateSchema: FastifySchema = {
-  summary: "LTI Member のデータの更新",
+  summary: "コースの受講者の反映",
   description: outdent`
-    LTI Memberを更新します。
+    コースの受講者の反映をします。
     教員または管理者でなければなりません。`,
   body: LtiMemberBodySchema,
   response: {
@@ -42,7 +42,7 @@ export async function update(
     };
   }
 
-  const ltiMembers = await upsertLtiMember(
+  const ltiMembers = await upsertLtiMembers(
     ltiResourceLink.consumerId,
     ltiResourceLink.contextId,
     req.body.user_ids

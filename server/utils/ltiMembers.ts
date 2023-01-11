@@ -2,7 +2,7 @@ import prisma from "$server/utils/prisma";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
-export async function upsertLtiMember(
+export async function upsertLtiMembers(
   consumerId: LtiResourceLinkSchema["consumerId"],
   contextId: LtiResourceLinkSchema["contextId"],
   userIds: LtiNrpsContextMemberSchema["user_id"][]
