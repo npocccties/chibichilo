@@ -14,7 +14,7 @@ export const method = {
       教員または管理者でなければなりません。`,
     response: {
       200: LtiMemberShipSchema,
-      404: {},
+      401: {},
     },
   },
 } as const;
@@ -27,7 +27,7 @@ export async function index({ session }: FastifyRequest) {
   const client = await findClient(session.oauthClient.id);
   if (!client) {
     return {
-      status: 404,
+      status: 401,
     };
   }
 
@@ -37,7 +37,7 @@ export async function index({ session }: FastifyRequest) {
   );
   if (!membership) {
     return {
-      status: 404,
+      status: 401,
     };
   }
 
