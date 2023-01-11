@@ -15,6 +15,9 @@
 
 import * as runtime from '../runtime';
 import {
+    ApiV2LtiMembersUser,
+    ApiV2LtiMembersUserFromJSON,
+    ApiV2LtiMembersUserToJSON,
     InlineObject,
     InlineObjectFromJSON,
     InlineObjectToJSON,
@@ -69,9 +72,6 @@ import {
     InlineResponse20013,
     InlineResponse20013FromJSON,
     InlineResponse20013ToJSON,
-    InlineResponse20014,
-    InlineResponse20014FromJSON,
-    InlineResponse20014ToJSON,
     InlineResponse2002,
     InlineResponse2002FromJSON,
     InlineResponse2002ToJSON,
@@ -241,7 +241,7 @@ export interface ApiV2LtiLtiConsumerIdResourceLinkLtiResourceLinkIdPutRequest {
     body?: InlineObject;
 }
 
-export interface ApiV2LtiMemberPutRequest {
+export interface ApiV2LtiMembersPutRequest {
     body?: LTIV13LtiMemberParams;
 }
 
@@ -357,7 +357,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 受講者の学習活動の一覧を取得します。 受講者以外の学習活動は含みません。 現在のセッションの LTI Context に紐づくブックに含まれる表示可能なトピックの学習活動を得ます。 教員または管理者でなければなりません。 自身以外の作成した共有されていないブック・トピックの学習活動は含みません。
      * 受講者の学習活動一覧
      */
-    async apiV2ActivityGetRaw(requestParameters: ApiV2ActivityGetRequest): Promise<runtime.ApiResponse<InlineResponse20014>> {
+    async apiV2ActivityGetRaw(requestParameters: ApiV2ActivityGetRequest): Promise<runtime.ApiResponse<InlineResponse20013>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.currentLtiContextOnly !== undefined) {
@@ -373,14 +373,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20014FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20013FromJSON(jsonValue));
     }
 
     /**
      * 受講者の学習活動の一覧を取得します。 受講者以外の学習活動は含みません。 現在のセッションの LTI Context に紐づくブックに含まれる表示可能なトピックの学習活動を得ます。 教員または管理者でなければなりません。 自身以外の作成した共有されていないブック・トピックの学習活動は含みません。
      * 受講者の学習活動一覧
      */
-    async apiV2ActivityGet(requestParameters: ApiV2ActivityGetRequest): Promise<InlineResponse20014> {
+    async apiV2ActivityGet(requestParameters: ApiV2ActivityGetRequest): Promise<InlineResponse20013> {
         const response = await this.apiV2ActivityGetRaw(requestParameters);
         return await response.value();
     }
@@ -389,7 +389,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 現在のセッションの学習状況の詳細を取得します。 自身以外の学習者の学習状況を取得することはできません。
      * 学習状況の取得
      */
-    async apiV2BookBookIdActivityGetRaw(requestParameters: ApiV2BookBookIdActivityGetRequest): Promise<runtime.ApiResponse<InlineResponse2008>> {
+    async apiV2BookBookIdActivityGetRaw(requestParameters: ApiV2BookBookIdActivityGetRequest): Promise<runtime.ApiResponse<InlineResponse2007>> {
         if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
             throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdActivityGet.');
         }
@@ -409,14 +409,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2008FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2007FromJSON(jsonValue));
     }
 
     /**
      * 現在のセッションの学習状況の詳細を取得します。 自身以外の学習者の学習状況を取得することはできません。
      * 学習状況の取得
      */
-    async apiV2BookBookIdActivityGet(requestParameters: ApiV2BookBookIdActivityGetRequest): Promise<InlineResponse2008> {
+    async apiV2BookBookIdActivityGet(requestParameters: ApiV2BookBookIdActivityGetRequest): Promise<InlineResponse2007> {
         const response = await this.apiV2BookBookIdActivityGetRaw(requestParameters);
         return await response.value();
     }
@@ -425,7 +425,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 現在のセッションの学習状況の詳細を更新します。 自身以外の学習者の学習状況を更新することはできません。 LTI v1.3 でなければなりません。
      * 学習状況の更新
      */
-    async apiV2BookBookIdActivityPutRaw(requestParameters: ApiV2BookBookIdActivityPutRequest): Promise<runtime.ApiResponse<InlineResponse2008>> {
+    async apiV2BookBookIdActivityPutRaw(requestParameters: ApiV2BookBookIdActivityPutRequest): Promise<runtime.ApiResponse<InlineResponse2007>> {
         if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
             throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdActivityPut.');
         }
@@ -445,14 +445,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2008FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2007FromJSON(jsonValue));
     }
 
     /**
      * 現在のセッションの学習状況の詳細を更新します。 自身以外の学習者の学習状況を更新することはできません。 LTI v1.3 でなければなりません。
      * 学習状況の更新
      */
-    async apiV2BookBookIdActivityPut(requestParameters: ApiV2BookBookIdActivityPutRequest): Promise<InlineResponse2008> {
+    async apiV2BookBookIdActivityPut(requestParameters: ApiV2BookBookIdActivityPutRequest): Promise<InlineResponse2007> {
         const response = await this.apiV2BookBookIdActivityPutRaw(requestParameters);
         return await response.value();
     }
@@ -661,7 +661,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * zoom連携ブックのリダイレクト先を取得します。
      * zoom連携ブックの取得
      */
-    async apiV2BookZoomMeetingIdGetRaw(requestParameters: ApiV2BookZoomMeetingIdGetRequest): Promise<runtime.ApiResponse<InlineResponse2009>> {
+    async apiV2BookZoomMeetingIdGetRaw(requestParameters: ApiV2BookZoomMeetingIdGetRequest): Promise<runtime.ApiResponse<InlineResponse2008>> {
         if (requestParameters.meetingId === null || requestParameters.meetingId === undefined) {
             throw new runtime.RequiredError('meetingId','Required parameter requestParameters.meetingId was null or undefined when calling apiV2BookZoomMeetingIdGet.');
         }
@@ -677,14 +677,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2009FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2008FromJSON(jsonValue));
     }
 
     /**
      * zoom連携ブックのリダイレクト先を取得します。
      * zoom連携ブックの取得
      */
-    async apiV2BookZoomMeetingIdGet(requestParameters: ApiV2BookZoomMeetingIdGetRequest): Promise<InlineResponse2009> {
+    async apiV2BookZoomMeetingIdGet(requestParameters: ApiV2BookZoomMeetingIdGetRequest): Promise<InlineResponse2008> {
         const response = await this.apiV2BookZoomMeetingIdGetRaw(requestParameters);
         return await response.value();
     }
@@ -693,7 +693,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * ブックの一覧を取得します。 教員または管理者でなければなりません。
      * ブック一覧 (非推奨)
      */
-    async apiV2BooksGetRaw(requestParameters: ApiV2BooksGetRequest): Promise<runtime.ApiResponse<InlineResponse20010>> {
+    async apiV2BooksGetRaw(requestParameters: ApiV2BooksGetRequest): Promise<runtime.ApiResponse<InlineResponse2009>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.sort !== undefined) {
@@ -717,14 +717,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20010FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2009FromJSON(jsonValue));
     }
 
     /**
      * ブックの一覧を取得します。 教員または管理者でなければなりません。
      * ブック一覧 (非推奨)
      */
-    async apiV2BooksGet(requestParameters: ApiV2BooksGetRequest): Promise<InlineResponse20010> {
+    async apiV2BooksGet(requestParameters: ApiV2BooksGetRequest): Promise<InlineResponse2009> {
         const response = await this.apiV2BooksGetRaw(requestParameters);
         return await response.value();
     }
@@ -733,7 +733,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * ブックをインポートします。 教員または管理者でなければなりません。
      * ブックのインポート
      */
-    async apiV2BooksImportPostRaw(requestParameters: ApiV2BooksImportPostRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async apiV2BooksImportPostRaw(requestParameters: ApiV2BooksImportPostRequest): Promise<runtime.ApiResponse<InlineResponse2011>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -748,14 +748,14 @@ export class DefaultApi extends runtime.BaseAPI {
             body: InlineObject5ToJSON(requestParameters.body),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
     }
 
     /**
      * ブックをインポートします。 教員または管理者でなければなりません。
      * ブックのインポート
      */
-    async apiV2BooksImportPost(requestParameters: ApiV2BooksImportPostRequest): Promise<InlineResponse201> {
+    async apiV2BooksImportPost(requestParameters: ApiV2BooksImportPostRequest): Promise<InlineResponse2011> {
         const response = await this.apiV2BooksImportPostRaw(requestParameters);
         return await response.value();
     }
@@ -1327,10 +1327,10 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI Memberを更新します。 教員または管理者でなければなりません。
-     * LTI Member のデータの更新
+     * コースの受講者の反映をします。 教員または管理者でなければなりません。
+     * コースの受講者の反映
      */
-    async apiV2LtiMemberPutRaw(requestParameters: ApiV2LtiMemberPutRequest): Promise<runtime.ApiResponse<Array<InlineResponse2012>>> {
+    async apiV2LtiMembersPutRaw(requestParameters: ApiV2LtiMembersPutRequest): Promise<runtime.ApiResponse<Array<InlineResponse201>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1338,22 +1338,22 @@ export class DefaultApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/api/v2/ltiMember`,
+            path: `/api/v2/lti/members`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: LTIV13LtiMemberParamsToJSON(requestParameters.body),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2012FromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse201FromJSON));
     }
 
     /**
-     * LTI Memberを更新します。 教員または管理者でなければなりません。
-     * LTI Member のデータの更新
+     * コースの受講者の反映をします。 教員または管理者でなければなりません。
+     * コースの受講者の反映
      */
-    async apiV2LtiMemberPut(requestParameters: ApiV2LtiMemberPutRequest): Promise<Array<InlineResponse2012>> {
-        const response = await this.apiV2LtiMemberPutRaw(requestParameters);
+    async apiV2LtiMembersPut(requestParameters: ApiV2LtiMembersPutRequest): Promise<Array<InlineResponse201>> {
+        const response = await this.apiV2LtiMembersPutRaw(requestParameters);
         return await response.value();
     }
 
@@ -1437,7 +1437,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * リソースの埋め込み情報を取得します。 教員または管理者でなければなりません。
      * リソースの埋め込み情報の取得
      */
-    async apiV2ResourceResourceIdOembedGetRaw(requestParameters: ApiV2ResourceResourceIdOembedGetRequest): Promise<runtime.ApiResponse<InlineResponse20013>> {
+    async apiV2ResourceResourceIdOembedGetRaw(requestParameters: ApiV2ResourceResourceIdOembedGetRequest): Promise<runtime.ApiResponse<InlineResponse20012>> {
         if (requestParameters.resourceId === null || requestParameters.resourceId === undefined) {
             throw new runtime.RequiredError('resourceId','Required parameter requestParameters.resourceId was null or undefined when calling apiV2ResourceResourceIdOembedGet.');
         }
@@ -1453,14 +1453,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20013FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20012FromJSON(jsonValue));
     }
 
     /**
      * リソースの埋め込み情報を取得します。 教員または管理者でなければなりません。
      * リソースの埋め込み情報の取得
      */
-    async apiV2ResourceResourceIdOembedGet(requestParameters: ApiV2ResourceResourceIdOembedGetRequest): Promise<InlineResponse20013> {
+    async apiV2ResourceResourceIdOembedGet(requestParameters: ApiV2ResourceResourceIdOembedGetRequest): Promise<InlineResponse20012> {
         const response = await this.apiV2ResourceResourceIdOembedGetRaw(requestParameters);
         return await response.value();
     }
@@ -1583,7 +1583,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * リソースの一覧を取得します。 教員または管理者でなければなりません。
      * リソース一覧 (非推奨)
      */
-    async apiV2ResourcesGetRaw(requestParameters: ApiV2ResourcesGetRequest): Promise<runtime.ApiResponse<InlineResponse20012>> {
+    async apiV2ResourcesGetRaw(requestParameters: ApiV2ResourcesGetRequest): Promise<runtime.ApiResponse<InlineResponse20011>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.sort !== undefined) {
@@ -1607,14 +1607,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20012FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20011FromJSON(jsonValue));
     }
 
     /**
      * リソースの一覧を取得します。 教員または管理者でなければなりません。
      * リソース一覧 (非推奨)
      */
-    async apiV2ResourcesGet(requestParameters: ApiV2ResourcesGetRequest): Promise<InlineResponse20012> {
+    async apiV2ResourcesGet(requestParameters: ApiV2ResourcesGetRequest): Promise<InlineResponse20011> {
         const response = await this.apiV2ResourcesGetRaw(requestParameters);
         return await response.value();
     }
@@ -1914,7 +1914,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * トピックの一覧を取得します。 教員または管理者でなければなりません。
      * トピック一覧 (非推奨)
      */
-    async apiV2TopicsGetRaw(requestParameters: ApiV2TopicsGetRequest): Promise<runtime.ApiResponse<InlineResponse20011>> {
+    async apiV2TopicsGetRaw(requestParameters: ApiV2TopicsGetRequest): Promise<runtime.ApiResponse<InlineResponse20010>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.sort !== undefined) {
@@ -1938,14 +1938,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20011FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse20010FromJSON(jsonValue));
     }
 
     /**
      * トピックの一覧を取得します。 教員または管理者でなければなりません。
      * トピック一覧 (非推奨)
      */
-    async apiV2TopicsGet(requestParameters: ApiV2TopicsGetRequest): Promise<InlineResponse20011> {
+    async apiV2TopicsGet(requestParameters: ApiV2TopicsGetRequest): Promise<InlineResponse20010> {
         const response = await this.apiV2TopicsGetRaw(requestParameters);
         return await response.value();
     }
@@ -2073,7 +2073,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 利用者に関する詳細な情報を取得します。 教員または管理者でなければなりません。
      * 利用者情報
      */
-    async apiV2UsersEmailGetRaw(requestParameters: ApiV2UsersEmailGetRequest): Promise<runtime.ApiResponse<Array<InlineResponse2007>>> {
+    async apiV2UsersEmailGetRaw(requestParameters: ApiV2UsersEmailGetRequest): Promise<runtime.ApiResponse<Array<ApiV2LtiMembersUser>>> {
         if (requestParameters.email === null || requestParameters.email === undefined) {
             throw new runtime.RequiredError('email','Required parameter requestParameters.email was null or undefined when calling apiV2UsersEmailGet.');
         }
@@ -2089,14 +2089,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2007FromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ApiV2LtiMembersUserFromJSON));
     }
 
     /**
      * 利用者に関する詳細な情報を取得します。 教員または管理者でなければなりません。
      * 利用者情報
      */
-    async apiV2UsersEmailGet(requestParameters: ApiV2UsersEmailGetRequest): Promise<Array<InlineResponse2007>> {
+    async apiV2UsersEmailGet(requestParameters: ApiV2UsersEmailGetRequest): Promise<Array<ApiV2LtiMembersUser>> {
         const response = await this.apiV2UsersEmailGetRaw(requestParameters);
         return await response.value();
     }
@@ -2105,7 +2105,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * 動画ファイルを与えてアップロードします。 教員または管理者でなければなりません。
      * Wowza Streaming Engine へのアップロードするためのエンドポイント
      */
-    async apiV2WowzaPostRaw(): Promise<runtime.ApiResponse<InlineResponse2011>> {
+    async apiV2WowzaPostRaw(): Promise<runtime.ApiResponse<InlineResponse2012>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2117,14 +2117,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2012FromJSON(jsonValue));
     }
 
     /**
      * 動画ファイルを与えてアップロードします。 教員または管理者でなければなりません。
      * Wowza Streaming Engine へのアップロードするためのエンドポイント
      */
-    async apiV2WowzaPost(): Promise<InlineResponse2011> {
+    async apiV2WowzaPost(): Promise<InlineResponse2012> {
         const response = await this.apiV2WowzaPostRaw();
         return await response.value();
     }

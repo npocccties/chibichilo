@@ -13,18 +13,37 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2005Books,
+    InlineResponse2005BooksFromJSON,
+    InlineResponse2005BooksFromJSONTyped,
+    InlineResponse2005BooksToJSON,
+} from './';
+
 /**
- * 
+ * 成功時
  * @export
  * @interface InlineResponse2009
  */
 export interface InlineResponse2009 {
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse2005Books>}
      * @memberof InlineResponse2009
      */
-    publicToken: string;
+    books?: Array<InlineResponse2005Books>;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2009
+     */
+    page?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2009
+     */
+    perPage?: number;
 }
 
 export function InlineResponse2009FromJSON(json: any): InlineResponse2009 {
@@ -37,7 +56,9 @@ export function InlineResponse2009FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'publicToken': json['publicToken'],
+        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2005BooksFromJSON)),
+        'page': !exists(json, 'page') ? undefined : json['page'],
+        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
 }
 
@@ -50,7 +71,9 @@ export function InlineResponse2009ToJSON(value?: InlineResponse2009 | null): any
     }
     return {
         
-        'publicToken': value.publicToken,
+        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2005BooksToJSON)),
+        'page': value.page,
+        'perPage': value.perPage,
     };
 }
 

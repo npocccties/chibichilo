@@ -23,58 +23,52 @@ import {
 /**
  * 
  * @export
- * @interface InlineResponse2002BookAuthors
+ * @interface ApiV2LtiMembersUser
  */
-export interface InlineResponse2002BookAuthors {
+export interface ApiV2LtiMembersUser {
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     id: number;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     ltiConsumerId: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     ltiUserId: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     name: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     email?: string;
     /**
      * 
      * @type {ApiV2LtiMembersUserSettings}
-     * @memberof InlineResponse2002BookAuthors
+     * @memberof ApiV2LtiMembersUser
      */
     settings?: ApiV2LtiMembersUserSettings;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse2002BookAuthors
-     */
-    roleName: string;
 }
 
-export function InlineResponse2002BookAuthorsFromJSON(json: any): InlineResponse2002BookAuthors {
-    return InlineResponse2002BookAuthorsFromJSONTyped(json, false);
+export function ApiV2LtiMembersUserFromJSON(json: any): ApiV2LtiMembersUser {
+    return ApiV2LtiMembersUserFromJSONTyped(json, false);
 }
 
-export function InlineResponse2002BookAuthorsFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse2002BookAuthors {
+export function ApiV2LtiMembersUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApiV2LtiMembersUser {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -86,11 +80,10 @@ export function InlineResponse2002BookAuthorsFromJSONTyped(json: any, ignoreDisc
         'name': json['name'],
         'email': !exists(json, 'email') ? undefined : json['email'],
         'settings': !exists(json, 'settings') ? undefined : ApiV2LtiMembersUserSettingsFromJSON(json['settings']),
-        'roleName': json['roleName'],
     };
 }
 
-export function InlineResponse2002BookAuthorsToJSON(value?: InlineResponse2002BookAuthors | null): any {
+export function ApiV2LtiMembersUserToJSON(value?: ApiV2LtiMembersUser | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -105,7 +98,6 @@ export function InlineResponse2002BookAuthorsToJSON(value?: InlineResponse2002Bo
         'name': value.name,
         'email': value.email,
         'settings': ApiV2LtiMembersUserSettingsToJSON(value.settings),
-        'roleName': value.roleName,
     };
 }
 

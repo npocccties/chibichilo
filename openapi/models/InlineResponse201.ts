@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2005Books,
-    InlineResponse2005BooksFromJSON,
-    InlineResponse2005BooksFromJSONTyped,
-    InlineResponse2005BooksToJSON,
+    ApiV2LtiMembersUser,
+    ApiV2LtiMembersUserFromJSON,
+    ApiV2LtiMembersUserFromJSONTyped,
+    ApiV2LtiMembersUserToJSON,
+    LTIContext,
+    LTIContextFromJSON,
+    LTIContextFromJSONTyped,
+    LTIContextToJSON,
 } from './';
 
 /**
@@ -28,16 +32,34 @@ import {
 export interface InlineResponse201 {
     /**
      * 
-     * @type {Array<InlineResponse2005Books>}
+     * @type {string}
      * @memberof InlineResponse201
      */
-    books?: Array<InlineResponse2005Books>;
+    consumerId: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof InlineResponse201
      */
-    errors?: Array<string>;
+    contextId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse201
+     */
+    userId: string;
+    /**
+     * 
+     * @type {ApiV2LtiMembersUser}
+     * @memberof InlineResponse201
+     */
+    user?: ApiV2LtiMembersUser;
+    /**
+     * 
+     * @type {LTIContext}
+     * @memberof InlineResponse201
+     */
+    context?: LTIContext;
 }
 
 export function InlineResponse201FromJSON(json: any): InlineResponse201 {
@@ -50,8 +72,11 @@ export function InlineResponse201FromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2005BooksFromJSON)),
-        'errors': !exists(json, 'errors') ? undefined : json['errors'],
+        'consumerId': json['consumerId'],
+        'contextId': json['contextId'],
+        'userId': json['userId'],
+        'user': !exists(json, 'user') ? undefined : ApiV2LtiMembersUserFromJSON(json['user']),
+        'context': !exists(json, 'context') ? undefined : LTIContextFromJSON(json['context']),
     };
 }
 
@@ -64,8 +89,11 @@ export function InlineResponse201ToJSON(value?: InlineResponse201 | null): any {
     }
     return {
         
-        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2005BooksToJSON)),
-        'errors': value.errors,
+        'consumerId': value.consumerId,
+        'contextId': value.contextId,
+        'userId': value.userId,
+        'user': ApiV2LtiMembersUserToJSON(value.user),
+        'context': LTIContextToJSON(value.context),
     };
 }
 

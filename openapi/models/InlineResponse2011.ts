@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2005Books,
+    InlineResponse2005BooksFromJSON,
+    InlineResponse2005BooksFromJSONTyped,
+    InlineResponse2005BooksToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -21,10 +28,16 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse2011 {
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse2005Books>}
      * @memberof InlineResponse2011
      */
-    url?: string;
+    books?: Array<InlineResponse2005Books>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof InlineResponse2011
+     */
+    errors?: Array<string>;
 }
 
 export function InlineResponse2011FromJSON(json: any): InlineResponse2011 {
@@ -37,7 +50,8 @@ export function InlineResponse2011FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'url': !exists(json, 'url') ? undefined : json['url'],
+        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2005BooksFromJSON)),
+        'errors': !exists(json, 'errors') ? undefined : json['errors'],
     };
 }
 
@@ -50,7 +64,8 @@ export function InlineResponse2011ToJSON(value?: InlineResponse2011 | null): any
     }
     return {
         
-        'url': value.url,
+        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2005BooksToJSON)),
+        'errors': value.errors,
     };
 }
 

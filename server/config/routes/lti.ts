@@ -8,6 +8,7 @@ import * as ltiResourceLinkService from "$server/services/ltiResourceLink";
 import * as ltiKeys from "$server/services/ltiKeys";
 import * as ltiClients from "$server/services/ltiClients";
 import * as linkSearch from "$server/services/linkSearch";
+import * as ltiMembersService from "$server/services/ltiMembers";
 
 export async function launch(fastify: FastifyInstance) {
   const path = "/lti/launch";
@@ -84,4 +85,14 @@ export async function ltiSearch(fastify: FastifyInstance) {
   fastify.get<{
     Querystring: linkSearch.Query;
   }>(path, { schema: method.get, ...hooks.get }, handler(index));
+}
+
+export async function ltiMembers(fastify: FastifyInstance) {
+  const path = "/lti/members";
+  const { method, update } = ltiMembersService;
+  const hooks = makeHooks(fastify, ltiMembersService.hooks);
+
+  fastify.put<{
+    Body: ltiMembersService.Body;
+  }>(path, { schema: method.put, ...hooks.put }, handler(update));
 }

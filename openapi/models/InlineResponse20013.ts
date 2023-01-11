@@ -13,96 +13,45 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse20013BookActivities,
+    InlineResponse20013BookActivitiesFromJSON,
+    InlineResponse20013BookActivitiesFromJSONTyped,
+    InlineResponse20013BookActivitiesToJSON,
+    InlineResponse20013CourseBooks,
+    InlineResponse20013CourseBooksFromJSON,
+    InlineResponse20013CourseBooksFromJSONTyped,
+    InlineResponse20013CourseBooksToJSON,
+    InlineResponse2007Learner,
+    InlineResponse2007LearnerFromJSON,
+    InlineResponse2007LearnerFromJSONTyped,
+    InlineResponse2007LearnerToJSON,
+} from './';
+
 /**
- * 
+ * 成功時
  * @export
  * @interface InlineResponse20013
  */
 export interface InlineResponse20013 {
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse2007Learner>}
      * @memberof InlineResponse20013
      */
-    type: string;
+    learners: Array<InlineResponse2007Learner>;
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse20013CourseBooks>}
      * @memberof InlineResponse20013
      */
-    version: InlineResponse20013VersionEnum;
+    courseBooks: Array<InlineResponse20013CourseBooks>;
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse20013BookActivities>}
      * @memberof InlineResponse20013
      */
-    title?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    author_name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    author_url?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    provider_name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    provider_url?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    cache_age?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    thumbnail_url?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20013
-     */
-    thumbnail_width?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20013
-     */
-    thumbnail_height?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20013
-     */
-    html?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20013
-     */
-    width?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20013
-     */
-    height?: number;
+    bookActivities: Array<InlineResponse20013BookActivities>;
 }
 
 export function InlineResponse20013FromJSON(json: any): InlineResponse20013 {
@@ -115,20 +64,9 @@ export function InlineResponse20013FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'type': json['type'],
-        'version': json['version'],
-        'title': !exists(json, 'title') ? undefined : json['title'],
-        'author_name': !exists(json, 'author_name') ? undefined : json['author_name'],
-        'author_url': !exists(json, 'author_url') ? undefined : json['author_url'],
-        'provider_name': !exists(json, 'provider_name') ? undefined : json['provider_name'],
-        'provider_url': !exists(json, 'provider_url') ? undefined : json['provider_url'],
-        'cache_age': !exists(json, 'cache_age') ? undefined : json['cache_age'],
-        'thumbnail_url': !exists(json, 'thumbnail_url') ? undefined : json['thumbnail_url'],
-        'thumbnail_width': !exists(json, 'thumbnail_width') ? undefined : json['thumbnail_width'],
-        'thumbnail_height': !exists(json, 'thumbnail_height') ? undefined : json['thumbnail_height'],
-        'html': !exists(json, 'html') ? undefined : json['html'],
-        'width': !exists(json, 'width') ? undefined : json['width'],
-        'height': !exists(json, 'height') ? undefined : json['height'],
+        'learners': ((json['learners'] as Array<any>).map(InlineResponse2007LearnerFromJSON)),
+        'courseBooks': ((json['courseBooks'] as Array<any>).map(InlineResponse20013CourseBooksFromJSON)),
+        'bookActivities': ((json['bookActivities'] as Array<any>).map(InlineResponse20013BookActivitiesFromJSON)),
     };
 }
 
@@ -141,29 +79,10 @@ export function InlineResponse20013ToJSON(value?: InlineResponse20013 | null): a
     }
     return {
         
-        'type': value.type,
-        'version': value.version,
-        'title': value.title,
-        'author_name': value.author_name,
-        'author_url': value.author_url,
-        'provider_name': value.provider_name,
-        'provider_url': value.provider_url,
-        'cache_age': value.cache_age,
-        'thumbnail_url': value.thumbnail_url,
-        'thumbnail_width': value.thumbnail_width,
-        'thumbnail_height': value.thumbnail_height,
-        'html': value.html,
-        'width': value.width,
-        'height': value.height,
+        'learners': ((value.learners as Array<any>).map(InlineResponse2007LearnerToJSON)),
+        'courseBooks': ((value.courseBooks as Array<any>).map(InlineResponse20013CourseBooksToJSON)),
+        'bookActivities': ((value.bookActivities as Array<any>).map(InlineResponse20013BookActivitiesToJSON)),
     };
-}
-
-/**
-* @export
-* @enum {string}
-*/
-export enum InlineResponse20013VersionEnum {
-    _1_0 = '1.0'
 }
 
 

@@ -5,7 +5,7 @@ import { api } from "./api";
 const key = "/api/v2/ltiMember";
 
 export async function updateLtiMembers({ userIds }: { userIds: string[] }) {
-  const res = await api.apiV2LtiMemberPut({ body: { user_ids: userIds } });
+  const res = await api.apiV2LtiMembersPut({ body: { user_ids: userIds } });
   return await mutate(key, res);
 }
 
