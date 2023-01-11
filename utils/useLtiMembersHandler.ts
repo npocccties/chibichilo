@@ -4,15 +4,24 @@ import { api } from "./api";
 
 const key = "/api/v2/ltiMember";
 
-export async function updateLtiMembers({ userIds }: { userIds: string[] }) {
-  const res = await api.apiV2LtiMembersPut({ body: { user_ids: userIds } });
+export async function updateLtiMembers({
+  ltiUserIds,
+}: {
+  ltiUserIds: string[];
+}) {
+  const res = await api.apiV2LtiMembersPut({
+    body: { lti_user_ids: ltiUserIds },
+  });
   return await mutate(key, res);
 }
 
 function useLtiMembersHandler() {
-  const handler = useCallback(async ({ userIds }: { userIds: string[] }) => {
-    return await updateLtiMembers({ userIds });
-  }, []);
+  const handler = useCallback(
+    async ({ ltiUserIds }: { ltiUserIds: string[] }) => {
+      return await updateLtiMembers({ ltiUserIds });
+    },
+    []
+  );
   return handler;
 }
 

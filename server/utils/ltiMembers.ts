@@ -5,10 +5,10 @@ import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMe
 export async function upsertLtiMembers(
   consumerId: LtiResourceLinkSchema["consumerId"],
   contextId: LtiResourceLinkSchema["contextId"],
-  userIds: LtiNrpsContextMemberSchema["user_id"][]
+  ltiUserIds: LtiNrpsContextMemberSchema["user_id"][]
 ) {
   const ltiMembers = [];
-  for (const userId of userIds) {
+  for (const userId of ltiUserIds) {
     const created = await prisma.ltiMember.upsert({
       where: {
         consumerId_contextId_userId: {

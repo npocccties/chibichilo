@@ -45,7 +45,7 @@ export async function update(
   const ltiMembers = await upsertLtiMembers(
     ltiResourceLink.consumerId,
     ltiResourceLink.contextId,
-    req.body.user_ids
+    req.body.lti_user_ids
   );
 
   return {

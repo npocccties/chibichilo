@@ -157,8 +157,8 @@ export default function Dashboard(props: Props) {
     members: LtiNrpsContextMemberSchema[];
   }>();
   const handleUpdateLtiMembers = useCallback(
-    async (userIds: string[]) => {
-      await updateLtiMembers({ userIds });
+    async (ltiUserIds: string[]) => {
+      await updateLtiMembers({ ltiUserIds });
       membersDialogProps.onClose();
     },
     [membersDialogProps, updateLtiMembers]

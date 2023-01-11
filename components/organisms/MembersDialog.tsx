@@ -28,7 +28,7 @@ export default function MembersDialog(props: Props) {
   const { members, open, onClose, handleUpdateLtiMembers } = props;
   const classes = useStyles();
 
-  const userIds = members.map((member) => member.user_id);
+  const ltiUserIds = members.map((member) => member.user_id);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -55,7 +55,7 @@ export default function MembersDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={async () => await handleUpdateLtiMembers(userIds)}
+          onClick={async () => await handleUpdateLtiMembers(ltiUserIds)}
           color="primary"
           size="small"
         >

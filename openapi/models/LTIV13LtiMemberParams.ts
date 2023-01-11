@@ -24,7 +24,7 @@ export interface LTIV13LtiMemberParams {
      * @type {Array<string>}
      * @memberof LTIV13LtiMemberParams
      */
-    user_ids: Array<string>;
+    lti_user_ids: Array<string>;
 }
 
 export function LTIV13LtiMemberParamsFromJSON(json: any): LTIV13LtiMemberParams {
@@ -37,7 +37,7 @@ export function LTIV13LtiMemberParamsFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'user_ids': json['user_ids'],
+        'lti_user_ids': json['lti_user_ids'],
     };
 }
 
@@ -50,7 +50,7 @@ export function LTIV13LtiMemberParamsToJSON(value?: LTIV13LtiMemberParams | null
     }
     return {
         
-        'user_ids': value.user_ids,
+        'lti_user_ids': value.lti_user_ids,
     };
 }
 
