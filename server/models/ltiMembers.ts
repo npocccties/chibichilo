@@ -6,6 +6,7 @@ export const LtiMembersSchema = {
   title: "LTI Members",
   type: "array",
   items: {
+    type: "object",
     required: ["userId", "contextId", "consumerId"],
     properties: {
       consumerId: { title: "Consumer ID", type: "string" },
