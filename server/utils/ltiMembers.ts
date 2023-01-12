@@ -9,6 +9,25 @@ export async function upsertLtiMembers(
 ) {
   const ltiMembers = [];
   for (const userId of ltiUserIds) {
+    // NOTE：未ログインユーザーは、Userテーブルに保存されていないのでltiMemberのupsert処理前にUserテーブルに仮の値で保存する
+    await prisma.user.upsert({
+      where: {
+        ltiConsumerId_ltiUserId: {
+          ltiUserId: userId,
+          ltiConsumerId: consumerId,
+        },
+      },
+      update: {
+        ltiUserId: userId,
+        ltiConsumerId: consumerId,
+      },
+      create: {
+        ltiUserId: userId,
+        ltiConsumerId: consumerId,
+        name: "",
+      },
+    });
+
     const created = await prisma.ltiMember.upsert({
       where: {
         consumerId_contextId_userId: {
