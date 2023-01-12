@@ -5,10 +5,8 @@ export const LtiNrpsContextMemberSchema = {
   type: "object",
   required: ["roles", "user_id"],
   properties: {
-    status: { type: "string" },
     roles: { type: "array", items: { type: "string" } },
     user_id: { type: "string" },
-    lis_person_sourcedid: { type: "string" },
   },
 } as const;
 
