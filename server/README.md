@@ -171,7 +171,7 @@ Platform ID が `https://example` (Moodle) の場合の例:
 | Initiate login URL                               | ログイン初期化エンドポイント (例: `https://chibichilo.example/api/v2/lti/login`) |
 | Redirection URI(s)                               | リダイレクト URI (例: `https://chibichilo.example/api/v2/lti/callback`)          |
 | Services > IMS LTI Assignment and Grade Services | "Use this service for grade sync"                                                |
-| Services > IMS LTI Names and Role Provisioning   | "Use this service to retrieve members' information as per privacy settings" |
+| Services > IMS LTI Names and Role Provisioning   | "Use this service to retrieve members' information as per privacy settings"      |
 
 Client ID はツール追加後に払い出されます。ツール追加後、[View configuration details] を参照してください。
 設定値に合わせて SQL を発行します。
