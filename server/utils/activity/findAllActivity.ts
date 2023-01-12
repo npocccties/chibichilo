@@ -27,19 +27,8 @@ async function findLtiMembers(
       name: true,
       email: true,
       activities: {
-        where: activityScope,
-        include: {
-          learner: { select: { id: true, name: true, email: true } },
-          topic: {
-            select: { id: true, name: true, timeRequired: true },
-          },
-        },
-      },
-    },
-    where: {
-      ltiMembers: { some: { consumerId, contextId } },
-      activities: {
-        some: {
+        where: {
+          ...activityScope,
           topic: {
             topicSection: {
               some: {
@@ -57,7 +46,16 @@ async function findLtiMembers(
             },
           },
         },
+        include: {
+          learner: { select: { id: true, name: true, email: true } },
+          topic: {
+            select: { id: true, name: true, timeRequired: true },
+          },
+        },
       },
+    },
+    where: {
+      ltiMembers: { some: { consumerId, contextId } },
     },
   });
 
