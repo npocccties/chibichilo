@@ -161,7 +161,7 @@ export async function getMemberships(
     throw new Error("Failed to request memberships resource");
   }
 
-  const memberShips = JSON.parse(
+  const memberships = JSON.parse(
     res.body.toString()
   ) as LtiNrpsContextMembershipSchema;
 
