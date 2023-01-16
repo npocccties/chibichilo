@@ -166,11 +166,11 @@ export async function getMemberships(
   ) as LtiNrpsContextMembershipSchema;
 
   // 教師を除く、学習者のみのデータを返す
-  const memberShipsOnlyLearner = {
-    ...memberShips,
-    members: memberShips.members.filter(
+  const learnerMemberships = {
+    ...memberships,
+    members: memberships.members.filter(
       (member) => !member.roles.includes("Instructor")
     ),
   };
-  return memberShipsOnlyLearner;
+  return learnerMemberships;
 }
