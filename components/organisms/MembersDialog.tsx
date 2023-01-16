@@ -5,7 +5,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
-import { Button, DialogActions } from "@mui/material";
+import {
+  Button,
+  DialogActions,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,14 +52,25 @@ export default function MembersDialog(props: Props) {
         </Typography>
       </DialogTitle>
       <DialogContent>
-        {/* TODO：ユーザー名をLMSから取得してここで表示する（LMSから取得できない場合、Userデータで表示？） */}
-        {members.map((member) => {
-          return (
-            <div key={member.user_id}>
-              <p>{member.user_id}</p>
-            </div>
-          );
-        })}
+        <List disablePadding={false}>
+          {members.map((member) => {
+            return (
+              <>
+                <ListItem key={member.user_id} dense={true}>
+                  <Grid container>
+                    <Grid item xs={5}>
+                      <ListItemText>ID: {member.user_id}</ListItemText>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <ListItemText>名前: 未公開</ListItemText>
+                    </Grid>
+                  </Grid>
+                </ListItem>
+                <Divider />
+              </>
+            );
+          })}
+        </List>
       </DialogContent>
       <DialogActions>
         <Button
