@@ -9,44 +9,45 @@ export async function upsertLtiMembers(
 ) {
   const ltiMembers = [];
   for (const userId of ltiUserIds) {
-    await prisma.user.upsert({
-      where: {
-        ltiConsumerId_ltiUserId: {
+    const [_, newLtiMembers] = await prisma.$transaction([
+      prisma.user.upsert({
+        where: {
+          ltiConsumerId_ltiUserId: {
+            ltiUserId: userId,
+            ltiConsumerId: consumerId,
+          },
+        },
+        update: {
           ltiUserId: userId,
           ltiConsumerId: consumerId,
         },
-      },
-      update: {
-        ltiUserId: userId,
-        ltiConsumerId: consumerId,
-      },
-      create: {
-        ltiUserId: userId,
-        ltiConsumerId: consumerId,
-        name: "",
-      },
-    });
-
-    const created = await prisma.ltiMember.upsert({
-      where: {
-        consumerId_contextId_userId: {
+        create: {
+          ltiUserId: userId,
+          ltiConsumerId: consumerId,
+          name: "",
+        },
+      }),
+      prisma.ltiMember.upsert({
+        where: {
+          consumerId_contextId_userId: {
+            consumerId,
+            contextId,
+            userId,
+          },
+        },
+        update: {
           consumerId,
           contextId,
           userId,
         },
-      },
-      update: {
-        consumerId,
-        contextId,
-        userId,
-      },
-      create: {
-        consumerId,
-        contextId,
-        userId,
-      },
-    });
-    ltiMembers.push(created);
+        create: {
+          consumerId,
+          contextId,
+          userId,
+        },
+      }),
+    ]);
+    ltiMembers.push(newLtiMembers);
   }
   return ltiMembers;
 }
