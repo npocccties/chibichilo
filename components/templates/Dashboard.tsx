@@ -156,6 +156,8 @@ export default function Dashboard(props: Props) {
   } = useDialogProps<{
     members: LtiNrpsContextMemberSchema[];
   }>();
+
+  const ltiUserIds = newLtiMembers.map((member) => member.user_id);
   const handleUpdateLtiMembers = useCallback(
     async (ltiUserIds: string[]) => {
       await updateLtiMembers({ ltiUserIds });
@@ -206,14 +208,18 @@ export default function Dashboard(props: Props) {
           分析データをダウンロード
         </Button>
         <Button
-          onClick={handleMembershipClick(newLtiMembers)}
+          onClick={
+            learnerActivities.length > 0
+              ? handleMembershipClick(newLtiMembers)
+              : async () => await handleUpdateLtiMembers(ltiUserIds)
+          }
           color="primary"
           variant="contained"
           size="small"
           disabled={newLtiMembers.length === 0}
         >
           <GroupOutlinedIcon fontSize="small" />
-          受講者の同期
+          {learnerActivities.length > 0 ? "受講者の同期" : "受講者の登録"}
         </Button>
       </ActionHeader>
       <Card classes={cardClasses} className={classes.card}>
