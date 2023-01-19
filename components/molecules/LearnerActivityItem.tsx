@@ -55,7 +55,7 @@ export default function LearnerActivityItem(props: Props) {
 
   return (
     <div className={classes.root}>
-      <span className={classes.name}>{learner.name}</span>
+      <span className={classes.name}>{learner.name || "名前未公開"}</span>
       <div className={classes.dots}>
         {activities.map((activity, index) => (
           <Fragment key={index}>

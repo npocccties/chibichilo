@@ -113,7 +113,7 @@ function LearningStatusLabel({
         </header>
         {[...learners].map((learner) => (
           <MenuItem key={learner.id} onClick={handleLearnerClick(learner)}>
-            {learner.name}
+            {learner.name || "名前未公開"}
           </MenuItem>
         ))}
       </Menu>

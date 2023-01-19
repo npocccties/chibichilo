@@ -51,7 +51,7 @@ export default function LearnerActivityDot(props: Props) {
                   :
                 </span>
               </dt>
-              <dd>{value}</dd>
+              <dd>{key === "ユーザ名" && !value ? "名前未公開" : value}</dd>
             </div>
           ))}
         </dl>

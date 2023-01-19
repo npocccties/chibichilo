@@ -72,7 +72,7 @@ export default function LearnerActivityDialog(props: Props) {
       </IconButton>
       <DialogTitle>
         <Typography variant="h5" component="p">
-          {learner.name}
+          {learner.name || "名前未公開"}
         </Typography>
         <Typography variant="subtitle1" component="p">
           {courseTitle}
