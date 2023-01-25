@@ -1,69 +1,33 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<html class="writer-html5" lang="ja" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3. 視聴ログ出力機能 &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-        <script type="text/javascript" src="_static/translations.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
     <link rel="next" title="4. ZOOM連携機能" href="Zoom.html" />
     <link rel="prev" title="2. DataBase" href="Database.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,18 +35,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Overview.html">1. CHiBi-CHiLO 設計文書</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Database.html">2. DataBase</a></li>
@@ -107,183 +61,141 @@
 <li class="toctree-l1"><a class="reference internal" href="Glossary.html">6. 用語集</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">CHiBi-CHiLO</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>3. 視聴ログ出力機能</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">3. </span>視聴ログ出力機能</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/Logs.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="sect-event">
-<span id="id1"></span><h1>3. 視聴ログ出力機能<a class="headerlink" href="#sect-event" title="このヘッドラインへのパーマリンク">¶</a></h1>
+             
+  <section id="sect-event">
+<span id="id1"></span><h1><span class="section-number">3. </span>視聴ログ出力機能<a class="headerlink" href="#sect-event" title="このヘッドラインへのパーマリンク"></a></h1>
 <p>本機能は学習者がBO(Book Object)を表示した場合、発生するイベントを動画視聴ログとして出力する機能である。</p>
-<div class="section" id="id2">
-<h2>3.1. イベント<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<section id="id2">
+<h2><span class="section-number">3.1. </span>イベント<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク"></a></h2>
 <p>本システムのログデータを理解するためには、本システムが扱う「イベント」についても理解しておく必要がある。</p>
-<div class="section" id="id3">
-<h3>3.1.1. イベントとは<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<section id="id3">
+<h3><span class="section-number">3.1.1. </span>イベントとは<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>イベントとは、LTIシステムで、学生が学習コンテンツを視聴した時と行動を記録するために定義された「きっかけ」を記録する。イベントの発生源は、</p>
 <ol class="arabic simple">
-<li>video.js</li>
-<li>ChibiCHiLOのフロントエンド が、ChangePage Eventを送出している。</li>
+<li><p>video.js</p></li>
+<li><p>ChibiCHiLOのフロントエンド が、ChangePage Eventを送出している。</p></li>
 </ol>
 <p>がある。</p>
-</div>
-<div class="section" id="id4">
-<h3>3.1.2. ログとして出力するイベント<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+</section>
+<section id="id4">
+<h3><span class="section-number">3.1.2. </span>ログとして出力するイベント<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下記のイベントのみをログに書き出す。</p>
 <p>詳細は、個別に記述する。</p>
-<table border="1" class="colwidths-given docutils">
+<table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="31%" />
-<col width="6%" />
-<col width="63%" />
+<col style="width: 31%" />
+<col style="width: 6%" />
+<col style="width: 63%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">イベント</th>
-<th class="head">イベントとは別に取得した情報</th>
-<th class="head">video.jsとの対応</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>イベント</p></th>
+<th class="head"><p>イベントとは別に取得した情報</p></th>
+<th class="head"><p>video.jsとの対応</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>firstplay</td>
-<td>なし</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:firstplay">firstplay</a></td>
+<tbody>
+<tr class="row-even"><td><p>firstplay</p></td>
+<td><p>なし</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:firstplay">firstplay</a></p></td>
 </tr>
-<tr class="row-odd"><td>play</td>
-<td>なし</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:play">play</a></td>
+<tr class="row-odd"><td><p>play</p></td>
+<td><p>なし</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:play">play</a></p></td>
 </tr>
-<tr class="row-even"><td>pause</td>
-<td>なし</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:pause">pause</a></td>
+<tr class="row-even"><td><p>pause</p></td>
+<td><p>なし</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:pause">pause</a></p></td>
 </tr>
-<tr class="row-odd"><td>seeked</td>
-<td>シーク操作前のビデオ再生位置</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:seeked">seeked</a></td>
+<tr class="row-odd"><td><p>seeked</p></td>
+<td><p>シーク操作前のビデオ再生位置</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:seeked">seeked</a></p></td>
 </tr>
-<tr class="row-even"><td>ended</td>
-<td>なし</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:ended">ended</a></td>
+<tr class="row-even"><td><p>ended</p></td>
+<td><p>なし</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:ended">ended</a></p></td>
 </tr>
-<tr class="row-odd"><td>ratechange</td>
-<td>変更した再生速度倍率</td>
-<td><a class="reference external" href="https://docs.videojs.com/player#event:ratechange">ratechange</a></td>
+<tr class="row-odd"><td><p>ratechange</p></td>
+<td><p>変更した再生速度倍率</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/player#event:ratechange">ratechange</a></p></td>
 </tr>
-<tr class="row-even"><td>trackchange</td>
-<td>字幕切り替え後の言語</td>
-<td><a class="reference external" href="https://docs.videojs.com/texttracklist#event:change">change</a></td>
+<tr class="row-even"><td><p>trackchange</p></td>
+<td><p>字幕切り替え後の言語</p></td>
+<td><p><a class="reference external" href="https://docs.videojs.com/texttracklist#event:change">change</a></p></td>
 </tr>
-<tr class="row-odd"><td>forward</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>forward</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>back</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>back</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>beforeunload-ended</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>beforeunload-ended</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>pagehide-ended</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>pagehide-ended</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>unload-ended</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>unload-ended</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>hidden-ended</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>hidden-ended</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>current-time</td>
-<td>なし</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>current-time</p></td>
+<td><p>なし</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>changepage</td>
-<td>切り替え先のマイクロコンテンツID</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>changepage</p></td>
+<td><p>切り替え先のマイクロコンテンツID</p></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <p>以下の目的で取得している</p>
-<dl class="docutils">
-<dt>firstplay</dt>
-<dd><p class="first">学習者がページを開いて最初にビデオを再生開始した時間</p>
+<dl>
+<dt>firstplay</dt><dd><p>学習者がページを開いて最初にビデオを再生開始した時間</p>
 <p>videojsのイベントを利用</p>
-<p class="last">videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．</p>
+<p>videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．</p>
 </dd>
-<dt>play</dt>
-<dd><p class="first">学習者がビデオを再生開始した時間</p>
+<dt>play</dt><dd><p>学習者がビデオを再生開始した時間</p>
 <p>videojsのイベントを利用</p>
-<p class="last">videojsでは，ビデオを一時停止した後，再生開始すると，firstplayのイベントはとれず，playのイベントだけとれる．</p>
+<p>videojsでは，ビデオを一時停止した後，再生開始すると，firstplayのイベントはとれず，playのイベントだけとれる．</p>
 </dd>
-<dt>pause</dt>
-<dd><p class="first">学習者がビデオを一時停止した時間</p>
-<p class="last">videojsのイベントを利用</p>
+<dt>pause</dt><dd><p>学習者がビデオを一時停止した時間</p>
+<p>videojsのイベントを利用</p>
 </dd>
-<dt>seeked</dt>
-<dd><p class="first">学習者がビデオのシークバーを操作した時間</p>
+<dt>seeked</dt><dd><p>学習者がビデオのシークバーを操作した時間</p>
 <p>videojsのイベントを利用</p>
 <p>シークを始めたビデオの再生位置も知りたくて，以下のように書いて，シーク操作前のビデオ再生位置を別途取得</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>/* Record the start and end of seek time */
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/* Record the start and end of seek time */
 let previousTime = 0;
 let currentTime = 0;
 let seekStart: number | null;
@@ -303,21 +215,18 @@ player.on(&quot;seeked&quot;, function () {
 </pre></div>
 </div>
 </dd>
-<dt>ended</dt>
-<dd><p class="first">学習者がビデオを最後まで視聴した時間</p>
-<p class="last">videojsのイベントを利用</p>
+<dt>ended</dt><dd><p>学習者がビデオを最後まで視聴した時間</p>
+<p>videojsのイベントを利用</p>
 </dd>
-<dt>ratechange</dt>
-<dd><p class="first">学習者がビデオの再生速度を変更した時間</p>
+<dt>ratechange</dt><dd><p>学習者がビデオの再生速度を変更した時間</p>
 <p>videojsのイベントを利用</p>
 <p>何倍速に変更したのかも知りたくて， <a class="reference external" href="https://docs.videojs.com/player#playbackRate">playbackRate</a>　から，再生速度倍率を別途取得</p>
-<p class="last">YouTubeを視聴する場合，firstplayの直前に等速処理が入り，その時はユーザが視聴している現在のビデオ再生位置がなく - で記録される．</p>
+<p>YouTubeを視聴する場合，firstplayの直前に等速処理が入り，その時はユーザが視聴している現在のビデオ再生位置がなく - で記録される．</p>
 </dd>
-<dt>trackchange</dt>
-<dd><p class="first">学習者がビデオの字幕を変更した時間</p>
+<dt>trackchange</dt><dd><p>学習者がビデオの字幕を変更した時間</p>
 <p>videojsのイベントを利用</p>
 <p>どの字幕に変更したのかも知りたくて， 以下のように書いて，字幕切り替え後の言語を別途取得</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">Record</span> <span class="n">subtitle</span> <span class="n">information</span> <span class="o">*/</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/*</span> <span class="n">Record</span> <span class="n">subtitle</span> <span class="n">information</span> <span class="o">*/</span>
 <span class="n">let</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">number</span><span class="p">;</span>
 <span class="n">player</span><span class="o">.</span><span class="n">remoteTextTracks</span><span class="p">()</span><span class="o">.</span><span class="n">addEventListener</span><span class="p">(</span><span class="s2">&quot;change&quot;</span><span class="p">,</span> <span class="n">function</span> <span class="n">action</span><span class="p">()</span> <span class="p">{</span>
    <span class="n">window</span><span class="o">.</span><span class="n">clearTimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">);</span>
@@ -344,13 +253,12 @@ player.on(&quot;seeked&quot;, function () {
 </pre></div>
 </div>
 </dd>
-<dt>forward</dt>
-<dd><p class="first">学習者がビデオの早送りをした時間</p>
+<dt>forward</dt><dd><p>学習者がビデオの早送りをした時間</p>
 <p>videojsの標準機能になかったので，<a class="reference external" href="https://www.npmjs.com/package/videojs-seek-buttons">videojs-seek-buttons</a> で機能を実装した．</p>
 <p>早送り処理の途中で '<a href="#id13"><span class="problematic" id="id14">this.options_</span></a>.direction' の値が forward か back になっていたので，これをイベントとしてログに飛ばす処理を追加した．</p>
 <p>後から追加しなくてもいいようにしたい．</p>
 <p>（ /lti/node_modules/videojs-seek-buttons/dist/videojs-seek-buttons.es.js　に追加）</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>function postForm(req) {
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>function postForm(req) {
    const form = new FormData();
    Object.entries(req).forEach(([key, value]) =&gt; form.append(key, value));
    return {
@@ -385,23 +293,20 @@ if(!session.role){
 </pre></div>
 </div>
 </dd>
-<dt>back</dt>
-<dd><p class="first">学習者がビデオの巻き戻しをした時間</p>
-<p class="last">他は forward と同様</p>
+<dt>back</dt><dd><p>学習者がビデオの巻き戻しをした時間</p>
+<p>他は forward と同様</p>
 </dd>
-<dt>beforeunload-ended</dt>
-<dd><p class="first">学習者がビデオをどこまで視聴したか</p>
+<dt>beforeunload-ended</dt><dd><p>学習者がビデオをどこまで視聴したか</p>
 <p>ブラウザのイベントを利用</p>
-<p class="last">ブラウザを閉じたり，別のウィンドウやタブに切り替えたイベントで目的が達成できそうだったので採用した．</p>
+<p>ブラウザを閉じたり，別のウィンドウやタブに切り替えたイベントで目的が達成できそうだったので採用した．</p>
 </dd>
-<dt>pagehide-ended</dt>
-<dd>beforeunload-endedと同様</dd>
-<dt>unload-ended</dt>
-<dd>beforeunload-endedと同様</dd>
-<dt>hidden-ended</dt>
-<dd>beforeunload-endedと同様</dd>
-<dt>current-time</dt>
-<dd><p class="first">学習者がビデオをどこまで視聴したか</p>
+<dt>pagehide-ended</dt><dd><p>beforeunload-endedと同様</p>
+</dd>
+<dt>unload-ended</dt><dd><p>beforeunload-endedと同様</p>
+</dd>
+<dt>hidden-ended</dt><dd><p>beforeunload-endedと同様</p>
+</dd>
+<dt>current-time</dt><dd><p>学習者がビデオをどこまで視聴したか</p>
 <p>スクリプトを作成した．</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setInterval</span><span class="p">(</span><span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
    <span class="n">sendLog</span><span class="p">(</span><span class="s2">&quot;current-time&quot;</span><span class="p">,</span> <span class="n">player</span><span class="p">);</span>
@@ -409,69 +314,68 @@ if(!session.role){
 </pre></div>
 </div>
 <p>ブラウザのイベント利用は不安だったので，現在の再生位置を把握できるように一定周期でログをとったほうが安心かなと思い作成した</p>
-<p class="last">現在は，プレイヤーの再生停止の有無に関係なく10秒毎に取得しつづけている</p>
+<p>現在は，プレイヤーの再生停止の有無に関係なく10秒毎に取得しつづけている</p>
 </dd>
-<dt>changepage</dt>
-<dd><p class="first">学習者が学習コンテンツにある，別のマイクロコンテンツに切り替えた時間
+<dt>changepage</dt><dd><p>学習者が学習コンテンツにある，別のマイクロコンテンツに切り替えた時間
 (時間とするとフォーマットと例が欲しいです。)</p>
 <p>スクリプトを作成した．</p>
 <p>どのマイクロコンテンツに変更したのかも知りたくて， マイクロコンテンツのIDを別途取得 （現在のマイクロコンテンツIDなのか、遷移先のマイクロコンテンツIDなのかとか、説明と具体例が必要かと)
 (現在のchangepageのフォーマットは、変更した時刻+遷移元のマイクロコンテンツIDという理解でいいのでしたっけ)</p>
-<p class="last">現在は，自動遷移か手動遷移の区別はついていない．区別が必要かは検討事項とする．</p>
+<p>現在は，自動遷移か手動遷移の区別はついていない．区別が必要かは検討事項とする．</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="id5">
-<h2>3.2. ログ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<div class="section" id="id6">
-<h3>3.2.1. ログ出力をする対象者<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
-<span id="table-definition-of-logging-user"></span><table border="1" class="colwidths-given docutils" id="id11">
-<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク">¶</a></caption>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">3.2. </span>ログ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク"></a></h2>
+<section id="id6">
+<h3><span class="section-number">3.2.1. </span>ログ出力をする対象者<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク"></a></h3>
+<table class="colwidths-given docutils align-default" id="id11">
+<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク"></a></caption>
 <colgroup>
-<col width="12%" />
-<col width="5%" />
-<col width="48%" />
-<col width="36%" />
+<col style="width: 12%" />
+<col style="width: 5%" />
+<col style="width: 48%" />
+<col style="width: 36%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">対象</th>
-<th class="head">ログ取得?</th>
-<th class="head">LTIでの対象判定</th>
-<th class="head">補足</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>対象</p></th>
+<th class="head"><p>ログ取得?</p></th>
+<th class="head"><p>LTIでの対象判定</p></th>
+<th class="head"><p>補足</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>管理者</td>
-<td>いいえ</td>
-<td><div class="first last line-block">
+<tbody>
+<tr class="row-even"><td><p>管理者</p></td>
+<td><p>いいえ</p></td>
+<td><div class="line-block">
 <div class="line">roles に administrator</div>
 <div class="line">が含まれている</div>
 </div>
 </td>
-<td><div class="first last line-block">
+<td><div class="line-block">
 <div class="line">LMSの管理者からの</div>
 <div class="line">アクセスを想定</div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td>教師</td>
-<td>いいえ</td>
-<td><div class="first last line-block">
+<tr class="row-odd"><td><p>教師</p></td>
+<td><p>いいえ</p></td>
+<td><div class="line-block">
 <div class="line">roles に administrator が含まれておらず，</div>
 <div class="line">instructor が含まれている</div>
 </div>
 </td>
-<td><div class="first last line-block">
+<td><div class="line-block">
 <div class="line">LMSの教師やサポーターから</div>
 <div class="line">のアクセスを想定</div>
 </div>
 </td>
 </tr>
-<tr class="row-even"><td>受講者</td>
-<td>はい</td>
-<td>上記以外</td>
-<td><div class="first last line-block">
+<tr class="row-even"><td><p>受講者</p></td>
+<td><p>はい</p></td>
+<td><p>上記以外</p></td>
+<td><div class="line-block">
 <div class="line">LMSの受講者からのアクセス</div>
 <div class="line">を想定</div>
 </div>
@@ -479,152 +383,152 @@ if(!session.role){
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="id7">
-<h3>3.2.2. ログの出力先<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+</section>
+<section id="id7">
+<h3><span class="section-number">3.2.2. </span>ログの出力先<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>syslogへ出力する。</p>
 <p>本ログの識別子として、固定値で 'videoplayerlog' を出力している。</p>
-</div>
-<div class="section" id="id8">
-<h3>3.2.3. ログの出力タイミング<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
+</section>
+<section id="id8">
+<h3><span class="section-number">3.2.3. </span>ログの出力タイミング<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>イベントのタイミングで、出力する。</p>
 <p>なので、学生がVideo視聴している間10sec毎を基本として、各種イベントが起きた時には、下記のログフォーマットで書き出す。</p>
-</div>
-<div class="section" id="id9">
-<h3>3.2.4. ログのフォーマット<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h3>
+</section>
+<section id="id9">
+<h3><span class="section-number">3.2.4. </span>ログのフォーマット<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>syslogへ、TSV(タブ区切り)で出力する。</p>
 <p>フォーマットについては、 <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO/issues/18">ログ出力の仕様を整理・定義する · Issue #18 · npocccties/ChibiCHiLO</a> でも議論しているので、必要に応じて参照すること。</p>
-<span id="table"></span><table border="1" class="colwidths-given docutils" id="id12">
-<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id12" title="このテーブルへのパーマリンク">¶</a></caption>
+<span id="table"></span><table class="colwidths-given docutils align-default" id="id12">
+<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id12" title="このテーブルへのパーマリンク"></a></caption>
 <colgroup>
-<col width="5%" />
-<col width="11%" />
-<col width="42%" />
-<col width="42%" />
+<col style="width: 5%" />
+<col style="width: 11%" />
+<col style="width: 42%" />
+<col style="width: 42%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">No.</th>
-<th class="head">項目名</th>
-<th class="head">内容例</th>
-<th class="head">補足</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>No.</p></th>
+<th class="head"><p>項目名</p></th>
+<th class="head"><p>内容例</p></th>
+<th class="head"><p>補足</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-<td><div class="first last line-block">
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><div class="line-block">
 <div class="line">サーバー時間</div>
 <div class="line">（年月日）</div>
 </div>
 </td>
-<td>2000-01-01</td>
-<td>&#160;</td>
+<td><p>2000-01-01</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>2</td>
-<td><div class="first last line-block">
+<tr class="row-odd"><td><p>2</p></td>
+<td><div class="line-block">
 <div class="line">サーバー時間</div>
 <div class="line">(時分秒)</div>
 </div>
 </td>
-<td>01:01:01</td>
-<td>&#160;</td>
+<td><p>01:01:01</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>3</td>
-<td><div class="first last line-block">
+<tr class="row-even"><td><p>3</p></td>
+<td><div class="line-block">
 <div class="line">サーバー時間</div>
 <div class="line">(タイムゾーン)</div>
 </div>
 </td>
-<td>JST</td>
-<td>&#160;</td>
+<td><p>JST</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>4</td>
-<td>Event</td>
-<td>&#160;</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Event</p></td>
+<td></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>5</td>
-<td>Event Value</td>
-<td>&#160;</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Event Value</p></td>
+<td></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>6</td>
-<td>Video名</td>
-<td><div class="first last line-block">
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>Video名</p></td>
+<td><div class="line-block">
 <div class="line">tnahJxT-td8 (Youtubeの場合)</div>
 <div class="line">sample.mp4 (Wowzaの場合)</div>
 <div class="line">1084537  (Vimeo は現在未対応)</div>
 </div>
 </td>
-<td>&#160;</td>
+<td></td>
 </tr>
-<tr class="row-even"><td>7</td>
-<td>URLパラメーター</td>
-<td><div class="first last line-block">
+<tr class="row-even"><td><p>7</p></td>
+<td><p>URLパラメーター</p></td>
+<td><div class="line-block">
 <div class="line">v=tnahJxT-td8 (Youtubeの場合)</div>
 <div class="line">wowzatokencustomparameter=..(略)..==</div>
 <div class="line">(Wowzaの場合)</div>
 <div class="line">※未想定 (Vimeo は現在未対応)</div>
 </div>
 </td>
-<td>&#160;</td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>8</td>
-<td><div class="first last line-block">
+<tr class="row-odd"><td><p>8</p></td>
+<td><div class="line-block">
 <div class="line">ユーザが視聴している現在の</div>
 <div class="line">ビデオ再生位置</div>
 </div>
 </td>
-<td>0 や 16.462621 など</td>
-<td>&#160;</td>
+<td><p>0 や 16.462621 など</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>9</td>
-<td>Client IP Address</td>
-<td>xxx.xxx.xxx.xxx</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>Client IP Address</p></td>
+<td><p>xxx.xxx.xxx.xxx</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>10</td>
-<td>ブラウザのUA</td>
-<td>&#160;</td>
-<td>下記参照</td>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>ブラウザのUA</p></td>
+<td></td>
+<td><p>下記参照</p></td>
 </tr>
-<tr class="row-even"><td>11</td>
-<td>LTIに送られたリソース情報</td>
-<td>hoge:1 や huga:1 など</td>
-<td>getResourceKey()で取得する値</td>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>LTIに送られたリソース情報</p></td>
+<td><p>hoge:1 や huga:1 など</p></td>
+<td><p>getResourceKey()で取得する値</p></td>
 </tr>
-<tr class="row-odd"><td>12</td>
-<td>LTIに送られたユーザ情報</td>
-<td>hoge:1 や huga:1 など</td>
-<td>getUserKey()で取得する値</td>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>LTIに送られたユーザ情報</p></td>
+<td><p>hoge:1 や huga:1 など</p></td>
+<td><p>getUserKey()で取得する値</p></td>
 </tr>
-<tr class="row-even"><td>13</td>
-<td>LTIに送られたコース情報</td>
-<td>hoge:1 や huga:1 など</td>
-<td>getCourseKey()で取得する値</td>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>LTIに送られたコース情報</p></td>
+<td><p>hoge:1 や huga:1 など</p></td>
+<td><p>getCourseKey()で取得する値</p></td>
 </tr>
-<tr class="row-odd"><td>14</td>
-<td>LTIに送られたnonce</td>
-<td>d8317e3ec7f0d339209d787f9edd78dc</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>LTIに送られたnonce</p></td>
+<td><p>d8317e3ec7f0d339209d787f9edd78dc</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>15</td>
-<td><div class="first last line-block">
+<tr class="row-even"><td><p>15</p></td>
+<td><div class="line-block">
 <div class="line">マイクロコンテンツ</div>
 <div class="line">判定キーワード</div>
 </div>
 </td>
-<td>videoplayerlog</td>
-<td>固定</td>
+<td><p>videoplayerlog</p></td>
+<td><p>固定</p></td>
 </tr>
-<tr class="row-odd"><td>16</td>
-<td>video種別</td>
-<td><div class="first last line-block">
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>video種別</p></td>
+<td><div class="line-block">
 <div class="line">YouTube</div>
 <div class="line">Vimeo</div>
 <div class="line">Wowza</div>
 </div>
 </td>
-<td><div class="first last line-block">
+<td><div class="line-block">
 <div class="line">新規追加</div>
 <div class="line">20201104</div>
 </div>
@@ -632,58 +536,58 @@ if(!session.role){
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>サーバ時間(年月日)</dt>
-<dd>前システムから踏襲する。YYYY-MM-DD のformatで、0を前置する．</dd>
-<dt>サーバ時間（時分秒)</dt>
-<dd>前システムから踏襲する。HH:MM:SS のformat で、0を前置する。</dd>
-<dt>サーバー時間(タイムゾーン)</dt>
-<dd>前システムから踏襲する。2021-01-13の段階では、JST固定です。次期ログ開発で改修予定です。</dd>
-<dt>イベント</dt>
-<dd>イベントについては、 <a class="reference internal" href="#sect-event"><span class="std std-ref">視聴ログ出力機能</span></a>　を参照せよ。</dd>
-<dt>イベント値</dt>
-<dd>イベント値について、 <a class="reference internal" href="#sect-event"><span class="std std-ref">視聴ログ出力機能</span></a> に書いていないので、ここか、イベントの方で定義する。これって、「イベントとは別に取得した情報」のことを指していますか?
-時間の場合は，ユーザが視聴している現在のビデオ再生位置と同じ値(0 や 16.462621 など)でコンマ秒まで出る．</dd>
-<dt>Video名</dt>
-<dd>Videoを識別する固有の文字列です。YouTubeはビデオIDになります。
+<dl class="simple">
+<dt>サーバ時間(年月日)</dt><dd><p>前システムから踏襲する。YYYY-MM-DD のformatで、0を前置する．</p>
+</dd>
+<dt>サーバ時間（時分秒)</dt><dd><p>前システムから踏襲する。HH:MM:SS のformat で、0を前置する。</p>
+</dd>
+<dt>サーバー時間(タイムゾーン)</dt><dd><p>前システムから踏襲する。2021-01-13の段階では、JST固定です。次期ログ開発で改修予定です。</p>
+</dd>
+<dt>イベント</dt><dd><p>イベントについては、 <a class="reference internal" href="#sect-event"><span class="std std-ref">視聴ログ出力機能</span></a>　を参照せよ。</p>
+</dd>
+<dt>イベント値</dt><dd><p>イベント値について、 <a class="reference internal" href="#sect-event"><span class="std std-ref">視聴ログ出力機能</span></a> に書いていないので、ここか、イベントの方で定義する。これって、「イベントとは別に取得した情報」のことを指していますか?
+時間の場合は，ユーザが視聴している現在のビデオ再生位置と同じ値(0 や 16.462621 など)でコンマ秒まで出る．</p>
+</dd>
+<dt>Video名</dt><dd><p>Videoを識別する固有の文字列です。YouTubeはビデオIDになります。
 wowzaだと動画のファイル名．
-vimeo は未対応だが，対応するならvimeoのビデオIDを想定している。</dd>
-<dt>URLパラメータ</dt>
-<dd>URLのパラメータを記述する。YouTube, vimeo, wowza で入るものが異なる。 <a href="#id15"><span class="problematic" id="id16">`この辺の議論を参照せよ。&lt;https://github.com/npocccties/ChibiCHiLO/issues/18#issuecomment-758419047&gt;`_</span></a></dd>
-<dt>ビデオ再生位置</dt>
-<dd>これは、暗黙の了解として「ユーザが視聴している現在のビデオ再生位置」というのが正確な表現になります。
-位置の単位はコンマ秒含む秒単位（0 や16.462621 など）最大値はTypeScript,JavaScriptにて表現できる範囲でお願いします。</dd>
-<dt>Client IP Address</dt>
-<dd>ご指摘がありました。しかし、結論からいうと現在のログはIPv4だけで良いです。次期ログ開発時に、IPv6のアドレスが必要かを議論します。see also <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO-private/issues/16">2021-01-19 ミーティングで確認する内容 · Issue #16 · npocccties/ChibiCHiLO-private</a> を確認する。それまでは、IPv4のみの環境で、フォーマットは既存と同じ、xxx.xxx.xxx.xxx の十進数を.(dot)で区切った数値になります。</dd>
-<dt>ブラウザのUA</dt>
-<dd>使っているブラウザのユーザエージェントをそのまま記録する。ユーザが設定しているUAをそのまま記録する。</dd>
+vimeo は未対応だが，対応するならvimeoのビデオIDを想定している。</p>
+</dd>
+<dt>URLパラメータ</dt><dd><p>URLのパラメータを記述する。YouTube, vimeo, wowza で入るものが異なる。 <a href="#id15"><span class="problematic" id="id16">`この辺の議論を参照せよ。&lt;https://github.com/npocccties/ChibiCHiLO/issues/18#issuecomment-758419047&gt;`_</span></a></p>
+</dd>
+<dt>ビデオ再生位置</dt><dd><p>これは、暗黙の了解として「ユーザが視聴している現在のビデオ再生位置」というのが正確な表現になります。
+位置の単位はコンマ秒含む秒単位（0 や16.462621 など）最大値はTypeScript,JavaScriptにて表現できる範囲でお願いします。</p>
+</dd>
+<dt>Client IP Address</dt><dd><p>ご指摘がありました。しかし、結論からいうと現在のログはIPv4だけで良いです。次期ログ開発時に、IPv6のアドレスが必要かを議論します。see also <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO-private/issues/16">2021-01-19 ミーティングで確認する内容 · Issue #16 · npocccties/ChibiCHiLO-private</a> を確認する。それまでは、IPv4のみの環境で、フォーマットは既存と同じ、xxx.xxx.xxx.xxx の十進数を.(dot)で区切った数値になります。</p>
+</dd>
+<dt>ブラウザのUA</dt><dd><p>使っているブラウザのユーザエージェントをそのまま記録する。ユーザが設定しているUAをそのまま記録する。</p>
+</dd>
 </dl>
-<dl class="docutils">
-<dt>LTIに送られたリソース情報</dt>
-<dd><span class="xref std std-ref">table利用している連携データ</span> を参照してください。<a class="reference external" href="https://www.imsglobal.org/activity/learning-tools-interoperability">Learning Tools Interoperability | IMS Global Learning Consortium</a> によると、Learning Platform (Moodle/blackboard) から、Learning Tool (Chibi-CHiLO) に、LTIプロトロルを用いてデータを送ってくるので、LTIに送るというのはちょっと違和感があります。あと、lti:1 getUserKey() で取得する値というのは、<span class="xref std std-ref">table利用している連携データ</span> の中身について話だと理解している。しかしどのように利用しているのか。具体的なデータは何かを以下のコース情報、リソース情報に書いてあげる必要がある。
+<dl class="simple">
+<dt>LTIに送られたリソース情報</dt><dd><p><span class="xref std std-ref">table利用している連携データ</span> を参照してください。<a class="reference external" href="https://www.imsglobal.org/activity/learning-tools-interoperability">Learning Tools Interoperability | IMS Global Learning Consortium</a> によると、Learning Platform (Moodle/blackboard) から、Learning Tool (Chibi-CHiLO) に、LTIプロトロルを用いてデータを送ってくるので、LTIに送るというのはちょっと違和感があります。あと、lti:1 getUserKey() で取得する値というのは、<span class="xref std std-ref">table利用している連携データ</span> の中身について話だと理解している。しかしどのように利用しているのか。具体的なデータは何かを以下のコース情報、リソース情報に書いてあげる必要がある。
 LMSから送られる～に名称を変更したほうがいいか？
 lti:1 のコロン(:)より前は，LMSから送られる oauth_consumer_key が入る．LTI_keyがhogeなら，hoge:1 となる
-利用している連携データは resource_link_id</dd>
-<dt>LTIに送られたユーザ情報</dt>
-<dd>同上
-利用している連携データは user_id</dd>
-<dt>LTIに送られたコース情報</dt>
-<dd>同上
-利用している連携データは context_id</dd>
+利用している連携データは resource_link_id</p>
+</dd>
+<dt>LTIに送られたユーザ情報</dt><dd><p>同上
+利用している連携データは user_id</p>
+</dd>
+<dt>LTIに送られたコース情報</dt><dd><p>同上
+利用している連携データは context_id</p>
+</dd>
 </dl>
-<dl class="docutils">
-<dt>LTIに送られたnonce</dt>
-<dd>nonceはLTIサーバにLMSから情報を送るたびに変化する一意の文字列です．
+<dl class="simple">
+<dt>LTIに送られたnonce</dt><dd><p>nonceはLTIサーバにLMSから情報を送るたびに変化する一意の文字列です．
 同じユーザが同じコースにあるリソースから来たとしても，変化するので，視聴しなおしたかどうか．判断回数などが分かるようになる
-moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126796144595&quot; のように桁数も使用する文字の種類も違うようだが，LTIに情報を送るたびに変化するという仕様は同じ．</dd>
-<dt>マイクロコンテンツ判定キーワード</dt>
-<dd>本ログの識別子として、videoplayer関係のログであることを示す。固定値</dd>
-<dt>video種別</dt>
-<dd><span class="strike">YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加</span> この部分の追加は、次期log開発時に追加する。</dd>
+moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126796144595&quot; のように桁数も使用する文字の種類も違うようだが，LTIに情報を送るたびに変化するという仕様は同じ．</p>
+</dd>
+<dt>マイクロコンテンツ判定キーワード</dt><dd><p>本ログの識別子として、videoplayer関係のログであることを示す。固定値</p>
+</dd>
+<dt>video種別</dt><dd><p><span class="strike">YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加</span> この部分の追加は、次期log開発時に追加する。</p>
+</dd>
 </dl>
-</div>
-<div class="section" id="id10">
-<h3>3.2.5. ログの整形<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+</section>
+<section id="id10">
+<h3><span class="section-number">3.2.5. </span>ログの整形<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク"></a></h3>
 <p>syslog出力時、ログのフォーマット以外の不要な情報が含まれている場合があるのでバッチ等で別途除去する。</p>
 <blockquote>
 <div><p>例：シェルスクリプトで前日のログを整形する</p>
@@ -701,57 +605,39 @@ sed -e &#39;s/^.*php.*: //g&#39; -e &#39;s/^.*httpd.*: //g&#39; -e &#39;s/^.*www
 </pre></div>
 </div>
 </div></blockquote>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Zoom.html" class="btn btn-neutral float-right" title="4. ZOOM連携機能" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="Database.html" class="btn btn-neutral float-left" title="2. DataBase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Database.html" class="btn btn-neutral float-left" title="2. DataBase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Zoom.html" class="btn btn-neutral float-right" title="4. ZOOM連携機能" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, CCC-TIES
-
-    </p>
+    <p>&#169; Copyright 2021, CCC-TIES.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

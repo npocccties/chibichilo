@@ -128,7 +128,7 @@ TypeScript は、JavaScript に派生したプログラム言語なので、Java
 * Atomic Design
 
 
-Dawtabase
+Database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 開発環境
