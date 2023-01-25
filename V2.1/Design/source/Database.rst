@@ -159,3 +159,5 @@ Databaseリファクタリング
 
 また、CHiBi-CHiLOに、教材作成者が任意のタイミングで自分が作成したBookをリリースするという、ある意味CDやDVDを焼いて固定化するメタファを用いてバージョン管理を行う機能を入れる要望が出てきた。
 
+see also `ブックとトピックのバージョン管理 · Issue #872 · npocccties/chibichilo <https://github.com/npocccties/chibichilo/issues/872>`_
+
