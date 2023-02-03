@@ -42,10 +42,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#id1">1.1. 本システムの目的</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">1.2. 本システムを構成する概念</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">1.2.1. 学習オブジェクト</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#lo">1.2.2. 本システムのLO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">1.2.2. フィッシュボーン構造</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">1.3. 設計思想</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">1.3. 設計思想</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Database.html">2. DataBase</a></li>
@@ -102,10 +102,10 @@
 <li><p>“any entity, digital or non digital, that can be used for learning, education or training”</p></li>
 </ul>
 </section>
-<section id="lo">
-<h3><span class="section-number">1.2.2. </span>本システムのLO<a class="headerlink" href="#lo" title="このヘッドラインへのパーマリンク"></a></h3>
-<p>3.1.2 フィッシュボーン構造
-本システムは，Topic Object（TO），Book Object（BO），Linked Object（LdO）の3種類のLOで構成されている．
+<section id="id4">
+<h3><span class="section-number">1.2.2. </span>フィッシュボーン構造<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h3>
+<p>次に、本システムのLO(Learning Object)構造を説明する。本システムの構造は、いわゆるフィッシュボーン構造である。</p>
+<p>本システムは，Topic Object（TO），Book Object（BO），Linked Object（LdO）の3種類のLOで構成されている．
 同じ種類のLO同士は互いに参照することはなく独立し，LdOはBO参照し，BOはTOを参照するという階層構造をもっている</p>
 <p>電子書籍の仕様により，トピックのシーケンシング（順序立て）は次に進む，前に戻るといった線形的になる．
 また1冊あたり，講義1回分の学習内容を含み，複数のCHiLO Bookを順に学習することで，一連の学習を終了することとしている．
@@ -167,8 +167,8 @@ WebBundleならその中のファイルパスなど、リソースからトピ�
 </dl>
 </section>
 </section>
-<section id="id4">
-<h2><span class="section-number">1.3. </span>設計思想<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h2>
+<section id="id5">
+<h2><span class="section-number">1.3. </span>設計思想<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク"></a></h2>
 <ul class="simple">
 <li><p>認可は行うが、認証は行わない。</p>
 <ul>

@@ -27,9 +27,11 @@ LOは，学習コンテンツの共有再利用の概念であるが，その定
 * “any entity, digital or non digital, that can be used for learning, education or training”
 
 
-本システムのLO
+フィッシュボーン構造
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-3.1.2 フィッシュボーン構造
+
+次に、本システムのLO(Learning Object)構造を説明する。本システムの構造は、いわゆるフィッシュボーン構造である。
+
 本システムは，Topic Object（TO），Book Object（BO），Linked Object（LdO）の3種類のLOで構成されている．
 同じ種類のLO同士は互いに参照することはなく独立し，LdOはBO参照し，BOはTOを参照するという階層構造をもっている
 
