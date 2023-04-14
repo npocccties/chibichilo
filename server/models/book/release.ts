@@ -1,7 +1,7 @@
 import type { FromSchema } from "json-schema-to-ts";
 
 /** リリースの作成・更新のためのリクエストパラメータ */
-export const ReleaseProps = {
+export const releasePropsSchema = {
   type: "object",
   properties: {
     version: { type: "string" },
@@ -10,4 +10,14 @@ export const ReleaseProps = {
   additionalProperties: false,
 } as const;
 
-export type ReleaseProps = FromSchema<typeof ReleaseProps>;
+export type ReleaseProps = FromSchema<typeof releasePropsSchema>;
+
+export const releaseSchema = {
+  type: "object",
+  properties: {
+    bookId: { type: "integer" },
+    releasedAt: { type: "string", format: "date-time" },
+    ...releasePropsSchema.properties,
+  },
+  additionalProperties: false,
+} as const;
