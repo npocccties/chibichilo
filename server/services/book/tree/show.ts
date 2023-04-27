@@ -36,10 +36,10 @@ export async function show({
   const tree = {
     rootId: 1,
     nodes: [],
-  }
+  };
 
   return {
     status: 200,
     body: tree,
-  }
+  };
 }
