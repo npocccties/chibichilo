@@ -1,5 +1,9 @@
 import type { Prisma, Book } from "@prisma/client";
-import type { TreeNodeAuthorsSchema, TreeNodeSchema, TreeResultSchema } from "$server/models/book/tree";
+import type {
+  TreeNodeAuthorsSchema,
+  TreeNodeSchema,
+  TreeResultSchema,
+} from "$server/models/book/tree";
 import prisma from "$server/utils/prisma";
 import type { Authorship } from "$server/utils/author/authorToAuthorSchema";
 import {
@@ -14,14 +18,14 @@ const nodeArg = {
         authors: authorArg,
         release: true,
       },
-    }
+    },
   },
 };
 
 type NodeWithBook = Prisma.NodeGetPayload<typeof nodeArg>;
 
 async function findTree(
-  bookId: Book["id"],
+  bookId: Book["id"]
 ): Promise<TreeResultSchema | undefined> {
   const book = await prisma.book.findUnique({
     where: { id: bookId },
@@ -36,7 +40,7 @@ async function findTree(
 
   const nodes = await prisma.node.findMany({
     where: {
-      OR: [{ rootId }, { id: rootId}],
+      OR: [{ rootId }, { id: rootId }],
     },
     ...nodeArg,
     orderBy: {
@@ -49,12 +53,19 @@ async function findTree(
   return {
     rootId,
     nodes: nodes.map((node) => nodeToTreeNode(node)),
-  }
+  };
 }
 
-function nodeToTreeNode(node: NodeWithBook ): TreeNodeSchema {
+function nodeToTreeNode(node: NodeWithBook): TreeNodeSchema {
   const { id, parentId } = node;
-  const { name, description, createdAt, updatedAt, authors = [], release } = node.book || {};
+  const {
+    name,
+    description,
+    createdAt,
+    updatedAt,
+    authors = [],
+    release,
+  } = node.book || {};
   return {
     id,
     parentId,
