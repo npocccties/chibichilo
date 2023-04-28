@@ -327,6 +327,6 @@ class ZoomImport {
 
   async cleanUp() {
     if (this.wowzaUpload) await this.wowzaUpload.cleanUp();
-    await fs.promises.rmdir(this.tmpdir, { recursive: true });
+    await fs.promises.rm(this.tmpdir, { recursive: true });
   }
 }
