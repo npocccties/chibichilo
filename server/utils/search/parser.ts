@@ -14,6 +14,7 @@ const options = {
     "shared" as const,
     "link" as const,
     "book" as const,
+    "latest-release" as const,
   ],
   alwaysArray: true,
   tokenize: true,
@@ -89,6 +90,7 @@ export function parse(query: string): SearchQueryBase {
     shared: res.shared?.flatMap(parseBoolean) ?? [],
     link: res.link?.flatMap(parseLink) ?? [],
     book: res.book?.flatMap(parseBook) ?? [],
+    latestRelease: res["latest-release"]?.flatMap(parseBoolean) ?? [],
   };
 }
 
@@ -120,13 +122,20 @@ function stringifyLink(
   return token;
 }
 
-export function stringify(query: SearchQueryBase): string {
-  const { license, shared, link, book, ...rest } = query;
+export function stringify(query: Partial<SearchQueryBase>): string {
+  const { license, shared, link, book, latestRelease, ...rest } = query;
   const token = {
-    license: license.map(stringifyLicense).join(),
-    shared: shared.map(String).join(),
-    link: link.map(stringifyLink).join(),
-    book: book.map(String).join(),
+    text: [],
+    name: [],
+    description: [],
+    author: [],
+    partialKeyword: [],
+    keyword: [],
+    license: license?.map(stringifyLicense).join() ?? [],
+    shared: shared?.map(String).join() ?? [],
+    link: link?.map(stringifyLink).join() ?? [],
+    book: book?.map(String).join() ?? [],
+    "latest-release": latestRelease?.map(String).join() ?? [],
   };
-  return base.stringify({ ...rest, ...token }, options);
+  return base.stringify({ ...token, ...rest }, options);
 }

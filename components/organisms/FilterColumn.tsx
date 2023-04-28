@@ -13,6 +13,7 @@ import licenses from "$utils/licenses";
 import { useSearchAtom } from "$store/search";
 import type { SharedFilterType } from "$types/sharedFilter";
 import BookChip from "$atoms/BookChip";
+import ReleaseFilterCheckbox from "$atoms/ReleaseFilterCheckbox";
 
 type Props = {
   sx?: SxProps;
@@ -30,6 +31,7 @@ export default function FilterColumn({ sx, variant }: Props) {
     onLtiContextDelete,
     onKeywordDelete,
     onRelatedBookDelete,
+    onReleaseFilterChange,
   } = useSearchAtom();
 
   return (
@@ -68,6 +70,12 @@ export default function FilterColumn({ sx, variant }: Props) {
             </MenuItem>
           ))}
         </TextField>
+      )}
+      {variant === "book" && (
+        <ReleaseFilterCheckbox
+          sx={{ display: "block", mb: 1 }}
+          onChange={(_, checked) => onReleaseFilterChange(checked)}
+        />
       )}
       {variant === "book" && (
         <FormControl component="fieldset" sx={{ display: "block", mb: 2 }}>

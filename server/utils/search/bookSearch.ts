@@ -31,6 +31,7 @@ async function bookSearch(
     shared,
     link,
     book,
+    latestRelease,
   }: BookSearchQuery,
   filter: AuthorFilter,
   sort: string,
@@ -156,6 +157,8 @@ async function bookSearch(
       ...book.map((id) => ({
         id,
       })),
+      // NOTE: latestRelease - 最新版のリリースのみ (デフォルト)、すべて
+      ...(latestRelease.every((l) => l) ? [{ release: { latest: true } }] : []),
     ],
   };
 
