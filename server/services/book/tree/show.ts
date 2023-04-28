@@ -5,6 +5,7 @@ import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
 import { isInstructor } from "$utils/session";
+import findTree from "$server/utils/book/findTree";
 
 export const showSchema: FastifySchema = {
   summary: "ブックのツリー情報取得",
@@ -33,13 +34,10 @@ export async function show({
     return { status: 403 };
   }
 
-  const tree = {
-    rootId: 1,
-    nodes: [],
-  };
+  const tree = await findTree(bookId);
 
   return {
-    status: 200,
+    status: tree == null ? 404 : 200,
     body: tree,
   };
 }

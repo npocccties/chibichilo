@@ -20,11 +20,14 @@ export const TreeNodeAuthorsSchema = {
   additionalProperties: false,
 } as const;
 
-export type TreeNodeSchema = Pick<Node, "id" | "parentId"> &
-  Pick<Book, "name" | "description" | "createdAt" | "updatedAt"> & {
-    authors?: TreeNodeAuthorsSchema;
-    release?: ReleaseSchema;
-  };
+export type TreeNodeSchema = Pick<Node, "id" | "parentId"> & {
+  name?: Book["name"];
+  description?: Book["description"];
+  createdAt?: Book["createdAt"];
+  updatedAt?: Book["updatedAt"];
+  authors?: TreeNodeAuthorsSchema[];
+  release?: ReleaseSchema | null;
+};
 
 export const TreeNodeSchema = {
   type: "object",
