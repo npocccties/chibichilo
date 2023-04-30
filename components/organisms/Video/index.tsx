@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import usePrevious from "@rooks/use-previous";
-import clsx from "clsx";
 import { css } from "@emotion/css";
 
 import type { TopicSchema } from "$server/models/topic";
@@ -29,14 +28,6 @@ import DescriptionList from "$atoms/DescriptionList";
 import formatInterval from "$utils/formatInterval";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import { authors } from "$utils/descriptionList";
-
-const hidden = css({
-  m: 0,
-  width: 0,
-  "& *": {
-    visibility: "hidden",
-  },
-});
 
 const videoStyle = {
   "& > *": {
@@ -273,18 +264,22 @@ export default function Video({
   if (video.has(String(topic.id))) {
     return (
       <>
-        {Array.from(video.entries()).map(([id, videoInstance]) => (
-          <VideoPlayer
-            key={id}
-            className={clsx(className, {
-              [hidden]: String(topic.id) !== id,
-            })}
-            sx={{ ...videoStyle, ...sx }}
-            videoInstance={videoInstance}
-            autoplay={String(topic.id) === id}
-            onEnded={String(topic.id) === id ? onEnded : undefined}
-          />
-        ))}
+        {Array.from(video.entries()).map(([id, videoInstance]) => {
+          if (String(topic.id) !== id) {
+            return null;
+          }
+
+          return (
+            <VideoPlayer
+              key={id}
+              className={className}
+              sx={{ ...videoStyle, ...sx }}
+              videoInstance={videoInstance}
+              autoplay={true}
+              onEnded={onEnded}
+            />
+          );
+        })}
         <Tabs
           aria-label="トピックビデオの詳細情報"
           className={tabsStyle}
