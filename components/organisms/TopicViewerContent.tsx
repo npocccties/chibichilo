@@ -43,7 +43,8 @@ export default function TopicViewerContent({
       {isVideoResource(topic.resource) && (
         <Video
           className={sticky}
-          sx={{ mt: -2, mx: -3, mb: 2 }}
+          // NOTE:親要素の領域幅いっぱいに表示するため、マイナスマージンを設定している
+          sx={{ mx: -3 }}
           topic={topic}
           timeRange={timeRange}
           onEnded={onEnded}

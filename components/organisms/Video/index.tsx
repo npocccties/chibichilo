@@ -33,6 +33,7 @@ import { authors } from "$utils/descriptionList";
 const hidden = css({
   m: 0,
   width: 0,
+  height: 0,
   "& *": {
     visibility: "hidden",
   },
