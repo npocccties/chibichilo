@@ -3,13 +3,13 @@ import TopicViewerContent from "$organisms/TopicViewerContent";
 import type { TopicSchema } from "$server/models/topic";
 import useCardStyles from "$styles/card";
 
-type Props = {
+export type TopicPreviewDialogProps = {
   topic: TopicSchema;
   open: boolean;
   onClose: React.MouseEventHandler;
 };
 
-export default function TopicPreviewDialog(props: Props) {
+export default function TopicPreviewDialog(props: TopicPreviewDialogProps) {
   const cardClasses = useCardStyles();
   const { topic, open, onClose } = props;
   return (

@@ -13,7 +13,7 @@ import getLocaleDateString from "$utils/getLocaleDateString";
 
 export type ReleasedBookCardProps = {
   book: BookSchema;
-  onTopicPreview(topic: Pick<TopicSchema, "id">): void;
+  onTopicPreview(topic: TopicSchema): void;
 };
 
 function ReleasedBookCard({ book, onTopicPreview }: ReleasedBookCardProps) {
