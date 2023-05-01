@@ -158,7 +158,9 @@ async function bookSearch(
         id,
       })),
       // NOTE: latestRelease - 最新版のリリースのみ (デフォルト)、すべて
-      ...(latestRelease.every((l) => l) ? [{ release: { latest: true } }] : []),
+      ...(latestRelease.every((l) => l)
+        ? [{ OR: [{ release: { is: null } }, { release: { latest: true } }] }]
+        : []),
     ],
   };
 
