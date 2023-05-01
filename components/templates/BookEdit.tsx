@@ -93,7 +93,7 @@ export default function BookEdit({
 
   return (
     <Container className={classes.container} maxWidth="md">
-      <BackButton onClick={back}>戻る</BackButton>;
+      <BackButton onClick={back}>戻る</BackButton>
       <Typography className={classes.title} variant="h4">
         ブック「{book.name}」の編集
       </Typography>
