@@ -41,6 +41,13 @@ function Index() {
       })
     );
   };
+  const onContentForkClick = (book: Pick<ContentSchema, "id" | "authors">) => {
+    return router.push(
+      pagesPath.book.fork.$url({
+        query: { context: "books", bookId: book.id },
+      })
+    );
+  };
   const handleBookNewClick = () => {
     return router.push(
       pagesPath.book.new.$url({ query: { context: "books" } })
@@ -74,6 +81,7 @@ function Index() {
   const handlers = {
     onContentPreviewClick,
     onContentEditClick,
+    onContentForkClick,
     onBookNewClick: handleBookNewClick,
     onBooksImportClick: handleBooksImportClick,
     onContentLinkClick,

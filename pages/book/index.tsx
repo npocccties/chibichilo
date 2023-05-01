@@ -81,6 +81,9 @@ function Show(query: Query) {
   const handleBookEditClick = () => {
     return router.push(pagesPath.book.edit.$url({ query }));
   };
+  const handleBookForkClick = () => {
+    return router.push(pagesPath.book.fork.$url({ query }));
+  };
   const handleOtherBookLinkClick = () => {
     return router.push(pagesPath.books.$url());
   };
@@ -97,7 +100,11 @@ function Show(query: Query) {
     linked: book?.id === session?.ltiResourceLink?.bookId,
     onTopicEnded: handleTopicNext,
     onItemClick: handleTopicNext,
-    onBookEditClick: handleBookEditClick,
+    onBookEditClick:
+      book && isContentEditable(book) && !book?.release
+        ? handleBookEditClick
+        : undefined,
+    onBookForkClick: book && book?.release ? handleBookForkClick : undefined,
     onOtherBookLinkClick: handleOtherBookLinkClick,
     onTopicEditClick: handleTopicEditClick,
   };

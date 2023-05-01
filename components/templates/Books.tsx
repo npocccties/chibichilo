@@ -25,6 +25,7 @@ export type Props = {
   loading?: boolean;
   onContentPreviewClick(content: ContentSchema): void;
   onContentEditClick(content: ContentSchema): void;
+  onContentForkClick(content: ContentSchema): void;
   onContentLinkClick(content: ContentSchema, checked: boolean): void;
   onLinkedBookClick?(book: BookSchema): void;
   onBookNewClick(): void;
@@ -39,6 +40,7 @@ export default function Books(props: Props) {
     loading = false,
     onContentPreviewClick,
     onContentEditClick,
+    onContentForkClick,
     onContentLinkClick,
     onLinkedBookClick,
     onBookNewClick,
@@ -95,6 +97,11 @@ export default function Books(props: Props) {
             onContentPreviewClick={onContentPreviewClick}
             onContentEditClick={
               isContentEditable(content) ? onContentEditClick : undefined
+            }
+            onContentForkClick={
+              content.type === "book" && content.release
+                ? onContentForkClick
+                : undefined
             }
             onContentLinkClick={onContentLinkClick}
             onLtiContextClick={searchProps.onLtiContextClick}

@@ -10,6 +10,7 @@ import Container from "@mui/material/Container";
 import LinkIcon from "@mui/icons-material/Link";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import EditButton from "$atoms/EditButton";
+import ForkButton from "$atoms/ForkButton";
 import SharedIndicator from "$atoms/SharedIndicator";
 import DescriptionList from "$atoms/DescriptionList";
 import Sections from "$organisms/Sections";
@@ -111,6 +112,7 @@ type Props = {
   bookActivity?: ActivitySchema[];
   index: ItemIndex;
   onBookEditClick?(book: BookSchema): void;
+  onBookForkClick?(): void;
   onOtherBookLinkClick?(): void;
   onTopicEditClick?(topic: TopicSchema): void;
   onTopicEnded(): void;
@@ -125,6 +127,7 @@ export default function Book(props: Props) {
     bookActivity,
     index: [sectionIndex, topicIndex],
     onBookEditClick,
+    onBookForkClick,
     onOtherBookLinkClick,
     onTopicEditClick,
     onTopicEnded,
@@ -176,23 +179,23 @@ export default function Book(props: Props) {
           >
             {book?.name}
           </Typography>
-          {book?.timeRequired && (
+          {typeof book?.timeRequired === "number" && book.timeRequired > 0 && (
             <Chip
               sx={{ mr: 1, mb: 0.5 }}
               label={`学習時間 ${formatInterval(0, book.timeRequired * 1000)}`}
             />
           )}
           {book?.shared && <SharedIndicator />}
-          {isInstructor &&
-            book &&
-            onBookEditClick &&
-            isContentEditable(book) && (
-              <EditButton
-                variant="book"
-                size="medium"
-                onClick={handleBookEditClick}
-              />
-            )}
+          {onBookEditClick && (
+            <EditButton
+              variant="book"
+              size="medium"
+              onClick={handleBookEditClick}
+            />
+          )}
+          {onBookForkClick && (
+            <ForkButton size="medium" onClick={onBookForkClick} />
+          )}
           {isInstructor && linked && onOtherBookLinkClick && (
             <Button
               size="small"
