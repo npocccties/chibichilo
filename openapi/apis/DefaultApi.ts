@@ -162,6 +162,10 @@ export interface ApiV2BookBookIdReleasePutRequest {
     body?: InlineObject5;
 }
 
+export interface ApiV2BookBookIdTreeGetRequest {
+    bookId: number;
+}
+
 export interface ApiV2BookPostRequest {
     body?: InlineObject3;
 }
@@ -630,6 +634,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2BookBookIdReleasePut(requestParameters: ApiV2BookBookIdReleasePutRequest): Promise<{ [key: string]: object; }> {
         const response = await this.apiV2BookBookIdReleasePutRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * ブックのツリー情報を取得します。 教員または管理者いずれでもない場合、LTIリソースとしてリンクされているブックでなければなりません。
+     * ブックのツリー情報取得
+     */
+    async apiV2BookBookIdTreeGetRaw(requestParameters: ApiV2BookBookIdTreeGetRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdTreeGet.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/book/{book_id}/tree`.replace(`{${"book_id"}}`, encodeURIComponent(String(requestParameters.bookId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * ブックのツリー情報を取得します。 教員または管理者いずれでもない場合、LTIリソースとしてリンクされているブックでなければなりません。
+     * ブックのツリー情報取得
+     */
+    async apiV2BookBookIdTreeGet(requestParameters: ApiV2BookBookIdTreeGetRequest): Promise<{ [key: string]: object; }> {
+        const response = await this.apiV2BookBookIdTreeGetRaw(requestParameters);
         return await response.value();
     }
 
