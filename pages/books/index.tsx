@@ -26,7 +26,7 @@ const Books = (
 
 function Index() {
   const router = useRouter();
-  const { session, isContentEditable } = useSessionAtom();
+  const { session } = useSessionAtom();
   const { linkedBook } = useLinkedBook();
   const {
     data: previewContent,
@@ -35,9 +35,8 @@ function Index() {
   } = useDialogProps<ContentSchema>();
   const { query } = useSearchAtom();
   const onContentEditClick = (book: Pick<ContentSchema, "id" | "authors">) => {
-    const action = isContentEditable(book) ? "edit" : "generate";
     return router.push(
-      pagesPath.book[action].$url({
+      pagesPath.book.edit.$url({
         query: { context: "books", bookId: book.id },
       })
     );

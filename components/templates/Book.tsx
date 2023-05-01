@@ -186,7 +186,7 @@ export default function Book(props: Props) {
           {isInstructor &&
             book &&
             onBookEditClick &&
-            (isContentEditable(book) || book.shared) && (
+            isContentEditable(book) && (
               <EditButton
                 variant="book"
                 size="medium"

@@ -16,6 +16,7 @@ import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
 import type { LinkedBook } from "$types/linkedBook";
 import { useSearchAtom } from "$store/search";
+import { useSessionAtom } from "$store/session";
 
 export type Props = {
   totalCount: number;
@@ -46,6 +47,7 @@ export default function Books(props: Props) {
   const searchProps = useSearchAtom();
   const handleBookNewClick = () => onBookNewClick();
   const handleBooksImportClick = () => onBooksImportClick();
+  const { isContentEditable } = useSessionAtom();
 
   return (
     <Container twoColumns maxWidth="xl">
@@ -91,7 +93,9 @@ export default function Books(props: Props) {
             content={content}
             linked={content.id === linkedBook?.id}
             onContentPreviewClick={onContentPreviewClick}
-            onContentEditClick={onContentEditClick}
+            onContentEditClick={
+              isContentEditable(content) ? onContentEditClick : undefined
+            }
             onContentLinkClick={onContentLinkClick}
             onLtiContextClick={searchProps.onLtiContextClick}
             onKeywordClick={searchProps.onKeywordClick}

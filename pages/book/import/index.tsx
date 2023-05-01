@@ -29,9 +29,8 @@ function Import({ bookId, context }: Query) {
     onClose,
     dispatch,
   } = useDialogProps<BookSchema>();
-  const action = book && isContentEditable(book) ? "edit" : "generate";
   const back = () =>
-    router.push(pagesPath.book[action].$url({ query: bookEditQuery }));
+    router.push(pagesPath.book.edit.$url({ query: bookEditQuery }));
   async function handleSubmit({
     topics,
   }: {
@@ -56,10 +55,8 @@ function Import({ bookId, context }: Query) {
     dispatch(book);
   }
   function handleBookEditClick(book: Pick<BookSchema, "id"> & ContentAuthors) {
-    // TODO: ブックインポート画面で自身以外のブックへの経路を提供しないならば不要なので取り除きましょう
-    const action = isContentEditable(book) ? "edit" : "generate";
     return router.push(
-      pagesPath.book[action].$url({
+      pagesPath.book.edit.$url({
         // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでブック一覧画面に戻る
         query: { bookId: book.id, context: "books" },
       })

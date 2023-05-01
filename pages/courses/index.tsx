@@ -40,7 +40,6 @@ function Index() {
   const clientIds = useClientIds();
   const contents = useLinks();
   const linkSearchProps = useLinkSearchAtom();
-  const { isContentEditable } = useSessionAtom();
   const dialogProps = useDialogProps<BookSchema["id"]>();
   const router = useRouter();
   const handlers = {
@@ -61,9 +60,8 @@ function Index() {
       dialogProps.dispatch(book.id);
     },
     onBookEditClick(book: Pick<BookSchema, "id" | "authors">) {
-      const action = isContentEditable(book) ? "edit" : "generate";
       return router.push(
-        pagesPath.book[action].$url({
+        pagesPath.book.edit.$url({
           query: { context: "courses", bookId: book.id },
         })
       );
