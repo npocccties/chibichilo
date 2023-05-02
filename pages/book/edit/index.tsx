@@ -1,20 +1,12 @@
 import { useRouter } from "next/router";
 import type { BookSchema } from "$server/models/book";
-import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
-import type { SectionProps } from "$server/models/book/section";
-import type { TopicSchema } from "$server/models/topic";
-import type { ContentAuthors } from "$server/models/content";
-import { useSessionAtom } from "$store/session";
-import BookEdit from "$templates/BookEdit";
-import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
-import { destroyBook, updateBook, useBook } from "$utils/book";
-import { pagesPath } from "$utils/$path";
-import useBookLinkHandler from "$utils/useBookLinkHandler";
-import useAuthorsHandler from "$utils/useAuthorsHandler";
+import Placeholder from "$templates/Placeholder";
+import BookEdit from "$templates/BookEdit";
 import ReleasedBook from "$templates/ReleasedBook";
-import useDialogProps from "$utils/useDialogProps";
+import BookFork from "$templates/BookFork";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
+import useBookEditHandlers from "$utils/useBookEditHandlers";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -22,130 +14,27 @@ export type Query = {
 };
 
 function Edit({ bookId, context }: Query) {
-  const query = { bookId, ...(context && { context }) };
-  const { session, isContentEditable } = useSessionAtom();
-  const { book, error } = useBook(bookId, isContentEditable);
-  const router = useRouter();
-  const handleBookLink = useBookLinkHandler();
-  const { handleAuthorsUpdate, handleAuthorSubmit } = useAuthorsHandler(
-    book && { type: "book", ...book }
-  );
-  const back = () => {
-    switch (context) {
-      case "books":
-      case "topics":
-      case "courses":
-        return router.push(pagesPath[context].$url());
-      default:
-        return router.push(pagesPath.book.$url({ query }));
-    }
-  };
-  async function handleSubmit({
-    sections: _sections,
-    submitWithLink: _submitWithLink,
-    ...props
-  }: BookPropsWithSubmitOptions) {
-    await updateBook({ id: bookId, ...props });
-    return back();
-  }
-  async function handleDelete({ id }: Pick<BookSchema, "id">) {
-    await destroyBook(id);
-    switch (context) {
-      case "books":
-      case "topics":
-        return router.push(pagesPath[context].$url());
-      default:
-        return router.push(pagesPath.books.$url());
-    }
-  }
-  function handleCancel() {
-    return back();
-  }
-  async function handleSectionsUpdate(sections: SectionProps[]) {
-    if (!book) return;
-    await updateBook({
-      ...book,
-      sections: sections.filter((section) => section.topics.length > 0),
-    });
-  }
-  function handleTopicEditClick(
-    topic: Pick<TopicSchema, "id"> & ContentAuthors
-  ) {
-    const action = isContentEditable(topic) ? "edit" : "generate";
-    const url = pagesPath.book.edit.topic[action].$url({
-      query: { ...query, topicId: topic.id },
-    });
-    return router.push(url);
-  }
-  function handleTopicNewClick() {
-    return router.push(pagesPath.book.edit.topic.new.$url({ query }));
-  }
-  function handleBookImportClick() {
-    return router.push(pagesPath.book.import.$url({ query }));
-  }
-  function handleTopicImportClick() {
-    return router.push(pagesPath.book.topic.import.$url({ query }));
-  }
-  async function handleReleaseButtonClick() {
-    return router.push(pagesPath.book.release.$url({ query }));
-  }
-  async function onLinkSwitchClick(checked: boolean) {
-    await handleBookLink({ id: bookId }, checked);
-  }
-  const {
-    data: previewTopic,
-    dispatch: setPreviewTopic,
-    ...dialogProps
-  } = useDialogProps<TopicSchema>();
-  const handleTopicPreviewClick = (topic: TopicSchema) =>
-    setPreviewTopic(topic);
-  const linked = bookId === session?.ltiResourceLink?.bookId;
-  const handlers = {
-    linked,
-    onSubmit: handleSubmit,
-    onDelete: handleDelete,
-    onCancel: handleCancel,
-    onSectionsUpdate: handleSectionsUpdate,
-    onBookImportClick: handleBookImportClick,
-    onTopicImportClick: handleTopicImportClick,
-    onTopicNewClick: handleTopicNewClick,
-    onTopicEditClick: handleTopicEditClick,
-    onAuthorsUpdate: handleAuthorsUpdate,
-    onAuthorSubmit: handleAuthorSubmit,
-    onLinkSwitchClick,
-    onReleaseButtonClick: handleReleaseButtonClick,
-    isContentEditable: () => true,
-  };
+  const { error, book, topicPreviewDialogProps, ...handlers } =
+    useBookEditHandlers({ bookId, context });
 
   if (error) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
 
-  if (book.release) {
-    const handlers_for_releasedbook = {
-      onTopicPreview: handleTopicPreviewClick,
-      onLinkSwitchClick,
-      onForkButtonClick: () => {
-        console.log("fork button");
-      },
-      onReleaseEditButtonClick: handleReleaseButtonClick,
-      onDeleteButtonClick: handleDelete,
-    };
-    return (
-      <>
-        <ReleasedBook
-          book={book}
-          linked={linked}
-          {...handlers_for_releasedbook}
-        />
-        ;
-        {previewTopic && (
-          <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
-        )}
-      </>
-    );
-  }
+  const canEdit = handlers.isContentEditable(book);
+  const Template = canEdit
+    ? book.release
+      ? ReleasedBook
+      : BookEdit
+    : BookFork;
 
-  return <BookEdit book={book} {...handlers} />;
+  return (
+    <>
+      <Template book={book} {...handlers} />
+      {topicPreviewDialogProps && (
+        <TopicPreviewDialog {...topicPreviewDialogProps} />
+      )}
+    </>
+  );
 }
 
 function Router() {

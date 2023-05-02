@@ -7,7 +7,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import LinkSwitch from "$atoms/LinkSwitch";
 import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
-import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import Container from "$atoms/Container";
 import RequiredDot from "$atoms/RequiredDot";
 import BackButton from "$atoms/BackButton";
@@ -18,7 +17,6 @@ import type { TopicSchema } from "$server/models/topic";
 import type { AuthorSchema } from "$server/models/author";
 import type { IsContentEditable } from "$server/models/content";
 import { useConfirm } from "material-ui-confirm";
-import useDialogProps from "$utils/useDialogProps";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -47,9 +45,11 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   book: BookSchema;
-  onSubmit(book: BookPropsWithSubmitOptions): void;
-  onDelete(book: BookSchema): void;
-  onCancel(): void;
+  linked?: boolean;
+  isContentEditable?: IsContentEditable;
+  back(): void;
+  onUpdateBook(book: BookPropsWithSubmitOptions): void;
+  onDeleteBook(): void;
   onSectionsUpdate(sections: SectionProps[]): void;
   onTopicImportClick(): void;
   onTopicNewClick(): void;
@@ -59,15 +59,16 @@ type Props = {
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onLinkSwitchClick(checked: boolean): void;
   onReleaseButtonClick(): void;
-  isContentEditable?: IsContentEditable;
-  linked?: boolean;
+  onTopicPreview(topic: TopicSchema): void;
 };
 
 export default function BookEdit({
   book,
-  onSubmit,
-  onDelete,
-  onCancel,
+  linked,
+  isContentEditable,
+  back,
+  onUpdateBook,
+  onDeleteBook,
   onSectionsUpdate,
   onTopicImportClick,
   onTopicNewClick,
@@ -77,30 +78,22 @@ export default function BookEdit({
   onAuthorSubmit,
   onLinkSwitchClick,
   onReleaseButtonClick,
-  isContentEditable,
-  linked,
+  onTopicPreview,
 }: Props) {
   const classes = useStyles();
   const confirm = useConfirm();
-  const {
-    data: previewTopic,
-    dispatch: setPreviewTopic,
-    ...dialogProps
-  } = useDialogProps<TopicSchema>();
-  const handleTopicPreviewClick = (topic: TopicSchema) =>
-    setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
     await confirm({
       title: `ブック「${book.name}」を削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
-    onDelete(book);
+    onDeleteBook();
   };
 
   return (
     <Container className={classes.container} maxWidth="md">
-      <BackButton onClick={onCancel}>戻る</BackButton>
+      <BackButton onClick={back}>戻る</BackButton>
       <Typography className={classes.title} variant="h4">
         ブック「{book.name}」の編集
       </Typography>
@@ -110,7 +103,7 @@ export default function BookEdit({
       <SectionsEdit
         className={classes.content}
         sections={book.sections}
-        onTopicPreviewClick={handleTopicPreviewClick}
+        onTopicPreviewClick={onTopicPreview}
         onTopicEditClick={onTopicEditClick}
         onTopicImportClick={onTopicImportClick}
         onTopicNewClick={onTopicNewClick}
@@ -129,7 +122,7 @@ export default function BookEdit({
         className={classes.content}
         book={book}
         variant="update"
-        onSubmit={onSubmit}
+        onSubmit={onUpdateBook}
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
@@ -156,9 +149,6 @@ export default function BookEdit({
           ブックを削除
         </Button>
       </Box>
-      {previewTopic && (
-        <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
-      )}
     </Container>
   );
 }

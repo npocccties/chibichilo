@@ -2,12 +2,11 @@ import { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ForkOutlinedIcon from "@mui/icons-material/ForkRightOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Box from "@mui/material/Box";
 import { useConfirm } from "material-ui-confirm";
 import LinkSwitch from "$atoms/LinkSwitch";
 import Container from "$atoms/Container";
+import type { BookSchema } from "$server/models/book";
 import ReleasedBookCard, {
   type ReleasedBookCardProps,
 } from "$organisms/ReleasedBookCard";
@@ -15,19 +14,15 @@ import ReleasedBookCard, {
 type Props = ReleasedBookCardProps & {
   linked?: boolean;
   onLinkSwitchClick(checked: boolean): void;
-  onForkButtonClick(): void;
-  onReleaseButtonClick(): void;
-  onDeleteBook(): void;
+  onForkButtonClick(book: Pick<BookSchema, "id">): void;
 };
 
-function ReleasedBook(props: Props) {
+function BookFork(props: Props) {
   const {
     book,
     linked = false,
     onLinkSwitchClick: link,
     onForkButtonClick: fork,
-    onReleaseButtonClick: edit,
-    onDeleteBook: del,
   } = props;
   const confirm = useConfirm();
   const handlers = useMemo(
@@ -38,19 +33,10 @@ function ReleasedBook(props: Props) {
           cancellationText: "キャンセル",
           confirmationText: "OK",
         });
-        fork();
-      },
-      edit,
-      async del() {
-        await confirm({
-          title: `ブック「${book.name}」を削除します。よろしいですか？`,
-          cancellationText: "キャンセル",
-          confirmationText: "OK",
-        });
-        del();
+        fork(book);
       },
     }),
-    [book, fork, edit, del, confirm]
+    [book, fork, confirm]
   );
 
   return (
@@ -83,17 +69,9 @@ function ReleasedBook(props: Props) {
           <ForkOutlinedIcon />
           フォーク
         </Button>
-        <Button size="small" color="primary" onClick={handlers.edit}>
-          <PeopleOutlinedIcon />
-          リリースの編集
-        </Button>
-        <Button size="small" color="primary" onClick={handlers.del}>
-          <DeleteOutlinedIcon />
-          削除
-        </Button>
       </Box>
     </Container>
   );
 }
 
-export default ReleasedBook;
+export default BookFork;

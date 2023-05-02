@@ -16,6 +16,7 @@ import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
 import type { LinkedBook } from "$types/linkedBook";
 import { useSearchAtom } from "$store/search";
+import { useSessionAtom } from "$store/session";
 
 export type Props = {
   totalCount: number;
@@ -24,6 +25,7 @@ export type Props = {
   loading?: boolean;
   onContentPreviewClick(content: ContentSchema): void;
   onContentEditClick(content: ContentSchema): void;
+  onContentForkClick(content: ContentSchema): void;
   onContentLinkClick(content: ContentSchema, checked: boolean): void;
   onLinkedBookClick?(book: BookSchema): void;
   onBookNewClick(): void;
@@ -38,6 +40,7 @@ export default function Books(props: Props) {
     loading = false,
     onContentPreviewClick,
     onContentEditClick,
+    onContentForkClick,
     onContentLinkClick,
     onLinkedBookClick,
     onBookNewClick,
@@ -46,6 +49,7 @@ export default function Books(props: Props) {
   const searchProps = useSearchAtom();
   const handleBookNewClick = () => onBookNewClick();
   const handleBooksImportClick = () => onBooksImportClick();
+  const { isContentEditable } = useSessionAtom();
 
   return (
     <Container twoColumns maxWidth="xl">
@@ -91,7 +95,14 @@ export default function Books(props: Props) {
             content={content}
             linked={content.id === linkedBook?.id}
             onContentPreviewClick={onContentPreviewClick}
-            onContentEditClick={onContentEditClick}
+            onContentEditClick={
+              isContentEditable(content) ? onContentEditClick : undefined
+            }
+            onContentForkClick={
+              content.type === "book" && content.release
+                ? onContentForkClick
+                : undefined
+            }
             onContentLinkClick={onContentLinkClick}
             onLtiContextClick={searchProps.onLtiContextClick}
             onKeywordClick={searchProps.onKeywordClick}

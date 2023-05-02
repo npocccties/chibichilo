@@ -5,11 +5,9 @@ import BookForm from "$organisms/BookForm";
 import Container from "$atoms/Container";
 import RequiredDot from "$atoms/RequiredDot";
 import BackButton from "$atoms/BackButton";
-import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { AuthorSchema } from "$server/models/author";
-import { useSessionAtom } from "$store/session";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -33,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  book?: BookSchema;
   topics?: TopicSchema[];
   onSubmit: (book: BookPropsWithSubmitOptions) => void;
   onCancel(): void;
@@ -42,20 +39,12 @@ type Props = {
 };
 
 export default function BookNew({
-  book,
   topics,
   onSubmit,
   onCancel,
   onAuthorsUpdate,
   onAuthorSubmit,
 }: Props) {
-  const { isContentEditable } = useSessionAtom();
-  const forkFrom =
-    book && !isContentEditable(book) && book.authors.length > 0 && book.authors;
-  const defaultBook = book && {
-    ...book,
-    ...(forkFrom && { name: [book.name, "フォーク"].join("_") }),
-  };
   const classes = useStyles();
 
   return (
@@ -68,12 +57,6 @@ export default function BookNew({
           は必須項目です
         </Typography>
       </Typography>
-      {forkFrom && forkFrom.length > 0 && (
-        <Alert className={classes.alert} severity="info">
-          {forkFrom.map(({ name }) => `${name} さん`).join("、")}
-          のブックをフォークしようとしています
-        </Alert>
-      )}
       {topics && topics.length > 0 && (
         <Alert className={classes.alert} severity="info">
           以下のトピックを追加します
@@ -85,7 +68,6 @@ export default function BookNew({
         </Alert>
       )}
       <BookForm
-        book={defaultBook}
         topics={topics}
         variant="create"
         onSubmit={onSubmit}

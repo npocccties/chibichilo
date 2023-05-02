@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
 import EditButton from "$atoms/EditButton";
+import ForkButton from "$atoms/ForkButton";
 import LinkButton from "$atoms/LinkButton";
 import DescriptionList from "$atoms/DescriptionList";
 import License from "$atoms/License";
@@ -105,6 +106,9 @@ const Preview = styled(Card)(({ theme }) => ({
   ".edit-button": {
     marginRight: theme.spacing(-1.5),
   },
+  ".fork-button": {
+    marginRight: theme.spacing(-1.5),
+  },
   ".video": {
     margin: theme.spacing(0, -2),
   },
@@ -117,6 +121,7 @@ type Props = Parameters<typeof Checkbox>[0] & {
   content: ContentSchema;
   onContentPreviewClick(content: ContentSchema): void;
   onContentEditClick?(content: ContentSchema): void;
+  onContentForkClick?(content: ContentSchema): void;
   onContentLinkClick?(content: ContentSchema, checked: boolean): void;
   onLtiContextClick?(
     ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
@@ -130,6 +135,7 @@ export default function ContentPreview({
   content,
   onContentPreviewClick,
   onContentEditClick,
+  onContentForkClick,
   onContentLinkClick,
   onLtiContextClick,
   onKeywordClick,
@@ -177,11 +183,24 @@ export default function ContentPreview({
             />
           ))}
         {content.shared && <SharedIndicator className="shared" />}
-        {onContentEditClick && (
+        {content.type === "topic" && onContentEditClick && (
           <EditButton
             className="edit-button"
             variant={content.type}
             onClick={handle(onContentEditClick)}
+          />
+        )}
+        {content.type === "book" && !content.release && onContentEditClick && (
+          <EditButton
+            className="edit-button"
+            variant={content.type}
+            onClick={handle(onContentEditClick)}
+          />
+        )}
+        {content.type === "book" && content.release && onContentForkClick && (
+          <ForkButton
+            className="fork-button"
+            onClick={handle(onContentForkClick)}
           />
         )}
       </Header>
