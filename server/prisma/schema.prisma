@@ -16,6 +16,8 @@ model Release {
   releasedAt DateTime @default(now()) @map("released_at")
   version    String   @default("0.0.0")
   comment    String   @default("")
+  /// 最新版の場合 true、それ以外 false (例えば著者によってフォークされた場合)
+  latest     Boolean  @default(true)
 
   @@map("release")
 }
@@ -214,7 +216,6 @@ model LtiResourceLink {
   createdAt  DateTime    @default(now()) @map("created_at")
   /// 更新日
   updatedAt  DateTime    @updatedAt @map("updated_at")
-
 
   @@id([consumerId, id])
   @@map("lti_resource_link")

@@ -233,6 +233,16 @@ export function useSearchAtom() {
   );
   useUnmount(() => updateRelatedBooks([]));
 
+  const onReleaseFilterChange = useCallback(
+    (checked: boolean) => {
+      updateSearchQuery((searchQuery) => ({
+        ...searchQuery,
+        latestRelease: [checked],
+      }));
+    },
+    [updateSearchQuery]
+  );
+
   return {
     query,
     searchQuery,
@@ -255,5 +265,6 @@ export function useSearchAtom() {
     onKeywordDelete,
     onRelatedBookClick,
     onRelatedBookDelete,
+    onReleaseFilterChange,
   };
 }

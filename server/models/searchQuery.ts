@@ -21,6 +21,8 @@ export type SearchQueryBase = {
   link: Array<Pick<LtiResourceLinkSchema, "consumerId" | "contextId">>;
   /** トピックの場合: 関連するブックのID、ブックの場合: ブックID */
   book: number[];
+  /** トピックの場合: 無効、ブックの場合: 最新版リリース (true: 最新版のリリースのみ, それ以外: すべて) */
+  latestRelease: boolean[];
 };
 
 export type TopicSearchQuery = SearchQueryBase & {

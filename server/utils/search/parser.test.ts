@@ -11,13 +11,14 @@ const emptyQuery = {
   shared: [],
   link: [],
   book: [],
+  latestRelease: [],
 };
 
 describe("parse()", function () {
   test("検索クエリー文字列をパースできる", function () {
     expect(
       parse(
-        `name:a description:"b b" author:c partial-keyword:d keyword:e license:CC-BY-4.0 shared:true link:hoge:piyo book:42 foo bar baz`
+        `name:a description:"b b" author:c partial-keyword:d keyword:e license:CC-BY-4.0 shared:true link:hoge:piyo book:42 foo bar baz latest-release:true`
       )
     ).toEqual({
       text: ["foo", "bar", "baz"],
@@ -30,6 +31,7 @@ describe("parse()", function () {
       shared: [true],
       link: [{ consumerId: "hoge", contextId: "piyo" }],
       book: [42],
+      latestRelease: [true],
     });
   });
 
@@ -66,7 +68,6 @@ describe("parse()", function () {
 describe("stringify()", function () {
   test("検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       text: ["a", "b"],
       keyword: ["foo", "bar"],
     };
@@ -80,7 +81,6 @@ describe("stringify()", function () {
 
   test("ライセンス:未設定の検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       license: [""],
     };
     expect(stringify(query)).toBe("license:none");
@@ -88,7 +88,6 @@ describe("stringify()", function () {
 
   test("LTI Contextを検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       link: [{ consumerId: "foo", contextId: "bar" }],
     };
     expect(stringify(query)).toBe("link:foo:bar");
@@ -96,7 +95,6 @@ describe("stringify()", function () {
 
   test("いくつかのLTI Contextを検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       link: [
         { consumerId: "foo", contextId: "bar" },
         { consumerId: "hoge", contextId: "piyo" },
@@ -107,7 +105,6 @@ describe("stringify()", function () {
 
   test("`:` や `,` や空白が含まれるLTI Contextを検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       link: [{ consumerId: "te:s,t", contextId: "fo o" }],
     };
     expect(stringify(query)).toBe("link:te%3As%2Ct:fo%20o");
@@ -115,7 +112,6 @@ describe("stringify()", function () {
 
   test("共有可否を検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       shared: [true],
     };
     expect(stringify(query)).toBe("shared:true");
@@ -123,9 +119,15 @@ describe("stringify()", function () {
 
   test("ブックIDを検索クエリー文字列に変換", () => {
     const query = {
-      ...emptyQuery,
       book: [42],
     };
     expect(stringify(query)).toBe("book:42");
+  });
+
+  test("最新リリースの有無を検索クエリー文字列に変換", () => {
+    const query = {
+      latestRelease: [false],
+    };
+    expect(stringify(query)).toBe("latest-release:false");
   });
 });
