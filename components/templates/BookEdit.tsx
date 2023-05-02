@@ -59,6 +59,7 @@ type Props = {
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onLinkSwitchClick(checked: boolean): void;
   onReleaseButtonClick(): void;
+  onBookTreeButtonClick(): void;
   onTopicPreview(topic: TopicSchema): void;
 };
 
@@ -78,6 +79,7 @@ export default function BookEdit({
   onAuthorSubmit,
   onLinkSwitchClick,
   onReleaseButtonClick,
+  onBookTreeButtonClick,
   onTopicPreview,
 }: Props) {
   const classes = useStyles();
@@ -143,6 +145,10 @@ export default function BookEdit({
         <Button size="small" color="primary" onClick={onReleaseButtonClick}>
           <PeopleOutlinedIcon />
           リリース
+        </Button>
+        <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
+          <PeopleOutlinedIcon />
+          ツリー表示
         </Button>
         <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
           <DeleteOutlinedIcon />
