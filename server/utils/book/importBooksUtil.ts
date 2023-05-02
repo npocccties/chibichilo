@@ -151,9 +151,9 @@ class ImportBooksUtil {
     return result;
   }
 
-  cleanUp() {
+  async cleanUp() {
     if (this.tmpdir) {
-      fs.rmdirSync(this.tmpdir, { recursive: true });
+      await fs.promises.rm(this.tmpdir, { recursive: true });
     }
   }
 
