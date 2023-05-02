@@ -113,7 +113,7 @@ class ImportBooksUtil {
       console.error(e);
       this.errors.push(...(Array.isArray(e) ? e : [String(e)]));
     } finally {
-      this.cleanUp();
+      await this.cleanUp();
     }
   }
 
