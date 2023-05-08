@@ -73,6 +73,7 @@
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-d3-tree": "^3.5.2",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.8",
     "react-infinite-scroll-hook": "^4.1.1",
