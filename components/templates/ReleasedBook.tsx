@@ -18,6 +18,7 @@ type Props = ReleasedBookCardProps & {
   onForkButtonClick(): void;
   onReleaseButtonClick(): void;
   onDeleteBook(): void;
+  onBookTreeButtonClick(): void;
 };
 
 function ReleasedBook(props: Props) {
@@ -28,6 +29,7 @@ function ReleasedBook(props: Props) {
     onForkButtonClick: fork,
     onReleaseButtonClick: edit,
     onDeleteBook: del,
+    onBookTreeButtonClick,
   } = props;
   const confirm = useConfirm();
   const handlers = useMemo(
@@ -87,6 +89,10 @@ function ReleasedBook(props: Props) {
           <PeopleOutlinedIcon />
           リリースの編集
         </Button>
+        <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
+          <PeopleOutlinedIcon />
+          ツリー表示
+        </Button>{" "}
         <Button size="small" color="primary" onClick={handlers.del}>
           <DeleteOutlinedIcon />
           削除
