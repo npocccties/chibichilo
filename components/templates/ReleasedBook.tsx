@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import ForkOutlinedIcon from "@mui/icons-material/ForkRightOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Box from "@mui/material/Box";
 import { useConfirm } from "material-ui-confirm";
 import LinkSwitch from "$atoms/LinkSwitch";
@@ -90,7 +91,7 @@ function ReleasedBook(props: Props) {
           リリースの編集
         </Button>
         <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
-          <PeopleOutlinedIcon />
+          <AccountTreeOutlinedIcon />
           ツリー表示
         </Button>{" "}
         <Button size="small" color="primary" onClick={handlers.del}>

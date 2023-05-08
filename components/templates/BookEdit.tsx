@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import LinkSwitch from "$atoms/LinkSwitch";
@@ -147,7 +148,7 @@ export default function BookEdit({
           リリース
         </Button>
         <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
-          <PeopleOutlinedIcon />
+          <AccountTreeOutlinedIcon />
           ツリー表示
         </Button>
         <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
