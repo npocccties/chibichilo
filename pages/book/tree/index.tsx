@@ -6,6 +6,9 @@ import BookTreeDiagram from "$templates/BookTreeDiagram";
 import { useSessionAtom } from "$store/session";
 import { useBook } from "$utils/book";
 import type { BookSchema } from "$server/models/book";
+import type { Query as BookEditQuery } from "$pages/book/edit";
+
+export type Query = BookEditQuery;
 
 function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   const { isContentEditable } = useSessionAtom();
@@ -22,6 +25,7 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
+  const { context: _ }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId)) return <BookNotFoundProblem />;
 
