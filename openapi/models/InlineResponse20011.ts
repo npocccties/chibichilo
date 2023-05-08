@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2004Resource,
-    InlineResponse2004ResourceFromJSON,
-    InlineResponse2004ResourceFromJSONTyped,
-    InlineResponse2004ResourceToJSON,
+    InlineResponse2004Topics,
+    InlineResponse2004TopicsFromJSON,
+    InlineResponse2004TopicsFromJSONTyped,
+    InlineResponse2004TopicsToJSON,
 } from './';
 
 /**
@@ -28,10 +28,10 @@ import {
 export interface InlineResponse20011 {
     /**
      * 
-     * @type {Array<InlineResponse2004Resource>}
+     * @type {Array<InlineResponse2004Topics>}
      * @memberof InlineResponse20011
      */
-    resources?: Array<InlineResponse2004Resource>;
+    topics?: Array<InlineResponse2004Topics>;
     /**
      * 
      * @type {number}
@@ -56,7 +56,7 @@ export function InlineResponse20011FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'resources': !exists(json, 'resources') ? undefined : ((json['resources'] as Array<any>).map(InlineResponse2004ResourceFromJSON)),
+        'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2004TopicsFromJSON)),
         'page': !exists(json, 'page') ? undefined : json['page'],
         'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
@@ -71,7 +71,7 @@ export function InlineResponse20011ToJSON(value?: InlineResponse20011 | null): a
     }
     return {
         
-        'resources': value.resources === undefined ? undefined : ((value.resources as Array<any>).map(InlineResponse2004ResourceToJSON)),
+        'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2004TopicsToJSON)),
         'page': value.page,
         'perPage': value.perPage,
     };
