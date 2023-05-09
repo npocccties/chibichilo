@@ -25,7 +25,6 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
-  const { context: _ }: Pick<Query, "context"> = router.query;
 
   if (!Number.isFinite(bookId)) return <BookNotFoundProblem />;
 
