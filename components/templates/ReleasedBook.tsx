@@ -93,7 +93,7 @@ function ReleasedBook(props: Props) {
         <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
           <AccountTreeOutlinedIcon />
           ツリー表示
-        </Button>{" "}
+        </Button>
         <Button size="small" color="primary" onClick={handlers.del}>
           <DeleteOutlinedIcon />
           削除
