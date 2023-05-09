@@ -31,13 +31,20 @@ function node2RawNodeDatum(node: TreeNodeSchema): RawNodeDatum {
 
 function tree2RawNodeDatum(tree: TreeResultSchema): RawNodeDatum {
   const nodeMap: Map<number, RawNodeDatum> = new Map();
+
+  // すべてのノードを登録する
   for (const node of tree.nodes) {
-    const rawNodeDatam = node2RawNodeDatum(node);
-    nodeMap.set(node.id, rawNodeDatam);
-    if (node.parentId) {
+    const rawNodeDatum = node2RawNodeDatum(node);
+    nodeMap.set(node.id, rawNodeDatum);
+  }
+
+  // ノードを接続する
+  for (const node of tree.nodes) {
+    const rawNodeDatum = nodeMap.get(node.id);
+    if (rawNodeDatum && node.parentId) {
       const { children } = nodeMap.get(node.parentId) || {};
       if (children) {
-        children.push(rawNodeDatam);
+        children.push(rawNodeDatum);
       }
     }
   }
