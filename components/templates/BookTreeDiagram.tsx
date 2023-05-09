@@ -54,6 +54,7 @@ function tree2RawNodeDatum(tree: TreeResultSchema): RawNodeDatum {
 
 function getD3TreeOptions() {
   return {
+    collapsible: false,
     draggable: true,
     nodeSize: {
       x: 220,
