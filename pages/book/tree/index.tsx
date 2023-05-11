@@ -19,7 +19,11 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   if (!book) return <Placeholder />;
   if (!tree) return <Placeholder />;
 
-  return <BookTreeDiagram book={book} tree={tree} />;
+  function onNodeClick(id: number) {
+    console.log(id);
+  }
+
+  return <BookTreeDiagram book={book} tree={tree} onNodeClick={onNodeClick} />;
 }
 
 function Router() {
