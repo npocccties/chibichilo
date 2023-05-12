@@ -57,5 +57,7 @@ export const TreeResultSchema = {
     rootId: { type: "integer" },
     nodes: { type: "array", items: TreeNodeSchema },
   },
-  additionalProperties: false,
+  // 下記設定を有効にすると、openapi-cient-generator が生成する client で、
+  // Date型が deserialize されない
+  //  additionalProperties: false,
 } as const;

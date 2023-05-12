@@ -31,6 +31,7 @@ type BookEditHandlers = {
   onLinkSwitchClick(checked: boolean): void;
   onForkButtonClick(): void;
   onReleaseButtonClick(): void;
+  onBookTreeButtonClick(): void;
   onTopicPreview(topic: TopicSchema): void;
   topicPreviewDialogProps: TopicPreviewDialogProps | undefined;
 };
@@ -134,6 +135,10 @@ function useBookEditHandlers({
     /** リリース */
     async onReleaseButtonClick() {
       return router.push(pagesPath.book.release.$url({ query }));
+    },
+    /** ツリー表示 */
+    async onBookTreeButtonClick() {
+      return router.push(pagesPath.book.tree.$url({ query }));
     },
     /** トピックのプレビュー */
     onTopicPreview,

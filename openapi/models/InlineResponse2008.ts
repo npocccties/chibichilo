@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2008Nodes,
+    InlineResponse2008NodesFromJSON,
+    InlineResponse2008NodesFromJSONTyped,
+    InlineResponse2008NodesToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -21,10 +28,16 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse2008 {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof InlineResponse2008
      */
-    publicToken: string;
+    rootId: number;
+    /**
+     * 
+     * @type {Array<InlineResponse2008Nodes>}
+     * @memberof InlineResponse2008
+     */
+    nodes: Array<InlineResponse2008Nodes>;
 }
 
 export function InlineResponse2008FromJSON(json: any): InlineResponse2008 {
@@ -37,7 +50,8 @@ export function InlineResponse2008FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'publicToken': json['publicToken'],
+        'rootId': json['rootId'],
+        'nodes': ((json['nodes'] as Array<any>).map(InlineResponse2008NodesFromJSON)),
     };
 }
 
@@ -50,7 +64,8 @@ export function InlineResponse2008ToJSON(value?: InlineResponse2008 | null): any
     }
     return {
         
-        'publicToken': value.publicToken,
+        'rootId': value.rootId,
+        'nodes': ((value.nodes as Array<any>).map(InlineResponse2008NodesToJSON)),
     };
 }
 

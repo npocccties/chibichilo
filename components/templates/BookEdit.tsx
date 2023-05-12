@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import LinkSwitch from "$atoms/LinkSwitch";
@@ -59,6 +60,7 @@ type Props = {
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onLinkSwitchClick(checked: boolean): void;
   onReleaseButtonClick(): void;
+  onBookTreeButtonClick(): void;
   onTopicPreview(topic: TopicSchema): void;
 };
 
@@ -78,6 +80,7 @@ export default function BookEdit({
   onAuthorSubmit,
   onLinkSwitchClick,
   onReleaseButtonClick,
+  onBookTreeButtonClick,
   onTopicPreview,
 }: Props) {
   const classes = useStyles();
@@ -143,6 +146,10 @@ export default function BookEdit({
         <Button size="small" color="primary" onClick={onReleaseButtonClick}>
           <PeopleOutlinedIcon />
           リリース
+        </Button>
+        <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
+          <AccountTreeOutlinedIcon />
+          ツリー表示
         </Button>
         <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
           <DeleteOutlinedIcon />

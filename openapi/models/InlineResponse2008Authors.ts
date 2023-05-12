@@ -16,28 +16,40 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineResponse20014Book
+ * @interface InlineResponse2008Authors
  */
-export interface InlineResponse20014Book {
+export interface InlineResponse2008Authors {
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse20014Book
+     * @memberof InlineResponse2008Authors
      */
     id: number;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse20014Book
+     * @memberof InlineResponse2008Authors
      */
     name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2008Authors
+     */
+    email: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2008Authors
+     */
+    roleName: string;
 }
 
-export function InlineResponse20014BookFromJSON(json: any): InlineResponse20014Book {
-    return InlineResponse20014BookFromJSONTyped(json, false);
+export function InlineResponse2008AuthorsFromJSON(json: any): InlineResponse2008Authors {
+    return InlineResponse2008AuthorsFromJSONTyped(json, false);
 }
 
-export function InlineResponse20014BookFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20014Book {
+export function InlineResponse2008AuthorsFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse2008Authors {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -45,10 +57,12 @@ export function InlineResponse20014BookFromJSONTyped(json: any, ignoreDiscrimina
         
         'id': json['id'],
         'name': json['name'],
+        'email': json['email'],
+        'roleName': json['roleName'],
     };
 }
 
-export function InlineResponse20014BookToJSON(value?: InlineResponse20014Book | null): any {
+export function InlineResponse2008AuthorsToJSON(value?: InlineResponse2008Authors | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -59,6 +73,8 @@ export function InlineResponse20014BookToJSON(value?: InlineResponse20014Book | 
         
         'id': value.id,
         'name': value.name,
+        'email': value.email,
+        'roleName': value.roleName,
     };
 }
 

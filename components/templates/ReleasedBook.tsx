@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import ForkOutlinedIcon from "@mui/icons-material/ForkRightOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Box from "@mui/material/Box";
 import { useConfirm } from "material-ui-confirm";
 import LinkSwitch from "$atoms/LinkSwitch";
@@ -18,6 +19,7 @@ type Props = ReleasedBookCardProps & {
   onForkButtonClick(): void;
   onReleaseButtonClick(): void;
   onDeleteBook(): void;
+  onBookTreeButtonClick(): void;
 };
 
 function ReleasedBook(props: Props) {
@@ -28,6 +30,7 @@ function ReleasedBook(props: Props) {
     onForkButtonClick: fork,
     onReleaseButtonClick: edit,
     onDeleteBook: del,
+    onBookTreeButtonClick,
   } = props;
   const confirm = useConfirm();
   const handlers = useMemo(
@@ -86,6 +89,10 @@ function ReleasedBook(props: Props) {
         <Button size="small" color="primary" onClick={handlers.edit}>
           <PeopleOutlinedIcon />
           リリースの編集
+        </Button>
+        <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
+          <AccountTreeOutlinedIcon />
+          ツリー表示
         </Button>
         <Button size="small" color="primary" onClick={handlers.del}>
           <DeleteOutlinedIcon />
