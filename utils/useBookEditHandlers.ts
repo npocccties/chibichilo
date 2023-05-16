@@ -7,7 +7,7 @@ import type { SectionProps } from "$server/models/book/section";
 import type { AuthorSchema } from "$server/models/author";
 import { type TopicPreviewDialogProps } from "$organisms/TopicPreviewDialog";
 import { useSessionAtom } from "$store/session";
-import { destroyBook, updateBook, useBook } from "$utils/book";
+import { destroyBook, forkBook, updateBook, useBook } from "$utils/book";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import useBookLinkHandler from "$utils/useBookLinkHandler";
 import useDialogProps from "$utils/useDialogProps";
@@ -129,8 +129,11 @@ function useBookEditHandlers({
       await bookLinkHandler({ id: bookId }, checked);
     },
     /** フォーク */
-    onForkButtonClick: () => {
-      console.log("fork button");
+    async onForkButtonClick() {
+      const created = await forkBook(bookId);
+      return router.push(
+        pagesPath.book.edit.$url({ query: { ...query, bookId: created.id } })
+      );
     },
     /** リリース */
     async onReleaseButtonClick() {

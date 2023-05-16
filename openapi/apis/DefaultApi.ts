@@ -151,6 +151,10 @@ export interface ApiV2BookBookIdDeleteRequest {
     bookId: number;
 }
 
+export interface ApiV2BookBookIdForkPostRequest {
+    bookId: number;
+}
+
 export interface ApiV2BookBookIdGetRequest {
     bookId: number;
 }
@@ -536,6 +540,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2BookBookIdDelete(requestParameters: ApiV2BookBookIdDeleteRequest): Promise<void> {
         await this.apiV2BookBookIdDeleteRaw(requestParameters);
+    }
+
+    /**
+     * ブックをフォークします。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのフォーク
+     */
+    async apiV2BookBookIdForkPostRaw(requestParameters: ApiV2BookBookIdForkPostRequest): Promise<runtime.ApiResponse<InlineResponse2005Books>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdForkPost.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/book/{book_id}/fork`.replace(`{${"book_id"}}`, encodeURIComponent(String(requestParameters.bookId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2005BooksFromJSON(jsonValue));
+    }
+
+    /**
+     * ブックをフォークします。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのフォーク
+     */
+    async apiV2BookBookIdForkPost(requestParameters: ApiV2BookBookIdForkPostRequest): Promise<InlineResponse2005Books> {
+        const response = await this.apiV2BookBookIdForkPostRaw(requestParameters);
+        return await response.value();
     }
 
     /**
