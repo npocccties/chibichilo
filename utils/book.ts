@@ -88,6 +88,11 @@ export async function releaseBook({
   return res as ReleaseSchema;
 }
 
+export async function forkBook(id: BookSchema["id"]): Promise<BookSchema> {
+  const res = await api.apiV2BookBookIdForkPost({ bookId: id });
+  return res as BookSchema;
+}
+
 export async function addTopicToBook(
   book: BookSchema,
   topic: Pick<TopicSchema, "id">

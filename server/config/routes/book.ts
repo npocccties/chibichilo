@@ -8,6 +8,7 @@ import * as showPublicService from "$server/services/book/public";
 import * as showZoomService from "$server/services/book/zoom";
 import * as releaseService from "$server/services/book/release";
 import * as treeService from "$server/services/book/tree";
+import * as forkService from "$server/services/book/fork";
 
 const basePath = "/book";
 const pathWithParams = `${basePath}/:book_id`;
@@ -105,4 +106,14 @@ export async function bookTree(fastify: FastifyInstance) {
   fastify.get<{
     Params: treeService.Params;
   }>(path, { schema: method.get, ...hooks.get }, handler(show));
+}
+
+export async function bookFork(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/fork`;
+  const { method, create } = forkService;
+  const hooks = makeHooks(fastify, treeService.hooks);
+
+  fastify.post<{
+    Params: treeService.Params;
+  }>(path, { schema: method.post, ...hooks.post }, handler(create));
 }
