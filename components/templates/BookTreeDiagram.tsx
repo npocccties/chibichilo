@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Container from "$atoms/Container";
 import type {
+  TreeNodeAuthorsSchema,
   TreeNodeSchema,
   TreeResultSchema,
 } from "$server/models/book/tree";
@@ -21,6 +22,12 @@ type Props = {
   onNodeClick?: (id: number) => void;
 };
 
+function creators(authors: TreeNodeAuthorsSchema[]): string[] {
+  return authors
+    .filter((author) => author.roleName === "作成者")
+    .map((author) => author.name);
+}
+
 function node2RawNodeDatum(
   node: TreeNodeSchema,
   targetId: number
@@ -35,6 +42,9 @@ function node2RawNodeDatum(
   }
   if (node.release?.releasedAt instanceof Date) {
     attributes["releasedAt"] = getLocaleDateTimeString(node.release.releasedAt);
+  }
+  if (node.authors != null) {
+    attributes["creators"] = creators(node.authors).join(",");
   }
   return {
     name: node.name || "",
@@ -99,6 +109,11 @@ const renderCustomNodeElement: RenderCustomNodeElementFn = ({
           {nodeDatum.attributes?.releasedAt && (
             <tspan x="40" dy="1.2em">
               {nodeDatum.attributes.releasedAt}
+            </tspan>
+          )}
+          {nodeDatum.attributes?.creators && (
+            <tspan x="40" dy="1.2em">
+              {nodeDatum.attributes.creators}
             </tspan>
           )}
         </text>
