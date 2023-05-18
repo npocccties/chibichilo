@@ -1,10 +1,12 @@
-import type { KeywordPropSchema } from "$server/models/keyword";
+import type { KeywordPropSchema, KeywordSchema } from "$server/models/keyword";
 
-function keywordsConnectOrCreateInput(keywords: KeywordPropSchema[]) {
+function keywordsConnectOrCreateInput<
+  Input extends Array<KeywordPropSchema> | Array<KeywordSchema>
+>(keywords: Input) {
   return {
-    connectOrCreate: keywords.map((keyword) => ({
-      where: keyword,
-      create: keyword,
+    connectOrCreate: keywords.map(({ name }) => ({
+      where: { name },
+      create: { name },
     })),
   };
 }

@@ -10,6 +10,7 @@ const books = [
       { topics: [{ id: 4 }] },
       { topics: [{ id: 5 }] },
     ],
+    keywords: [{ name: "数学" }, { name: "入門微分積分学共通" }],
   },
 ];
 
