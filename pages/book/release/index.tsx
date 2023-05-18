@@ -21,18 +21,21 @@ function getParentBook(
   bookId: number,
   tree: TreeResultSchema
 ): ReleaseEditProps["parentBook"] {
-  let parentBook: ReleaseEditProps["parentBook"];
-  const bookNode = getNode(tree, bookId);
-  if (bookNode && bookNode.parentId) {
-    const parentNode = getNode(tree, bookNode.parentId);
-    if (parentNode) {
-      const { name, release } = parentNode;
-      if (name && release) {
-        parentBook = { id: bookNode.parentId, name, release };
-      }
-    }
+  // 親ブックIDを取得
+  const parentId = getNode(tree, bookId)?.parentId;
+  if (parentId == null) return;
+
+  // 親ブックノードを取得
+  const parentNode = getNode(tree, parentId);
+  if (!parentNode) return;
+
+  // リリース情報があれば返す
+  const { name, release } = parentNode;
+  if (name && release) {
+    return { id: parentId, name, release };
   }
-  return parentBook;
+
+  return;
 }
 
 function Release({ bookId, context }: Query) {
