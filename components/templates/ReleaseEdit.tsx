@@ -7,7 +7,7 @@ import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import type { ReleaseProps } from "$server/models/book/release";
 
-type Props = {
+export type Props = {
   book: BookSchema;
   parentBook?: Pick<BookSchema, "id" | "name" | "release">;
   onSubmit(release: ReleaseProps): void;
