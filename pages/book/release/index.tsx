@@ -9,7 +9,10 @@ import type { Props as ReleaseEditProps } from "$templates/ReleaseEdit";
 import ReleaseEdit from "$templates/ReleaseEdit";
 import type { ReleaseProps } from "$server/models/book/release";
 import useBookTree from "$utils/useBookTree";
-import type { TreeResultSchema } from "$server/models/book/tree";
+import type {
+  TreeNodeSchema,
+  TreeResultSchema,
+} from "$server/models/book/tree";
 
 export type Query = BookEditQuery;
 
@@ -17,22 +20,35 @@ function getNode(tree: TreeResultSchema, id: number) {
   return tree.nodes.filter((node) => node.id == id)[0];
 }
 
+function getParentNode(
+  tree: TreeResultSchema,
+  node: TreeNodeSchema
+): TreeNodeSchema | undefined {
+  // 親ブックIDを取得
+  const parentId = node.parentId;
+  if (parentId == null) return;
+
+  // 親ブックノードを取得
+  return getNode(tree, parentId);
+}
+
 function getParentBook(
   bookId: number,
   tree: TreeResultSchema
 ): ReleaseEditProps["parentBook"] {
-  // 親ブックIDを取得
-  const parentId = getNode(tree, bookId)?.parentId;
-  if (parentId == null) return;
+  let node: TreeNodeSchema | undefined = getNode(tree, bookId);
 
-  // 親ブックノードを取得
-  const parentNode = getNode(tree, parentId);
-  if (!parentNode) return;
+  while (node) {
+    const parentNode = getParentNode(tree, node);
 
-  // リリース情報があれば返す
-  const { name, release } = parentNode;
-  if (name && release) {
-    return { id: parentId, name, release };
+    // リリース情報があれば返す
+    const { id, name, release } = parentNode || {};
+    if (id && name && release) {
+      return { id, name, release };
+    }
+
+    // 先祖を辿る
+    node = parentNode;
   }
 
   return;
