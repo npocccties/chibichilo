@@ -1,12 +1,10 @@
-import type { Prisma, Section, TopicSection } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
-import type { TopicSchema } from "$server/models/topic";
 import {
   authorArg,
   authorToAuthorSchema,
 } from "$server/utils/author/authorToAuthorSchema";
-import type { TopicWithResource } from "$server/utils/topic/topicToTopicSchema";
 import {
   topicsWithResourcesArg,
   topicToTopicSchema,
@@ -58,13 +56,9 @@ export const getBookIncludingArg = (userId: number) => {
   } as const;
 };
 
-type TopicSectionWithTopic = TopicSection & {
-  topic: TopicWithResource;
-};
-
-type SectionWithTopics = Section & {
-  topicSections: TopicSectionWithTopic[];
-};
+type SectionWithTopics = Prisma.SectionGetPayload<
+  ReturnType<typeof getBookIncludingArg>["include"]["sections"]
+>;
 
 export type BookWithTopics = Prisma.BookGetPayload<
   typeof bookIncludingTopicsArg
@@ -88,17 +82,7 @@ function sectionToSectionSchema(
   return {
     ...section,
     topics: section.topicSections.map((topicSection) =>
-      topicSectionToTopicSchema(topicSection, ip)
+      topicToTopicSchema(topicSection.topic, ip)
     ),
-  };
-}
-
-function topicSectionToTopicSchema(
-  topicSection: TopicSectionWithTopic,
-  ip: string
-): TopicSchema {
-  return {
-    ...topicSection,
-    ...topicToTopicSchema(topicSection.topic, ip),
   };
 }
