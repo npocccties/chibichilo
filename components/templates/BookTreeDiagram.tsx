@@ -58,12 +58,12 @@ function setNumberOfFork(node: RawNodeDatum): number {
   if (node.children) {
     for (const child of node.children) {
       sum = sum + setNumberOfFork(child);
-      if (child.name != null) {
+      if (child.name) {
         sum = sum + 1;
       }
     }
   }
-  if (node.attributes) {
+  if (node.attributes && node.name && sum > 0) {
     node.attributes["forks"] = `フォーク数: ${sum}`;
   }
   return sum;
