@@ -53,6 +53,22 @@ function node2RawNodeDatum(
   };
 }
 
+function setNumberOfFork(node: RawNodeDatum): number {
+  let sum = 0;
+  if (node.children) {
+    for (const child of node.children) {
+      sum = sum + setNumberOfFork(child);
+      if (child.name) {
+        sum = sum + 1;
+      }
+    }
+  }
+  if (node.attributes && node.name && sum > 0) {
+    node.attributes["forks"] = `フォーク数: ${sum}`;
+  }
+  return sum;
+}
+
 function tree2RawNodeDatum({ book, tree }: Props): RawNodeDatum {
   const nodeMap: Map<number, RawNodeDatum> = new Map();
 
@@ -72,7 +88,15 @@ function tree2RawNodeDatum({ book, tree }: Props): RawNodeDatum {
       }
     }
   }
+
+  // rootId ノードを探す
   const ret = tree.rootId != null && nodeMap.get(tree.rootId);
+
+  // フォーク数を計算して設定する
+  if (ret) {
+    setNumberOfFork(ret);
+  }
+
   return ret || { name: "No Data" };
 }
 
@@ -114,6 +138,11 @@ const renderCustomNodeElement: RenderCustomNodeElementFn = ({
           {nodeDatum.attributes?.creators && (
             <tspan x="40" dy="1.2em">
               {nodeDatum.attributes.creators}
+            </tspan>
+          )}
+          {nodeDatum.attributes?.forks && (
+            <tspan x="40" dy="1.2em">
+              {nodeDatum.attributes.forks}
             </tspan>
           )}
         </text>
