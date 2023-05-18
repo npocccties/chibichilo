@@ -16,7 +16,13 @@ export type Props = {
 type ParentBookProps = Partial<Props["parentBook"]>;
 
 function ParentBook(props: ParentBookProps = {}) {
-  if (props.id == null) return null;
+  if (props.id == null) {
+    return (
+      <Card>
+        <Typography variant="h5">前回のリリースはありません</Typography>
+      </Card>
+    );
+  }
 
   return (
     <Card>
