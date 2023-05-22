@@ -41,6 +41,8 @@ async function forkBook(
 
   const {
     id: _id,
+    createdAt: _createdAt,
+    updatedAt: _updatedAt,
     ltiResourceLinks: _link,
     ...book
   } = structuredClone(parentBook);
