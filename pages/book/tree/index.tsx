@@ -7,13 +7,25 @@ import { useSessionAtom } from "$store/session";
 import { useBook } from "$utils/book";
 import type { BookSchema } from "$server/models/book";
 import type { Query as BookEditQuery } from "$pages/book/edit";
+import { useState } from "react";
+import type {
+  TreeNodeSchema,
+  TreeResultSchema,
+} from "$server/models/book/tree";
+import BookTreeDialog from "$organisms/BookTreeDialog";
 
 export type Query = BookEditQuery;
+
+function getNode(tree: TreeResultSchema, id: number) {
+  return tree.nodes.filter((node) => node.id == id)[0];
+}
 
 function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   const { isContentEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const { tree, error: error2 } = useBookTree(bookId);
+  const [node, setNode] = useState<TreeNodeSchema | undefined>();
+  const [open, setOpen] = useState(false);
 
   if (error || error2) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
@@ -21,9 +33,24 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
 
   function onNodeClick(id: number) {
     console.log(id);
+    if (tree == null) return;
+    const node = getNode(tree, id);
+    if (node && node.name) {
+      setNode(node);
+      setOpen(true);
+    }
   }
 
-  return <BookTreeDiagram book={book} tree={tree} onNodeClick={onNodeClick} />;
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <BookTreeDiagram book={book} tree={tree} onNodeClick={onNodeClick} />;
+      <BookTreeDialog node={node} open={open} onClose={handleClose} />
+    </>
+  );
 }
 
 function Router() {
