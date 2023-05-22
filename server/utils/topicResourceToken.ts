@@ -4,6 +4,7 @@ import {
   WOWZA_EXPIRES_IN,
   SESSION_SECRET,
   PUBLIC_ACCESS_CRYPTO_ALGORITHM,
+  VTT_ACCESS_TOKEN_EXPIRES_IN,
 } from "$server/utils/env";
 
 const SEPARATOR = "/";
@@ -84,7 +85,9 @@ export function getVttAccessToken(
 
   const value = {
     ip,
-    expired: new Date(new Date().getTime() + WOWZA_EXPIRES_IN * 1000),
+    expired: new Date(
+      new Date().getTime() + VTT_ACCESS_TOKEN_EXPIRES_IN * 1000
+    ),
     resourceId,
     videoTrackId,
   };
