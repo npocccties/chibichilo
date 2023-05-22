@@ -51,7 +51,10 @@ export function getWowzaAccessToken(
 
   const value = {
     ip,
-    expired: new Date(new Date().getTime() + WOWZA_EXPIRES_IN * 1000),
+    expired:
+      WOWZA_EXPIRES_IN > 0
+        ? new Date(new Date().getTime() + WOWZA_EXPIRES_IN * 1000)
+        : null,
     url,
   };
   return getAccessToken(value);
@@ -68,7 +71,8 @@ export function checkWowzaAccessToken(
     const value = parseAccessToken(accessToken);
     return (
       value.ip == ip &&
-      new Date(value.expired).getTime() > new Date().getTime() &&
+      (WOWZA_EXPIRES_IN === 0 ||
+        new Date(value.expired).getTime() > new Date().getTime()) &&
       new URL(value.url).pathname == `${API_BASE_PATH}/wowza/${path}`
     );
   } catch (e) {
