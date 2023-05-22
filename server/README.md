@@ -102,6 +102,7 @@ docker compose down
 | `PUBLIC_ACCESS_HASH_ALGORITHM`       | 公開 URL のトークン生成に利用するハッシュアルゴリズム (デフォルト: "sha256"、`openssl help` コマンドの "Message Digest commands" の項目に表示される値が利用可能)   |
 | `PUBLIC_ACCESS_CRYPTO_ALGORITHM`     | Wowza 動画と字幕のトークン生成に利用する暗号化アルゴリズム (デフォルト: "aes-256-cbc"、`openssl help` コマンドの "Cipher commands" の項目に表示される値が利用可能) |
 | `ACTIVITY_RATE_MIN`                  | 学習活動の完了とみなす最小の視聴時間の割合 (デフォルト:`0.9`)                                                                                                      |
+| `VTT_ACCESS_TOKEN_EXPIRES_IN`        | 字幕を取得する際のアクセストークンの有効期限 (秒) (デフォルト: `5400`)                                                                                             |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
