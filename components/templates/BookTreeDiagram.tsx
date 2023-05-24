@@ -15,6 +15,12 @@ import type {
 import { css } from "@emotion/css";
 import { gray, primary } from "$theme/colors";
 import getLocaleDateTimeString from "$utils/getLocaleDateTimeString";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { useState } from "react";
 
 type Props = {
   book: BookSchema;
@@ -165,7 +171,6 @@ function getD3TreeOptions() {
       x: 40,
       y: 100,
     },
-    zoom: 1.0,
     zoomable: false,
   };
 }
@@ -173,12 +178,28 @@ function getD3TreeOptions() {
 function BookTreeDiagram(props: Props) {
   const data = tree2RawNodeDatum(props);
   const options = getD3TreeOptions();
+  const [zoom, setZoom] = useState(1.0);
+  const ratio = 1.1;
 
   const onNodeClickRaw: TreeNodeEventCallback = (node, _) => {
     if (props.onNodeClick && typeof node.data.attributes?.id === "number") {
       props.onNodeClick(node.data.attributes?.id);
     }
   };
+
+  function handleZoomIn() {
+    let newZoom = zoom * ratio;
+    if (newZoom > 1.0) newZoom = 1.0;
+    setZoom(newZoom);
+  }
+
+  function handleZoomOut() {
+    setZoom(zoom / ratio);
+  }
+
+  function handleReset() {
+    setZoom(1.0);
+  }
 
   return (
     <Container
@@ -192,7 +213,31 @@ function BookTreeDiagram(props: Props) {
       }}
     >
       <Typography variant="h4">{props.book.name}</Typography>
-      <Tree data={data} {...options} onNodeClick={onNodeClickRaw} />
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+        }}
+      >
+        <Button
+          disabled={zoom >= 1.0}
+          size="small"
+          color="primary"
+          onClick={handleZoomIn}
+        >
+          <ZoomInIcon />
+          拡大
+        </Button>
+        <Button size="small" color="primary" onClick={handleZoomOut}>
+          <ZoomOutIcon />
+          縮小
+        </Button>
+        <Button size="small" color="primary" onClick={handleReset}>
+          <RestartAltIcon />
+          リセット
+        </Button>
+      </Box>
+      <Tree data={data} zoom={zoom} {...options} onNodeClick={onNodeClickRaw} />
     </Container>
   );
 }

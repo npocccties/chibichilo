@@ -69,8 +69,6 @@ export default function BookTreeDialog(props: Props) {
   const { node, open, onClose } = props;
   const nodeBody = useNodeBody(node);
 
-  console.log(nodeBody);
-
   return (
     <Dialog
       open={open}
