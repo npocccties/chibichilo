@@ -219,7 +219,12 @@ function BookTreeDiagram(props: Props) {
           gap: 2,
         }}
       >
-        <Button size="small" color="primary" onClick={handleZoomIn}>
+        <Button
+          disabled={zoom >= 1.0}
+          size="small"
+          color="primary"
+          onClick={handleZoomIn}
+        >
           <ZoomInIcon />
           拡大
         </Button>
