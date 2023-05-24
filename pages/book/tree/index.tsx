@@ -32,7 +32,6 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   if (!tree) return <Placeholder />;
 
   function onNodeClick(id: number) {
-    console.log(id);
     if (tree == null) return;
     const node = getNode(tree, id);
     if (node && node.name) {
