@@ -19,7 +19,7 @@ function ParentBook(props: ParentBookProps = {}) {
   if (props.id == null) {
     return (
       <Card>
-        <Typography variant="h5">前回のリリースはありません</Typography>
+        <Typography variant="h5">初版です</Typography>
       </Card>
     );
   }
