@@ -543,7 +543,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックをフォークします。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックをフォークします。 教員または管理者でなければなりません。
      * ブックのフォーク
      */
     async apiV2BookBookIdForkPostRaw(requestParameters: ApiV2BookBookIdForkPostRequest): Promise<runtime.ApiResponse<InlineResponse2005Books>> {
@@ -566,7 +566,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックをフォークします。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックをフォークします。 教員または管理者でなければなりません。
      * ブックのフォーク
      */
     async apiV2BookBookIdForkPost(requestParameters: ApiV2BookBookIdForkPostRequest): Promise<InlineResponse2005Books> {

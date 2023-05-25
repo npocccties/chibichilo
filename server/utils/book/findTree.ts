@@ -61,6 +61,7 @@ function nodeToTreeNode(node: NodeWithBook): TreeNodeSchema {
   const {
     name,
     description,
+    shared,
     createdAt,
     updatedAt,
     authors = [],
@@ -71,6 +72,7 @@ function nodeToTreeNode(node: NodeWithBook): TreeNodeSchema {
     parentId,
     name,
     description,
+    shared,
     createdAt,
     updatedAt,
     authors: authors.map((author) => authorToTreeNodeAuthor(author)),
