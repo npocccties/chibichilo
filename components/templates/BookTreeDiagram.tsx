@@ -27,10 +27,13 @@ import type { SessionSchema } from "$server/models/session";
 type Props = {
   book: BookSchema;
   tree: TreeResultSchema;
-  onNodeClick?: (id: number) => void;
+  onNodeClick: (
+    nodeType: TreeNodeType,
+    node: TreeNodeSchema | undefined
+  ) => void;
 };
 
-type TreeNodeType = "normal" | "target" | "notshared" | "deleted";
+export type TreeNodeType = "target" | "normal" | "notshared" | "deleted";
 
 function isAuthor(
   authors: TreeNodeAuthorsSchema[] | undefined,
@@ -233,6 +236,10 @@ function getD3TreeOptions() {
   };
 }
 
+function getNode(tree: TreeResultSchema, id: number) {
+  return tree.nodes.filter((node) => node.id == id)[0];
+}
+
 function BookTreeDiagram(props: Props) {
   const { session } = useSessionAtom();
   const data = tree2RawNodeDatum(props, session);
@@ -240,9 +247,16 @@ function BookTreeDiagram(props: Props) {
   const [zoom, setZoom] = useState(1.0);
   const ratio = 1.1;
 
-  const onNodeClickRaw: TreeNodeEventCallback = (node, _) => {
-    if (props.onNodeClick && typeof node.data.attributes?.id === "number") {
-      props.onNodeClick(node.data.attributes?.id);
+  const onNodeClickRaw: TreeNodeEventCallback = (d3node, _) => {
+    const nodeType = d3node.data.attributes?.type as TreeNodeType;
+    let node: TreeNodeSchema | undefined;
+    if (nodeType === "target" || nodeType === "normal") {
+      if (typeof d3node.data.attributes?.id === "number") {
+        node = getNode(props.tree, d3node.data.attributes?.id);
+      }
+    }
+    if (nodeType) {
+      props.onNodeClick(nodeType, node);
     }
   };
 

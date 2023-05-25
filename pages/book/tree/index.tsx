@@ -3,27 +3,22 @@ import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
 import useBookTree from "$utils/useBookTree";
 import BookTreeDiagram from "$templates/BookTreeDiagram";
+import type { TreeNodeType } from "$templates/BookTreeDiagram";
 import { useSessionAtom } from "$store/session";
 import { useBook } from "$utils/book";
 import type { BookSchema } from "$server/models/book";
 import type { Query as BookEditQuery } from "$pages/book/edit";
 import { useState } from "react";
-import type {
-  TreeNodeSchema,
-  TreeResultSchema,
-} from "$server/models/book/tree";
+import type { TreeNodeSchema } from "$server/models/book/tree";
 import BookTreeDialog from "$organisms/BookTreeDialog";
 
 export type Query = BookEditQuery;
-
-function getNode(tree: TreeResultSchema, id: number) {
-  return tree.nodes.filter((node) => node.id == id)[0];
-}
 
 function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   const { isContentEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const { tree, error: error2 } = useBookTree(bookId);
+  const [nodeType, setNodeType] = useState<TreeNodeType | undefined>();
   const [node, setNode] = useState<TreeNodeSchema | undefined>();
   const [open, setOpen] = useState(false);
 
@@ -31,13 +26,13 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   if (!book) return <Placeholder />;
   if (!tree) return <Placeholder />;
 
-  function onNodeClick(id: number) {
-    if (tree == null) return;
-    const node = getNode(tree, id);
-    if (node && node.name) {
-      setNode(node);
-      setOpen(true);
-    }
+  function onNodeClick(
+    nodeType: TreeNodeType,
+    node: TreeNodeSchema | undefined
+  ) {
+    setNodeType(nodeType);
+    setNode(node);
+    setOpen(true);
   }
 
   const handleClose = () => {
@@ -47,7 +42,12 @@ function BookTree({ bookId }: { bookId: BookSchema["id"] }) {
   return (
     <>
       <BookTreeDiagram book={book} tree={tree} onNodeClick={onNodeClick} />;
-      <BookTreeDialog node={node} open={open} onClose={handleClose} />
+      <BookTreeDialog
+        nodeType={nodeType}
+        node={node}
+        open={open}
+        onClose={handleClose}
+      />
     </>
   );
 }

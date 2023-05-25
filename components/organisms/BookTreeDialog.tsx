@@ -13,6 +13,7 @@ import StripedMarkdown from "$atoms/StripedMarkdown";
 import groupBy from "lodash.groupby";
 import getLocaleListString from "$utils/getLocaleListString";
 import getLocaleDateTimeString from "$utils/getLocaleDateTimeString";
+import type { TreeNodeType } from "$templates/BookTreeDiagram";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
+  nodeType?: TreeNodeType;
   node?: TreeNodeSchema;
   open: boolean;
   onClose: React.MouseEventHandler;
@@ -57,16 +59,35 @@ function useNodeBody(node: TreeNodeSchema | undefined) {
       作成日: date2string(node?.createdAt),
       更新日: date2string(node?.updatedAt),
       ...authors(node?.authors),
-      解説: <StripedMarkdown content={node?.description || ""} />,
+      解説: node?.description ? (
+        <StripedMarkdown content={node?.description} />
+      ) : null,
     }),
     [node]
   );
 }
 
+function nodeType2msg(nodeType: TreeNodeType | undefined): string {
+  let ret = "不明なブック";
+  switch (nodeType) {
+    case "target":
+    case "normal":
+      ret = "ブック詳細";
+      break;
+    case "notshared":
+      ret = "シェアされていないブック";
+      break;
+    case "deleted":
+      ret = "削除されたブック";
+      break;
+  }
+  return ret;
+}
+
 export default function BookTreeDialog(props: Props) {
   const cardClasses = useCardStyles();
   const classes = useStyles();
-  const { node, open, onClose } = props;
+  const { nodeType, node, open, onClose } = props;
   const nodeBody = useNodeBody(node);
 
   return (
@@ -78,7 +99,7 @@ export default function BookTreeDialog(props: Props) {
     >
       <DialogContent>
         <Typography className={classes.title} variant="h5">
-          ブック詳細
+          {nodeType2msg(nodeType)}
         </Typography>
         <DescriptionList
           value={Object.entries(nodeBody).flatMap(([key, value]) =>
