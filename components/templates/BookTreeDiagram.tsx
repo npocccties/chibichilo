@@ -108,7 +108,7 @@ function setNumberOfFork(node: RawNodeDatum): number {
   if (node.children) {
     for (const child of node.children) {
       sum = sum + setNumberOfFork(child);
-      if (child.name) {
+      if (child.attributes?.type !== "deleted") {
         sum = sum + 1;
       }
     }
