@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+export type Props = {
   nodeType?: TreeNodeType;
   node?: TreeNodeSchema;
   open: boolean;

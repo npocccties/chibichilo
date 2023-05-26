@@ -6,6 +6,7 @@ import type { BookSchema } from "$server/models/book";
 import React, { useState } from "react";
 import type { TreeNodeSchema } from "$server/models/book/tree";
 import BookTreeDialog from "$organisms/BookTreeDialog";
+import type { Props as BookTreeDialogProps } from "$organisms/BookTreeDialog";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "$atoms/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -30,8 +31,9 @@ export type VersionTreeDialogProps = {
 export function VersionTreeDialog(props: VersionTreeDialogProps) {
   const { book, bookId, open, onClose } = props;
   const { tree, error } = useBookTree(bookId);
-  const [nodeType, setNodeType] = useState<TreeNodeType | undefined>();
-  const [node, setNode] = useState<TreeNodeSchema | undefined>();
+  const [bookTreeDialogProps, setBookTreeDialogProps] = useState<
+    Pick<BookTreeDialogProps, "nodeType" | "node" | "open">
+  >({ open: false });
   const classes = useStyles();
 
   if (error || !tree) return <Placeholder />;
@@ -40,12 +42,17 @@ export function VersionTreeDialog(props: VersionTreeDialogProps) {
     nodeType: TreeNodeType,
     node: TreeNodeSchema | undefined
   ) {
-    setNodeType(nodeType);
-    setNode(node);
+    setBookTreeDialogProps({
+      nodeType,
+      node,
+      open: true,
+    });
   }
 
   const handleBookTreeDialogClose = () => {
-    setNode(undefined);
+    setBookTreeDialogProps({
+      open: false,
+    });
   };
 
   return (
@@ -59,12 +66,12 @@ export function VersionTreeDialog(props: VersionTreeDialogProps) {
         <CloseIcon />
       </IconButton>
       <BookTreeDiagram book={book} tree={tree} onNodeClick={onNodeClick} />;
-      <BookTreeDialog
-        nodeType={nodeType}
-        node={node}
-        open={node != null}
-        onClose={handleBookTreeDialogClose}
-      />
+      {bookTreeDialogProps.open && (
+        <BookTreeDialog
+          {...bookTreeDialogProps}
+          onClose={handleBookTreeDialogClose}
+        />
+      )}
     </Dialog>
   );
 }
