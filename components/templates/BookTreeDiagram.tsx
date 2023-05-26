@@ -21,12 +21,45 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useState } from "react";
+import { useSessionAtom } from "$store/session";
+import type { SessionSchema } from "$server/models/session";
 
 type Props = {
   book: BookSchema;
   tree: TreeResultSchema;
-  onNodeClick?: (id: number) => void;
+  onNodeClick: (
+    nodeType: TreeNodeType,
+    node: TreeNodeSchema | undefined
+  ) => void;
 };
+
+export type TreeNodeType = "target" | "normal" | "notshared" | "deleted";
+
+function isAuthor(
+  authors: TreeNodeAuthorsSchema[] | undefined,
+  userId: number | undefined
+): boolean {
+  if (!authors || typeof userId === "undefined") return false;
+  return authors.some((author) => author.id === userId);
+}
+
+function node2type(
+  node: TreeNodeSchema,
+  targetId: number,
+  session: SessionSchema | undefined
+): TreeNodeType {
+  if (node.id === targetId) {
+    return "target";
+  }
+  if (node.name) {
+    if (isAuthor(node.authors, session?.user.id) || node.shared) {
+      return "normal";
+    } else {
+      return "notshared";
+    }
+  }
+  return "deleted";
+}
 
 function creators(authors: TreeNodeAuthorsSchema[]): string[] {
   return authors
@@ -36,24 +69,35 @@ function creators(authors: TreeNodeAuthorsSchema[]): string[] {
 
 function node2RawNodeDatum(
   node: TreeNodeSchema,
-  targetId: number
+  targetId: number,
+  session: SessionSchema | undefined
 ): RawNodeDatum {
+  let name = "";
   const attributes: Record<string, string | number | boolean> = {};
   attributes["id"] = node.id;
-  if (node.id === targetId) {
-    attributes["type"] = "target";
+
+  const nodeType: TreeNodeType = node2type(node, targetId, session);
+  attributes["type"] = nodeType;
+
+  if (nodeType === "target" || nodeType === "normal") {
+    if (node.name) {
+      name = node.name;
+    }
+    if (node.release?.version != null) {
+      attributes["version"] = node.release.version;
+    }
+    if (node.release?.releasedAt instanceof Date) {
+      attributes["releasedAt"] = getLocaleDateTimeString(
+        node.release.releasedAt
+      );
+    }
+    if (node.authors != null) {
+      attributes["creators"] = creators(node.authors).join(",");
+    }
   }
-  if (node.release?.version != null) {
-    attributes["version"] = node.release.version;
-  }
-  if (node.release?.releasedAt instanceof Date) {
-    attributes["releasedAt"] = getLocaleDateTimeString(node.release.releasedAt);
-  }
-  if (node.authors != null) {
-    attributes["creators"] = creators(node.authors).join(",");
-  }
+
   return {
-    name: node.name || "",
+    name,
     attributes,
     children: [],
   };
@@ -64,7 +108,7 @@ function setNumberOfFork(node: RawNodeDatum): number {
   if (node.children) {
     for (const child of node.children) {
       sum = sum + setNumberOfFork(child);
-      if (child.name) {
+      if (child.attributes?.type !== "deleted") {
         sum = sum + 1;
       }
     }
@@ -75,12 +119,15 @@ function setNumberOfFork(node: RawNodeDatum): number {
   return sum;
 }
 
-function tree2RawNodeDatum({ book, tree }: Props): RawNodeDatum {
+function tree2RawNodeDatum(
+  { book, tree }: Props,
+  session: SessionSchema | undefined
+): RawNodeDatum {
   const nodeMap: Map<number, RawNodeDatum> = new Map();
 
   // すべてのノードを登録する
   for (const node of tree.nodes) {
-    const rawNodeDatum = node2RawNodeDatum(node, book.id);
+    const rawNodeDatum = node2RawNodeDatum(node, book.id, session);
     nodeMap.set(node.id, rawNodeDatum);
   }
 
@@ -106,14 +153,26 @@ function tree2RawNodeDatum({ book, tree }: Props): RawNodeDatum {
   return ret || { name: "No Data" };
 }
 
-const circleClass = { className: "rd3t-target-node" };
+function type2className(type: string | undefined) {
+  if (!type) type = "normal";
+  return `rd3t-${type}-node`;
+}
 
 const circleStyle = css`
-  circle {
+  circle.${type2className("normal")} {
     fill: ${gray[100]};
   }
-  circle.${circleClass.className} {
+  circle.${type2className("target")} {
     fill: ${primary[400]};
+  }
+  circle.${type2className("notshared")} {
+    stroke-dasharray: 2;
+    fill: ${gray[100]};
+  }
+  circle.${type2className("deleted")} {
+    stroke: ${gray[500]};
+    stroke-dasharray: 2;
+    fill: ${gray[100]};
   }
 `;
 
@@ -121,11 +180,13 @@ const renderCustomNodeElement: RenderCustomNodeElementFn = ({
   nodeDatum,
   onNodeClick,
 }) => {
-  const target = nodeDatum.attributes?.type === "target" ? circleClass : {};
+  const className = type2className(
+    nodeDatum.attributes?.type as string | undefined
+  );
 
   return (
     <>
-      <circle r="15" onClick={onNodeClick} {...target}></circle>
+      <circle r="15" onClick={onNodeClick} className={className}></circle>
       <g className="rd3t-label">
         <text className="rd3t-label__title" textAnchor="start" x="40">
           {nodeDatum.name}
@@ -175,15 +236,27 @@ function getD3TreeOptions() {
   };
 }
 
+function getNode(tree: TreeResultSchema, id: number) {
+  return tree.nodes.filter((node) => node.id == id)[0];
+}
+
 function BookTreeDiagram(props: Props) {
-  const data = tree2RawNodeDatum(props);
+  const { session } = useSessionAtom();
+  const data = tree2RawNodeDatum(props, session);
   const options = getD3TreeOptions();
   const [zoom, setZoom] = useState(1.0);
   const ratio = 1.1;
 
-  const onNodeClickRaw: TreeNodeEventCallback = (node, _) => {
-    if (props.onNodeClick && typeof node.data.attributes?.id === "number") {
-      props.onNodeClick(node.data.attributes?.id);
+  const onNodeClickRaw: TreeNodeEventCallback = (d3node, _) => {
+    const nodeType = d3node.data.attributes?.type as TreeNodeType;
+    let node: TreeNodeSchema | undefined;
+    if (nodeType === "target" || nodeType === "normal") {
+      if (typeof d3node.data.attributes?.id === "number") {
+        node = getNode(props.tree, d3node.data.attributes?.id);
+      }
+    }
+    if (nodeType) {
+      props.onNodeClick(nodeType, node);
     }
   };
 

@@ -56,6 +56,12 @@ export interface InlineResponse2008Nodes {
     description?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof InlineResponse2008Nodes
+     */
+    shared?: boolean;
+    /**
+     * 
      * @type {Date}
      * @memberof InlineResponse2008Nodes
      */
@@ -94,6 +100,7 @@ export function InlineResponse2008NodesFromJSONTyped(json: any, ignoreDiscrimina
         'parentId': !exists(json, 'parentId') ? undefined : json['parentId'],
         'name': !exists(json, 'name') ? undefined : json['name'],
         'description': !exists(json, 'description') ? undefined : json['description'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
         'authors': !exists(json, 'authors') ? undefined : ((json['authors'] as Array<any>).map(InlineResponse2008AuthorsFromJSON)),
@@ -114,6 +121,7 @@ export function InlineResponse2008NodesToJSON(value?: InlineResponse2008Nodes | 
         'parentId': value.parentId,
         'name': value.name,
         'description': value.description,
+        'shared': value.shared,
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
         'authors': value.authors === undefined ? undefined : ((value.authors as Array<any>).map(InlineResponse2008AuthorsToJSON)),
