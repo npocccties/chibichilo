@@ -7,6 +7,9 @@ import ReleasedBook from "$templates/ReleasedBook";
 import BookFork from "$templates/BookFork";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import useBookEditHandlers from "$utils/useBookEditHandlers";
+import { VersionTreeDialog } from "$organisms/VersionTreeDialog";
+import type { VersionTreeDialogProps } from "$organisms/VersionTreeDialog";
+import { useState } from "react";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -16,6 +19,7 @@ export type Query = {
 function Edit({ bookId, context }: Query) {
   const { error, book, topicPreviewDialogProps, ...handlers } =
     useBookEditHandlers({ bookId, context });
+  const [showVersionTreeDialog, setShowVersionTreeDialog] = useState(false);
 
   if (error) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
@@ -27,11 +31,29 @@ function Edit({ bookId, context }: Query) {
       : BookEdit
     : BookFork;
 
+  handlers.onBookTreeButtonClick = () => {
+    setShowVersionTreeDialog(!showVersionTreeDialog);
+  };
+
+  function onClose() {
+    setShowVersionTreeDialog(!showVersionTreeDialog);
+  }
+
+  const versionTreeDialogProps: VersionTreeDialogProps = {
+    book,
+    bookId,
+    open: showVersionTreeDialog,
+    onClose,
+  };
+
   return (
     <>
       <Template book={book} {...handlers} />
       {topicPreviewDialogProps && (
         <TopicPreviewDialog {...topicPreviewDialogProps} />
+      )}
+      {showVersionTreeDialog && (
+        <VersionTreeDialog {...versionTreeDialogProps} />
       )}
     </>
   );

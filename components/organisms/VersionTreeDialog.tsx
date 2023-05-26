@@ -9,6 +9,16 @@ import BookTreeDialog from "$organisms/BookTreeDialog";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "$atoms/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import makeStyles from "@mui/styles/makeStyles";
+
+const useStyles = makeStyles((theme) => ({
+  closeButton: {
+    position: "fixed",
+    top: theme.spacing(4),
+    right: theme.spacing(3),
+    zIndex: 3,
+  },
+}));
 
 export type VersionTreeDialogProps = {
   book: BookSchema;
@@ -22,6 +32,7 @@ export function VersionTreeDialog(props: VersionTreeDialogProps) {
   const { tree, error } = useBookTree(bookId);
   const [nodeType, setNodeType] = useState<TreeNodeType | undefined>();
   const [node, setNode] = useState<TreeNodeSchema | undefined>();
+  const classes = useStyles();
 
   if (error || !tree) return <Placeholder />;
 
@@ -33,13 +44,14 @@ export function VersionTreeDialog(props: VersionTreeDialogProps) {
     setNode(node);
   }
 
-  const handleClose = () => {
+  const handleBookTreeDialogClose = () => {
     setNode(undefined);
   };
 
   return (
     <Dialog fullScreen open={open} onClose={onClose}>
       <IconButton
+        className={classes.closeButton}
         tooltipProps={{ title: "閉じる" }}
         onClick={onClose}
         size="large"
@@ -51,7 +63,7 @@ export function VersionTreeDialog(props: VersionTreeDialogProps) {
         nodeType={nodeType}
         node={node}
         open={node != null}
-        onClose={handleClose}
+        onClose={handleBookTreeDialogClose}
       />
     </Dialog>
   );
