@@ -32,11 +32,11 @@ function Edit({ bookId, context }: Query) {
     : BookFork;
 
   handlers.onBookTreeButtonClick = () => {
-    setShowVersionTreeDialog(!showVersionTreeDialog);
+    setShowVersionTreeDialog(true);
   };
 
   function onClose() {
-    setShowVersionTreeDialog(!showVersionTreeDialog);
+    setShowVersionTreeDialog(false);
   }
 
   const versionTreeDialogProps: VersionTreeDialogProps = {
