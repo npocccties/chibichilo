@@ -215,6 +215,21 @@ export default function Book(props: Props) {
               inline
               nowrap
               value={[
+                ...(book.release?.releasedAt
+                  ? [
+                      {
+                        key: "バージョン",
+                        value: book.release.version,
+                      },
+                      {
+                        key: "リリース日",
+                        value: getLocaleDateString(
+                          book.release.releasedAt,
+                          "ja"
+                        ),
+                      },
+                    ]
+                  : []),
                 {
                   key: "作成日",
                   value: getLocaleDateString(book.createdAt, "ja"),

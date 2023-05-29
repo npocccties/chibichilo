@@ -245,10 +245,23 @@ export default function ContentPreview({
         nowrap
         sx={{ mx: 2, mt: 1 }}
         value={[
-          {
-            key: "更新日",
-            value: getLocaleDateString(content.updatedAt, "ja"),
-          },
+          ...(content.type === "book" && content.release?.releasedAt
+            ? [
+                {
+                  key: "バージョン",
+                  value: content.release.version,
+                },
+                {
+                  key: "リリース日",
+                  value: getLocaleDateString(content.release.releasedAt, "ja"),
+                },
+              ]
+            : [
+                {
+                  key: "更新日",
+                  value: getLocaleDateString(content.updatedAt, "ja"),
+                },
+              ]),
           ...authors(content),
         ]}
       />
