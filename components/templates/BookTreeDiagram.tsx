@@ -11,6 +11,8 @@ import type {
   RawNodeDatum,
   RenderCustomNodeElementFn,
   TreeNodeEventCallback,
+  Point,
+  TreeNodeDatum,
 } from "react-d3-tree";
 import { css } from "@emotion/css";
 import { gray, primary } from "$theme/colors";
@@ -228,13 +230,11 @@ function getD3TreeOptions() {
     },
     renderCustomNodeElement,
     svgClassName: circleStyle,
-    translate: {
-      x: 40,
-      y: 100,
-    },
     zoomable: false,
   };
 }
+
+const defaultPosition = { x: 40, y: 100 };
 
 function getNode(tree: TreeResultSchema, id: number) {
   return tree.nodes.filter((node) => node.id == id)[0];
@@ -245,6 +245,7 @@ function BookTreeDiagram(props: Props) {
   const data = tree2RawNodeDatum(props, session);
   const options = getD3TreeOptions();
   const [zoom, setZoom] = useState(1.0);
+  const [translate, setTranslate] = useState<Point>(defaultPosition);
   const ratio = 1.1;
 
   const onNodeClickRaw: TreeNodeEventCallback = (d3node, _) => {
@@ -260,6 +261,16 @@ function BookTreeDiagram(props: Props) {
     }
   };
 
+  function onUpdate({
+    translate,
+  }: {
+    node: TreeNodeDatum | null;
+    translate: Point;
+    zoom: number;
+  }) {
+    setTranslate(translate);
+  }
+
   function handleZoomIn() {
     let newZoom = zoom * ratio;
     if (newZoom > 1.0) newZoom = 1.0;
@@ -272,6 +283,7 @@ function BookTreeDiagram(props: Props) {
 
   function handleReset() {
     setZoom(1.0);
+    setTranslate(defaultPosition);
   }
 
   return (
@@ -310,7 +322,14 @@ function BookTreeDiagram(props: Props) {
           リセット
         </Button>
       </Box>
-      <Tree data={data} zoom={zoom} {...options} onNodeClick={onNodeClickRaw} />
+      <Tree
+        data={data}
+        zoom={zoom}
+        translate={translate}
+        {...options}
+        onNodeClick={onNodeClickRaw}
+        onUpdate={onUpdate}
+      />
     </Container>
   );
 }
