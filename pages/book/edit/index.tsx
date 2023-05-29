@@ -17,9 +17,19 @@ export type Query = {
 };
 
 function Edit({ bookId, context }: Query) {
-  const { error, book, topicPreviewDialogProps, ...handlers } =
-    useBookEditHandlers({ bookId, context });
   const [showVersionTreeDialog, setShowVersionTreeDialog] = useState(false);
+  const { error, book, topicPreviewDialogProps, ...handlers } =
+    useBookEditHandlers({
+      bookId,
+      context,
+      onBookTreeButtonClick() {
+        setShowVersionTreeDialog(true);
+      },
+    });
+
+  function onClose() {
+    setShowVersionTreeDialog(false);
+  }
 
   if (error) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
@@ -30,14 +40,6 @@ function Edit({ bookId, context }: Query) {
       ? ReleasedBook
       : BookEdit
     : BookFork;
-
-  handlers.onBookTreeButtonClick = () => {
-    setShowVersionTreeDialog(true);
-  };
-
-  function onClose() {
-    setShowVersionTreeDialog(false);
-  }
 
   const versionTreeDialogProps: VersionTreeDialogProps = {
     book,

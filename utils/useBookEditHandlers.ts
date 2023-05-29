@@ -39,9 +39,11 @@ type BookEditHandlers = {
 function useBookEditHandlers({
   bookId,
   context,
+  onBookTreeButtonClick,
 }: {
   bookId: BookSchema["id"];
   context?: "books" | "topics" | "courses";
+  onBookTreeButtonClick: BookEditHandlers["onBookTreeButtonClick"];
 }): BookEditHandlers {
   const { session, isContentEditable } = useSessionAtom();
   const linked = bookId === session?.ltiResourceLink?.bookId;
@@ -140,9 +142,7 @@ function useBookEditHandlers({
       return router.push(pagesPath.book.release.$url({ query }));
     },
     /** ツリー表示 */
-    async onBookTreeButtonClick() {
-      return router.push(pagesPath.book.tree.$url({ query }));
-    },
+    onBookTreeButtonClick,
     /** トピックのプレビュー */
     onTopicPreview,
     get topicPreviewDialogProps() {
