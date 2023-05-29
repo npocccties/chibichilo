@@ -10,8 +10,8 @@ import type {
 import type { Query as BookEditQuery } from "$pages/book/edit";
 import Placeholder from "$templates/Placeholder";
 import TopicEdit from "$templates/TopicEdit";
-import TopicNotFoundProblem from "$templates/BookNotFoundProblem";
-import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
+import TopicNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { useVideoTrackAtom } from "$store/videoTrack";
 import { destroyTopic, updateTopic, useTopic } from "$utils/topic";
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";

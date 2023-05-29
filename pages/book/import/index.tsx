@@ -3,7 +3,7 @@ import BookImport from "$templates/BookImport";
 import Placeholder from "$templates/Placeholder";
 import Book from "$templates/Book";
 import BookPreviewDialog from "$organisms/BookPreviewDialog";
-import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { useSessionAtom } from "$store/session";
 import { updateBook, useBook } from "$utils/book";
 import useBooks from "$utils/useBooks";

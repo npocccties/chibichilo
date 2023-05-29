@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import type { BookSchema } from "$server/models/book";
-import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import Placeholder from "$templates/Placeholder";
 import BookEdit from "$templates/BookEdit";
 import ReleasedBook from "$templates/ReleasedBook";

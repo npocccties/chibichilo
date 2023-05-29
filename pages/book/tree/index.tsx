@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Placeholder from "$templates/Placeholder";
-import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import useBookTree from "$utils/useBookTree";
 import BookTreeDiagram from "$templates/BookTreeDiagram";
 import type { TreeNodeType } from "$templates/BookTreeDiagram";
