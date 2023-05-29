@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Placeholder from "$templates/Placeholder";
-import BookNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { useSessionAtom } from "$store/session";
 import { releaseBook, useBook } from "$utils/book";
 import type { Query as BookEditQuery } from "../edit";
