@@ -234,7 +234,18 @@ function getD3TreeOptions() {
   };
 }
 
-const defaultPosition = { x: 40, y: 100 };
+const defaultPosition: Point = { x: 40, y: 100 };
+const currentPosition: Point = { x: 0, y: 0 };
+
+function setCurrentPosition(p: Point) {
+  currentPosition.x = p.x;
+  currentPosition.y = p.y;
+}
+
+function getCurrentPosition(): Point {
+  const { x, y } = currentPosition;
+  return { x, y };
+}
 
 function getNode(tree: TreeResultSchema, id: number) {
   return tree.nodes.filter((node) => node.id == id)[0];
@@ -268,17 +279,19 @@ function BookTreeDiagram(props: Props) {
     translate: Point;
     zoom: number;
   }) {
-    setTranslate(translate);
+    setCurrentPosition(translate);
   }
 
   function handleZoomIn() {
     let newZoom = zoom * ratio;
     if (newZoom > 1.0) newZoom = 1.0;
     setZoom(newZoom);
+    setTranslate(getCurrentPosition());
   }
 
   function handleZoomOut() {
     setZoom(zoom / ratio);
+    setTranslate(getCurrentPosition());
   }
 
   function handleReset() {
