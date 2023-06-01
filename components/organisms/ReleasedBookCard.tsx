@@ -2,6 +2,8 @@ import { useCallback, type ReactNode } from "react";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import Card from "$atoms/Card";
@@ -14,9 +16,14 @@ import getLocaleDateString from "$utils/getLocaleDateString";
 export type ReleasedBookCardProps = {
   book: BookSchema;
   onTopicPreview(topic: TopicSchema): void;
+  onReleaseEditButtonClick?: () => void;
 };
 
-function ReleasedBookCard({ book, onTopicPreview }: ReleasedBookCardProps) {
+function ReleasedBookCard({
+  book,
+  onTopicPreview,
+  onReleaseEditButtonClick,
+}: ReleasedBookCardProps) {
   const onItemPreviewClick = useCallback(
     ([sectionIndex, topicIndex]: [
       sectionIndex: number,
@@ -33,6 +40,19 @@ function ReleasedBookCard({ book, onTopicPreview }: ReleasedBookCardProps) {
       <section>
         <Typography variant="h5" gutterBottom>
           {book.release?.version}
+          {onReleaseEditButtonClick && (
+            <>
+              {` `}
+              <Button
+                size="small"
+                color="primary"
+                onClick={onReleaseEditButtonClick}
+              >
+                <PeopleOutlinedIcon />
+                リリースの編集
+              </Button>
+            </>
+          )}
         </Typography>
         <DescriptionList
           sx={{ mb: 1 }}

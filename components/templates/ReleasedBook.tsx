@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ForkOutlinedIcon from "@mui/icons-material/ForkRightOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Box from "@mui/material/Box";
@@ -67,7 +66,7 @@ function ReleasedBook(props: Props) {
       }}
     >
       <Typography variant="h4">{book.name}</Typography>
-      <ReleasedBookCard {...props} />
+      <ReleasedBookCard {...props} onReleaseEditButtonClick={edit} />
       <Box
         className="released-book-row"
         sx={{
@@ -85,10 +84,6 @@ function ReleasedBook(props: Props) {
         <Button size="small" color="primary" onClick={handlers.fork}>
           <ForkOutlinedIcon />
           フォーク
-        </Button>
-        <Button size="small" color="primary" onClick={handlers.edit}>
-          <PeopleOutlinedIcon />
-          リリースの編集
         </Button>
         <Button size="small" color="primary" onClick={onBookTreeButtonClick}>
           <AccountTreeOutlinedIcon />
