@@ -79,6 +79,8 @@ const role = (session: SessionSchema) => {
 };
 
 function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
+  const isDeepLink = true; // TODO:sessionに保存したDeepLinkのtarget_urlで判定する
+
   const {
     session,
     onBooksClick,
@@ -137,55 +139,57 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
             alt="CHiBi-CHiLO"
             className={clsx(classes.margin, classes.logo)}
           />
-          <div className={classes.nav}>
-            <AppBarNavButton
-              color="inherit"
-              icon={<MenuBookOutlinedIcon />}
-              label="ブック"
-              onClick={onBooksClick}
-              disabled={!onBooksClick}
-            />
-            <AppBarNavButton
-              color="inherit"
-              icon={<LibraryBooksOutlinedIcon />}
-              label="トピック"
-              onClick={onTopicsClick}
-              disabled={!onTopicsClick}
-            />
-            <AppBarNavButton
-              color="inherit"
-              icon={<LinkIcon />}
-              label="リンク"
-              onClick={onCoursesClick}
-              disabled={!onCoursesClick}
-            />
-            <AppBarNavButton
-              color="inherit"
-              icon={<CellTowerIcon />}
-              label="配信中のブック"
-              onClick={onBookClick}
-              disabled={
-                !onBookClick ||
-                !Number.isFinite(session?.ltiResourceLink?.bookId)
-              }
-            />
-            {session?.systemSettings?.zoomImportEnabled && ( // TODO: zoomインポート以外の設定値が実装されたら常時表示する
+          {!isDeepLink && (
+            <div className={classes.nav}>
               <AppBarNavButton
                 color="inherit"
-                icon={<SettingsIcon />}
-                label="設定"
-                onClick={handleOpenUserSettings}
+                icon={<MenuBookOutlinedIcon />}
+                label="ブック"
+                onClick={onBooksClick}
+                disabled={!onBooksClick}
               />
-            )}
-            {onDashboardClick && (
               <AppBarNavButton
                 color="inherit"
-                icon={<AssessmentOutlinedIcon />}
-                label="学習分析"
-                onClick={onDashboardClick}
+                icon={<LibraryBooksOutlinedIcon />}
+                label="トピック"
+                onClick={onTopicsClick}
+                disabled={!onTopicsClick}
               />
-            )}
-          </div>
+              <AppBarNavButton
+                color="inherit"
+                icon={<LinkIcon />}
+                label="リンク"
+                onClick={onCoursesClick}
+                disabled={!onCoursesClick}
+              />
+              <AppBarNavButton
+                color="inherit"
+                icon={<CellTowerIcon />}
+                label="配信中のブック"
+                onClick={onBookClick}
+                disabled={
+                  !onBookClick ||
+                  !Number.isFinite(session?.ltiResourceLink?.bookId)
+                }
+              />
+              {session?.systemSettings?.zoomImportEnabled && ( // TODO: zoomインポート以外の設定値が実装されたら常時表示する
+                <AppBarNavButton
+                  color="inherit"
+                  icon={<SettingsIcon />}
+                  label="設定"
+                  onClick={handleOpenUserSettings}
+                />
+              )}
+              {onDashboardClick && (
+                <AppBarNavButton
+                  color="inherit"
+                  icon={<AssessmentOutlinedIcon />}
+                  label="学習分析"
+                  onClick={onDashboardClick}
+                />
+              )}
+            </div>
+          )}
           <div className={clsx(classes.user, classes.margin)}>
             <p>{session.user.name}</p>
             <p className={classes.roles}>{role(session)}</p>

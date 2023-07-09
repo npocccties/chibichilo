@@ -138,6 +138,8 @@ export default function ContentPreview({
   checked,
   ...checkboxProps
 }: Props) {
+  const isDeepLink = true; // TODO:sessionに保存したDeepLinkのtarget_urlで判定する
+
   const lineClamp = useLineClampStyles({
     fontSize: "0.75rem",
     lineClamp: 2,
@@ -177,7 +179,7 @@ export default function ContentPreview({
             />
           ))}
         {content.shared && <SharedIndicator className="shared" />}
-        {onContentEditClick && (
+        {!isDeepLink && onContentEditClick && (
           <EditButton
             className="edit-button"
             variant={content.type}

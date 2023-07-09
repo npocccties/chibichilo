@@ -31,6 +31,8 @@ export type Props = {
 };
 
 export default function Books(props: Props) {
+  const isDeepLink = true; // TODO:sessionに保存したDeepLinkのtarget_urlで判定する
+
   const {
     totalCount,
     contents,
@@ -51,14 +53,18 @@ export default function Books(props: Props) {
     <Container twoColumns maxWidth="xl">
       <Typography sx={{ mt: 5, gridArea: "title" }} variant="h4">
         ブック
-        <Button size="small" color="primary" onClick={handleBookNewClick}>
-          <AddIcon sx={{ mr: 0.5 }} />
-          ブックの作成
-        </Button>
-        <Button size="small" color="primary" onClick={handleBooksImportClick}>
-          <AddIcon sx={{ mr: 0.5 }} />
-          一括登録
-        </Button>
+        {!isDeepLink && (
+          <Button size="small" color="primary" onClick={handleBookNewClick}>
+            <AddIcon sx={{ mr: 0.5 }} />
+            ブックの作成
+          </Button>
+        )}
+        {!isDeepLink && (
+          <Button size="small" color="primary" onClick={handleBooksImportClick}>
+            <AddIcon sx={{ mr: 0.5 }} />
+            一括登録
+          </Button>
+        )}
       </Typography>
       <LinkInfo
         sx={{ mt: 1, gridArea: "description" }}
