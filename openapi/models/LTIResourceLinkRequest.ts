@@ -24,7 +24,7 @@ export interface LTIResourceLinkRequest {
      * @type {string}
      * @memberof LTIResourceLinkRequest
      */
-    id: string;
+    id?: string;
     /**
      * 
      * @type {string}
@@ -43,7 +43,7 @@ export function LTIResourceLinkRequestFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'id': json['id'],
+        'id': !exists(json, 'id') ? undefined : json['id'],
         'title': !exists(json, 'title') ? undefined : json['title'],
     };
 }

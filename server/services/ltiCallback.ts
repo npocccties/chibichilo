@@ -5,6 +5,7 @@ import type { SessionSchema } from "$server/models/session";
 import type { LtiLaunchPresentationSchema } from "$server/models/ltiLaunchPresentation";
 import type { LtiAgsEndpointSchema } from "$server/models/ltiAgsEndpoint";
 import type { LtiNrpsParameterSchema } from "$server/models/ltiNrpsParameter";
+import { LtiDlSettingsSchema } from "$server/models/ltiDlSettings";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import init from "./init";
 import { LtiCallbackBody } from "$server/validators/ltiCallbackBody";
@@ -46,9 +47,15 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
     const claims = token.claims();
     const ltiClaims = new LtiClaims(claims as Partial<LtiClaims>);
     await validateOrReject(ltiClaims);
-    const session: Omit<SessionSchema, "user" | "systemSettings"> = {
+    const session = {
       oauthClient: req.session.oauthClient,
+      ltiMessageType:
+        ltiClaims["https://purl.imsglobal.org/spec/lti/claim/message_type"],
       ltiVersion: "1.3.0",
+      ltiDeploymentId:
+        ltiClaims["https://purl.imsglobal.org/spec/lti/claim/deployment_id"],
+      ltiTargetLinkUri:
+        ltiClaims["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"],
       ltiUser: {
         id: claims.sub,
         name: claims.name,
@@ -60,7 +67,7 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
       ltiContext:
         ltiClaims["https://purl.imsglobal.org/spec/lti/claim/context"],
       ltiResourceLink: null,
-    } as const;
+    } as const satisfies Omit<SessionSchema, "user" | "systemSettings">;
     let ltiLaunchPresentation: undefined | LtiLaunchPresentationSchema;
     if (
       "https://purl.imsglobal.org/spec/lti/claim/launch_presentation" in
@@ -79,12 +86,15 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
       ltiClaims[
         "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
       ];
+    const ltiDlSettings: undefined | LtiDlSettingsSchema =
+      ltiClaims[LtiDlSettingsSchema.$id];
     Object.assign(req.session, {
       state: undefined,
       ...session,
       ...(ltiLaunchPresentation && { ltiLaunchPresentation }),
       ...(ltiAgsEndpoint && { ltiAgsEndpoint }),
       ...(ltiNrpsParameter && { ltiNrpsParameter }),
+      ...(LtiDlSettingsSchema && { ltiDlSettings }),
     });
 
     return await init(req);

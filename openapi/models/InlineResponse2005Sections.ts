@@ -21,48 +21,48 @@ import {
 } from './';
 
 /**
- * 成功時
+ * 
  * @export
- * @interface InlineResponse20011
+ * @interface InlineResponse2005Sections
  */
-export interface InlineResponse20011 {
+export interface InlineResponse2005Sections {
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2005Sections
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005Sections
+     */
+    name?: string;
     /**
      * 
      * @type {Array<InlineResponse2005Topics>}
-     * @memberof InlineResponse20011
+     * @memberof InlineResponse2005Sections
      */
     topics?: Array<InlineResponse2005Topics>;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20011
-     */
-    page?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20011
-     */
-    perPage?: number;
 }
 
-export function InlineResponse20011FromJSON(json: any): InlineResponse20011 {
-    return InlineResponse20011FromJSONTyped(json, false);
+export function InlineResponse2005SectionsFromJSON(json: any): InlineResponse2005Sections {
+    return InlineResponse2005SectionsFromJSONTyped(json, false);
 }
 
-export function InlineResponse20011FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20011 {
+export function InlineResponse2005SectionsFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse2005Sections {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
+        'id': !exists(json, 'id') ? undefined : json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2005TopicsFromJSON)),
-        'page': !exists(json, 'page') ? undefined : json['page'],
-        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
 }
 
-export function InlineResponse20011ToJSON(value?: InlineResponse20011 | null): any {
+export function InlineResponse2005SectionsToJSON(value?: InlineResponse2005Sections | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -71,9 +71,9 @@ export function InlineResponse20011ToJSON(value?: InlineResponse20011 | null): a
     }
     return {
         
+        'id': value.id,
+        'name': value.name,
         'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2005TopicsToJSON)),
-        'page': value.page,
-        'perPage': value.perPage,
     };
 }
 

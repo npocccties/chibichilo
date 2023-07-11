@@ -95,7 +95,9 @@ export function toSessionSchema(
 
   return {
     oauthClient: { id: body.oauth_consumer_key, nonce: body.oauth_nonce },
+    ltiMessageType: "LtiResourceLinkRequest", // NOTE: basic-lti-launch-request だが前方互換
     ltiVersion: "1.0.0",
+    ltiDeploymentId: "", // NOTE: 前方互換
     ltiUser: {
       id: body.user_id,
       name: body.lis_person_name_full,

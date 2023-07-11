@@ -14,24 +14,36 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2007Activity,
-    InlineResponse2007ActivityFromJSON,
-    InlineResponse2007ActivityFromJSONTyped,
-    InlineResponse2007ActivityToJSON,
+    InlineResponse2005Topics,
+    InlineResponse2005TopicsFromJSON,
+    InlineResponse2005TopicsFromJSONTyped,
+    InlineResponse2005TopicsToJSON,
 } from './';
 
 /**
- * 
+ * 作成したトピックの一覧
  * @export
  * @interface InlineResponse2007
  */
 export interface InlineResponse2007 {
     /**
      * 
-     * @type {Array<InlineResponse2007Activity>}
+     * @type {Array<InlineResponse2005Topics>}
      * @memberof InlineResponse2007
      */
-    activity: Array<InlineResponse2007Activity>;
+    topics?: Array<InlineResponse2005Topics>;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2007
+     */
+    page?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2007
+     */
+    perPage?: number;
 }
 
 export function InlineResponse2007FromJSON(json: any): InlineResponse2007 {
@@ -44,7 +56,9 @@ export function InlineResponse2007FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'activity': ((json['activity'] as Array<any>).map(InlineResponse2007ActivityFromJSON)),
+        'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2005TopicsFromJSON)),
+        'page': !exists(json, 'page') ? undefined : json['page'],
+        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
 }
 
@@ -57,7 +71,9 @@ export function InlineResponse2007ToJSON(value?: InlineResponse2007 | null): any
     }
     return {
         
-        'activity': ((value.activity as Array<any>).map(InlineResponse2007ActivityToJSON)),
+        'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2005TopicsToJSON)),
+        'page': value.page,
+        'perPage': value.perPage,
     };
 }
 

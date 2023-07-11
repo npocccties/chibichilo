@@ -14,24 +14,24 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2004Topics,
-    InlineResponse2004TopicsFromJSON,
-    InlineResponse2004TopicsFromJSONTyped,
-    InlineResponse2004TopicsToJSON,
+    InlineResponse2006Books,
+    InlineResponse2006BooksFromJSON,
+    InlineResponse2006BooksFromJSONTyped,
+    InlineResponse2006BooksToJSON,
 } from './';
 
 /**
- * 作成したトピックの一覧
+ * 作成したブックの一覧
  * @export
  * @interface InlineResponse2006
  */
 export interface InlineResponse2006 {
     /**
      * 
-     * @type {Array<InlineResponse2004Topics>}
+     * @type {Array<InlineResponse2006Books>}
      * @memberof InlineResponse2006
      */
-    topics?: Array<InlineResponse2004Topics>;
+    books?: Array<InlineResponse2006Books>;
     /**
      * 
      * @type {number}
@@ -56,7 +56,7 @@ export function InlineResponse2006FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2004TopicsFromJSON)),
+        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2006BooksFromJSON)),
         'page': !exists(json, 'page') ? undefined : json['page'],
         'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
     };
@@ -71,7 +71,7 @@ export function InlineResponse2006ToJSON(value?: InlineResponse2006 | null): any
     }
     return {
         
-        'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2004TopicsToJSON)),
+        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2006BooksToJSON)),
         'page': value.page,
         'perPage': value.perPage,
     };
