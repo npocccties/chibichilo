@@ -66,11 +66,13 @@ export default function Books(props: Props) {
           </Button>
         )}
       </Typography>
-      <LinkInfo
-        sx={{ mt: 1, gridArea: "description" }}
-        book={linkedBook}
-        onLinkedBookClick={onLinkedBookClick}
-      />
+      {!isDeepLink && (
+        <LinkInfo
+          sx={{ mt: 1, gridArea: "description" }}
+          book={linkedBook}
+          onLinkedBookClick={onLinkedBookClick}
+        />
+      )}
       <ActionHeader sx={{ gridArea: "action-header" }}>
         <ContentTypeIndicator type="book" />
         <SortSelect onSortChange={searchProps.onSortChange} />
