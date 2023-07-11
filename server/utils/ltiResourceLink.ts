@@ -48,6 +48,7 @@ export async function upsertLtiResourceLink(
     book: { connect: { id: bookId } },
     consumer: { connect: { id: consumerId } },
     creator: { connect: { id: creatorId } },
+    updatedAt: new Date(),
   };
 
   await prisma.$transaction([
