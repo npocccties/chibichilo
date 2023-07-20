@@ -8,7 +8,6 @@ import youtubePlayedShims from "$utils/youtubePlayedShims";
 const basicEventsMap = [
   "ended",
   "pause",
-  "play",
   "seeked",
   "seeking",
   "timeupdate",
@@ -105,6 +104,11 @@ export class PlayerTracker extends (EventEmitter as {
       player.on(event, () => this.emit(event, this.stats));
     }
 
+    // NOTE: video-js-user-triggered-playイベントを学習者起因でのイベントとみなす
+    player.on("video-js-user-triggered-play", () => {
+      this.emit("play", this.stats);
+    });
+
     player.on("ratechange", () => {
       this.emit("playbackratechange", {
         ...this.stats,
@@ -137,6 +141,14 @@ export class PlayerTracker extends (EventEmitter as {
     for (const event of basicEventsMap) {
       player.on(event, () => this.emit(event, this.stats));
     }
+
+    /** 初回再生 */
+    let firstPlay = true;
+    player.on("play", () => {
+      // NOTE: 初回以降のplayイベントを自動再生ではない学習者起因でのイベントとみなす
+      if (firstPlay) firstPlay = false;
+      else this.emit("play", this.stats);
+    });
 
     player.on("playbackratechange", (data: { playbackRate: number }) => {
       this.emit("playbackratechange", {
