@@ -69,6 +69,8 @@ model Topic {
   keywords     Keyword[]
   topicSection TopicSection[]
   activities   Activity[]
+  bookmarks Bookmark[]
+
   /// トピック名称
   name         String
   /// 説明 (Markdown)
@@ -126,6 +128,7 @@ model LtiPlatform {
 model LtiConsumer {
   ltiContext       LtiContext[]
   ltiResourceLinks LtiResourceLink[]
+  bookmarks Bookmark[]
   users            User[]
   /// OAuth Consumer key ("" は無効)
   id               String            @id
@@ -136,6 +139,7 @@ model LtiConsumer {
   platformId       String?           @map("platform_id")
   /// Access Token ("" は無効)
   accessToken      String            @default("") @map("access_token")
+
 
   @@map("lti_consumer")
 }
@@ -149,6 +153,7 @@ model LtiContext {
   resourceLinks LtiResourceLink[]
   members       LtiMember[]
   activities    Activity[]
+  bookmarks Bookmark[]
   title         String
   label         String
 
@@ -287,6 +292,7 @@ model User {
   ltiUserId        String            @map("lti_user_id")
   activities       Activity[]
   publicBooks      PublicBook[]
+  bookmarks Bookmark[]
   /// 氏名
   name             String
   /// メールアドレス ("" は無効値)
@@ -380,4 +386,41 @@ model Account {
 
   @@unique([nonce, timestamp])
   @@map("accounts")
+}
+
+enum TagLabel {
+  EASY
+  NORMAL
+  HARD
+}
+
+model Tag {
+  id    Int       @id @default(autoincrement())
+  label TagLabel  @unique
+  color String
+
+  bookmarks Bookmark[]
+}
+
+model Bookmark {
+  id         Int      @id @default(autoincrement())
+
+  consumer   LtiConsumer @relation(fields: [consumerId], references: [id])
+  consumerId String      @map("consumer_id")
+  context    LtiContext  @relation(fields: [consumerId, contextId], references: [consumerId, id])
+  contextId  String      @map("context_id")
+
+  tagId      Int      @map("tag_id")
+  tag        Tag      @relation(fields: [tagId], references: [id])
+
+  userId     Int      @map("user_id")
+  user     User      @relation(fields: [userId], references: [id])
+
+  topicId    Int      @map("topic_id")
+  topic     Topic   @relation(fields: [topicId], references: [id])
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([tagId, userId, contextId, topicId])
 }
