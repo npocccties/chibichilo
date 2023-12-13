@@ -385,9 +385,9 @@ syslogへ、TSV(タブ区切り)で出力する。
      - 固定
    * - 16
      - video種別
-     - | YouTube
-       | Vimeo
-       | Wowza
+     - | youTube
+       | vimeo
+       | wowza
      - | 新規追加予定
        | 2024
    * - 17
