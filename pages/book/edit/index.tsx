@@ -69,8 +69,7 @@ function Edit({ bookId, context }: Query) {
   function handleTopicEditClick(
     topic: Pick<TopicSchema, "id"> & ContentAuthors
   ) {
-    const action = isContentEditable(topic) ? "edit" : "generate";
-    const url = pagesPath.book.edit.topic[action].$url({
+    const url = pagesPath.book.edit.topic.edit.$url({
       query: { ...query, topicId: topic.id },
     });
     return router.push(url);
@@ -99,7 +98,7 @@ function Edit({ bookId, context }: Query) {
     onTopicEditClick: handleTopicEditClick,
     onAuthorsUpdate: handleAuthorsUpdate,
     onAuthorSubmit: handleAuthorSubmit,
-    isContentEditable: () => true,
+    isContentEditable,
     onOverwriteClick: handleOverwriteClick,
   };
 

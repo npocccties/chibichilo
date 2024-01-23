@@ -18,10 +18,8 @@ function Import({ bookId, context }: BookEditQuery) {
   const router = useRouter();
   const bookEditQuery = { bookId, ...(context && { context }) };
   function back() {
-    // TODO: トピックインポート画面で自身以外のブックへの経路を提供しないならば不要なので取り除きましょう
-    const action = book && isContentEditable(book) ? "edit" : "generate";
     return router.push(
-      pagesPath.book[action].$url({
+      pagesPath.book.edit.$url({
         query: bookEditQuery,
       })
     );
@@ -41,9 +39,8 @@ function Import({ bookId, context }: BookEditQuery) {
     return back();
   }
   function onContentEditClick(topic: Pick<TopicSchema, "id" | "authors">) {
-    const action = isContentEditable(topic) ? "edit" : "generate";
     return router.push(
-      pagesPath.book.topic.import[action].$url({
+      pagesPath.book.topic.import.edit.$url({
         query: { ...bookEditQuery, topicId: topic.id },
       })
     );

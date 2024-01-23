@@ -28,9 +28,7 @@ export type Props = {
   linkedBook?: LinkedBook;
   loading?: boolean;
   onContentPreviewClick(content: ContentSchema): void;
-  onContentEditClick(content: ContentSchema): void;
   onContentLinkClick?(content: ContentSchema, checked: boolean): void;
-  isDeepLink: boolean;
 };
 
 export default function DeepLinkBooks(props: Props) {
@@ -40,9 +38,7 @@ export default function DeepLinkBooks(props: Props) {
     linkedBook,
     loading = false,
     onContentPreviewClick,
-    onContentEditClick,
     onContentLinkClick,
-    isDeepLink,
   } = props;
   const searchProps = useSearchAtom();
 
@@ -94,9 +90,8 @@ export default function DeepLinkBooks(props: Props) {
             key={content.id}
             content={content}
             linked={content.id === linkedBook?.id}
-            isDeepLink={isDeepLink}
             onContentPreviewClick={onContentPreviewClick}
-            onContentEditClick={onContentEditClick}
+            onContentEditClick={undefined}
             onContentLinkClick={onContentLinkClick}
             onLtiContextClick={searchProps.onLtiContextClick}
             onKeywordClick={searchProps.onKeywordClick}

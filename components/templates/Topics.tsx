@@ -48,7 +48,7 @@ export default function Topics(props: Props) {
     onTopicNewClick,
   } = props;
   const searchProps = useSearchAtom();
-  const { isAdministrator } = useSessionAtom();
+  const { isAdministrator, isContentEditable } = useSessionAtom();
   const confirm = useConfirm();
   const [selected, select] = useState<Map<ContentSchema["id"], ContentSchema>>(
     new Map()
@@ -160,7 +160,9 @@ export default function Topics(props: Props) {
             checked={selected.has(content.id)}
             onChange={handleChecked(content)}
             onContentPreviewClick={handlePreviewClick}
-            onContentEditClick={onContentEditClick}
+            onContentEditClick={
+              isContentEditable(content) ? onContentEditClick : undefined
+            }
             onKeywordClick={searchProps.onKeywordClick}
             onRelatedBookClick={searchProps.onRelatedBookClick}
           />

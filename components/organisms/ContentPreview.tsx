@@ -127,7 +127,6 @@ export type ContentPreviewProps = Omit<
   onKeywordClick(keyword: Pick<KeywordSchema, "name">): void;
   onRelatedBookClick?(id: RelatedBook): void;
   linked?: boolean;
-  isDeepLink?: boolean;
 };
 
 export default function ContentPreview({
@@ -139,7 +138,6 @@ export default function ContentPreview({
   onKeywordClick,
   onRelatedBookClick,
   linked = content.type === "book" ? false : undefined,
-  isDeepLink,
   checked,
   ...checkboxProps
 }: ContentPreviewProps) {
@@ -182,7 +180,7 @@ export default function ContentPreview({
             />
           ))}
         {content.shared && <SharedIndicator className="shared" />}
-        {!isDeepLink && onContentEditClick && (
+        {onContentEditClick && (
           <EditButton
             className="edit-button"
             variant={content.type}

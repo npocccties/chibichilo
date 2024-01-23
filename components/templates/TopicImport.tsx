@@ -17,6 +17,7 @@ import type { ContentSchema } from "$server/models/content";
 import type { TopicSchema } from "$server/models/topic";
 import useDialogProps from "$utils/useDialogProps";
 import { useSearchAtom } from "$store/search";
+import { useSessionAtom } from "$store/session";
 
 type Props = {
   totalCount: number;
@@ -38,6 +39,7 @@ export default function TopicImport(props: Props) {
     onContentEditClick,
   } = props;
   const searchProps = useSearchAtom();
+  const { isContentEditable } = useSessionAtom();
   const [selectedIndexes, select] = useState<Set<number>>(new Set());
   const handleChecked = (index: number) => () =>
     select((indexes) =>
@@ -91,7 +93,9 @@ export default function TopicImport(props: Props) {
             checked={selectedIndexes.has(index)}
             onChange={handleChecked(index)}
             onContentPreviewClick={handlePreviewClick}
-            onContentEditClick={onContentEditClick}
+            onContentEditClick={
+              isContentEditable(content) ? onContentEditClick : undefined
+            }
             onKeywordClick={searchProps.onKeywordClick}
           />
         ))}

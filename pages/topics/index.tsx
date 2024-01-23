@@ -48,9 +48,8 @@ function Index() {
     await revalidateContents(query);
   }
   function onContentEditClick(topic: Pick<TopicSchema, "id" | "authors">) {
-    const action = isContentEditable(topic) ? "edit" : "generate";
     return router.push(
-      pagesPath.topics[action].$url({ query: { topicId: topic.id } })
+      pagesPath.topics.edit.$url({ query: { topicId: topic.id } })
     );
   }
   function handleTopicNewClick() {

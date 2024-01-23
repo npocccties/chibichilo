@@ -79,8 +79,7 @@ function Show(query: Query) {
     [playerTracker, nextItemIndex, itemExists, updateItemIndex]
   );
   const handleBookEditClick = () => {
-    const action = book && isContentEditable(book) ? "edit" : "generate";
-    return router.push(pagesPath.book[action].$url({ query }));
+    return router.push(pagesPath.book.edit.$url({ query }));
   };
   const handleOtherBookLinkClick = () => {
     return router.push(pagesPath.books.$url());
@@ -88,8 +87,7 @@ function Show(query: Query) {
   const handleTopicEditClick = (
     topic: Pick<TopicSchema, "id"> & ContentAuthors
   ) => {
-    const action = isContentEditable(topic) ? "edit" : "generate";
-    const url = pagesPath.book.topic[action].$url({
+    const url = pagesPath.book.topic.edit.$url({
       query: { ...query, topicId: topic.id },
     });
     return router.push(url);
