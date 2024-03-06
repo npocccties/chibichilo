@@ -17,6 +17,10 @@ const defaultOptions = {
   playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
   language: "ja",
   languages: { ja },
+  html5: {
+    // NOTE: HLS再生環境で動画に設定した字幕の選択肢が複数表示されることがあるため無効化
+    nativeTextTracks: false,
+  },
 };
 
 function getVideoJsPlayer(
