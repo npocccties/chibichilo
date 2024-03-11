@@ -4,8 +4,13 @@ import useSWRImmutable from "swr/immutable";
 import { useDebouncedCallback } from "use-debounce";
 import type { VideoJsPlayer } from "$types/videoJsPlayer";
 import VimeoPlayer from "@vimeo/player";
-import type { Muted, PlaybackRate, Volume } from "./storage";
-import { muteAtom, playbackRateAtom, volumeAtom } from "./storage";
+import type { Muted, PlaybackRate, TextTrack, Volume } from "./storage";
+import {
+  muteAtom,
+  playbackRateAtom,
+  textTrackAtom,
+  volumeAtom,
+} from "./storage";
 
 type Player = VideoJsPlayer | VimeoPlayer;
 
@@ -75,12 +80,83 @@ async function getPlayerVolume(player: Player): Promise<{
   return { volume, muted };
 }
 
+/** 動画プレイヤーへの字幕の設定処理 */
+function setPlayerTextTrack(player: Player, data: TextTrack): void {
+  if (player instanceof VimeoPlayer) {
+    return; // Vimeo は字幕非対応
+  }
+
+  const textTracks: TextTrack[] = [];
+
+  // VideoJsTextTrackListは配列ではない
+  const vjsTtl = player.remoteTextTracks();
+
+  for (let i = 0; i < vjsTtl.length; i++) {
+    textTracks.push(Object.assign(vjsTtl[i], { index: i }) as TextTrack);
+  }
+
+  // 最初にインデックス番号を探索
+  let textTrack = textTracks.find(
+    ({ index, kind, language }) =>
+      index === data.index && kind === data.kind && language === data.language
+  );
+
+  // 見つからない場合、条件を緩めて探索
+  textTrack ??= textTracks.find(
+    ({ kind, language }) => kind === data.kind && language === data.language
+  );
+
+  if (!textTrack) {
+    // それでも見つからない場合はすべて非表示にする
+    for (const t of textTracks) {
+      t.mode = "disabled";
+    }
+    return;
+  }
+
+  textTrack.mode = data.mode;
+}
+
+/** 動画プレイヤーからの字幕の取得処理 */
+async function getPlayerTextTrack(
+  player: Player
+): Promise<TextTrack | undefined> {
+  // Vimeo は字幕非対応
+  if (player instanceof VimeoPlayer) return;
+
+  const textTracks: TextTrack[] = [];
+
+  // VideoJsTextTrackListは配列ではない
+  const vjsTtl = player.remoteTextTracks();
+
+  for (let i = 0; i < vjsTtl.length; i++) {
+    textTracks.push(Object.assign(vjsTtl[i], { index: i }) as TextTrack);
+  }
+
+  // 動画に字幕が設定されていない場合は何もしない
+  if (textTracks.length === 0) return;
+
+  // 表示されている字幕を探索
+  let textTrack = textTracks.find(({ mode }) => mode === "showing");
+
+  // 見つからない場合、先頭を使用
+  textTrack ??= textTracks[0];
+
+  return {
+    index: textTracks.findIndex((t) => t === textTrack),
+    kind: textTrack.kind,
+    language: textTrack.language,
+    mode: textTrack.mode as "showing" | "disabled",
+  };
+}
+
 /** プレイヤー設定の保存と反映のためのカスタムフック */
 export function usePlayerState(player: Player) {
   const ready = useReady(player);
   const [playbackRate, setPlaybackRate] = useAtom(playbackRateAtom);
   const [volume, setVolume] = useAtom(volumeAtom);
   const [muted, setMuted] = useAtom(muteAtom);
+  const [textTrack, setTextTrack] = useAtom(textTrackAtom);
 
   const onPlaybackRateChange = useCallback(async () => {
     const data = await getPlayerPlaybackRate(player);
@@ -112,4 +188,18 @@ export function usePlayerState(player: Player) {
     if (ready) player.on("volumechange", onVolumeChange);
     return () => player.off("volumechange", onVolumeChange);
   }, [player, ready, onVolumeChange]);
+
+  const onTextTrackChange = useCallback(async () => {
+    const data = await getPlayerTextTrack(player);
+    if (data) setTextTrack(data);
+  }, [player, setTextTrack]);
+
+  useEffect(() => {
+    if (ready) setPlayerTextTrack(player, textTrack);
+  }, [player, ready, textTrack]);
+
+  useEffect(() => {
+    if (ready) player.on("texttrackchange", onTextTrackChange);
+    return () => player.off("texttrackchange", onTextTrackChange);
+  }, [player, ready, onTextTrackChange]);
 }

@@ -9,10 +9,20 @@ export type Volume = number;
 /** ミュート */
 export type Muted = boolean;
 
+/** 字幕設定 */
+export type TextTrack = {
+  /** インデックス番号 */
+  index: number;
+  kind: "subtitles";
+  language: string;
+  mode: "showing" | "disabled";
+};
+
 const keys = {
   playbackRate: "playbackRatePersister",
   volume: "volumePersisterVolume",
   muted: "volumePersisterMute",
+  textTrack: "textTrackPersister",
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,3 +46,15 @@ export const volumeAtom = atomWithStorage<Volume>(keys.volume, 1, storage);
 
 /** ミュート */
 export const muteAtom = atomWithStorage<Muted>(keys.muted, false, storage);
+
+/** 字幕設定 */
+export const textTrackAtom = atomWithStorage<TextTrack>(
+  keys.textTrack,
+  {
+    index: 0,
+    kind: "subtitles",
+    language: "ja",
+    mode: "disabled",
+  },
+  storage
+);
