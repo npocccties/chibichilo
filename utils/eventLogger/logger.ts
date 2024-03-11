@@ -1,7 +1,7 @@
 import type { EventType } from "$server/models/event";
 import { api } from "$utils/api";
 import type { PlayerStats, PlayerEvents, PlayerTracker } from "./playerTracker";
-import { load as loadPlaybackRate } from "$utils/playbackRate";
+import { loadPlaybackRate } from "$store/player";
 import { load } from "./loggerSessionPersister";
 import getFilePath from "./getFilePath";
 

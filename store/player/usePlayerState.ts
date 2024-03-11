@@ -1,0 +1,115 @@
+import { useCallback, useEffect } from "react";
+import { useAtom } from "jotai";
+import useSWRImmutable from "swr/immutable";
+import { useDebouncedCallback } from "use-debounce";
+import type { VideoJsPlayer } from "$types/videoJsPlayer";
+import VimeoPlayer from "@vimeo/player";
+import type { Muted, PlaybackRate, Volume } from "./storage";
+import { muteAtom, playbackRateAtom, volumeAtom } from "./storage";
+
+type Player = VideoJsPlayer | VimeoPlayer;
+
+/** イベント発火の間隔を間引くための遅延時間 (ms) */
+const wait = 100;
+/** VideoJsPlayer.readyState() 監視間隔 (ms) */
+const interval = 1_000;
+
+/** 動画プレイヤー準備完了かどうかの取得処理 */
+function getReady(player: Player): boolean {
+  return (
+    player instanceof VimeoPlayer ||
+    // NOTE: videojs-youtube はバッファリングが行われるまで誤った値が得られうるため待機
+    player.readyState() === 4 // HaveEnoughData
+  );
+}
+
+/** 動画プレイヤー準備状況へのアクセス */
+function useReady(player: Player): boolean {
+  const { data: ready } = useSWRImmutable(player, getReady, {
+    refreshInterval: interval,
+  });
+
+  return Boolean(ready);
+}
+
+/** 動画プレイヤーへの再生速度の設定処理 */
+function setPlayerPlaybackRate(player: Player, data: PlaybackRate): void {
+  if (player instanceof VimeoPlayer) {
+    void player.setPlaybackRate(data);
+  } else {
+    player.playbackRate(data);
+  }
+}
+
+/** 動画プレイヤーからの再生速度の取得処理 */
+async function getPlayerPlaybackRate(player: Player): Promise<PlaybackRate> {
+  const data = await (player instanceof VimeoPlayer
+    ? player.getPlaybackRate()
+    : player.playbackRate() ?? 1);
+  return data;
+}
+
+/** 動画プレイヤーへの音量の設定処理 */
+function setPlayerVolume(
+  player: Player,
+  data: { volume: Volume; muted: Muted }
+): void {
+  if (player instanceof VimeoPlayer) {
+    void player.setVolume(data.volume);
+    void player.setMuted(data.muted);
+  } else {
+    player.volume(data.volume);
+    player.muted(data.muted);
+  }
+}
+
+/** 動画プレイヤーからの音量の取得処理 */
+async function getPlayerVolume(player: Player): Promise<{
+  volume: Volume;
+  muted: Muted;
+}> {
+  const [volume, muted] = await Promise.all([
+    player instanceof VimeoPlayer ? player.getVolume() : player.volume() ?? NaN,
+    player instanceof VimeoPlayer ? player.getMuted() : player.muted() ?? false,
+  ]);
+  return { volume, muted };
+}
+
+/** プレイヤー設定の保存と反映のためのカスタムフック */
+export function usePlayerState(player: Player) {
+  const ready = useReady(player);
+  const [playbackRate, setPlaybackRate] = useAtom(playbackRateAtom);
+  const [volume, setVolume] = useAtom(volumeAtom);
+  const [muted, setMuted] = useAtom(muteAtom);
+
+  const onPlaybackRateChange = useCallback(async () => {
+    const data = await getPlayerPlaybackRate(player);
+    setPlaybackRate(data);
+  }, [player, setPlaybackRate]);
+
+  useEffect(() => {
+    if (ready) setPlayerPlaybackRate(player, playbackRate);
+  }, [player, ready, playbackRate]);
+
+  useEffect(() => {
+    if (ready) player.on("ratechange", onPlaybackRateChange);
+    return () => player.off("ratechange", onPlaybackRateChange);
+  }, [player, ready, onPlaybackRateChange]);
+
+  const updateVolume = useCallback(async () => {
+    const data = await getPlayerVolume(player);
+    setVolume(data.volume);
+    setMuted(data.muted);
+  }, [player, setVolume, setMuted]);
+
+  const onVolumeChange = useDebouncedCallback(updateVolume, wait);
+
+  useEffect(() => {
+    if (ready) setPlayerVolume(player, { volume, muted });
+  }, [player, ready, volume, muted]);
+
+  useEffect(() => {
+    if (ready) player.on("volumechange", onVolumeChange);
+    return () => player.off("volumechange", onVolumeChange);
+  }, [player, ready, onVolumeChange]);
+}
