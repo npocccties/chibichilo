@@ -95,13 +95,13 @@ function setPlayerTextTrack(player: Player, data: TextTrack): void {
     textTracks.push(Object.assign(vjsTtl[i], { index: i }) as TextTrack);
   }
 
-  // 最初にインデックス番号を探索
+  // 最初に選択順・種別・言語の完全一致を探索
   let textTrack = textTracks.find(
     ({ index, kind, language }) =>
       index === data.index && kind === data.kind && language === data.language
   );
 
-  // 見つからない場合、条件を緩めて探索
+  // 見つからない場合、種別・言語の一致を探索
   textTrack ??= textTracks.find(
     ({ kind, language }) => kind === data.kind && language === data.language
   );
@@ -114,6 +114,7 @@ function setPlayerTextTrack(player: Player, data: TextTrack): void {
     return;
   }
 
+  // 見つかった字幕の表示・非表示を反映する
   textTrack.mode = data.mode;
 }
 
