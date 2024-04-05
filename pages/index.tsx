@@ -4,7 +4,6 @@ import { useSessionAtom } from "$store/session";
 import UnlinkedProblem from "$templates/UnlinkedProblem";
 import Placeholder from "$templates/Placeholder";
 import { pagesPath } from "$utils/$path";
-import { useLoggerInit } from "$utils/eventLogger/loggerSessionPersister";
 
 function Replace(props: { href: string | UrlObject }) {
   const router = useRouter();
@@ -14,10 +13,6 @@ function Replace(props: { href: string | UrlObject }) {
 
 function Router() {
   const { session, isInstructor } = useSessionAtom();
-
-  // NOTE: eventLogger のために使用
-  useLoggerInit(session);
-
   const ltiResourceLink = session?.ltiResourceLink;
 
   if (!ltiResourceLink && isInstructor)

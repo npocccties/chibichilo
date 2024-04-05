@@ -5,6 +5,7 @@ import { api } from "./api";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { IsContentEditable } from "$server/models/content";
+import { useSessionAtom } from "$store/session";
 import { revalidateSession } from "./session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
@@ -33,10 +34,12 @@ async function fetchBook({
 
 export function useBook(
   bookId: BookSchema["id"] | undefined,
-  isContentEditable: IsContentEditable,
+  isContentEditable?: IsContentEditable,
   ltiResourceLink?: Pick<LtiResourceLinkSchema, "bookId" | "creatorId"> | null,
   token?: string
 ) {
+  isContentEditable = useSessionAtom().isContentEditable;
+
   const { data, error } = useSWRImmutable<BookSchema>(
     Number.isFinite(bookId) || token ? { key, bookId, token } : null,
     fetchBook,

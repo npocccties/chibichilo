@@ -38,7 +38,7 @@ export default function LearnerActivityDot(props: Props) {
   const { activity, onActivityClick, session } = props;
   const classes = useStyles();
   const handleActivityClick = () => onActivityClick?.(activity);
-  const items = getLocaleEntries(activity, session);
+  const items = Object.entries(getLocaleEntries(activity, session));
   return (
     <Tooltip
       title={

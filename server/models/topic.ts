@@ -4,6 +4,7 @@ import type { ResourceProps, ResourceSchema } from "./resource";
 import { resourcePropsSchema, resourceSchema } from "./resource";
 import { AuthorSchema } from "./author";
 import { KeywordPropSchema, KeywordSchema } from "./keyword";
+import type { BookmarkSchema } from "./bookmark";
 
 const RelatedBook = {
   type: "object",
@@ -40,6 +41,7 @@ export type TopicSchema = Topic & {
   keywords: KeywordSchema[];
   relatedBooks?: RelatedBook[];
   resource: ResourceSchema;
+  bookmarks?: Omit<BookmarkSchema, "tag" | "topic" | "ltiContext">[];
 };
 
 export const TopicProps = {

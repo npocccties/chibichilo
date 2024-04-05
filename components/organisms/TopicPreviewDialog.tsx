@@ -7,11 +7,17 @@ type Props = {
   topic: TopicSchema;
   open: boolean;
   onClose: React.MouseEventHandler;
+  isPrivateBook?: boolean;
 };
 
-export default function TopicPreviewDialog(props: Props) {
+export default function TopicPreviewDialog({
+  topic,
+  open,
+  onClose,
+  isPrivateBook = false,
+}: Props) {
   const cardClasses = useCardStyles();
-  const { topic, open, onClose } = props;
+
   return (
     <Dialog
       open={open}
@@ -19,7 +25,7 @@ export default function TopicPreviewDialog(props: Props) {
       PaperProps={{ classes: cardClasses }}
       fullWidth
     >
-      <TopicViewerContent topic={topic} />
+      <TopicViewerContent topic={topic} isPrivateBook={isPrivateBook} />
     </Dialog>
   );
 }

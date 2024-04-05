@@ -9,6 +9,7 @@ const card = makeStyles((theme) => ({
     borderRadius: 12,
     boxShadow: "none",
     padding: theme.spacing(2, 3),
+    maxWidth: "80%",
   },
 }));
 

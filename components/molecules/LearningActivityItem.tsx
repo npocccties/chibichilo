@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  book: Pick<BookSchema, "name">;
+  book: Pick<BookSchema, "id" | "name">;
   learners: Array<LearnerSchema>;
   completedLearners: Map<LearnerSchema["id"], Array<BookActivitySchema>>;
   incompletedLearners: Map<LearnerSchema["id"], Array<BookActivitySchema>>;

@@ -10,7 +10,7 @@ const options: ReadonlyArray<{
 }> = [
   {
     value: "topic",
-    label: "トピックでのすべての活動を分析",
+    label: "他のコースを含めた活動を分析",
   },
   {
     value: "current-lti-context-only",

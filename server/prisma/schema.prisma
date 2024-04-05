@@ -69,28 +69,30 @@ model Topic {
   keywords     Keyword[]
   topicSection TopicSection[]
   activities   Activity[]
+  bookmarks    Bookmark[]
+
   /// トピック名称
   name         String
   /// 説明 (Markdown)
   description  String
   /// 言語 ISO 639-1 code
-  language     String         @default("ja")
+  language     String       @default("ja")
   /// 学習所要時間 (秒)
-  timeRequired Int            @map("time_required")
+  timeRequired Int          @map("time_required")
   /// 再生開始時間 (秒)
-  startTime    Float?         @map("start_time")
+  startTime    Float?       @map("start_time")
   /// 再生終了時間 (秒, 0 は無効)
-  stopTime     Float?         @map("stop_time")
+  stopTime     Float?       @map("stop_time")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared       Boolean        @default(true)
+  shared       Boolean      @default(true)
   /// 著作者
   authors      Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
-  license      String         @default("")
+  license      String       @default("")
   /// 作成日
-  createdAt    DateTime       @default(now()) @map("created_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
   /// 更新日
-  updatedAt    DateTime       @default(now()) @map("updated_at")
+  updatedAt    DateTime     @default(now()) @map("updated_at")
   /// 詳細
   details      Json
 
@@ -149,6 +151,7 @@ model LtiContext {
   resourceLinks LtiResourceLink[]
   members       LtiMember[]
   activities    Activity[]
+  bookmarks     Bookmark[]
   title         String
   label         String
 
@@ -184,7 +187,6 @@ model LtiResourceLink {
   createdAt  DateTime    @default(now()) @map("created_at")
   /// 更新日
   updatedAt  DateTime    @updatedAt @map("updated_at")
-
 
   @@id([consumerId, id])
   @@map("lti_resource_link")
@@ -287,6 +289,7 @@ model User {
   ltiUserId        String            @map("lti_user_id")
   activities       Activity[]
   publicBooks      PublicBook[]
+  bookmarks        Bookmark[]
   /// 氏名
   name             String
   /// メールアドレス ("" は無効値)
@@ -303,6 +306,8 @@ model User {
 model Activity {
   id            Int                 @id @default(autoincrement())
   timeRanges    ActivityTimeRange[]
+  timeRangeLogs    ActivityTimeRangeLog[]
+  timeRangeCounts    ActivityTimeRangeCount[]
   topic         Topic               @relation(fields: [topicId], references: [id])
   topicId       Int                 @map("topic_id")
   learner       User                @relation(fields: [learnerId], references: [id])
@@ -334,6 +339,38 @@ model ActivityTimeRange {
   @@map("activities_time_ranges")
 }
 
+// 学習活動の時間範囲（実視聴回数記録用）
+model ActivityTimeRangeLog {
+  id      Int         @id @default(autoincrement())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId Int      @map("activity_id")
+  /// 開始時間 (ms)
+  startMs    Int      @map("start_ms")
+  /// 終了時間 (ms)
+  endMs      Int      @map("end_ms")
+  /// 視聴活動開始日
+  createdAt     DateTime            @default(now()) @map("created_at")
+  /// 視聴活動更新日
+  updatedAt     DateTime            @default(now()) @map("updated_at")
+
+  @@map("activities_time_range_logs")
+}
+
+// 学習活動の時間範囲の実視聴回数
+model ActivityTimeRangeCount {
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId Int      @map("activity_id")
+  /// 開始時間 (ms)
+  startMs    Int      @map("start_ms")
+  /// 終了時間 (ms)
+  endMs      Int      @map("end_ms")
+  /// カウント
+  count      Int      @default(0) @map("count")
+
+  @@id([activityId, startMs, endMs])
+  @@map("activities_time_range_counts")
+}
+
 // 著作
 model Authorship {
   id      Int         @id @default(autoincrement())
@@ -358,6 +395,40 @@ model ContentRole {
   authorships Authorship[]
 
   @@map("content_roles")
+}
+
+/// タグ
+model Tag {
+  id    Int    @id @default(autoincrement())
+  label String @unique
+  emoji String
+
+  bookmarks Bookmark[]
+}
+
+/// ブックマーク
+model Bookmark {
+  id Int @id @default(autoincrement())
+
+  ltiContext    LtiContext @relation(fields: [ltiConsumerId, ltiContextId], references: [consumerId, id])
+  ltiConsumerId String     @map("lti_consumer_id")
+  ltiContextId  String     @map("lti_context_id")
+
+  tagId Int? @map("tag_id")
+  tag   Tag? @relation(fields: [tagId], references: [id])
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  topicId Int   @map("topic_id")
+  topic   Topic @relation(fields: [topicId], references: [id])
+
+  memoContent String @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId])
 }
 
 // Etc.

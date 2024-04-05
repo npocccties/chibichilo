@@ -86,7 +86,7 @@ export default function LearnerActivityDialog(props: Props) {
             </Typography>
             {activities.map((activity, index) => (
               <Fragment key={index}>
-                <p className={classes.topic}>
+                <div className={classes.topic}>
                   <span>{activity.topic.name}</span>
                   <LearningStatusChip
                     type={activity.status}
@@ -107,7 +107,7 @@ export default function LearnerActivityDialog(props: Props) {
                       />
                     )}
                   </div>
-                </p>
+                </div>
               </Fragment>
             ))}
             {index < self.length - 1 && <Divider />}

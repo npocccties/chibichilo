@@ -15,6 +15,7 @@ export const topicsWithResourcesArg = {
     resource: resourceWithVideoArg,
     keywords: true,
     topicSection: { include: { section: { include: { book: true } } } },
+    bookmarks: true,
   },
 } as const;
 

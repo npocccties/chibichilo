@@ -22,13 +22,15 @@ import type { BookSchema } from "$server/models/book";
 import type { SessionSchema } from "$server/models/session";
 import type { LearnerSchema } from "$server/models/learner";
 import { gray } from "$theme/colors";
-import download from "$utils/bookLearningActivity/download";
+import downloadBookActivity from "$utils/bookLearningActivity/download";
+import downloadBookmarkStats from "$utils/bookmark/download";
 import label from "$utils/learningStatusLabel";
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
 import MembersDialog from "$organisms/MembersDialog";
+import BookmarkStatsDialog from "$organisms/BookmarkStatsDialog";
 import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 
@@ -128,9 +130,15 @@ export default function Dashboard(props: Props) {
   const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setTabIndex(value);
   };
-  const handleDownloadClick = useCallback(() => {
-    void download(bookActivities, "分析データ.csv", session);
+  const handleBookActivityDownloadClick = useCallback(() => {
+    void downloadBookActivity(bookActivities, "視聴分析データ.csv", session);
   }, [bookActivities, session]);
+  const handleBookmarkStatsDownloadClick = useCallback(async () => {
+    await downloadBookmarkStats(
+      "ブックマークの統計情報.csv",
+      scope === "current-lti-context-only"
+    );
+  }, [scope]);
   const learnerActivities = useMemo(
     () =>
       getLearnerActivities({
@@ -203,14 +211,24 @@ export default function Dashboard(props: Props) {
           onActivityScopeChange={props.onScopeChange}
         />
         <Button
-          onClick={handleDownloadClick}
+          onClick={handleBookActivityDownloadClick}
           color="secondary"
           variant="contained"
           size="small"
           disabled={bookActivities.length === 0}
+          title="事前に[受講者の同期]ボタンを押してからダウンロードしてください"
         >
           <GetAppOutlinedIcon fontSize="small" />
-          分析データをダウンロード
+          視聴分析データをダウンロード
+        </Button>
+        <Button
+          onClick={handleBookmarkStatsDownloadClick}
+          color="secondary"
+          variant="contained"
+          size="small"
+        >
+          <GetAppOutlinedIcon fontSize="small" />
+          ブックマークの統計情報をダウンロード
         </Button>
         <Button
           onClick={handleMembershipClick(memberships?.members || [])}
@@ -231,6 +249,7 @@ export default function Dashboard(props: Props) {
         >
           <Tab label="ブック" />
           <Tab label="学習者" />
+          <Tab label="タグ" />
         </Tabs>
         <TabPanel className={classes.items} value={tabIndex} index={0}>
           {activitiesByBooks.map((activitiesByBook, index) => (
@@ -267,6 +286,11 @@ export default function Dashboard(props: Props) {
               onActivityClick={handleActivityClick(learner, activities)}
               session={session}
             />
+          ))}
+        </TabPanel>
+        <TabPanel className={classes.items} value={tabIndex} index={2}>
+          {activitiesByBooks.map((book, index) => (
+            <BookmarkStatsDialog key={index} book={book} />
           ))}
         </TabPanel>
       </Card>

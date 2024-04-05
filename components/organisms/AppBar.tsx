@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import StyleIcon from "@mui/icons-material/Style";
 import LinkIcon from "@mui/icons-material/Link";
 import CellTowerIcon from "@mui/icons-material/CellTower";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -66,11 +67,13 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = ComponentProps<typeof MuiAppBar> & {
   session: SessionSchema;
+  isInstructor: boolean;
   onBooksClick?(): void;
   onTopicsClick?(): void;
   onCoursesClick?(): void;
   onBookClick?(): void;
   onDashboardClick?(): void;
+  onBookmarksClick?(): void;
 };
 
 const role = (session: SessionSchema) => {
@@ -82,11 +85,13 @@ const role = (session: SessionSchema) => {
 function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   const {
     session,
+    isInstructor,
     onBooksClick,
     onTopicsClick,
     onCoursesClick,
     onBookClick,
     onDashboardClick,
+    onBookmarksClick,
     ...others
   } = props;
   const isDeepLink = !!session.ltiDlSettings?.deep_link_return_url;
@@ -141,27 +146,31 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
           />
           {!isDeepLink && (
             <div className={classes.nav}>
-              <AppBarNavButton
-                color="inherit"
-                icon={<MenuBookOutlinedIcon />}
-                label="ブック"
-                onClick={onBooksClick}
-                disabled={!onBooksClick}
-              />
-              <AppBarNavButton
-                color="inherit"
-                icon={<LibraryBooksOutlinedIcon />}
-                label="トピック"
-                onClick={onTopicsClick}
-                disabled={!onTopicsClick}
-              />
-              <AppBarNavButton
-                color="inherit"
-                icon={<LinkIcon />}
-                label="リンク"
-                onClick={onCoursesClick}
-                disabled={!onCoursesClick}
-              />
+              {isInstructor && (
+                <>
+                  <AppBarNavButton
+                    color="inherit"
+                    icon={<MenuBookOutlinedIcon />}
+                    label="ブック"
+                    onClick={onBooksClick}
+                    disabled={!onBooksClick}
+                  />
+                  <AppBarNavButton
+                    color="inherit"
+                    icon={<LibraryBooksOutlinedIcon />}
+                    label="トピック"
+                    onClick={onTopicsClick}
+                    disabled={!onTopicsClick}
+                  />
+                  <AppBarNavButton
+                    color="inherit"
+                    icon={<LinkIcon />}
+                    label="リンク"
+                    onClick={onCoursesClick}
+                    disabled={!onCoursesClick}
+                  />
+                </>
+              )}
               <AppBarNavButton
                 color="inherit"
                 icon={<CellTowerIcon />}
@@ -172,15 +181,16 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                   !Number.isFinite(session?.ltiResourceLink?.bookId)
                 }
               />
-              {session?.systemSettings?.zoomImportEnabled && ( // TODO: zoomインポート以外の設定値が実装されたら常時表示する
-                <AppBarNavButton
-                  color="inherit"
-                  icon={<SettingsIcon />}
-                  label="設定"
-                  onClick={handleOpenUserSettings}
-                />
-              )}
-              {onDashboardClick && (
+              {session?.systemSettings?.zoomImportEnabled &&
+                isInstructor && ( // TODO: zoomインポート以外の設定値が実装されたら常時表示する
+                  <AppBarNavButton
+                    color="inherit"
+                    icon={<SettingsIcon />}
+                    label="設定"
+                    onClick={handleOpenUserSettings}
+                  />
+                )}
+              {onDashboardClick && isInstructor && (
                 <AppBarNavButton
                   color="inherit"
                   icon={<AssessmentOutlinedIcon />}
@@ -188,26 +198,34 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                   onClick={onDashboardClick}
                 />
               )}
+              <AppBarNavButton
+                color="inherit"
+                icon={<StyleIcon />}
+                label="タグ管理"
+                onClick={onBookmarksClick}
+              />
             </div>
           )}
-          <div>
-            <div className={clsx(classes.user, classes.margin)}>
-              <p>{session.user.name}</p>
-              <p className={classes.roles}>{role(session)}</p>
+          {isInstructor && (
+            <div>
+              <div className={clsx(classes.user, classes.margin)}>
+                <p>{session.user.name}</p>
+                <p className={classes.roles}>{role(session)}</p>
+              </div>
+              {session && (
+                <>
+                  <Button variant="text" color="primary" onClick={handleClick}>
+                    LTI情報
+                  </Button>
+                  <LtiItemDialog
+                    open={open}
+                    onClose={handleClose}
+                    session={session}
+                  />
+                </>
+              )}
             </div>
-            {session && (
-              <>
-                <Button variant="text" color="primary" onClick={handleClick}>
-                  LTI情報
-                </Button>
-                <LtiItemDialog
-                  open={open}
-                  onClose={handleClose}
-                  session={session}
-                />
-              </>
-            )}
-          </div>
+          )}
         </div>
       </Toolbar>
       <Snackbar

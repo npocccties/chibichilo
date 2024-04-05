@@ -48,7 +48,7 @@ export const label: Readonly<{ [key in (typeof keyOrder)[number]]: string }> = {
 export function getLocaleEntries(
   activity: BookActivitySchema,
   session: SessionSchema
-) {
+): Record<string, string | number | undefined> {
   const flattenActivity: Record<
     (typeof keyOrder)[number],
     string | number | Date | undefined
@@ -72,9 +72,11 @@ export function getLocaleEntries(
     createdAt: activity.createdAt?.toLocaleString(),
     updatedAt: activity.updatedAt?.toLocaleString(),
   };
-  return keyOrder
+  const data = keyOrder
     .map((key) => [label[key], a[key] as string | number | undefined])
     .filter(([, value]) => value !== undefined);
+
+  return Object.fromEntries(data);
 }
 
 export default getLocaleEntries;

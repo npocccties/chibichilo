@@ -40,6 +40,9 @@ export default function VideoResource({
   const { video } = useVideoAtom();
   useEffect(() => {
     video.set(identifier, videoInstance);
+    return () => {
+      video.delete(identifier);
+    };
   }, [video, identifier, videoInstance]);
 
   return (

@@ -32,7 +32,7 @@ function clear() {
  * あとでlogger.tsで使う。
  * もし教員や管理者ならば永続化せず空にする。
  */
-export function useLoggerInit(session: SessionSchema | undefined) {
+export function useLoggerSessionInit(session: SessionSchema | undefined) {
   useEffect(() => {
     if (!session) return;
     if (isInstructor(session)) clear();

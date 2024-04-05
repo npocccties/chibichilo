@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import type { EventType } from "$server/models/event";
+import { useSessionAtom } from "$store/session";
+import { usePlayerTrackerAtom } from "$store/playerTracker";
 import { api } from "$utils/api";
 import type { PlayerStats, PlayerEvents, PlayerTracker } from "./playerTracker";
 import { loadPlaybackRate } from "$store/player";
-import { load } from "./loggerSessionPersister";
+import getVideoType from "$utils/video/getVideoType";
+import { load, useLoggerSessionInit } from "./loggerSessionPersister";
 import getFilePath from "./getFilePath";
 
 /** v1のときのトラッキング用コードの移植 */
@@ -21,6 +25,8 @@ function send(eventType: EventType, event: PlayerStats, detail?: string) {
     uid: id(session.ltiUser.id),
     cid: id(session.ltiContext.id),
     nonce: session.oauthClient.nonce,
+    videoType: getVideoType(event.providerUrl),
+    path: location.pathname,
   };
   return api.apiV2EventPost({ body });
 }
@@ -32,6 +38,17 @@ const buildHandler =
 
 const buildSender = (event: EventType, tracker: PlayerTracker) => () =>
   send(event, tracker.stats);
+
+/** タスク廃棄 */
+function dispose(handlers: Record<string, () => unknown>) {
+  for (const event of ["beforeunload", "pagehide", "unload"] as const) {
+    window.removeEventListener(event, handlers[event]);
+  }
+
+  document.removeEventListener("visibilitychange", handlers.visibilitychange);
+
+  clearInterval(handlers.timer?.() as number);
+}
 
 /** ロギング開始 */
 function logger(tracker: PlayerTracker) {
@@ -81,20 +98,13 @@ function logger(tracker: PlayerTracker) {
     void send("changepage", event, event.video.toString());
   });
 
-  // @ts-expect-error TODO: Window オブジェクトを介さない排他制御にしたい
-  const prevHandlers = window.__handlers ?? {};
   const handlers: Record<string, () => void> = {};
 
   for (const event of ["beforeunload", "pagehide", "unload"] as const) {
-    window.removeEventListener(event, prevHandlers[event]);
     handlers[event] = buildSender(`${event}-ended` as const, tracker);
     window.addEventListener(event, handlers[event]);
   }
 
-  document.removeEventListener(
-    "visibilitychange",
-    prevHandlers.visibilitychange
-  );
   handlers.visibilitychange = function () {
     if (document.visibilityState === "hidden") {
       void send("hidden-ended", tracker.stats);
@@ -102,14 +112,26 @@ function logger(tracker: PlayerTracker) {
   };
   document.addEventListener("visibilitychange", handlers.visibilitychange);
 
-  clearInterval(prevHandlers.timer?.());
   const timer = setInterval(() => send("current-time", tracker.stats), 10000);
   handlers.timer = () => timer;
 
   // @ts-expect-error TODO: Window オブジェクトを介さない排他制御にしたい
-  window.__handlers = handlers;
-  // @ts-expect-error TODO: Window オブジェクトを介さない排他制御にしたい
   window.__tracker = tracker;
+
+  return () => dispose(handlers);
 }
 
-export default logger;
+/** ロギング開始 */
+export function useLoggerInit() {
+  const { session } = useSessionAtom();
+  const playerTracker = usePlayerTrackerAtom();
+
+  useLoggerSessionInit(session);
+
+  useEffect(() => {
+    if (!playerTracker) return;
+
+    const dispose = logger(playerTracker);
+    return dispose;
+  }, [playerTracker]);
+}

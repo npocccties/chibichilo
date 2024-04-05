@@ -16,6 +16,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@meikidd/videojs-hlsjs-plugin": "^1.0.18",
+    "@mui/base": "^5.0.0-beta.20",
     "@mui/icons-material": "^5.14.7",
     "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.7",
@@ -71,6 +72,7 @@
     "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-d3-cloud": "^1.0.6",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
     "react-infinite-scroll-hook": "^4.1.1",
@@ -120,5 +122,8 @@
   },
   "engines": {
     "node": "^16.13.0 || ^18.12.0 || ^20.0.0"
+  },
+  "dependencies": {
+    "@twemoji/api": "^15.0.3"
   }
 }

@@ -46,12 +46,17 @@ export const ActivitySchema = {
 } as const;
 
 /** 学習活動 */
-export type ActivitySchema = Pick<
-  FromSchema<typeof ActivitySchema>,
-  "id" | "learner" | "topic" | "completed" | "totalTimeMs" | "timeRanges"
-> & {
-  /** 作成日時 */
-  createdAt: Date;
-  /** 更新日時 */
-  updatedAt: Date;
-};
+export type ActivitySchema = FromSchema<
+  typeof ActivitySchema,
+  {
+    deserialize: [
+      {
+        pattern: {
+          type: "string";
+          format: "date-time";
+        };
+        output: Date;
+      },
+    ];
+  }
+>;

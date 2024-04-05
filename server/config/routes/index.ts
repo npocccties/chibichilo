@@ -14,6 +14,11 @@ import * as event from "./event";
 import * as wowza from "./wowza";
 import * as activity from "./activity";
 import session from "./session";
+import * as bookmark from "./bookmark";
+import * as bookmarks from "./bookmarks";
+import * as bookmarkTagMenu from "./bookmarkTagMenu";
+import * as bookmarkMemoContent from "./bookmarkMemoContent";
+import * as wordCloud from "./wordCloud";
 
 const routers = [
   lti,
@@ -30,6 +35,11 @@ const routers = [
   event,
   wowza,
   activity,
+  bookmark,
+  bookmarks,
+  bookmarkTagMenu,
+  bookmarkMemoContent,
+  wordCloud,
 ];
 
 async function routes(fastify: FastifyInstance) {

@@ -104,6 +104,7 @@ docker compose down
 | `PUBLIC_ACCESS_CRYPTO_ALGORITHM`     | Wowza 動画と字幕のトークン生成に利用する暗号化アルゴリズム (デフォルト: "aes-256-cbc"、`openssl help` コマンドの "Cipher commands" の項目に表示される値が利用可能) |
 | `ACTIVITY_RATE_MIN`                  | 学習活動の完了とみなす最小の視聴時間の割合 (デフォルト:`0.9`)                                                                                                      |
 | `VTT_ACCESS_TOKEN_EXPIRES_IN`        | 字幕を取得する際のアクセストークンの有効期限 (秒) (デフォルト: `5400`)                                                                                             |
+| `ACTIVITY_COUNT_INTERVAL`            | 実視聴回数を記録する際の区間の長さ (秒) (デフォルト:`1`)                                                                                                           |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
@@ -303,3 +304,24 @@ yarn --cwd server prisma studio
 
 dist ディレクトリをサーバー上に配置し、各環境変数とともに `NODE_ENV=production node dist/index.js | logger -p daemon.info -t chibichilo-server` とコマンドを実行することでアプリケーションを起動できます。
 [プロセスマネージャ PM2 を使って本番環境のサーバー上で起動する](https://future-architect.github.io/typescript-guide/deploy.html#id3)などしましょう。
+
+### タグの設定
+
+ブックマークのタグの初期値:
+
+| id  | label      | emoji |
+| --- | ---------- | ----- |
+| 1   | 後で見る   | 👀    |
+| 2   | 難しい     | 💪    |
+| 3   | 重要       | ❗    |
+| 4   | お気に入り | 💖    |
+| 5   | 高評価     | 👍    |
+
+変更する場合は SQL を発行します。
+※ 使用できる絵文字は、[twimoji](https://twemoji.twitter.com/)に準拠します。
+
+SQL:
+
+```sql
+UPDATE "Tag" SET "label" = '後で見る', "emoji" = '👀' WHERE "id" = 1;
+```

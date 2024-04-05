@@ -15,7 +15,7 @@ function SlideAppBar() {
   const trigger = useScrollTrigger();
   return (
     <Slide appear={false} direction="down" in={!trigger}>
-      <AppBar position="sticky" session={session} />
+      <AppBar position="sticky" session={session} isInstructor={false} />
     </Slide>
   );
 }

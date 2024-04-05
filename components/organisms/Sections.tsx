@@ -15,6 +15,8 @@ import { isNamedSection, getOutlineNumber } from "$utils/outline";
 import { useActivityAtom } from "$store/activity";
 import LearningStatusChip from "$atoms/LearningStatusChip";
 import formatInterval from "$utils/formatInterval";
+import TagCount from "$molecules/TagCount";
+import { Box } from "@mui/material";
 
 function SectionItem({
   section,
@@ -85,6 +87,7 @@ type Props = {
   sections: SectionSchema[];
   index: ItemIndex;
   isContentEditable(topic: ContentAuthors): boolean;
+  isPrivateBook: boolean;
   onItemClick(index: ItemIndex): void;
   onItemEditClick?(index: ItemIndex): void;
 };
@@ -94,6 +97,7 @@ export default function Sections({
   sections,
   index: [sectionIndex, topicIndex],
   isContentEditable,
+  isPrivateBook,
   onItemClick,
   onItemEditClick,
 }: Props) {
@@ -131,9 +135,25 @@ export default function Sections({
                 <span className={clsx(classes.topic, classes.ellipsis)}>
                   {topic.name}
                 </span>
-                <Typography component="span" variant="caption">
-                  {formatInterval(0, topic.timeRequired * 1000)}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    sx={{
+                      marginRight: "4px",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {formatInterval(0, topic.timeRequired * 1000)}
+                  </Typography>
+                  {isPrivateBook && <TagCount topicId={topic.id} />}
+                </Box>
               </ListItemText>
               {!isContentEditable(topic) && isCompleted(topic.id) && (
                 <LearningStatusChip type="completed" size="small" />

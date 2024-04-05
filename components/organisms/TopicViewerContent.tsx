@@ -6,12 +6,15 @@ import useSticky from "$utils/useSticky";
 import { isVideoResource } from "$utils/videoResource";
 import { gray } from "$theme/colors";
 import type { ActivitySchema } from "$server/models/activity";
+import { useLoggerInit } from "$utils/eventLogger/logger";
 
 type Props = {
   topic: TopicSchema;
   bookActivity?: ActivitySchema[];
   onEnded?: () => void;
   offset?: string;
+  isPrivateBook?: boolean;
+  isBookPage?: boolean;
 };
 
 export default function TopicViewerContent({
@@ -19,6 +22,8 @@ export default function TopicViewerContent({
   bookActivity,
   onEnded,
   offset,
+  isPrivateBook = false,
+  isBookPage = false,
 }: Props) {
   const theme = useTheme();
   const sticky = useSticky({
@@ -38,6 +43,8 @@ export default function TopicViewerContent({
     return activity.timeRanges;
   }, [bookActivity, topic.id]);
 
+  useLoggerInit();
+
   return (
     <>
       {isVideoResource(topic.resource) && (
@@ -48,6 +55,8 @@ export default function TopicViewerContent({
           topic={topic}
           timeRange={timeRange}
           onEnded={onEnded}
+          isPrivateBook={isPrivateBook}
+          isBookPage={isBookPage}
         />
       )}
     </>
