@@ -388,14 +388,12 @@ syslogへ、TSV(タブ区切り)で出力する。
      - | youtube
        | vimeo
        | wowza
-     - | 新規追加予定
-       | 2024
+     -
    * - 17
      - 視聴URLのパス
      - | /book
        | /bookmarks
-     - | 新規追加予定
-       | 2024
+     -
    * - 18
      - トピックID
      - | 1
