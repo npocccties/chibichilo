@@ -117,12 +117,12 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>firstplay</p></td>
-<td><p>なし</p></td>
-<td><p><a class="reference external" href="https://docs.videojs.com/player#event:firstplay">firstplay</a></p></td>
+<tr class="row-even"><td><p><span class="strike">firstplay</span></p></td>
+<td><p><span class="strike">なし</span></p></td>
+<td><p><a class="reference external" href="https://videojs.com/guides/videojs-7-to-8/#firstplay-event">Video.js v8への移行に伴いfirstplayイベント削除</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>play</p></td>
-<td><p>なし</p></td>
+<td><p>first</p></td>
 <td><p><a class="reference external" href="https://docs.videojs.com/player#event:play">play</a></p></td>
 </tr>
 <tr class="row-even"><td><p>pause</p></td>
@@ -181,13 +181,14 @@
 </table>
 <p>以下の目的で取得している</p>
 <dl>
-<dt>firstplay</dt><dd><p>学習者がページを開いて最初にビデオを再生開始した時間</p>
-<p>videojsのイベントを利用</p>
-<p>videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．</p>
+<dt><span class="strike">firstplay</span></dt><dd><p><span class="strike">学習者がページを開いて最初にビデオを再生開始した時間</span></p>
+<p><span class="strike">videojsのイベントを利用</span></p>
+<p><span class="strike">videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．</span></p>
 </dd>
 <dt>play</dt><dd><p>学習者がビデオを再生開始した時間</p>
 <p>videojsのイベントを利用</p>
 <p>videojsでは，ビデオを一時停止した後，再生開始すると，firstplayのイベントはとれず，playのイベントだけとれる．</p>
+<p>初回・トピック切り替えのタイミングで発火するplayイベントのみ&quot;first&quot;を付与．</p>
 </dd>
 <dt>pause</dt><dd><p>学習者がビデオを一時停止した時間</p>
 <p>videojsのイベントを利用</p>
@@ -620,7 +621,9 @@ moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126
 </dd>
 <dt>マイクロコンテンツ判定キーワード</dt><dd><p>本ログの識別子として、videoplayer関係のログであることを示す。固定値</p>
 </dd>
-<dt>video種別</dt><dd><p><span class="strike">YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加</span> この部分の追加は、次期log開発時に追加する。</p>
+<dt>video種別</dt><dd><p>YouTube,vimeo,wowza の区別が付くように種別を入れる。</p>
+</dd>
+<dt>視聴URLのパス</dt><dd><p>/book: 通常の視聴，/bookmarks: タグ管理画面での視聴区別</p>
 </dd>
 </dl>
 </section>

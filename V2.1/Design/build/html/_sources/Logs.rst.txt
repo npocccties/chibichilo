@@ -34,8 +34,8 @@ video.jsは、多数のイベントを取得できるが、現時点のシテス
    :header: "イベント","イベントとは別に取得した情報","video.jsとの対応"
    :widths: 5,1,10
 
-   "firstplay",      "なし",	                  "`firstplay <https://docs.videojs.com/player#event:firstplay>`_"
-   "play",           "なし",                    "`play <https://docs.videojs.com/player#event:play>`_"
+   ":strike:`firstplay`",      ":strike:`なし`",	                  "`Video.js v8への移行に伴いfirstplayイベント削除 <https://videojs.com/guides/videojs-7-to-8/#firstplay-event>`_"
+   "play",           "first",                    "`play <https://docs.videojs.com/player#event:play>`_"
    "pause",          "なし",	                  "`pause <https://docs.videojs.com/player#event:pause>`_"
    "seeked",         "シーク操作前のビデオ再生位置", "`seeked <https://docs.videojs.com/player#event:seeked>`_"
    "ended",          "なし",                    "`ended <https://docs.videojs.com/player#event:ended>`_"
@@ -54,12 +54,12 @@ video.jsは、多数のイベントを取得できるが、現時点のシテス
 
 .. TODO これ状態遷移のこと考えてる?
 
-firstplay
-   学習者がページを開いて最初にビデオを再生開始した時間
+:strike:`firstplay`
+   :strike:`学習者がページを開いて最初にビデオを再生開始した時間`
 
-   videojsのイベントを利用
+   :strike:`videojsのイベントを利用`
 
-   videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．
+   :strike:`videojsでは，最初にビデオを再生開始すると，最初にfirstplayのイベントがとれた後，playのイベントもとれるので，firstplayはいらないかもしれない．`
 
 play
    学習者がビデオを再生開始した時間
@@ -67,6 +67,8 @@ play
    videojsのイベントを利用
 
    videojsでは，ビデオを一時停止した後，再生開始すると，firstplayのイベントはとれず，playのイベントだけとれる．
+
+   初回・トピック切り替えのタイミングで発火するplayイベントのみ"first"を付与．
 
 pause
    学習者がビデオを一時停止した時間
@@ -469,7 +471,10 @@ LTIに送られたnonce
    本ログの識別子として、videoplayer関係のログであることを示す。固定値
 
 video種別
-   :strike:`YouTube,vimeo,wowza の区別が付くように種別を入れる。2020-11-04追加` この部分の追加は、次期log開発時に追加する。
+   YouTube,vimeo,wowza の区別が付くように種別を入れる。
+
+視聴URLのパス
+   /book: 通常の視聴，/bookmarks: タグ管理画面での視聴区別
 
 ログの整形
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
