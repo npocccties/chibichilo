@@ -22,7 +22,13 @@ function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
 
 async function updateBook(
   userId: number,
-  { id, sections, publicBooks, ...book }: Pick<Book, "id"> & BookProps
+  {
+    id,
+    sections,
+    publicBooks,
+    release: _,
+    ...book
+  }: Pick<Book, "id"> & BookProps
 ): Promise<BookSchema | undefined> {
   const ops: Array<PrismaPromise<unknown>> = [];
 
