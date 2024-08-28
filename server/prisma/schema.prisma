@@ -7,6 +7,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Version Management
+
+/// リリース
+model Release {
+  bookId     Int      @id @map("book_id")
+  book       Book     @relation(fields: [bookId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  releasedAt DateTime @default(now()) @map("released_at")
+  version    String   @default("0.0.0")
+  comment    String   @default("")
+
+  @@map("release")
+}
+
 // Resource Objects
 
 /// Zoomインポート履歴
@@ -223,7 +236,9 @@ model Book {
   updatedAt        DateTime          @default(now()) @map("updated_at")
   /// 詳細
   details          Json
-
+  /// 版管理 リリース (未リリースの場合は null)
+  release Release?
+  
   @@index([zoomMeetingId])
   @@map("books")
 }
