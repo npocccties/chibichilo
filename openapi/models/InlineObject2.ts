@@ -26,6 +26,10 @@ import {
     InlineResponse2005PublicBooksFromJSON,
     InlineResponse2005PublicBooksFromJSONTyped,
     InlineResponse2005PublicBooksToJSON,
+    InlineResponse2005Release,
+    InlineResponse2005ReleaseFromJSON,
+    InlineResponse2005ReleaseFromJSONTyped,
+    InlineResponse2005ReleaseToJSON,
 } from './';
 
 /**
@@ -76,6 +80,12 @@ export interface InlineObject2 {
      * @memberof InlineObject2
      */
     publicBooks?: Array<InlineResponse2005PublicBooks>;
+    /**
+     * 
+     * @type {InlineResponse2005Release}
+     * @memberof InlineObject2
+     */
+    release?: InlineResponse2005Release;
 }
 
 export function InlineObject2FromJSON(json: any): InlineObject2 {
@@ -95,6 +105,7 @@ export function InlineObject2FromJSONTyped(json: any, ignoreDiscriminator: boole
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
         'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2005PublicBooksFromJSON)),
+        'release': !exists(json, 'release') ? undefined : InlineResponse2005ReleaseFromJSON(json['release']),
     };
 }
 
@@ -114,6 +125,7 @@ export function InlineObject2ToJSON(value?: InlineObject2 | null): any {
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
         'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2005PublicBooksToJSON)),
+        'release': InlineResponse2005ReleaseToJSON(value.release),
     };
 }
 

@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
+    ApiV2TopicTopicIdActivityTimeRanges,
+    ApiV2TopicTopicIdActivityTimeRangesFromJSON,
+    ApiV2TopicTopicIdActivityTimeRangesFromJSONTyped,
+    ApiV2TopicTopicIdActivityTimeRangesToJSON,
 } from './';
 
 /**
@@ -28,10 +28,10 @@ import {
 export interface InlineObject10 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {Array<ApiV2TopicTopicIdActivityTimeRanges>}
      * @memberof InlineObject10
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    timeRanges: Array<ApiV2TopicTopicIdActivityTimeRanges>;
 }
 
 export function InlineObject10FromJSON(json: any): InlineObject10 {
@@ -44,7 +44,7 @@ export function InlineObject10FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
+        'timeRanges': ((json['timeRanges'] as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesFromJSON)),
     };
 }
 
@@ -57,7 +57,7 @@ export function InlineObject10ToJSON(value?: InlineObject10 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
+        'timeRanges': ((value.timeRanges as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesToJSON)),
     };
 }
 

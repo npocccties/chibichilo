@@ -16,39 +16,46 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject6
+ * @interface InlineResponse2005Release
  */
-export interface InlineObject6 {
+export interface InlineResponse2005Release {
+    /**
+     * 
+     * @type {Date}
+     * @memberof InlineResponse2005Release
+     */
+    releasedAt?: Date;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject6
+     * @memberof InlineResponse2005Release
      */
     version?: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject6
+     * @memberof InlineResponse2005Release
      */
     comment?: string;
 }
 
-export function InlineObject6FromJSON(json: any): InlineObject6 {
-    return InlineObject6FromJSONTyped(json, false);
+export function InlineResponse2005ReleaseFromJSON(json: any): InlineResponse2005Release {
+    return InlineResponse2005ReleaseFromJSONTyped(json, false);
 }
 
-export function InlineObject6FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject6 {
+export function InlineResponse2005ReleaseFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse2005Release {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
+        'releasedAt': !exists(json, 'releasedAt') ? undefined : (new Date(json['releasedAt'])),
         'version': !exists(json, 'version') ? undefined : json['version'],
         'comment': !exists(json, 'comment') ? undefined : json['comment'],
     };
 }
 
-export function InlineObject6ToJSON(value?: InlineObject6 | null): any {
+export function InlineResponse2005ReleaseToJSON(value?: InlineResponse2005Release | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,6 +64,7 @@ export function InlineObject6ToJSON(value?: InlineObject6 | null): any {
     }
     return {
         
+        'releasedAt': value.releasedAt === undefined ? undefined : (value.releasedAt.toISOString()),
         'version': value.version,
         'comment': value.comment,
     };

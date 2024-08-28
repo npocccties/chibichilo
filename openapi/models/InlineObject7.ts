@@ -14,14 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdKeywords,
-    ApiV2BookBookIdKeywordsFromJSON,
-    ApiV2BookBookIdKeywordsFromJSONTyped,
-    ApiV2BookBookIdKeywordsToJSON,
-    ApiV2TopicTopicIdResource,
-    ApiV2TopicTopicIdResourceFromJSON,
-    ApiV2TopicTopicIdResourceFromJSONTyped,
-    ApiV2TopicTopicIdResourceToJSON,
+    ApiV2BookBookIdAuthorsAuthors,
+    ApiV2BookBookIdAuthorsAuthorsFromJSON,
+    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
+    ApiV2BookBookIdAuthorsAuthorsToJSON,
 } from './';
 
 /**
@@ -32,64 +28,34 @@ import {
 export interface InlineObject7 {
     /**
      * 
-     * @type {string}
+     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
      * @memberof InlineObject7
      */
-    name?: string;
+    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
     /**
      * 
      * @type {string}
      * @memberof InlineObject7
      */
-    language?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineObject7
-     */
-    timeRequired?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineObject7
-     */
-    startTime?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineObject7
-     */
-    stopTime?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InlineObject7
-     */
-    shared?: boolean;
+    provider: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject7
      */
-    license?: string;
+    wowzaBaseUrl: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject7
      */
-    description?: string;
+    json?: string;
     /**
      * 
-     * @type {ApiV2TopicTopicIdResource}
+     * @type {string}
      * @memberof InlineObject7
      */
-    resource?: ApiV2TopicTopicIdResource;
-    /**
-     * 
-     * @type {Array<ApiV2BookBookIdKeywords>}
-     * @memberof InlineObject7
-     */
-    keywords?: Array<ApiV2BookBookIdKeywords>;
+    file?: string;
 }
 
 export function InlineObject7FromJSON(json: any): InlineObject7 {
@@ -102,16 +68,11 @@ export function InlineObject7FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'name': !exists(json, 'name') ? undefined : json['name'],
-        'language': !exists(json, 'language') ? undefined : json['language'],
-        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
-        'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
-        'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'license': !exists(json, 'license') ? undefined : json['license'],
-        'description': !exists(json, 'description') ? undefined : json['description'],
-        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
-        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
+        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
+        'provider': json['provider'],
+        'wowzaBaseUrl': json['wowzaBaseUrl'],
+        'json': !exists(json, 'json') ? undefined : json['json'],
+        'file': !exists(json, 'file') ? undefined : json['file'],
     };
 }
 
@@ -124,16 +85,11 @@ export function InlineObject7ToJSON(value?: InlineObject7 | null): any {
     }
     return {
         
-        'name': value.name,
-        'language': value.language,
-        'timeRequired': value.timeRequired,
-        'startTime': value.startTime,
-        'stopTime': value.stopTime,
-        'shared': value.shared,
-        'license': value.license,
-        'description': value.description,
-        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
-        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
+        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
+        'provider': value.provider,
+        'wowzaBaseUrl': value.wowzaBaseUrl,
+        'json': value.json,
+        'file': value.file,
     };
 }
 

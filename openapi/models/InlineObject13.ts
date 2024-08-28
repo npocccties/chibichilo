@@ -21,16 +21,16 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject13 {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject13
      */
-    tagId?: number;
+    language?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject13
      */
-    topicId?: number;
+    content?: string;
 }
 
 export function InlineObject13FromJSON(json: any): InlineObject13 {
@@ -43,8 +43,8 @@ export function InlineObject13FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'content': !exists(json, 'content') ? undefined : json['content'],
     };
 }
 
@@ -57,8 +57,8 @@ export function InlineObject13ToJSON(value?: InlineObject13 | null): any {
     }
     return {
         
-        'tagId': value.tagId,
-        'topicId': value.topicId,
+        'language': value.language,
+        'content': value.content,
     };
 }
 
