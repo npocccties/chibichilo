@@ -7,6 +7,8 @@ import { publicBookSchema } from "./book/public";
 import type { LtiResourceLinkSchema } from "./ltiResourceLink";
 import { ltiResourceLinkSchema } from "./ltiResourceLink";
 import { KeywordPropSchema, KeywordSchema } from "./keyword";
+import type { ReleaseSchema } from "./book/release";
+import { releaseSchema } from "./book/release";
 
 export type BookProps = {
   name: string;
@@ -16,6 +18,7 @@ export type BookProps = {
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
   publicBooks?: PublicBookSchema[];
+  release?: ReleaseSchema;
 };
 
 export type BookSchema = Book & {
@@ -24,6 +27,7 @@ export type BookSchema = Book & {
   ltiResourceLinks: LtiResourceLinkSchema[];
   keywords: KeywordSchema[];
   publicBooks?: PublicBookSchema[];
+  release?: ReleaseSchema;
 };
 
 export const bookPropsSchema = {
@@ -44,6 +48,10 @@ export const bookPropsSchema = {
     publicBooks: {
       type: "array",
       items: publicBookSchema,
+    },
+    release: {
+      ...releaseSchema,
+      nullable: true,
     },
   },
 } as const;
@@ -74,6 +82,10 @@ export const bookSchema = {
     publicBooks: {
       type: "array",
       items: publicBookSchema,
+    },
+    release: {
+      ...releaseSchema,
+      nullable: true,
     },
   },
 } as const;
