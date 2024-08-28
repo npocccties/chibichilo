@@ -231,6 +231,7 @@ class ImportBooksUtil {
           ...keywordsDisconnectInput(keywordsBeforeUpdate, book.keywords ?? []),
         },
         updatedAt: new Date(),
+        release: undefined,
       },
     };
   }
