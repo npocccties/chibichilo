@@ -1,14 +1,14 @@
-import BookEdit from "./BookEdit";
-import { book } from "samples";
+import BookEditReleased from "./BookEditReleased";
+import { book, release } from "samples";
 
 export default {
-  title: "templates/BookEdit",
-  component: BookEdit,
+  title: "templates/BookEditReleased",
+  component: BookEditReleased,
   parameters: { layout: "fullscreen" },
 };
 
 const defaultProps = {
-  book: { ...book },
+  book: { ...book, release },
   onSubmit: console.log,
   onDelete: console.log,
   onCancel: console.log,
@@ -24,5 +24,5 @@ const defaultProps = {
 };
 
 export const Default = () => {
-  return <BookEdit {...defaultProps} />;
+  return <BookEditReleased {...defaultProps} />;
 };

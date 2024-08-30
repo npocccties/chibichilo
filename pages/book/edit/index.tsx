@@ -6,6 +6,7 @@ import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
 import { useSessionAtom } from "$store/session";
 import BookEdit from "$templates/BookEdit";
+import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { destroyBook, updateBook, useBook } from "$utils/book";
@@ -105,7 +106,9 @@ function Edit({ bookId, context }: Query) {
   if (error) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
 
-  return <BookEdit book={book} {...handlers} />;
+  const Template = book.release ? BookEditReleased : BookEdit;
+
+  return <Template book={book} {...handlers} />;
 }
 
 function Router() {
