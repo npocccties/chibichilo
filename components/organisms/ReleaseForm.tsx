@@ -7,6 +7,8 @@ import TextField from "$atoms/TextField";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import gray from "$theme/colors/gray";
 import useCardStyles from "styles/card";
+import DescriptionList from "$atoms/DescriptionList";
+import getLocaleDateString from "$utils/getLocaleDateString";
 
 export type ReleaseFormProps = {
   release: ReleaseSchema;
@@ -16,7 +18,9 @@ export type ReleaseFormProps = {
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
   const { register, handleSubmit } = useForm<ReleaseProps>({ values: release });
   const cardClasses = useCardStyles();
-
+  const releasedAt = release.releasedAt
+    ? getLocaleDateString(release.releasedAt, "ja")
+    : "不明";
   return (
     <Card
       classes={cardClasses}
@@ -48,6 +52,14 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         </Typography>
       </div>
       <TextField inputProps={register("comment")} label="コメント" fullWidth />
+      <DescriptionList
+        value={[
+          {
+            key: "リリース日",
+            value: releasedAt,
+          },
+        ]}
+      />
       <Divider sx={{ mx: "-50%" }} />
       <div className="release-form-row">
         <Button variant="contained" color="primary" type="submit">
