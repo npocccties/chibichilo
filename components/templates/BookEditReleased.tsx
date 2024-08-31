@@ -6,7 +6,6 @@ import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import Container from "$atoms/Container";
-import RequiredDot from "$atoms/RequiredDot";
 import BackButton from "$atoms/BackButton";
 import type { BookSchema } from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
@@ -131,10 +130,6 @@ export default function BookEditReleased({
       />
       <Typography className={classes.subtitle} variant="h5">
         基本情報
-        <Typography variant="caption" component="span" aria-hidden="true">
-          <RequiredDot />
-          は必須項目です
-        </Typography>
       </Typography>
       <BookForm
         className={classes.content}

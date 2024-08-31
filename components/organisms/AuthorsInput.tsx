@@ -52,6 +52,7 @@ type Props = {
   onReset?(): void;
   onAuthorsUpdate(authors: AuthorSchema[]): void;
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
+  disabled?: boolean;
 };
 
 export default function AuthorsInput({
@@ -64,6 +65,7 @@ export default function AuthorsInput({
   onReset,
   onAuthorsUpdate,
   onAuthorSubmit,
+  disabled = false,
 }: Props) {
   const { session } = useSessionAtom();
   const handleAuthorUpdate =
@@ -107,7 +109,11 @@ export default function AuthorsInput({
               {author.ltiConsumerId} に存在する教員
             </span>
           </AuthorName>
-          <Select onChange={handleAuthorUpdate(author)} value={author.roleName}>
+          <Select
+            onChange={handleAuthorUpdate(author)}
+            value={author.roleName}
+            disabled={disabled}
+          >
             {Object.values(AuthorSchema._roleNames).map((roleName) => (
               <MenuItem key={roleName} value={roleName}>
                 {roleName}
@@ -124,40 +130,42 @@ export default function AuthorsInput({
           </IconButton>
         </AuthorItem>
       ))}
-      <FormControl error={error}>
-        <Input
-          id={id}
-          type="email"
-          placeholder="user@example.com"
-          value={value}
-          onChange={handleInput}
-          onKeyDown={handleKeyDown}
-          startAdornment={
-            <InputAdornment position="start">
-              <EmailOutlinedIcon />
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                onClick={handleReset}
-                color="secondary"
-                tooltipProps={{ title: "入力をリセット" }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <IconButton
-                onClick={handleAuthorSubmit}
-                color="primary"
-                tooltipProps={{ title: "このメールアドレスの教員を追加" }}
-              >
-                <PersonAddIcon />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-        <FormHelperText>{helperText}</FormHelperText>
-      </FormControl>
+      {!disabled && (
+        <FormControl error={error}>
+          <Input
+            id={id}
+            type="email"
+            placeholder="user@example.com"
+            value={value}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            startAdornment={
+              <InputAdornment position="start">
+                <EmailOutlinedIcon />
+              </InputAdornment>
+            }
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleReset}
+                  color="secondary"
+                  tooltipProps={{ title: "入力をリセット" }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <IconButton
+                  onClick={handleAuthorSubmit}
+                  color="primary"
+                  tooltipProps={{ title: "このメールアドレスの教員を追加" }}
+                >
+                  <PersonAddIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          <FormHelperText>{helperText}</FormHelperText>
+        </FormControl>
+      )}
     </div>
   );
 }
