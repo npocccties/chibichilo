@@ -22,6 +22,7 @@ type Props = {
   value: string;
   error?: boolean;
   helperText?: React.ReactNode;
+  disabled?: boolean;
   onInput?(value: string): void;
   onReset?(): void;
   onKeywordsUpdate(keywords: KeywordPropSchema[]): void;
@@ -33,6 +34,7 @@ export default function KeywordsInput({
   value,
   error,
   helperText,
+  disabled = false,
   onInput,
   onReset,
   onKeywordsUpdate,
@@ -65,41 +67,44 @@ export default function KeywordsInput({
             keyword={keyword}
             sx={{ mr: 0.5 }}
             onDelete={handleKeywordRemove(keyword)}
+            disabled={disabled}
           />
         ))}
       </Keywords>
-      <FormControl error={error}>
-        <Input
-          id={id}
-          value={value}
-          onChange={handleInput}
-          onKeyDown={handleKeyDown}
-          startAdornment={
-            <InputAdornment position="start">
-              <LabelOutlinedIcon />
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                onClick={handleReset}
-                color="secondary"
-                tooltipProps={{ title: "入力をリセット" }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <IconButton
-                onClick={handleKeywordSubmit}
-                color="primary"
-                tooltipProps={{ title: "このキーワードを追加" }}
-              >
-                <AddIcon />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-        <FormHelperText>{helperText}</FormHelperText>
-      </FormControl>
+      {!disabled && (
+        <FormControl error={error}>
+          <Input
+            id={id}
+            value={value}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            startAdornment={
+              <InputAdornment position="start">
+                <LabelOutlinedIcon />
+              </InputAdornment>
+            }
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleReset}
+                  color="secondary"
+                  tooltipProps={{ title: "入力をリセット" }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <IconButton
+                  onClick={handleKeywordSubmit}
+                  color="primary"
+                  tooltipProps={{ title: "このキーワードを追加" }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          <FormHelperText>{helperText}</FormHelperText>
+        </FormControl>
+      )}
     </div>
   );
 }

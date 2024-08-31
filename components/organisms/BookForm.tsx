@@ -167,6 +167,7 @@ export default function BookForm({
     useForm<BookPropsWithSubmitOptions>({
       defaultValues,
     });
+  const released = Boolean(book?.release);
 
   return (
     <Card
@@ -191,45 +192,50 @@ export default function BookForm({
         onSubmit(values);
       })}
     >
-      <div>
-        <InputLabel htmlFor="shared">
-          ブックをシェアする
-          <Typography
-            className={classes.labelDescription}
-            variant="caption"
-            component="span"
-          >
-            他の教材作成者とブックを共有します
-          </Typography>
-        </InputLabel>
-        <Checkbox
-          id="shared"
-          name="shared"
-          onChange={(_, checked) => setValue("shared", checked)}
-          defaultChecked={defaultValues.shared}
-          color="primary"
-        />
-      </div>
+      {released && (
+        <div>
+          <InputLabel htmlFor="shared">
+            ブックをシェアする
+            <Typography
+              className={classes.labelDescription}
+              variant="caption"
+              component="span"
+            >
+              他の教材作成者とブックを共有します
+            </Typography>
+          </InputLabel>
+          <Checkbox
+            id="shared"
+            name="shared"
+            onChange={(_, checked) => setValue("shared", checked)}
+            defaultChecked={defaultValues.shared}
+            color="primary"
+          />
+        </div>
+      )}
 
-      <div>
-        <InputLabel htmlFor="enable-public-book">
-          ブックを公開する
-          <Typography
-            className={classes.labelDescription}
-            variant="caption"
-            component="span"
-          >
-            学習者以外もブックを視聴できるようにします
-          </Typography>
-        </InputLabel>
-        <Checkbox
-          id="enable-public-book"
-          name="enablePublicBook"
-          onChange={(_, checked) => setEnablePublicBook(checked)}
-          defaultChecked={enablePublicBook}
-          color="primary"
-        />
-      </div>
+      {released && (
+        <div>
+          <InputLabel htmlFor="enable-public-book">
+            ブックを公開する
+            <Typography
+              className={classes.labelDescription}
+              variant="caption"
+              component="span"
+            >
+              学習者以外もブックを視聴できるようにします
+            </Typography>
+          </InputLabel>
+          <Checkbox
+            id="enable-public-book"
+            name="enablePublicBook"
+            onChange={(_, checked) => setEnablePublicBook(checked)}
+            defaultChecked={enablePublicBook}
+            color="primary"
+          />
+        </div>
+      )}
+
       {enablePublicBook && (
         <>
           <div>
@@ -278,15 +284,17 @@ export default function BookForm({
       <TextField
         inputProps={register("name")}
         label="タイトル"
-        required
+        required={!released}
         fullWidth
+        disabled={released}
       />
       <AuthorsInput
         {...authorsInputProps}
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
+        disabled={released}
       />
-      <KeywordsInput {...keywordsInputProps} />
+      <KeywordsInput {...keywordsInputProps} disabled={released} />
 
       <Accordion>
         <AccordionSummary>
@@ -298,6 +306,7 @@ export default function BookForm({
             fullWidth
             multiline
             inputProps={register("description")}
+            disabled={released}
           />
           <Typography
             className={classes.labelDescription}
@@ -319,6 +328,7 @@ export default function BookForm({
             select
             defaultValue={defaultValues.language}
             inputProps={register("language")}
+            disabled={released}
           >
             {Object.entries(languages).map(([value, label]) => (
               <MenuItem key={value} value={value}>
