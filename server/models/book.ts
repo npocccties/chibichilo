@@ -15,10 +15,10 @@ export type BookProps = {
   description?: string;
   language?: string;
   shared?: boolean;
+  license?: string;
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
   publicBooks?: PublicBookSchema[];
-  release?: ReleaseSchema;
 };
 
 export type BookSchema = Book & {
@@ -37,6 +37,7 @@ export const bookPropsSchema = {
     description: { type: "string" },
     language: { type: "string", nullable: true },
     shared: { type: "boolean", nullable: true },
+    license: { type: "string" },
     sections: {
       type: "array",
       items: sectionPropsSchema,
@@ -48,10 +49,6 @@ export const bookPropsSchema = {
     publicBooks: {
       type: "array",
       items: publicBookSchema,
-    },
-    release: {
-      ...releaseSchema,
-      nullable: true,
     },
   },
 } as const;
@@ -65,6 +62,7 @@ export const bookSchema = {
     language: { type: "string" },
     timeRequired: { type: "integer", nullable: true },
     shared: { type: "boolean" },
+    license: { type: "string" },
     publishedAt: { type: "string", format: "date-time" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
