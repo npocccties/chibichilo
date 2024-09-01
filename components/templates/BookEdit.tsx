@@ -18,8 +18,9 @@ import { useConfirm } from "material-ui-confirm";
 import { useSessionAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import AddIcon from "@mui/icons-material/Add";
+import type { ReleaseProps } from "$server/models/book/release";
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(1),
     "& > :not($title):not($content)": {
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+export type Props = {
   book: BookSchema;
   onSubmit(book: BookPropsWithSubmitOptions): void;
   onDelete(book: BookSchema): void;
@@ -59,6 +60,7 @@ type Props = {
   isContentEditable?: IsContentEditable;
   linked?: boolean;
   onOverwriteClick(): void;
+  onReleaseUpdate(release: ReleaseProps): void;
 };
 
 export default function BookEdit({
