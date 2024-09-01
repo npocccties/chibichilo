@@ -3,33 +3,34 @@ import { outdent } from "outdent";
 import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import type { ReleaseProps } from "$server/models/book/release";
-import { releasePropsSchema, releaseSchema } from "$server/models/book/release";
+import { releasePropsSchema } from "$server/models/book/release";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
-import { updateRelease } from "$server/utils/book/release";
+import { createRelease } from "$server/utils/book/release";
+import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
 
-export const updateSchema: FastifySchema = {
-  summary: "ブックのリリースの更新",
+export const createSchema: FastifySchema = {
+  summary: "ブックのリリースの作成",
   description: outdent`
-    ブックのリリースを更新します。
+    ブックのリリースを作成します。
     教員または管理者でなければなりません。
     教員は自身の著作のブックでなければなりません。`,
   params: bookParamsSchema,
   body: releasePropsSchema,
   response: {
-    201: releaseSchema,
+    201: bookSchema,
     403: {},
     404: {},
   },
 };
 
-export const updateHooks = {
+export const createHooks = {
   auth: [authUser, authInstructor],
 };
 
-export async function update({
+export async function create({
   session,
   body,
   params,
@@ -39,13 +40,15 @@ export async function update({
 }>) {
   const found = await findBook(params.book_id, session.user.id);
 
-  if (!found || !found.release) return { status: 404 };
+  if (!found || found.release) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  const updated = await updateRelease(params.book_id, body);
+  // TODO: ブックを複製する
+  const _ = await createRelease(params.book_id, body);
+  const book = await findBook(params.book_id, session.user.id);
 
   return {
     status: 201,
-    body: updated,
+    body: book,
   };
 }

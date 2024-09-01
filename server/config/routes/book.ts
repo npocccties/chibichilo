@@ -102,6 +102,11 @@ export async function bookRelease(fastify: FastifyInstance) {
   const { method, update } = releaseService;
   const hooks = makeHooks(fastify, releaseService.hooks);
 
+  fastify.post<{
+    Params: releaseService.Params;
+    Body: releaseService.Props;
+  }>(path, { schema: method.post, ...hooks.post }, handler(update));
+
   fastify.put<{
     Params: releaseService.Params;
     Body: releaseService.Props;

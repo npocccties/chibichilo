@@ -12,3 +12,22 @@ export async function upsertRelease(
     update: { ...release },
   });
 }
+
+export async function updateRelease(
+  bookId: Book["id"],
+  release: ReleaseProps
+): Promise<Release | undefined> {
+  return await prisma.release.update({
+    where: { bookId },
+    data: { ...release },
+  });
+}
+
+export async function createRelease(
+  bookId: Book["id"],
+  release: ReleaseProps
+): Promise<Release | undefined> {
+  return await prisma.release.create({
+    data: {bookId, ...release},
+  });
+}
