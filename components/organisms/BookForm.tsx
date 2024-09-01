@@ -39,6 +39,7 @@ import { useAuthorsAtom } from "store/authors";
 import languages from "$utils/languages";
 import useKeywordsInput from "$utils/useKeywordsInput";
 import useDomainsInput from "$utils/useDomainsInput";
+import licenses from "$utils/licenses";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -156,6 +157,7 @@ export default function BookForm({
     description: book?.description ?? "",
     shared: Boolean(book?.shared),
     language: book?.language ?? Object.getOwnPropertyNames(languages)[0],
+    license: book?.license ?? "",
     sections: book?.sections,
     authors: book?.authors ?? [],
     keywords: book?.keywords ?? [],
@@ -333,6 +335,19 @@ export default function BookForm({
             {Object.entries(languages).map(([value, label]) => (
               <MenuItem key={value} value={value}>
                 {label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="ライセンス"
+            select
+            defaultValue={defaultValues.license}
+            inputProps={{ displayEmpty: true, ...register("license") }}
+          >
+            <MenuItem value="">未設定</MenuItem>
+            {Object.entries(licenses).map(([value, { name }]) => (
+              <MenuItem key={value} value={value}>
+                {name}
               </MenuItem>
             ))}
           </TextField>
