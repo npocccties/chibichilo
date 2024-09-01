@@ -32,30 +32,6 @@ export interface InlineObject12 {
      * @memberof InlineObject12
      */
     authors: Array<ApiV2BookBookIdAuthorsAuthors>;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject12
-     */
-    provider: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject12
-     */
-    wowzaBaseUrl: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject12
-     */
-    json?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject12
-     */
-    file?: string;
 }
 
 export function InlineObject12FromJSON(json: any): InlineObject12 {
@@ -69,10 +45,6 @@ export function InlineObject12FromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
-        'provider': json['provider'],
-        'wowzaBaseUrl': json['wowzaBaseUrl'],
-        'json': !exists(json, 'json') ? undefined : json['json'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
     };
 }
 
@@ -86,10 +58,6 @@ export function InlineObject12ToJSON(value?: InlineObject12 | null): any {
     return {
         
         'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
-        'provider': value.provider,
-        'wowzaBaseUrl': value.wowzaBaseUrl,
-        'json': value.json,
-        'file': value.file,
     };
 }
 

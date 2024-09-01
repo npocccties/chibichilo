@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2TopicTopicIdActivityTimeRanges,
-    ApiV2TopicTopicIdActivityTimeRangesFromJSON,
-    ApiV2TopicTopicIdActivityTimeRangesFromJSONTyped,
-    ApiV2TopicTopicIdActivityTimeRangesToJSON,
+    ApiV2BookBookIdKeywords,
+    ApiV2BookBookIdKeywordsFromJSON,
+    ApiV2BookBookIdKeywordsFromJSONTyped,
+    ApiV2BookBookIdKeywordsToJSON,
+    ApiV2TopicTopicIdResource,
+    ApiV2TopicTopicIdResourceFromJSON,
+    ApiV2TopicTopicIdResourceFromJSONTyped,
+    ApiV2TopicTopicIdResourceToJSON,
 } from './';
 
 /**
@@ -28,10 +32,64 @@ import {
 export interface InlineObject10 {
     /**
      * 
-     * @type {Array<ApiV2TopicTopicIdActivityTimeRanges>}
+     * @type {string}
      * @memberof InlineObject10
      */
-    timeRanges: Array<ApiV2TopicTopicIdActivityTimeRanges>;
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject10
+     */
+    language?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    timeRequired?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    startTime?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    stopTime?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject10
+     */
+    shared?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject10
+     */
+    license?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject10
+     */
+    description?: string;
+    /**
+     * 
+     * @type {ApiV2TopicTopicIdResource}
+     * @memberof InlineObject10
+     */
+    resource?: ApiV2TopicTopicIdResource;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdKeywords>}
+     * @memberof InlineObject10
+     */
+    keywords?: Array<ApiV2BookBookIdKeywords>;
 }
 
 export function InlineObject10FromJSON(json: any): InlineObject10 {
@@ -44,7 +102,16 @@ export function InlineObject10FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'timeRanges': ((json['timeRanges'] as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesFromJSON)),
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
+        'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
+        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
     };
 }
 
@@ -57,7 +124,16 @@ export function InlineObject10ToJSON(value?: InlineObject10 | null): any {
     }
     return {
         
-        'timeRanges': ((value.timeRanges as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesToJSON)),
+        'name': value.name,
+        'language': value.language,
+        'timeRequired': value.timeRequired,
+        'startTime': value.startTime,
+        'stopTime': value.stopTime,
+        'shared': value.shared,
+        'license': value.license,
+        'description': value.description,
+        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
+        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
     };
 }
 
