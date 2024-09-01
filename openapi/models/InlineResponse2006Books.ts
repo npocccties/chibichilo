@@ -84,6 +84,12 @@ export interface InlineResponse2006Books {
     shared?: boolean;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse2006Books
+     */
+    license?: string;
+    /**
+     * 
      * @type {Date}
      * @memberof InlineResponse2006Books
      */
@@ -160,6 +166,7 @@ export function InlineResponse2006BooksFromJSONTyped(json: any, ignoreDiscrimina
         'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
         'publishedAt': !exists(json, 'publishedAt') ? undefined : (new Date(json['publishedAt'])),
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
@@ -188,6 +195,7 @@ export function InlineResponse2006BooksToJSON(value?: InlineResponse2006Books | 
         'language': value.language,
         'timeRequired': value.timeRequired,
         'shared': value.shared,
+        'license': value.license,
         'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt.toISOString()),
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),

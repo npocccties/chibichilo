@@ -16,39 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject15
+ * @interface InlineObject17
  */
-export interface InlineObject15 {
+export interface InlineObject17 {
     /**
      * 
-     * @type {number}
-     * @memberof InlineObject15
+     * @type {string}
+     * @memberof InlineObject17
      */
-    tagId?: number;
+    memoContent?: string;
     /**
      * 
      * @type {number}
-     * @memberof InlineObject15
+     * @memberof InlineObject17
      */
     topicId?: number;
 }
 
-export function InlineObject15FromJSON(json: any): InlineObject15 {
-    return InlineObject15FromJSONTyped(json, false);
+export function InlineObject17FromJSON(json: any): InlineObject17 {
+    return InlineObject17FromJSONTyped(json, false);
 }
 
-export function InlineObject15FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject15 {
+export function InlineObject17FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject17 {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
+        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
     };
 }
 
-export function InlineObject15ToJSON(value?: InlineObject15 | null): any {
+export function InlineObject17ToJSON(value?: InlineObject17 | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,7 +57,7 @@ export function InlineObject15ToJSON(value?: InlineObject15 | null): any {
     }
     return {
         
-        'tagId': value.tagId,
+        'memoContent': value.memoContent,
         'topicId': value.topicId,
     };
 }

@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -28,34 +21,16 @@ import {
 export interface InlineObject7 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject7
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    version?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject7
      */
-    provider: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject7
-     */
-    wowzaBaseUrl: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject7
-     */
-    json?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject7
-     */
-    file?: string;
+    comment?: string;
 }
 
 export function InlineObject7FromJSON(json: any): InlineObject7 {
@@ -68,11 +43,8 @@ export function InlineObject7FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
-        'provider': json['provider'],
-        'wowzaBaseUrl': json['wowzaBaseUrl'],
-        'json': !exists(json, 'json') ? undefined : json['json'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
+        'version': !exists(json, 'version') ? undefined : json['version'],
+        'comment': !exists(json, 'comment') ? undefined : json['comment'],
     };
 }
 
@@ -85,11 +57,8 @@ export function InlineObject7ToJSON(value?: InlineObject7 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
-        'provider': value.provider,
-        'wowzaBaseUrl': value.wowzaBaseUrl,
-        'json': value.json,
-        'file': value.file,
+        'version': value.version,
+        'comment': value.comment,
     };
 }
 
