@@ -9,6 +9,7 @@ import { useSessionAtom } from "$store/session";
 import { revalidateSession } from "./session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
+import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -122,4 +123,12 @@ export function revalidateBook(
 
 export async function getBookIdByZoom(meetingId: number) {
   return await api.apiV2BookZoomMeetingIdGet({ meetingId });
+}
+
+export async function updateReleaseBook({
+  id,
+  ...body
+}: ReleaseProps & { id: BookSchema["id"] }): Promise<ReleaseSchema> {
+  const res = await api.apiV2BookBookIdReleasePut({ bookId: id, body });
+  return res as ReleaseSchema;
 }

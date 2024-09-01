@@ -21,6 +21,7 @@ const defaultProps = {
   onAuthorSubmit: console.log,
   isContentEditable: () => false,
   onOverwriteClick: console.log,
+  onReleaseUpdate: console.log,
 };
 
 export const Default = () => {

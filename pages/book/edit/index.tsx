@@ -9,10 +9,16 @@ import BookEdit from "$templates/BookEdit";
 import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
-import { destroyBook, updateBook, useBook } from "$utils/book";
+import {
+  destroyBook,
+  updateBook,
+  updateReleaseBook,
+  useBook,
+} from "$utils/book";
 import { pagesPath } from "$utils/$path";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
+import type { ReleaseProps } from "$server/models/book/release";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -87,6 +93,13 @@ function Edit({ bookId, context }: Query) {
   const handleOverwriteClick = () => {
     return router.push(pagesPath.book.overwrite.$url({ query: { bookId } }));
   };
+  async function handleReleaseUpdate(release: ReleaseProps) {
+    if (!book) return;
+    await updateReleaseBook({
+      id: book.id,
+      ...release,
+    });
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -101,6 +114,7 @@ function Edit({ bookId, context }: Query) {
     onAuthorSubmit: handleAuthorSubmit,
     isContentEditable,
     onOverwriteClick: handleOverwriteClick,
+    onReleaseUpdate: handleReleaseUpdate,
   };
 
   if (error) return <BookNotFoundProblem />;
