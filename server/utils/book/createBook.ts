@@ -9,7 +9,7 @@ import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
 
 async function createBook(
   userId: UserSchema["id"],
-  { publicBooks, release: _, ...book }: BookProps
+  { publicBooks, ...book }: BookProps
 ): Promise<BookSchema | undefined> {
   const timeRequired = await aggregateTimeRequired(book);
   const sectionsCreateInput = book.sections?.map(sectionCreateInput) ?? [];

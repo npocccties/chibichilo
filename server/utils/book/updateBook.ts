@@ -26,7 +26,6 @@ async function updateBook(
     id,
     sections,
     publicBooks,
-    release: _,
     ...book
   }: Pick<Book, "id"> & BookProps
 ): Promise<BookSchema | undefined> {
