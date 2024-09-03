@@ -5,6 +5,7 @@ import { resourcePropsSchema, resourceSchema } from "./resource";
 import { AuthorSchema } from "./author";
 import { KeywordPropSchema, KeywordSchema } from "./keyword";
 import type { BookmarkSchema } from "./bookmark";
+import { releaseSchema } from "./book/release";
 
 const RelatedBook = {
   type: "object",
@@ -15,6 +16,7 @@ const RelatedBook = {
     description: { type: "string" },
     language: { type: "string" },
     shared: { type: "boolean" },
+    release: { releaseSchema, nullable: true },
   },
   additionalProperties: false,
 } as const;

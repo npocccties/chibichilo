@@ -14,7 +14,7 @@ export const topicsWithResourcesArg = {
     authors: authorArg,
     resource: resourceWithVideoArg,
     keywords: true,
-    topicSection: { include: { section: { include: { book: true } } } },
+    topicSection: { include: { section: { include: { book: { include: { release: true } } } } } },
     bookmarks: true,
   },
 } as const;
