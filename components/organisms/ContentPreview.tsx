@@ -228,7 +228,7 @@ export default function ContentPreview({
             sx={{
               position: "absolute",
               bottom: 0,
-              right: 0,
+              left: 0,
             }}
             license={content.license}
             clickable={false}
