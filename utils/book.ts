@@ -132,3 +132,11 @@ export async function updateReleaseBook({
   const res = await api.apiV2BookBookIdReleasePut({ bookId: id, body });
   return res as ReleaseSchema;
 }
+
+export async function createReleaseBook({
+  id,
+  ...body
+}: ReleaseProps & { id: BookSchema["id"] }): Promise<BookSchema> {
+  const res = await api.apiV2BookBookIdReleasePost({ bookId: id, body });
+  return res as BookSchema;
+}
