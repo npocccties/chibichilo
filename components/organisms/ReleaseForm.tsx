@@ -52,14 +52,16 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         </Typography>
       </div>
       <TextField inputProps={register("comment")} label="コメント" fullWidth />
-      <DescriptionList
-        value={[
-          {
-            key: "リリース日",
-            value: releasedAt,
-          },
-        ]}
-      />
+      {release.version && (
+        <DescriptionList
+          value={[
+            {
+              key: "リリース日",
+              value: releasedAt,
+            },
+          ]}
+        />
+      )}
       <Divider sx={{ mx: "-50%" }} />
       <div className="release-form-row">
         <Button variant="contained" color="primary" type="submit">
