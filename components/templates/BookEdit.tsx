@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import makeStyles from "@mui/styles/makeStyles";
 import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
@@ -61,6 +62,7 @@ export type Props = {
   linked?: boolean;
   onOverwriteClick(): void;
   onReleaseUpdate(release: ReleaseProps): void;
+  onRelease(book: BookSchema): void;
 };
 
 export default function BookEdit({
@@ -78,6 +80,7 @@ export default function BookEdit({
   isContentEditable,
   linked = false,
   onOverwriteClick,
+  onRelease,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -96,6 +99,14 @@ export default function BookEdit({
       confirmationText: "OK",
     });
     onDelete(book);
+  };
+  const handleReleaseButtonClick = async () => {
+    await confirm({
+      title: `ブック「${book.name}」をリリースします。よろしいですか？`,
+      cancellationText: "キャンセル",
+      confirmationText: "OK",
+    });
+    onRelease(book);
   };
 
   return (
@@ -139,6 +150,10 @@ export default function BookEdit({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      <Button size="small" color="primary" onClick={handleReleaseButtonClick}>
+        <PeopleOutlinedIcon />
+        ブックをリリース
+      </Button>
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
         <DeleteOutlinedIcon />
         ブックを削除

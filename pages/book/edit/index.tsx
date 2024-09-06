@@ -100,6 +100,9 @@ function Edit({ bookId, context }: Query) {
       ...release,
     });
   }
+  async function handleRelease({ id }: Pick<BookSchema, "id">) {
+    return router.push(pagesPath.book.release.$url({ query: { bookId: id } }));
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -115,6 +118,7 @@ function Edit({ bookId, context }: Query) {
     isContentEditable,
     onOverwriteClick: handleOverwriteClick,
     onReleaseUpdate: handleReleaseUpdate,
+    onRelease: handleRelease,
   };
 
   if (error) return <BookNotFoundProblem />;
