@@ -10,6 +10,7 @@ import { isUsersOrAdmin } from "$server/utils/session";
 import { createRelease } from "$server/utils/book/release";
 import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
+import cloneBook from "$server/utils/book/cloneBook";
 
 export const createSchema: FastifySchema = {
   summary: "ブックのリリースの作成",
@@ -43,9 +44,11 @@ export async function create({
   if (!found || found.release) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  // TODO: ブックを複製する
-  const _ = await createRelease(params.book_id, body);
-  const book = await findBook(params.book_id, session.user.id);
+  const created = await cloneBook(found, session.user.id);
+  if (!created) return { status: 500 };
+
+  const _ = await createRelease(created.id, body);
+  const book = await findBook(created.id, session.user.id);
 
   return {
     status: 201,

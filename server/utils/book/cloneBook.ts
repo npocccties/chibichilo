@@ -1,20 +1,14 @@
 import type { UserSchema } from "$server/models/user";
 import type { BookSchema } from "$server/models/book";
-import prisma from "$server/utils/prisma";
-import createTopic from "$server/utils/topic/createTopic";
 import createBook from "./createBook";
-import findBook from "./findBook";
+import { cloneTopic } from "../topic/cloneTopic";
+import prisma from "../prisma";
 
-async function forkBook(
-  userId: UserSchema["id"],
-  bookId: BookSchema["id"]
+async function cloneBook(
+  parentBook: BookSchema,
+  userId: UserSchema["id"]
 ): Promise<BookSchema | undefined> {
-  const parentBook = await findBook(bookId, userId, "");
-  if (!parentBook) return;
-
-  const parent = await prisma.node.findUnique({ where: { id: parentBook.id } });
-  if (!parent) throw new Error(`Node 取得に失敗 ${parentBook.id}`);
-
+  // トピックを複製する
   const topics = await Promise.all(
     parentBook.sections
       .flatMap((section) => section.topics)
@@ -22,14 +16,13 @@ async function forkBook(
         ({
           id,
           resourceId: _resourceId,
-          createdAt: _createdAt,
-          updatedAt: _updatedAt,
-          details: _details,
+          bookmarks: _bookmarks,
           authors: _authors,
+          details: _details,
           relatedBooks: _relatedBooks,
           ...topic
-        }) =>
-          createTopic(userId, topic, "").then(
+        }) => 
+          cloneTopic(id, topic).then(
             (created) => created && ([id, created] as const)
           )
       )
@@ -41,41 +34,31 @@ async function forkBook(
 
   const {
     id: _id,
-    createdAt: _createdAt,
-    updatedAt: _updatedAt,
+    publicBooks: _publicBooks,
     ltiResourceLinks: _link,
+    authors: _authors,
+    release: _release,
     ...book
   } = structuredClone(parentBook);
 
   for (const section of book.sections) {
     for (const topic of section.topics) {
       const topicId = topicsMap.get(topic.id)?.id;
-      if (topicId == null) throw new Error(`トピックの作成に失敗 ${topicId}`);
+      if (topicId == null) throw new Error(`トピックの複製に失敗 ${topicId}`);
 
       topic.id = topicId;
     }
   }
 
-  const created = await createBook(userId, book, "");
-  if (!created) throw new Error(`ブックのフォークに失敗 ${book.name}`);
-
-  await prisma.node.update({
-    where: { id: created.id },
-    data: {
-      rootId: parent.rootId ?? parent.id,
-      parentId: parent.id,
-    },
+  const authors = await prisma.authorship.findMany({
+    where: { bookId: parentBook.id },
+    select: { userId: true, roleId: true },
   });
 
-  const byAuthor = parentBook.authors.some((author) => author.id === userId);
-  if (byAuthor) {
-    await prisma.release.update({
-      where: { bookId: parentBook.id },
-      data: { latest: false },
-    });
-  }
+  const created = await createBook(userId, book, authors);
+  if (!created) throw new Error(`ブックの複製に失敗 ${book.name}`);
 
   return created;
 }
 
-export default forkBook;
+export default cloneBook;
