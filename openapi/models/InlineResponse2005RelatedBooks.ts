@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2005Release,
+    InlineResponse2005ReleaseFromJSON,
+    InlineResponse2005ReleaseFromJSONTyped,
+    InlineResponse2005ReleaseToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -51,10 +58,10 @@ export interface InlineResponse2005RelatedBooks {
     shared?: boolean;
     /**
      * 
-     * @type {object}
+     * @type {InlineResponse2005Release}
      * @memberof InlineResponse2005RelatedBooks
      */
-    release?: object;
+    release?: InlineResponse2005Release;
 }
 
 export function InlineResponse2005RelatedBooksFromJSON(json: any): InlineResponse2005RelatedBooks {
@@ -72,7 +79,7 @@ export function InlineResponse2005RelatedBooksFromJSONTyped(json: any, ignoreDis
         'description': !exists(json, 'description') ? undefined : json['description'],
         'language': !exists(json, 'language') ? undefined : json['language'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'release': !exists(json, 'release') ? undefined : json['release'],
+        'release': !exists(json, 'release') ? undefined : InlineResponse2005ReleaseFromJSON(json['release']),
     };
 }
 
@@ -90,7 +97,7 @@ export function InlineResponse2005RelatedBooksToJSON(value?: InlineResponse2005R
         'description': value.description,
         'language': value.language,
         'shared': value.shared,
-        'release': value.release,
+        'release': InlineResponse2005ReleaseToJSON(value.release),
     };
 }
 

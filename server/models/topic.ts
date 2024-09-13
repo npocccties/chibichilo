@@ -16,12 +16,25 @@ const RelatedBook = {
     description: { type: "string" },
     language: { type: "string" },
     shared: { type: "boolean" },
-    release: { releaseSchema, nullable: true },
+    release: { ...releaseSchema, nullable: true },
   },
   additionalProperties: false,
 } as const;
 
-export type RelatedBook = FromSchema<typeof RelatedBook>;
+export type RelatedBook = FromSchema<
+  typeof RelatedBook,
+  {
+    deserialize: [
+      {
+        pattern: {
+          type: "string";
+          format: "date-time";
+        };
+        output: Date;
+      },
+    ];
+  }
+>;
 
 export type TopicProps = Pick<
   Prisma.TopicCreateInput,

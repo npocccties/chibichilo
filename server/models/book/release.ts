@@ -31,7 +31,7 @@ export type ReleaseSchema = FromSchema<
           format: "date-time";
         };
         output: Date;
-      }
+      },
     ];
   }
 >;
