@@ -22,6 +22,7 @@ const defaultProps = {
   isContentEditable: () => false,
   onOverwriteClick: console.log,
   onReleaseUpdate: console.log,
+  onRelease: console.log,
 };
 
 export const Default = () => {
