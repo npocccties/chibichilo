@@ -99,8 +99,12 @@ export async function bookImport(fastify: FastifyInstance) {
 
 export async function bookRelease(fastify: FastifyInstance) {
   const path = `${pathWithParams}/release`;
-  const { method, create, update } = releaseService;
+  const { method, show, create, update } = releaseService;
   const hooks = makeHooks(fastify, releaseService.hooks);
+
+  fastify.get<{
+    Params: releaseService.Params;
+  }>(path, { schema: method.get, ...hooks.get }, handler(show));
 
   fastify.post<{
     Params: releaseService.Params;
