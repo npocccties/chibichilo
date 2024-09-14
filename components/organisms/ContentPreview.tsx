@@ -170,7 +170,6 @@ export default function ContentPreview({
       }
     }
   }
-  console.log(release);
   return (
     <Preview className={clsx({ selected: checked })}>
       <Header
