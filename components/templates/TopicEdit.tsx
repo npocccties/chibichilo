@@ -14,6 +14,7 @@ import type {
 import type { AuthorSchema } from "$server/models/author";
 import { useConfirm } from "material-ui-confirm";
 import AddIcon from "@mui/icons-material/Add";
+import { getReleaseFromRelatedBooks } from "$utils/release";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -71,21 +72,29 @@ export default function TopicEdit(props: Props) {
     });
     onDelete(topic);
   };
+  const released = Boolean(getReleaseFromRelatedBooks(topic.relatedBooks));
 
   return (
     <Container className={classes.container} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
-        トピックの編集
-        <Button size="small" color="primary" onClick={onImportClick}>
-          <AddIcon sx={{ mr: 0.5 }} />
-          上書きインポート
-        </Button>
-        <Typography variant="caption" component="span" aria-hidden="true">
-          <RequiredDot />
-          は必須項目です
+      {released && (
+        <Typography className={classes.title} variant="h4">
+          トピックの表示
         </Typography>
-      </Typography>
+      )}
+      {!released && (
+        <Typography className={classes.title} variant="h4">
+          トピックの編集
+          <Button size="small" color="primary" onClick={onImportClick}>
+            <AddIcon sx={{ mr: 0.5 }} />
+            上書きインポート
+          </Button>
+          <Typography variant="caption" component="span" aria-hidden="true">
+            <RequiredDot />
+            は必須項目です
+          </Typography>
+        </Typography>
+      )}
       <TopicForm
         className={classes.form}
         topic={topic}
@@ -97,10 +106,12 @@ export default function TopicEdit(props: Props) {
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
-      <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
-        <DeleteOutlinedIcon />
-        トピックを削除
-      </Button>
+      {!released && (
+        <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
+          <DeleteOutlinedIcon />
+          トピックを削除
+        </Button>
+      )}
     </Container>
   );
 }

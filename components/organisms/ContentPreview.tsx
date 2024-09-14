@@ -29,7 +29,7 @@ import useOembed from "$utils/useOembed";
 import { NEXT_PUBLIC_BASE_PATH } from "$utils/env";
 import BookChip from "$atoms/BookChip";
 import type { RelatedBook } from "$server/models/topic";
-import type { ReleaseSchema } from "$server/models/book/release";
+import { getReleaseFromRelatedBooks } from "$utils/release";
 
 type HeaderProps = Parameters<typeof Checkbox>[0] & {
   checkable: boolean;
@@ -159,17 +159,10 @@ export default function ContentPreview({
   const handleContentLinkClick = (_: unknown, checked: boolean) => {
     onContentLinkClick?.(content, checked);
   };
-  let release: ReleaseSchema | undefined = undefined;
-  if (content.type === "book") {
-    release = content.release;
-  } else if (content.relatedBooks) {
-    for (const relatedBook of content.relatedBooks) {
-      if (relatedBook.release) {
-        release = relatedBook.release;
-        break;
-      }
-    }
-  }
+  const release =
+    content.type === "book"
+      ? content.release
+      : getReleaseFromRelatedBooks(content.relatedBooks);
   return (
     <Preview className={clsx({ selected: checked })}>
       <Header

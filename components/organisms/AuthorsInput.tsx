@@ -124,7 +124,7 @@ export default function AuthorsInput({
             onClick={handleAuthorRemove(author)}
             color="warning"
             tooltipProps={{ title: "この教員を取り除く" }}
-            disabled={session?.user?.email === author.email}
+            disabled={disabled || session?.user?.email === author.email}
           >
             <PersonRemoveIcon />
           </IconButton>
