@@ -7,6 +7,7 @@ import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
 import findBook from "$server/utils/book/findBook";
 import { ReleaseResultSchema } from "$server/models/releaseResult";
+import { bookToReleaseItemSchema, findReleasedBooks } from "$server/utils/book/release";
 
 export const showSchema: FastifySchema = {
   summary: "ブックのリリース一覧取得",
@@ -30,13 +31,16 @@ export async function show({
   session,
   params,
 }: FastifyRequest<{ Params: BookParams }>) {
-  const found = await findBook(params.book_id, session.user.id);
+  const book = await findBook(params.book_id, session.user.id);
 
-  if (!found) return { status: 404 };
-  if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
+  if (!book) return { status: 404 };
+  if (!isUsersOrAdmin(session, book.authors)) return { status: 403 };
+
+  const books = await findReleasedBooks(book, session.user.id);
+  const releases = books.map(bookToReleaseItemSchema);
 
   return {
     status: 200,
-    body: found,
+    body: { releases },
   };
 }
