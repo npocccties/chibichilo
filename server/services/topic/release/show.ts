@@ -7,6 +7,7 @@ import findTopic from "$server/utils/topic/findTopic";
 import { isUsersOrAdmin } from "$utils/session";
 import authInstructor from "$server/auth/authInstructor";
 import { ReleaseResultSchema } from "$server/models/releaseResult";
+import { findReleasedTopics, topicToReleaseItemSchema } from "$server/utils/topic/release";
 
 export const showSchema: FastifySchema = {
   summary: "トピックのリリース一覧取得",
@@ -30,13 +31,16 @@ export async function show({
   params,
   session,
 }: FastifyRequest<{ Params: TopicParams }>) {
-  const found = await findTopic(params.topic_id);
+  const topic = await findTopic(params.topic_id);
 
-  if (!found) return { status: 404 };
-  if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
+  if (!topic) return { status: 404 };
+  if (!isUsersOrAdmin(session, topic.authors)) return { status: 403 };
 
+  const topics = await findReleasedTopics(topic, session.user.id);
+  const releases = topics.map(topicToReleaseItemSchema).filter((e) => e);
+  
   return {
     status: 200,
-    body: found,
+    body: { releases },
   };
 }
