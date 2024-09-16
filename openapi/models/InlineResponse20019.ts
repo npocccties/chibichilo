@@ -16,32 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineResponse20010
+ * @interface InlineResponse20019
  */
-export interface InlineResponse20010 {
+export interface InlineResponse20019 {
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse20010
+     * @memberof InlineResponse20019
      */
-    publicToken: string;
+    text: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20019
+     */
+    value: number;
 }
 
-export function InlineResponse20010FromJSON(json: any): InlineResponse20010 {
-    return InlineResponse20010FromJSONTyped(json, false);
+export function InlineResponse20019FromJSON(json: any): InlineResponse20019 {
+    return InlineResponse20019FromJSONTyped(json, false);
 }
 
-export function InlineResponse20010FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20010 {
+export function InlineResponse20019FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20019 {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'publicToken': json['publicToken'],
+        'text': json['text'],
+        'value': json['value'],
     };
 }
 
-export function InlineResponse20010ToJSON(value?: InlineResponse20010 | null): any {
+export function InlineResponse20019ToJSON(value?: InlineResponse20019 | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +57,8 @@ export function InlineResponse20010ToJSON(value?: InlineResponse20010 | null): a
     }
     return {
         
-        'publicToken': value.publicToken,
+        'text': value.text,
+        'value': value.value,
     };
 }
 

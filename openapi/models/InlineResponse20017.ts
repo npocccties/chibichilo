@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse20016BookmarkTagMenu,
-    InlineResponse20016BookmarkTagMenuFromJSON,
-    InlineResponse20016BookmarkTagMenuFromJSONTyped,
-    InlineResponse20016BookmarkTagMenuToJSON,
+    InlineResponse20017Bookmark,
+    InlineResponse20017BookmarkFromJSON,
+    InlineResponse20017BookmarkFromJSONTyped,
+    InlineResponse20017BookmarkToJSON,
+    InlineResponse20017BookmarkTagMenu,
+    InlineResponse20017BookmarkTagMenuFromJSON,
+    InlineResponse20017BookmarkTagMenuFromJSONTyped,
+    InlineResponse20017BookmarkTagMenuToJSON,
 } from './';
 
 /**
@@ -28,10 +32,16 @@ import {
 export interface InlineResponse20017 {
     /**
      * 
-     * @type {Array<InlineResponse20016BookmarkTagMenu>}
+     * @type {Array<InlineResponse20017Bookmark>}
      * @memberof InlineResponse20017
      */
-    bookmarkTagMenu: Array<InlineResponse20016BookmarkTagMenu>;
+    bookmark: Array<InlineResponse20017Bookmark>;
+    /**
+     * 
+     * @type {Array<InlineResponse20017BookmarkTagMenu>}
+     * @memberof InlineResponse20017
+     */
+    bookmarkTagMenu?: Array<InlineResponse20017BookmarkTagMenu>;
 }
 
 export function InlineResponse20017FromJSON(json: any): InlineResponse20017 {
@@ -44,7 +54,8 @@ export function InlineResponse20017FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'bookmarkTagMenu': ((json['bookmarkTagMenu'] as Array<any>).map(InlineResponse20016BookmarkTagMenuFromJSON)),
+        'bookmark': ((json['bookmark'] as Array<any>).map(InlineResponse20017BookmarkFromJSON)),
+        'bookmarkTagMenu': !exists(json, 'bookmarkTagMenu') ? undefined : ((json['bookmarkTagMenu'] as Array<any>).map(InlineResponse20017BookmarkTagMenuFromJSON)),
     };
 }
 
@@ -57,7 +68,8 @@ export function InlineResponse20017ToJSON(value?: InlineResponse20017 | null): a
     }
     return {
         
-        'bookmarkTagMenu': ((value.bookmarkTagMenu as Array<any>).map(InlineResponse20016BookmarkTagMenuToJSON)),
+        'bookmark': ((value.bookmark as Array<any>).map(InlineResponse20017BookmarkToJSON)),
+        'bookmarkTagMenu': value.bookmarkTagMenu === undefined ? undefined : ((value.bookmarkTagMenu as Array<any>).map(InlineResponse20017BookmarkTagMenuToJSON)),
     };
 }
 
