@@ -16,32 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineResponse20010
+ * @interface InlineResponse20015Book
  */
-export interface InlineResponse20010 {
+export interface InlineResponse20015Book {
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20015Book
+     */
+    id: number;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse20010
+     * @memberof InlineResponse20015Book
      */
-    publicToken: string;
+    name: string;
 }
 
-export function InlineResponse20010FromJSON(json: any): InlineResponse20010 {
-    return InlineResponse20010FromJSONTyped(json, false);
+export function InlineResponse20015BookFromJSON(json: any): InlineResponse20015Book {
+    return InlineResponse20015BookFromJSONTyped(json, false);
 }
 
-export function InlineResponse20010FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20010 {
+export function InlineResponse20015BookFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse20015Book {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'publicToken': json['publicToken'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function InlineResponse20010ToJSON(value?: InlineResponse20010 | null): any {
+export function InlineResponse20015BookToJSON(value?: InlineResponse20015Book | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +57,8 @@ export function InlineResponse20010ToJSON(value?: InlineResponse20010 | null): a
     }
     return {
         
-        'publicToken': value.publicToken,
+        'id': value.id,
+        'name': value.name,
     };
 }
 
