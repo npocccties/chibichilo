@@ -13,6 +13,8 @@ import useDialogProps from "$utils/useDialogProps";
 import ReleaseForm from "$organisms/ReleaseForm";
 import Placeholder from "./Placeholder";
 import { useStyles, type Props } from "./BookEdit";
+import useReleaseBooks from "$utils/useReleaseBooks";
+import ReleaseItemList from "$organisms/ReleaseItemList";
 
 export default function BookEditReleased({
   book,
@@ -38,6 +40,7 @@ export default function BookEditReleased({
     dispatch: setPreviewTopic,
     ...dialogProps
   } = useDialogProps<TopicSchema>();
+  const { releases, error: _ } = useReleaseBooks(book.id);
   const handleTopicPreviewClick = (topic: TopicSchema) =>
     setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
@@ -88,6 +91,14 @@ export default function BookEditReleased({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      {releases && (
+        <>
+          <Typography className={classes.subtitle} variant="h5">
+            リリース一覧
+          </Typography>
+          <ReleaseItemList releases={releases} />
+        </>
+      )}
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
         <DeleteOutlinedIcon />
         ブックを削除
