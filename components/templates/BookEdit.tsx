@@ -20,6 +20,8 @@ import { useSessionAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import AddIcon from "@mui/icons-material/Add";
 import type { ReleaseProps } from "$server/models/book/release";
+import useReleaseBooks from "$utils/useReleaseBooks";
+import ReleaseItemList from "$organisms/ReleaseItemList";
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -90,6 +92,7 @@ export default function BookEdit({
     dispatch: setPreviewTopic,
     ...dialogProps
   } = useDialogProps<TopicSchema>();
+  const { releases, error: _ } = useReleaseBooks(book.id);
   const handleTopicPreviewClick = (topic: TopicSchema) =>
     setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
@@ -150,6 +153,14 @@ export default function BookEdit({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      {releases && (
+        <>
+          <Typography className={classes.subtitle} variant="h5">
+            リリース一覧
+          </Typography>
+          <ReleaseItemList releases={releases} />
+        </>
+      )}
       <Button size="small" color="primary" onClick={handleReleaseButtonClick}>
         <PeopleOutlinedIcon />
         ブックをリリース
