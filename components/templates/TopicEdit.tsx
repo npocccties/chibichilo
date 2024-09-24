@@ -15,6 +15,8 @@ import type { AuthorSchema } from "$server/models/author";
 import { useConfirm } from "material-ui-confirm";
 import AddIcon from "@mui/icons-material/Add";
 import { getReleaseFromRelatedBooks } from "$utils/release";
+import useReleaseTopics from "$utils/useReleaseTopics";
+import ReleaseItemList from "$organisms/ReleaseItemList";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,6 +66,7 @@ export default function TopicEdit(props: Props) {
   } = props;
   const classes = useStyles();
   const confirm = useConfirm();
+  const { releases, error: _ } = useReleaseTopics(topic.id);
   const handleDeleteButtonClick = async () => {
     await confirm({
       title: `トピック「${topic.name}」を削除します。よろしいですか？`,
@@ -106,12 +109,18 @@ export default function TopicEdit(props: Props) {
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
-      {!released && (
-        <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
-          <DeleteOutlinedIcon />
-          トピックを削除
-        </Button>
+      {releases && (
+        <>
+          <Typography className={classes.title} variant="h5">
+            リリース一覧
+          </Typography>
+          <ReleaseItemList releases={releases} />
+        </>
       )}
+      <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
+        <DeleteOutlinedIcon />
+        トピックを削除
+      </Button>
     </Container>
   );
 }
