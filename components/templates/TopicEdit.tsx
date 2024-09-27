@@ -49,6 +49,7 @@ type Props = {
   onAuthorsUpdate(authors: AuthorSchema[]): void;
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onImportClick(): void;
+  onItemEditClick(id: TopicSchema["id"]): void;
 };
 
 export default function TopicEdit(props: Props) {
@@ -63,6 +64,7 @@ export default function TopicEdit(props: Props) {
     onAuthorsUpdate,
     onAuthorSubmit,
     onImportClick,
+    onItemEditClick,
   } = props;
   const classes = useStyles();
   const confirm = useConfirm();
@@ -74,6 +76,10 @@ export default function TopicEdit(props: Props) {
       confirmationText: "OK",
     });
     onDelete(topic);
+  };
+  const handleItemEditClick = async (index: number) => {
+    const id = releases?.[index]?.id;
+    if (id) onItemEditClick(id);
   };
   const released = Boolean(getReleaseFromRelatedBooks(topic.relatedBooks));
 
@@ -114,7 +120,10 @@ export default function TopicEdit(props: Props) {
           <Typography className={classes.title} variant="h5">
             リリース一覧
           </Typography>
-          <ReleaseItemList releases={releases} />
+          <ReleaseItemList
+            releases={releases}
+            onItemEditClick={handleItemEditClick}
+          />
         </>
       )}
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>

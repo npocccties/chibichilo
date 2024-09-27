@@ -65,6 +65,7 @@ export type Props = {
   onOverwriteClick(): void;
   onReleaseUpdate(release: ReleaseProps): void;
   onRelease(book: BookSchema): void;
+  onItemEditClick(id: BookSchema["id"]): void;
 };
 
 export default function BookEdit({
@@ -83,6 +84,7 @@ export default function BookEdit({
   linked = false,
   onOverwriteClick,
   onRelease,
+  onItemEditClick,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -110,6 +112,10 @@ export default function BookEdit({
       confirmationText: "OK",
     });
     onRelease(book);
+  };
+  const handleItemEditClick = async (index: number) => {
+    const id = releases?.[index]?.id;
+    if (id) onItemEditClick(id);
   };
 
   return (
@@ -158,7 +164,10 @@ export default function BookEdit({
           <Typography className={classes.subtitle} variant="h5">
             リリース一覧
           </Typography>
-          <ReleaseItemList releases={releases} />
+          <ReleaseItemList
+            releases={releases}
+            onItemEditClick={handleItemEditClick}
+          />
         </>
       )}
       <Button size="small" color="primary" onClick={handleReleaseButtonClick}>

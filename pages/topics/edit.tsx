@@ -86,6 +86,9 @@ function Edit({ topicId, back }: EditProps) {
   const handleImportClick = () => {
     return router.push(pagesPath.topics.import.$url({ query: { topicId } }));
   };
+  const handleItemEditClick = async (topicId: TopicSchema["id"]) => {
+    return router.push(pagesPath.topics.edit.$url({ query: { topicId } }));
+  };
   const handlers = {
     onSubmit: handleSubmit,
     onDelete: handleDelete,
@@ -95,6 +98,7 @@ function Edit({ topicId, back }: EditProps) {
     onAuthorsUpdate: handleAuthorsUpdate,
     onAuthorSubmit: handleAuthorSubmit,
     onImportClick: handleImportClick,
+    onItemEditClick: handleItemEditClick,
   };
 
   if (!topic) return <Placeholder />;
