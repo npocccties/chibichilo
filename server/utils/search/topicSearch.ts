@@ -9,6 +9,7 @@ import {
 } from "$server/utils/topic/topicToTopicSchema";
 import type { TopicSearchQuery } from "$server/models/searchQuery";
 import createScopes from "./createScopes";
+import { createScopesTopic } from "./createScopes";
 
 /**
  * 検索クエリーによるトピック検索
@@ -39,7 +40,7 @@ async function topicSearch(
   const insensitiveMode = { mode: "insensitive" as const };
   const where: Prisma.TopicWhereInput = {
     AND: [
-      ...createScopes(filter),
+      ...createScopesTopic(filter),
       // NOTE: text - 検索文字列 (名称 OR 説明 OR 著者名 OR キーワード)
       ...text.map((t) => ({
         OR: [
