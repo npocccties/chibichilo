@@ -14,6 +14,9 @@ const options: ReadonlyArray<{
   { value: "self", label: "自分" },
   { value: "other", label: "自分以外" },
   { value: "all", label: "すべて" },
+  { value: "edit", label: "編集中" },
+  { value: "release", label: "リリース" },
+  { value: "other-release", label: "他人のリリース" },
 ];
 
 type Props = {
