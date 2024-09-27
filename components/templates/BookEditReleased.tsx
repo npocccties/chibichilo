@@ -31,6 +31,7 @@ export default function BookEditReleased({
   isContentEditable,
   linked = false,
   onReleaseUpdate,
+  onItemEditClick,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -52,6 +53,10 @@ export default function BookEditReleased({
     onDelete(book);
   };
   if (!book.release) return <Placeholder />;
+  const handleItemEditClick = async (index: number) => {
+    const id = releases?.[index]?.id;
+    if (id) onItemEditClick(id);
+  };
 
   return (
     <Container className={classes.container} maxWidth="md">
@@ -96,7 +101,10 @@ export default function BookEditReleased({
           <Typography className={classes.subtitle} variant="h5">
             リリース一覧
           </Typography>
-          <ReleaseItemList releases={releases} />
+          <ReleaseItemList
+            releases={releases}
+            onItemEditClick={handleItemEditClick}
+          />
         </>
       )}
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>

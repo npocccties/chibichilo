@@ -103,6 +103,9 @@ function Edit({ bookId, context }: Query) {
   async function handleRelease({ id }: Pick<BookSchema, "id">) {
     return router.push(pagesPath.book.release.$url({ query: { bookId: id } }));
   }
+  async function handleItemEditClick(bookId: BookSchema["id"]) {
+    return router.push(pagesPath.book.edit.$url({ query: { bookId } }));
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -119,6 +122,7 @@ function Edit({ bookId, context }: Query) {
     onOverwriteClick: handleOverwriteClick,
     onReleaseUpdate: handleReleaseUpdate,
     onRelease: handleRelease,
+    onItemEditClick: handleItemEditClick,
   };
 
   if (error) return <BookNotFoundProblem />;

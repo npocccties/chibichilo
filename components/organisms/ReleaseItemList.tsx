@@ -10,14 +10,16 @@ import useCardStyles from "$styles/card";
 
 type Props = {
   releases: Array<ReleaseItemSchema>;
+  onItemEditClick?(index: number): void;
 };
 
 type ReleaseItemProps = {
   item: ReleaseItemSchema;
   index: number;
+  onItemEditClick?(index: number): void;
 };
 
-function ReleaseItem({ item, index }: ReleaseItemProps) {
+function ReleaseItem({ item, index, onItemEditClick }: ReleaseItemProps) {
   const treeItemClasses = useTreeItemStyle();
   return (
     <>
@@ -32,6 +34,7 @@ function ReleaseItem({ item, index }: ReleaseItemProps) {
               variant="book"
               onClick={(event) => {
                 event.stopPropagation();
+                onItemEditClick && onItemEditClick(index);
               }}
             />
             <Box
@@ -73,7 +76,7 @@ function ReleaseItem({ item, index }: ReleaseItemProps) {
 }
 
 export default function ReleaseItemList(props: Props) {
-  const { releases } = props;
+  const { releases, onItemEditClick } = props;
   const cardClasses = useCardStyles();
 
   return (
@@ -81,7 +84,11 @@ export default function ReleaseItemList(props: Props) {
       <>
         {releases.map((item, index) => (
           // eslint-disable-next-line react/jsx-key
-          <ReleaseItem item={item} index={index} />
+          <ReleaseItem
+            item={item}
+            index={index}
+            onItemEditClick={onItemEditClick}
+          />
         ))}
       </>
     </Card>
