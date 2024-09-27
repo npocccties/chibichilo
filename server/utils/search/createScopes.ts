@@ -60,3 +60,32 @@ export function createScopesBook(
       return createScopes(filter);
   }
 }
+
+export function createScopesTopic(
+  filter: AuthorFilter
+): Array<Prisma.TopicWhereInput> {
+  const sharedScope = { shared: true };
+  const selfScope = { authors: { some: { userId: filter.by } } };
+  const editScope = { topicSection: { every: { section: { book: { release: null }}}}};
+  const defaultScopes = {
+    edit: [selfScope, editScope],
+    release: [selfScope, { NOT: editScope }],
+    "other-release": [sharedScope, { NOT: selfScope }, { NOT: editScope }],
+  };
+  const adminScopes = {
+    edit: [editScope],
+    release: [{ NOT: editScope }],
+    "other-release": [{ NOT: selfScope }, { NOT: editScope }],
+  };
+
+  switch(filter?.type){
+    case "edit":
+    case "release":
+    case "other-release":
+      return "admin" in filter && filter.admin
+        ? adminScopes[filter.type]
+        : defaultScopes[filter.type];
+    default:
+      return createScopes(filter);
+  }
+}
