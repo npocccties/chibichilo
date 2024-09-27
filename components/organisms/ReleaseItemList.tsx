@@ -7,6 +7,7 @@ import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateTimeString";
 import EditButton from "$atoms/EditButton";
 import useCardStyles from "$styles/card";
+import TreeView from "@mui/lab/TreeView";
 
 type Props = {
   releases: Array<ReleaseItemSchema>;
@@ -81,7 +82,7 @@ export default function ReleaseItemList(props: Props) {
 
   return (
     <Card classes={cardClasses}>
-      <>
+      <TreeView>
         {releases.map((item, index) => (
           // eslint-disable-next-line react/jsx-key
           <ReleaseItem
@@ -90,7 +91,7 @@ export default function ReleaseItemList(props: Props) {
             onItemEditClick={onItemEditClick}
           />
         ))}
-      </>
+      </TreeView>
     </Card>
   );
 }
