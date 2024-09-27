@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { getReleaseFromRelatedBooks } from "$utils/release";
 import useReleaseTopics from "$utils/useReleaseTopics";
 import ReleaseItemList from "$organisms/ReleaseItemList";
+import ReleaseForm from "$organisms/ReleaseForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -81,17 +82,17 @@ export default function TopicEdit(props: Props) {
     const id = releases?.[index]?.id;
     if (id) onItemEditClick(id);
   };
-  const released = Boolean(getReleaseFromRelatedBooks(topic.relatedBooks));
+  const release = getReleaseFromRelatedBooks(topic.relatedBooks);
 
   return (
     <Container className={classes.container} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      {released && (
+      {release && (
         <Typography className={classes.title} variant="h4">
           トピックの表示
         </Typography>
       )}
-      {!released && (
+      {!release && (
         <Typography className={classes.title} variant="h4">
           トピックの編集
           <Button size="small" color="primary" onClick={onImportClick}>
@@ -104,6 +105,7 @@ export default function TopicEdit(props: Props) {
           </Typography>
         </Typography>
       )}
+      {release && <ReleaseForm release={release} />}
       <TopicForm
         className={classes.form}
         topic={topic}
