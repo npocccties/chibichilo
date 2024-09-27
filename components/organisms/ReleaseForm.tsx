@@ -12,7 +12,7 @@ import getLocaleDateString from "$utils/getLocaleDateString";
 
 export type ReleaseFormProps = {
   release: ReleaseSchema;
-  onSubmit(release: ReleaseProps): void;
+  onSubmit?(release: ReleaseProps): void;
 };
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
@@ -21,6 +21,10 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
   const releasedAt = release.releasedAt
     ? getLocaleDateString(release.releasedAt, "ja")
     : "不明";
+  const update = Boolean(onSubmit);
+  if (!onSubmit) {
+    onSubmit = () => {};
+  }
   return (
     <Card
       classes={cardClasses}
@@ -38,20 +42,28 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
       <div className="release-form-row">
         <TextField
           inputProps={register("version")}
-          required
+          required={update}
           label="バージョン"
           fullWidth
+          disabled={!update}
         />
-        <Typography
-          component="span"
-          variant="caption"
-          sx={{ color: gray[700] }}
-        >
-          リリースを識別するための数字や文字列を入力してください (入力例: 1.0.0
-          など)
-        </Typography>
+        {update && (
+          <Typography
+            component="span"
+            variant="caption"
+            sx={{ color: gray[700] }}
+          >
+            リリースを識別するための数字や文字列を入力してください (入力例:
+            1.0.0 など)
+          </Typography>
+        )}
       </div>
-      <TextField inputProps={register("comment")} label="コメント" fullWidth />
+      <TextField
+        inputProps={register("comment")}
+        label="コメント"
+        fullWidth
+        disabled={!update}
+      />
       {release.version && (
         <DescriptionList
           value={[
@@ -62,12 +74,16 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
           ]}
         />
       )}
-      <Divider sx={{ mx: "-50%" }} />
-      <div className="release-form-row">
-        <Button variant="contained" color="primary" type="submit">
-          {release.version ? "更新" : "作成"}
-        </Button>
-      </div>
+      {update && (
+        <>
+          <Divider sx={{ mx: "-50%" }} />
+          <div className="release-form-row">
+            <Button variant="contained" color="primary" type="submit">
+              {release.version ? "更新" : "作成"}
+            </Button>
+          </div>
+        </>
+      )}
     </Card>
   );
 }
