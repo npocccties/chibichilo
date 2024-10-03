@@ -23,6 +23,7 @@ const defaultProps = {
   onOverwriteClick: console.log,
   onReleaseUpdate: console.log,
   onRelease: console.log,
+  onItemEditClick: console.log,
 };
 
 export const Default = () => {
