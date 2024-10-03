@@ -5,13 +5,11 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import AuthorFilter from "$atoms/AuthorFilter";
-import SharedFilter from "$atoms/SharedFilter";
 import CourseChip from "$atoms/CourseChip";
 import KeywordChip from "$atoms/KeywordChip";
 import TextField from "$atoms/TextField";
 import licenses from "$utils/licenses";
 import { useSearchAtom } from "$store/search";
-import type { SharedFilterType } from "$types/sharedFilter";
 import BookChip from "$atoms/BookChip";
 
 type Props = {
@@ -25,7 +23,6 @@ export default function FilterColumn({ sx, variant }: Props) {
     searchQuery,
     relatedBooks,
     onAuthorFilterChange,
-    onSharedFilterChange,
     onLicenseFilterChange,
     onLtiContextDelete,
     onKeywordDelete,
@@ -42,33 +39,25 @@ export default function FilterColumn({ sx, variant }: Props) {
         sx={{ display: "flex", mb: 2 }}
         onFilterChange={onAuthorFilterChange}
       />
-      <SharedFilter
-        value={String(searchQuery?.shared?.[0] ?? "all") as SharedFilterType}
-        sx={{ display: "flex", mb: 2 }}
-        disabled={query.filter === "other"}
-        onFilterChange={onSharedFilterChange}
-      />
-      {variant === "topic" && (
-        <TextField
-          label="ライセンス"
-          select
-          fullWidth
-          defaultValue="all"
-          onChange={(event) => {
-            onLicenseFilterChange(String(event.target.value));
-          }}
-          inputProps={{ displayEmpty: true }}
-          sx={{ mb: 2, maxWidth: "80%" }}
-        >
-          <MenuItem value="all">すべて</MenuItem>
-          <MenuItem value="none">未設定</MenuItem>
-          {Object.entries(licenses).map(([value, { name }]) => (
-            <MenuItem key={value} value={value}>
-              {name}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
+      <TextField
+        label="ライセンス"
+        select
+        fullWidth
+        defaultValue="all"
+        onChange={(event) => {
+          onLicenseFilterChange(String(event.target.value));
+        }}
+        inputProps={{ displayEmpty: true }}
+        sx={{ mb: 2, maxWidth: "80%" }}
+      >
+        <MenuItem value="all">すべて</MenuItem>
+        <MenuItem value="none">未設定</MenuItem>
+        {Object.entries(licenses).map(([value, { name }]) => (
+          <MenuItem key={value} value={value}>
+            {name}
+          </MenuItem>
+        ))}
+      </TextField>
       {variant === "book" && (
         <FormControl component="fieldset" sx={{ display: "block", mb: 2 }}>
           <FormLabel component="legend" sx={{ mb: 1 }}>
