@@ -6,12 +6,14 @@ import prisma from "../prisma";
 
 async function cloneBook(
   parentBook: BookSchema,
-  userId: UserSchema["id"]
+  userId: UserSchema["id"],
+  targetTopics: number[] | null | undefined
 ): Promise<BookSchema | undefined> {
   // トピックを複製する
   const topics = await Promise.all(
     parentBook.sections
       .flatMap((section) => section.topics)
+      .filter(({id}) => targetTopics?targetTopics.includes(id):true)
       .map(
         ({
           id,
@@ -41,14 +43,22 @@ async function cloneBook(
     ...book
   } = structuredClone(parentBook);
 
+  const newSections = [];
   for (const section of book.sections) {
+    const newTopics = [];
     for (const topic of section.topics) {
-      const topicId = topicsMap.get(topic.id)?.id;
-      if (topicId == null) throw new Error(`トピックの複製に失敗 ${topicId}`);
-
-      topic.id = topicId;
+      const created = topicsMap.get(topic.id);
+      if (created) {
+        topic.id = created.id;
+        newTopics.push(topic);
+      }
+    }
+    if (newTopics.length > 0) {
+      section.topics = newTopics;
+      newSections.push(section);
     }
   }
+  book.sections = newSections;
 
   const authors = await prisma.authorship.findMany({
     where: { bookId: parentBook.id },
