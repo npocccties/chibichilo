@@ -101,7 +101,11 @@ function Edit({ bookId, context }: Query) {
     });
   }
   async function handleRelease({ id }: Pick<BookSchema, "id">) {
-    return router.push(pagesPath.book.release.$url({ query: { bookId: id } }));
+    return router.push(
+      pagesPath.book.release.$url({
+        query: { bookId: id, ...(context && { context }) },
+      })
+    );
   }
   async function handleItemEditClick(bookId: BookSchema["id"]) {
     return router.push(pagesPath.book.edit.$url({ query: { bookId } }));
