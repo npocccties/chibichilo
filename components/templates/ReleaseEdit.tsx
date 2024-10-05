@@ -3,6 +3,13 @@ import Container from "$atoms/Container";
 import type { BookSchema } from "$server/models/book";
 import ReleaseForm from "$organisms/ReleaseForm";
 import type { ReleaseProps } from "$server/models/book/release";
+import TreeView from "@mui/lab/TreeView";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import SectionsTree from "$molecules/SectionsTree";
+import Card from "@mui/material/Card";
+import useCardStyles from "$styles/card";
+import { useState } from "react";
 
 export type Props = {
   book: BookSchema;
@@ -10,6 +17,25 @@ export type Props = {
 };
 
 function ReleaseEdit(props: Props) {
+  const { book, onSubmit } = props;
+  const cardClasses = useCardStyles();
+  const [selectedNodeIds, select] = useState<Set<string>>(new Set());
+  const handleTreeChange = (nodeId: string) => {
+    select((nodeIds) =>
+      nodeIds.delete(nodeId) ? new Set(nodeIds) : new Set(nodeIds.add(nodeId))
+    );
+  };
+  const handleSubmit = (props: ReleaseProps) => {
+    const topics: number[] = [];
+    selectedNodeIds.forEach((nodeId) => {
+      const [_bookId, _sectionId, topicId] = nodeId
+        .replace(/:[^:]*$/, "")
+        .split("-")
+        .map((id) => Number(id));
+      topics.push(topicId);
+    });
+    onSubmit({ ...props, topics });
+  };
   return (
     <Container
       maxWidth="md"
@@ -20,11 +46,20 @@ function ReleaseEdit(props: Props) {
         gap: 2,
       }}
     >
-      <Typography variant="h4">{props.book.name}</Typography>
-      <ReleaseForm
-        release={props.book?.release ?? {}}
-        onSubmit={props.onSubmit}
-      />
+      <Typography variant="h4">{book.name}</Typography>
+      <ReleaseForm release={book.release ?? {}} onSubmit={handleSubmit} />
+      <Card classes={cardClasses}>
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+        >
+          <SectionsTree
+            bookId={book.id}
+            sections={book.sections}
+            onTreeChange={handleTreeChange}
+          />
+        </TreeView>
+      </Card>
     </Container>
   );
 }

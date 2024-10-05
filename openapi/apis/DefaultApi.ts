@@ -2806,7 +2806,10 @@ export enum ApiV2SearchGetTypeEnum {
 export enum ApiV2SearchGetFilterEnum {
     all = 'all',
     self = 'self',
-    other = 'other'
+    other = 'other',
+    edit = 'edit',
+    release = 'release',
+    other_release = 'other-release'
 }
 /**
     * @export
