@@ -102,6 +102,16 @@ export default function Topics(props: Props) {
     dispatch: handlePreviewClick,
     ...dialogProps
   } = useDialogProps<ContentSchema>();
+
+  const enableBookNewButton =
+    isAdministrator || searchProps.query.filter === "edit";
+  const enableShareButton =
+    isAdministrator || searchProps.query.filter === "release";
+  const enableDeleteButton =
+    isAdministrator ||
+    searchProps.query.filter === "edit" ||
+    searchProps.query.filter === "release";
+
   return (
     <Container twoColumns maxWidth="xl">
       <Typography sx={{ mt: 5, gridArea: "title" }} variant="h4">
@@ -178,15 +188,17 @@ export default function Topics(props: Props) {
       />
       {selected.size > 0 && (
         <ActionFooter maxWidth="lg">
-          <Button
-            color="primary"
-            size="large"
-            variant="contained"
-            onClick={handleBookNewClick}
-          >
-            ブック作成
-          </Button>
-          {(isAdministrator || searchProps.query.filter === "self") && (
+          {enableBookNewButton && (
+            <Button
+              color="primary"
+              size="large"
+              variant="contained"
+              onClick={handleBookNewClick}
+            >
+              ブック作成
+            </Button>
+          )}
+          {enableShareButton && (
             <>
               <Button
                 color="primary"
@@ -204,15 +216,17 @@ export default function Topics(props: Props) {
               >
                 シェア解除
               </Button>
-              <Button
-                color="error"
-                size="large"
-                variant="contained"
-                onClick={handleTopicsDeleteClick}
-              >
-                削除
-              </Button>
             </>
+          )}
+          {enableDeleteButton && (
+            <Button
+              color="error"
+              size="large"
+              variant="contained"
+              onClick={handleTopicsDeleteClick}
+            >
+              削除
+            </Button>
           )}
         </ActionFooter>
       )}
