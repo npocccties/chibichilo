@@ -16,12 +16,18 @@ function Release({ bookId, context }: Query) {
   const router = useRouter();
   async function handleSubmit(release: ReleaseProps) {
     if (!book) return;
-    const created = await createReleaseBook({ id: bookId, ...release });
-    return router.push(
-      pagesPath.book.edit.$url({
-        query: { bookId: created.id, ...(context && { context }) },
-      })
-    );
+    try {
+      const created = await createReleaseBook({ id: bookId, ...release });
+      return router.push(
+        pagesPath.book.edit.$url({
+          query: { bookId: created.id, ...(context && { context }) },
+        })
+      );
+    } catch (e) {
+      // @ts-expect-error TODO: Object is of type 'unknown'
+      console.log("createReleaseBook: error ", await e.json());
+    }
+    return;
   }
   const handlers = {
     onSubmit: handleSubmit,
