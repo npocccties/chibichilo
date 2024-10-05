@@ -9,7 +9,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SectionsTree from "$molecules/SectionsTree";
 import Card from "@mui/material/Card";
 import useCardStyles from "$styles/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Props = {
   book: BookSchema;
@@ -20,6 +20,16 @@ function ReleaseEdit(props: Props) {
   const { book, onSubmit } = props;
   const cardClasses = useCardStyles();
   const [selectedNodeIds, select] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const nodeIds: string[] = [];
+    book.sections.map((section) => {
+      section.topics.map((topic, topicIndex) => {
+        const nodeId = `${book.id}-${section.id}-${topic.id}:${topicIndex}`;
+        nodeIds.push(nodeId);
+      });
+    });
+    select(() => new Set(nodeIds));
+  }, [book, select]);
   const handleTreeChange = (nodeId: string) => {
     select((nodeIds) =>
       nodeIds.delete(nodeId) ? new Set(nodeIds) : new Set(nodeIds.add(nodeId))
@@ -57,6 +67,7 @@ function ReleaseEdit(props: Props) {
             bookId={book.id}
             sections={book.sections}
             onTreeChange={handleTreeChange}
+            selectedIndexes={selectedNodeIds}
           />
         </TreeView>
       </Card>
