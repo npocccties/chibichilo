@@ -84,8 +84,8 @@ export default function ReleaseItemList(props: Props) {
     <Card classes={cardClasses}>
       <TreeView>
         {releases.map((item, index) => (
-          // eslint-disable-next-line react/jsx-key
           <ReleaseItem
+            key={index}
             item={item}
             index={index}
             onItemEditClick={onItemEditClick}
