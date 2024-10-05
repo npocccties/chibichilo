@@ -138,10 +138,12 @@ export default function SectionsTree(props: Props) {
                     {topic.shared && (
                       <SharedIndicator className={classes.shared} />
                     )}
-                    <PreviewButton
-                      variant="topic"
-                      onClick={handle(onItemPreviewClick)}
-                    />
+                    {onItemPreviewClick && (
+                      <PreviewButton
+                        variant="topic"
+                        onClick={handle(onItemPreviewClick)}
+                      />
+                    )}
                     {isContentEditable?.(topic) && onItemEditClick && (
                       <EditButton
                         variant="topic"

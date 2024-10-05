@@ -31,6 +31,12 @@ export interface InlineObject6 {
      * @memberof InlineObject6
      */
     comment?: string;
+    /**
+     * 
+     * @type {Array<number>}
+     * @memberof InlineObject6
+     */
+    topics?: Array<number>;
 }
 
 export function InlineObject6FromJSON(json: any): InlineObject6 {
@@ -45,6 +51,7 @@ export function InlineObject6FromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'version': !exists(json, 'version') ? undefined : json['version'],
         'comment': !exists(json, 'comment') ? undefined : json['comment'],
+        'topics': !exists(json, 'topics') ? undefined : json['topics'],
     };
 }
 
@@ -59,6 +66,7 @@ export function InlineObject6ToJSON(value?: InlineObject6 | null): any {
         
         'version': value.version,
         'comment': value.comment,
+        'topics': value.topics,
     };
 }
 
