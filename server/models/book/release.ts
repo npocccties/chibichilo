@@ -6,7 +6,7 @@ export const releasePropsSchema = {
   properties: {
     version: { type: "string" },
     comment: { type: "string" },
-    topics: { type: "array", items: { type: "integer" }, nullable: true },
+    topics: { type: "array", items: { type: "integer" } },
   },
   additionalProperties: false,
 } as const;
