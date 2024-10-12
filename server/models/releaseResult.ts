@@ -11,6 +11,10 @@ export const ReleaseItemSchema = {
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
     authors: { type: "array", items: AuthorSchema },
+    poid: { type: "string" },
+    oid: { type: "string" },
+    pid: { type: "string" },
+    vid: { type: "string" },
     release: {
       ...releaseSchema,
     },

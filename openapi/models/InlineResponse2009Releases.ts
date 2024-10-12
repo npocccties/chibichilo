@@ -68,6 +68,30 @@ export interface InlineResponse2009Releases {
     authors?: Array<InlineResponse2003BookAuthors>;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse2009Releases
+     */
+    poid?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2009Releases
+     */
+    oid?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2009Releases
+     */
+    pid?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2009Releases
+     */
+    vid?: string;
+    /**
+     * 
      * @type {InlineResponse2005Release}
      * @memberof InlineResponse2009Releases
      */
@@ -90,6 +114,10 @@ export function InlineResponse2009ReleasesFromJSONTyped(json: any, ignoreDiscrim
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
         'authors': !exists(json, 'authors') ? undefined : ((json['authors'] as Array<any>).map(InlineResponse2003BookAuthorsFromJSON)),
+        'poid': !exists(json, 'poid') ? undefined : json['poid'],
+        'oid': !exists(json, 'oid') ? undefined : json['oid'],
+        'pid': !exists(json, 'pid') ? undefined : json['pid'],
+        'vid': !exists(json, 'vid') ? undefined : json['vid'],
         'release': !exists(json, 'release') ? undefined : InlineResponse2005ReleaseFromJSON(json['release']),
     };
 }
@@ -109,6 +137,10 @@ export function InlineResponse2009ReleasesToJSON(value?: InlineResponse2009Relea
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
         'authors': value.authors === undefined ? undefined : ((value.authors as Array<any>).map(InlineResponse2003BookAuthorsToJSON)),
+        'poid': value.poid,
+        'oid': value.oid,
+        'pid': value.pid,
+        'vid': value.vid,
         'release': InlineResponse2005ReleaseToJSON(value.release),
     };
 }

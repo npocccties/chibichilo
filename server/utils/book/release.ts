@@ -6,6 +6,7 @@ import { authorArg, authorToAuthorSchema } from "../author/authorToAuthorSchema"
 import createScopes from "../search/createScopes";
 import type { AuthorFilter } from "$server/models/authorFilter";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
+import { findBookUniqueIds, selectUniqueIds } from "../uniqueId";
 
 export async function upsertRelease(
   bookId: Book["id"],
@@ -46,6 +47,7 @@ const bookIncludingArg = {
     updatedAt: true,
     authors: authorArg,
     release: true,
+    ...selectUniqueIds,
   }
 } as const;
 
@@ -62,10 +64,13 @@ export async function findReleasedBooks(
     by: userId,
     admin: false,
   };
+  const ids = await findBookUniqueIds(book.id);
+  if (!ids?.poid) return [];
+
   const where: Prisma.BookWhereInput = {
     AND: [
       ...createScopes(filter),
-      { name: book.name },
+      { poid: ids.poid },
     ],
     NOT: { release: null },
   };

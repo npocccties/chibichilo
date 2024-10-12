@@ -4,7 +4,7 @@ import prisma from './prisma';
 
 export type UniqueIds = Pick<Book, "poid" | "oid" | "pid" | "vid">;
 
-const selectUniqueIds = {
+export const selectUniqueIds = {
   poid: true,
   oid: true,
   pid: true,
