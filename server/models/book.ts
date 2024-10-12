@@ -21,7 +21,7 @@ export type BookProps = {
   publicBooks?: PublicBookSchema[];
 };
 
-export type BookSchema = Book & {
+export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid"> & {
   authors: AuthorSchema[];
   sections: SectionSchema[];
   ltiResourceLinks: LtiResourceLinkSchema[];

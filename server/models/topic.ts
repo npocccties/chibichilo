@@ -51,7 +51,7 @@ export type TopicProps = Pick<
   keywords?: KeywordPropSchema[];
 };
 
-export type TopicSchema = Topic & {
+export type TopicSchema = Omit<Topic, "poid" | "oid" | "pid" | "vid"> & {
   authors: AuthorSchema[];
   keywords: KeywordSchema[];
   relatedBooks?: RelatedBook[];

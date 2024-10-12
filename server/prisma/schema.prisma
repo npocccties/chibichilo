@@ -109,6 +109,15 @@ model Topic {
   /// 詳細
   details      Json
 
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+
   @@map("topics")
 }
 
@@ -238,7 +247,16 @@ model Book {
   details          Json
   /// 版管理 リリース (未リリースの場合は null)
   release Release?
-  
+
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+
   @@index([zoomMeetingId])
   @@map("books")
 }
