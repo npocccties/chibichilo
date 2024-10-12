@@ -5,6 +5,7 @@ import type { AuthorFilter } from "$server/models/authorFilter";
 import createScopes from "../search/createScopes";
 import prisma from "../prisma";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
+import { findTopicUniqueIds, selectUniqueIds } from "../uniqueId";
 
 const topicIncludingArg = {
   select: {
@@ -14,6 +15,7 @@ const topicIncludingArg = {
     updatedAt: true,
     authors: authorArg,
     topicSection: { include: { section: { include: { book: { include: { release: true } } } } } },
+    ...selectUniqueIds,
   }
 } as const;
 
@@ -30,10 +32,13 @@ export async function findReleasedTopics(
     by: userId,
     admin: false,
   };
+  const ids = await findTopicUniqueIds(topic.id);
+  if (!ids?.poid) return [];
+
   const where: Prisma.TopicWhereInput = {
     AND: [
       ...createScopes(filter),
-      { name: topic.name },
+      { poid: ids.poid },
     ],
   };
   const found = await prisma.topic.findMany({
