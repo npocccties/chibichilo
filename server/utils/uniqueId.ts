@@ -12,7 +12,6 @@ export const selectUniqueIds = {
 };
 
 function generateUniqueIds(ids: UniqueIds) {
-  console.log("generateUniqueIds called");
   ids.poid = createId();
   ids.oid = ids.poid;
   ids.pid = "";
