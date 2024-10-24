@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import type { BookSchema } from "$server/models/book";
 import { api } from "./api";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
@@ -18,6 +18,10 @@ async function fetchReleaseBooks({
 function useReleaseBooks(bookId: BookSchema["id"]) {
   const { data, error } = useSWR({ key, bookId }, fetchReleaseBooks);
   return { releases: data, error };
+}
+
+export async function mutateReleasebooks(bookId: BookSchema["id"]) {
+  await mutate({ key, bookId });
 }
 
 export default useReleaseBooks;

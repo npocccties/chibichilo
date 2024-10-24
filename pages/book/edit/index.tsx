@@ -19,6 +19,7 @@ import { pagesPath } from "$utils/$path";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import type { ReleaseProps } from "$server/models/book/release";
+import { mutateReleasebooks } from "$utils/useReleaseBooks";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -99,6 +100,7 @@ function Edit({ bookId, context }: Query) {
       id: book.id,
       ...release,
     });
+    await mutateReleasebooks(book.id);
   }
   async function handleRelease({ id }: Pick<BookSchema, "id">) {
     return router.push(
