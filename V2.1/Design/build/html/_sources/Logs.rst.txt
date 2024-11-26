@@ -392,7 +392,7 @@ syslogへ、TSV(タブ区切り)で出力する。
        | wowza
      -
    * - 17
-     - 視聴URLのパス
+     - 視聴ページ
      - | /book
        | /bookmarks
      -
