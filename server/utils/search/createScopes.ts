@@ -35,7 +35,7 @@ export default createScopes;
 export function createScopesBook(
   filter: AuthorFilter
 ): Array<Prisma.BookWhereInput> {
-  const sharedScope = { shared: true };
+  const sharedScope = { release: { shared: true } };
   const selfScope = { authors: { some: { userId: filter.by } } };
   const editScope = { release: null };
   const defaultScopes = {
@@ -64,7 +64,7 @@ export function createScopesBook(
 export function createScopesTopic(
   filter: AuthorFilter
 ): Array<Prisma.TopicWhereInput> {
-  const sharedScope = { shared: true };
+  const sharedScope = { topicSection: { some: { section: { book: { release: { shared: true }}}}}};
   const selfScope = { authors: { some: { userId: filter.by } } };
   const editScope = { topicSection: { every: { section: { book: { release: null }}}}};
   const defaultScopes = {
