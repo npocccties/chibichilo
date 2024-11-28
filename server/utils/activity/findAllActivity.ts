@@ -37,7 +37,7 @@ async function findLtiMembers(
                     ltiResourceLinks: { some: { consumerId, contextId } },
                     // NOTE: 表示可能な範囲 … 共有されている範囲または著者に含まれる範囲
                     OR: [
-                      { shared: true },
+                      { release: { shared: true } },
                       { authors: { some: { userId: instructor.id } } },
                     ],
                   },
