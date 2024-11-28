@@ -103,10 +103,8 @@ export default function Topics(props: Props) {
     ...dialogProps
   } = useDialogProps<ContentSchema>();
 
-  const enableBookNewButton =
-    isAdministrator || searchProps.query.filter === "edit";
-  const enableShareButton =
-    isAdministrator || searchProps.query.filter === "release";
+  const enableBookNewButton = true;
+  const enableShareButton = false;
   const enableDeleteButton =
     isAdministrator ||
     searchProps.query.filter === "edit" ||

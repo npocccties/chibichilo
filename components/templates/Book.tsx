@@ -187,7 +187,7 @@ export default function Book(props: Props) {
               (book?.timeRequired ?? 0) * 1000
             )}`}
           />
-          {book?.shared && <SharedIndicator />}
+          {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
             book &&
             onBookEditClick &&

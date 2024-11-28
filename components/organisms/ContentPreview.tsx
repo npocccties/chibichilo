@@ -184,7 +184,7 @@ export default function ContentPreview({
               )}
             />
           ))}
-        {content.shared && <SharedIndicator className="shared" />}
+        {release?.shared && <SharedIndicator className="shared" />}
         {onContentEditClick && (
           <EditButton
             className="edit-button"

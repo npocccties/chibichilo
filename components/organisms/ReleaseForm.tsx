@@ -9,19 +9,32 @@ import gray from "$theme/colors/gray";
 import useCardStyles from "styles/card";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
+import InputLabel from "$atoms/InputLabel";
+import Checkbox from "@mui/material/Checkbox";
+import makeStyles from "@mui/styles/makeStyles";
 
 export type ReleaseFormProps = {
   release: ReleaseSchema;
   onSubmit?(release: ReleaseProps): void;
 };
 
+const useStyles = makeStyles((theme) => ({
+  labelDescription: {
+    marginLeft: theme.spacing(0.75),
+    color: gray[600],
+  },
+}));
+
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
-  const { register, handleSubmit } = useForm<ReleaseProps>({ values: release });
+  const { register, handleSubmit, setValue } = useForm<ReleaseProps>({
+    values: release,
+  });
   const cardClasses = useCardStyles();
   const releasedAt = release.releasedAt
     ? getLocaleDateString(release.releasedAt, "ja")
     : "不明";
   const update = Boolean(onSubmit);
+  const classes = useStyles();
   if (!onSubmit) {
     onSubmit = () => {};
   }
@@ -64,6 +77,26 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         fullWidth
         disabled={!update}
       />
+      <div>
+        <InputLabel htmlFor="shared">
+          ブックを共有する
+          <Typography
+            className={classes.labelDescription}
+            variant="caption"
+            component="span"
+          >
+            他の教材作成者とブックを共有します
+          </Typography>
+        </InputLabel>
+        <Checkbox
+          id="shared"
+          name="shared"
+          onChange={(_, checked) => setValue("shared", checked)}
+          defaultChecked={release.shared}
+          color="primary"
+          disabled={!update}
+        />
+      </div>
       {release.version && (
         <DescriptionList
           value={[

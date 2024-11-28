@@ -77,7 +77,9 @@ export default function BookTree(props: Props) {
           />
           )*/}
           {book.name}
-          {book.shared && <SharedIndicator className={classes.shared} />}
+          {book.release?.shared && (
+            <SharedIndicator className={classes.shared} />
+          )}
           <PreviewButton variant="book" onClick={handle(onBookPreviewClick)} />
           {onBookEditClick && (
             <EditButton variant="book" onClick={handle(onBookEditClick)} />
