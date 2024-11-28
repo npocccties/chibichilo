@@ -6,6 +6,7 @@ export const releasePropsSchema = {
   properties: {
     version: { type: "string" },
     comment: { type: "string" },
+    shared: { type: "boolean" },
     topics: { type: "array", items: { type: "integer" } },
   },
   additionalProperties: false,

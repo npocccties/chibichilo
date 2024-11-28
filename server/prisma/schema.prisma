@@ -16,6 +16,8 @@ model Release {
   releasedAt DateTime @default(now()) @map("released_at")
   version    String   @default("0.0.0")
   comment    String   @default("")
+  /// 共有可否 (true: シェアする, それ以外: シェアしない)
+  shared       Boolean      @default(false)
 
   @@map("release")
 }
@@ -97,7 +99,7 @@ model Topic {
   /// 再生終了時間 (秒, 0 は無効)
   stopTime     Float?       @map("stop_time")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared       Boolean      @default(true)
+  shared       Boolean      @default(false)
   /// 著作者
   authors      Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
@@ -230,7 +232,7 @@ model Book {
   /// 学習所要時間 (秒)
   timeRequired     Int?              @map("time_required")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared           Boolean           @default(true)
+  shared           Boolean           @default(false)
   /// 著作者
   authors          Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
