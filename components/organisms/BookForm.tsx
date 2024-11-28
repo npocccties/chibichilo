@@ -194,24 +194,20 @@ export default function BookForm({
         onSubmit(values);
       })}
     >
-      {released && (
+      {!released && book?.shared && (
         <div>
-          <InputLabel htmlFor="shared">
-            ブックをシェアする
-            <Typography
-              className={classes.labelDescription}
-              variant="caption"
-              component="span"
-            >
-              他の教材作成者とブックを共有します
-            </Typography>
-          </InputLabel>
-          <Checkbox
-            id="shared"
-            name="shared"
-            onChange={(_, checked) => setValue("shared", checked)}
-            defaultChecked={defaultValues.shared}
-            color="primary"
+          ブックのシェア機能は廃止されました。第三者にコンテンツを提供する場合は、コンテンツをリリースして、共有を有効にしてください。
+          <FormControlLabel
+            className={classes.marginLeft}
+            label="上記のメッセージを、表示しないようにする"
+            title={"メッセージを表示しない"}
+            control={
+              <Checkbox
+                onChange={(_, checked) => setValue("shared", !checked)}
+                defaultChecked={!defaultValues.shared}
+                color="primary"
+              />
+            }
           />
         </div>
       )}

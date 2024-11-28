@@ -85,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
   localVideo: {
     width: "100%",
   },
+  marginLeft: {
+    marginLeft: theme.spacing(0.75),
+  },
 }));
 
 const label = {
@@ -383,26 +386,20 @@ export default function TopicForm(props: Props) {
           });
         })}
       >
-        {released && (
+        {!released && topic?.shared && (
           <div>
-            <InputLabel htmlFor="shared">
-              <>
-                トピックをシェアする
-                <Typography
-                  className={classes.labelDescription}
-                  variant="caption"
-                  component="span"
-                >
-                  他の教材作成者とトピックを共有します
-                </Typography>
-              </>
-            </InputLabel>
-            <Checkbox
-              id="shared"
-              name="shared"
-              onChange={(_, checked) => setValue("shared", checked)}
-              defaultChecked={defaultValues.shared}
-              color="primary"
+            トピックのシェア機能は廃止されました。第三者にコンテンツを提供する場合は、コンテンツをリリースして、共有を有効にしてください。
+            <FormControlLabel
+              className={classes.marginLeft}
+              label="上記のメッセージを、表示しないようにする"
+              title={"メッセージを表示しない"}
+              control={
+                <Checkbox
+                  onChange={(_, checked) => setValue("shared", !checked)}
+                  defaultChecked={!defaultValues.shared}
+                  color="primary"
+                />
+              }
             />
           </div>
         )}

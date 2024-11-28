@@ -11,7 +11,7 @@ type Props = {
 export default function SharedIndicator(props: Props) {
   const { className, sx } = props;
   return (
-    <Tooltip title="教員にシェアしています">
+    <Tooltip title="教員に共有しています">
       <PeopleIcon
         className={className}
         sx={sx}
