@@ -33,6 +33,12 @@ export interface InlineObject7 {
     comment?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof InlineObject7
+     */
+    shared?: boolean;
+    /**
+     * 
      * @type {Array<number>}
      * @memberof InlineObject7
      */
@@ -51,6 +57,7 @@ export function InlineObject7FromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'version': !exists(json, 'version') ? undefined : json['version'],
         'comment': !exists(json, 'comment') ? undefined : json['comment'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'topics': !exists(json, 'topics') ? undefined : json['topics'],
     };
 }
@@ -66,6 +73,7 @@ export function InlineObject7ToJSON(value?: InlineObject7 | null): any {
         
         'version': value.version,
         'comment': value.comment,
+        'shared': value.shared,
         'topics': value.topics,
     };
 }
