@@ -8,7 +8,7 @@ import {
   topicToTopicSchema,
 } from "$server/utils/topic/topicToTopicSchema";
 import type { TopicSearchQuery } from "$server/models/searchQuery";
-import createScopes from "./createScopes";
+import { createScopesBook } from "./createScopes";
 import { createScopesTopic } from "./createScopes";
 
 /**
@@ -117,7 +117,7 @@ async function topicSearch(
   const relatedBooks = await prisma.book.findMany({
     where: {
       AND: [
-        ...createScopes({
+        ...createScopesBook({
           type: "all",
           admin: "admin" in filter && filter.admin,
           by: filter.by,

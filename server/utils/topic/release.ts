@@ -2,7 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { authorArg, authorToAuthorSchema } from "../author/authorToAuthorSchema";
 import type { TopicSchema } from "$server/models/topic";
 import type { AuthorFilter } from "$server/models/authorFilter";
-import createScopes from "../search/createScopes";
+import { createScopesTopic } from "../search/createScopes";
 import prisma from "../prisma";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import { findTopicUniqueIds, selectUniqueIds } from "../uniqueId";
@@ -37,7 +37,7 @@ export async function findReleasedTopics(
 
   const where: Prisma.TopicWhereInput = {
     AND: [
-      ...createScopes(filter),
+      ...createScopesTopic(filter),
       { poid: ids.poid },
     ],
   };
