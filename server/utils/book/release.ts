@@ -3,7 +3,7 @@ import type { ReleaseProps } from "$server/models/book/release";
 import prisma from "$server/utils/prisma";
 import type { BookSchema } from "$server/models/book";
 import { authorArg, authorToAuthorSchema } from "../author/authorToAuthorSchema";
-import createScopes from "../search/createScopes";
+import { createScopesBook } from "../search/createScopes";
 import type { AuthorFilter } from "$server/models/authorFilter";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import { findBookUniqueIds, selectUniqueIds } from "../uniqueId";
@@ -69,7 +69,7 @@ export async function findReleasedBooks(
 
   const where: Prisma.BookWhereInput = {
     AND: [
-      ...createScopes(filter),
+      ...createScopesBook(filter),
       { poid: ids.poid },
     ],
     NOT: { release: null },
