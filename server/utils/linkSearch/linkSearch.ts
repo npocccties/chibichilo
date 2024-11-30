@@ -6,6 +6,7 @@ import type {
   Authorship,
   ContentRole,
   User,
+  Release,
 } from "@prisma/client";
 import type { LinkSearchResultSchema } from "$server/models/link/search";
 import type { LinkSearchQuery } from "$server/models/link/searchQuery";
@@ -14,7 +15,7 @@ import type { AuthorFilter } from "$server/models/authorFilter";
 import { AuthorSchema } from "$server/models/author";
 import prisma from "$server/utils/prisma";
 import createLinkScope from "./createLinkScope";
-import createScopes from "../search/createScopes";
+import { createScopesBook } from "../search/createScopes";
 import makeSortLinkOrderQuery from "../makeSortLinkOrderQuery";
 
 function linkToLinkSchema(
@@ -22,6 +23,7 @@ function linkToLinkSchema(
     context: LtiContext;
     book: Book & {
       authors: (Authorship & { role: ContentRole; user: User })[];
+      release: Release | null;
     };
   }
 ): LinkSchema {
@@ -40,7 +42,7 @@ function linkToLinkSchema(
   const book = {
     id: link.book.id,
     name: link.book.name,
-    shared: link.book.shared,
+    shared: Boolean(link.book.release?.shared),
     authors: link.book.authors.map(({ user, role }) => ({
       id: user.id,
       ltiConsumerId: user.ltiConsumerId,
@@ -99,7 +101,7 @@ async function linkSearch(
           {
             book: {
               AND: [
-                ...createScopes(filter),
+                ...createScopesBook(filter),
                 {
                   OR: [
                     { name: { contains: t, ...insensitiveMode } },
@@ -133,7 +135,7 @@ async function linkSearch(
       ...query.bookName.map((t) => ({
         book: {
           AND: [
-            ...createScopes(filter),
+            ...createScopesBook(filter),
             { name: { contains: t, ...insensitiveMode } },
           ],
         },
@@ -141,7 +143,7 @@ async function linkSearch(
       // // NOTE: topic - トピックのタイトル
       ...query.topicName.map((t) => ({
         book: {
-          ...createScopes(filter),
+          ...createScopesBook(filter),
           sections: {
             some: {
               topicSections: {
@@ -169,6 +171,7 @@ async function linkSearch(
               user: true,
             },
           },
+          release: true,
         },
       },
     },

@@ -39,17 +39,20 @@ export function createScopesBook(
   const selfScope = { authors: { some: { userId: filter.by } } };
   const editScope = { release: null };
   const defaultScopes = {
+    all: [{ OR: [sharedScope, selfScope] }],
     edit: [selfScope, editScope],
     release: [selfScope, { NOT: editScope }],
     "other-release": [sharedScope, { NOT: selfScope }, { NOT: editScope }],
   };
   const adminScopes = {
+    all: [],
     edit: [editScope],
     release: [{ NOT: editScope }],
     "other-release": [{ NOT: selfScope }, { NOT: editScope }],
   };
 
   switch(filter?.type){
+    case "all":
     case "edit":
     case "release":
     case "other-release":
@@ -68,17 +71,20 @@ export function createScopesTopic(
   const selfScope = { authors: { some: { userId: filter.by } } };
   const editScope = { topicSection: { every: { section: { book: { release: null }}}}};
   const defaultScopes = {
+    all: [{ OR: [sharedScope, selfScope] }],
     edit: [selfScope, editScope],
     release: [selfScope, { NOT: editScope }],
     "other-release": [sharedScope, { NOT: selfScope }, { NOT: editScope }],
   };
   const adminScopes = {
+    all: [],
     edit: [editScope],
     release: [{ NOT: editScope }],
     "other-release": [{ NOT: selfScope }, { NOT: editScope }],
   };
 
   switch(filter?.type){
+    case "all":
     case "edit":
     case "release":
     case "other-release":
