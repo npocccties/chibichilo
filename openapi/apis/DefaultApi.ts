@@ -373,6 +373,7 @@ export interface ApiV2TopicPostRequest {
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
+    bookId: number;
     topicId: number;
     currentLtiContextOnly?: boolean;
     body?: InlineObject9;
@@ -2202,6 +2203,10 @@ export class DefaultApi extends runtime.BaseAPI {
      * 学習活動の更新
      */
     async apiV2TopicTopicIdActivityPutRaw(requestParameters: ApiV2TopicTopicIdActivityPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
+        }
+
         if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
             throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
         }
@@ -2210,6 +2215,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.currentLtiContextOnly !== undefined) {
             queryParameters['current_lti_context_only'] = requestParameters.currentLtiContextOnly;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['book_id'] = requestParameters.bookId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

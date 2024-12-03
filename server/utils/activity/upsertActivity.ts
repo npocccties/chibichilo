@@ -1,6 +1,7 @@
 import { IntervalTree } from "$server/utils/intervalTree";
 import type {
   User,
+  Book,
   Topic,
   Activity,
   LtiConsumer,
@@ -25,18 +26,21 @@ const ACTIVITY_COUNT_INTERVAL_THRESHOLD_MS =
 
 function findActivity({
   learnerId,
+  bookId,
   topicId,
   ltiConsumerId,
   ltiContextId,
 }: {
   learnerId: User["id"];
+  bookId: Book["id"];
   topicId: Topic["id"];
   ltiConsumerId: LtiConsumer["id"];
   ltiContextId: LtiContext["id"];
 }) {
   return prisma.activity.findUnique({
     where: {
-      topicId_learnerId_ltiConsumerId_ltiContextId: {
+      bookId_topicId_learnerId_ltiConsumerId_ltiContextId: {
+        bookId,
         topicId,
         learnerId,
         ltiConsumerId,
@@ -270,6 +274,7 @@ function cleanupRecentTimeRangeLogs(
 
 function upsert({
   learnerId,
+  bookId,
   topicId,
   ltiConsumerId,
   ltiContextId,
@@ -278,6 +283,7 @@ function upsert({
   timeRangeCounts,
 }: {
   learnerId: User["id"];
+  bookId: Book["id"];
   topicId: Topic["id"];
   ltiConsumerId: LtiConsumer["id"];
   ltiContextId: LtiContext["id"];
@@ -295,9 +301,11 @@ function upsert({
     timeRangeLogs: { create: timeRangeLogs },
     timeRangeCounts: { create: timeRangeCounts },
   };
+
   return prisma.activity.upsert({
     where: {
-      topicId_learnerId_ltiConsumerId_ltiContextId: {
+      bookId_topicId_learnerId_ltiConsumerId_ltiContextId: {
+        bookId,
         topicId,
         learnerId,
         ltiConsumerId,
@@ -307,6 +315,7 @@ function upsert({
     create: {
       ...input,
       learner: { connect: { id: learnerId } },
+      book: { connect: { id: bookId } },
       topic: { connect: { id: topicId } },
       ltiContext: {
         connect: {
@@ -320,12 +329,14 @@ function upsert({
 
 async function upsertActivity({
   learnerId,
+  bookId,
   topicId,
   ltiConsumerId = "",
   ltiContextId = "",
   activity,
 }: {
   learnerId: User["id"];
+  bookId: Book["id"];
   topicId: Topic["id"];
   ltiConsumerId?: LtiConsumer["id"];
   ltiContextId?: LtiContext["id"];
@@ -333,11 +344,11 @@ async function upsertActivity({
 }): Promise<ActivityProps> {
   const exists = await findActivity({
     learnerId,
+    bookId,
     topicId,
     ltiConsumerId,
     ltiContextId,
   });
-
   let recentTimeRangeLogs: ActivityTimeRangeLogProps[] = [];
   let timeRangeCounts: ActivityTimeRangeCountProps[] = [];
   if (exists?.id) {
@@ -350,7 +361,10 @@ async function upsertActivity({
   }
 
   const timeRanges = merge(exists?.timeRanges ?? [], activity.timeRanges);
-  const timeRangeLogs = concatAndMerge(recentTimeRangeLogs, activity.timeRanges);
+  const timeRangeLogs = concatAndMerge(
+    recentTimeRangeLogs,
+    activity.timeRanges
+  );
   const purgedTimeRangeLogs = purge(recentTimeRangeLogs, activity.timeRanges);
 
   timeRangeCounts = countTimeRange(timeRangeCounts, purgedTimeRangeLogs);
@@ -361,6 +375,7 @@ async function upsertActivity({
     ...(exists ? [cleanup(exists.id)] : []),
     upsert({
       learnerId,
+      bookId,
       topicId,
       ltiConsumerId,
       ltiContextId,
