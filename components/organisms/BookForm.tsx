@@ -113,7 +113,7 @@ type Props = {
   linked?: boolean;
   hasLtiTargetLinkUri?: boolean;
   className?: string;
-  variant?: "create" | "update";
+  variant?: "create" | "update" | "other";
   onSubmit?: (book: BookPropsWithSubmitOptions) => void;
   onAuthorsUpdate(authors: AuthorSchema[]): void;
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
@@ -212,7 +212,7 @@ export default function BookForm({
         </div>
       )}
 
-      {released && (
+      {released && variant !== "other" && (
         <div>
           <InputLabel htmlFor="enable-public-book">
             ブックを公開する
@@ -339,6 +339,7 @@ export default function BookForm({
             select
             defaultValue={defaultValues.license}
             inputProps={{ displayEmpty: true, ...register("license") }}
+            disabled={variant === "other"}
           >
             <MenuItem value="">未設定</MenuItem>
             {Object.entries(licenses).map(([value, { name }]) => (
@@ -351,9 +352,11 @@ export default function BookForm({
       </Accordion>
 
       <Divider className={classes.divider} />
-      <Button variant="contained" color="primary" type="submit">
-        {label[variant].submit}
-      </Button>
+      {variant !== "other" && (
+        <Button variant="contained" color="primary" type="submit">
+          {label[variant].submit}
+        </Button>
+      )}
       {!linked && (
         <FormControlLabel
           className={classes.marginLeft}
@@ -363,7 +366,7 @@ export default function BookForm({
               ? "ツールURLが指定されているため、リンクの切り替えはできません"
               : "リンクを切り替える"
           }
-          disabled={hasLtiTargetLinkUri}
+          disabled={hasLtiTargetLinkUri || variant === "other"}
           control={
             <Checkbox
               id="submit-with-link"

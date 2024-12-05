@@ -57,6 +57,7 @@ export default function BookEditReleased({
     const id = releases?.[index]?.id;
     if (id) onItemEditClick(id);
   };
+  const editable = isContentEditable?.(book);
 
   return (
     <Container className={classes.container} maxWidth="md">
@@ -67,7 +68,10 @@ export default function BookEditReleased({
       <Typography className={classes.subtitle} variant="h5">
         リリース
       </Typography>
-      <ReleaseForm release={book.release} onSubmit={onReleaseUpdate} />
+      <ReleaseForm
+        release={book.release}
+        onSubmit={editable ? onReleaseUpdate : undefined}
+      />
       <Typography className={classes.subtitle} variant="h5">
         トピック
       </Typography>
@@ -91,7 +95,7 @@ export default function BookEditReleased({
         book={book}
         linked={linked}
         hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
-        variant="update"
+        variant={editable ? "update" : "other"}
         onSubmit={onSubmit}
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
@@ -107,10 +111,12 @@ export default function BookEditReleased({
           />
         </>
       )}
-      <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
-        <DeleteOutlinedIcon />
-        ブックを削除
-      </Button>
+      {editable && (
+        <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
+          <DeleteOutlinedIcon />
+          ブックを削除
+        </Button>
+      )}
       {previewTopic && (
         <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
       )}
