@@ -10,6 +10,7 @@ import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import {
+  cloneBook,
   destroyBook,
   updateBook,
   updateReleaseBook,
@@ -112,6 +113,14 @@ function Edit({ bookId, context }: Query) {
   async function handleItemEditClick(bookId: BookSchema["id"]) {
     return router.push(pagesPath.book.edit.$url({ query: { bookId } }));
   }
+  async function handleClone({ id }: Pick<BookSchema, "id">) {
+    const created = await cloneBook(id);
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { bookId: created.id, ...(context && { context }) },
+      })
+    );
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -129,6 +138,7 @@ function Edit({ bookId, context }: Query) {
     onReleaseUpdate: handleReleaseUpdate,
     onRelease: handleRelease,
     onItemEditClick: handleItemEditClick,
+    onClone: handleClone,
   };
 
   if (error) return <BookNotFoundProblem />;
