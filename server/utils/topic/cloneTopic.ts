@@ -1,4 +1,4 @@
-import type { Topic } from "@prisma/client";
+import type { Prisma, Topic } from "@prisma/client";
 import type { TopicProps } from "$server/models/topic";
 import prisma from "$server/utils/prisma";
 import topicInput from "./topicInput";
@@ -8,11 +8,14 @@ import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectO
 export async function cloneTopic(
   topicId: Topic["id"],
   topic : TopicProps,
+  authors?: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<Topic | undefined> {
-  const authors = await prisma.authorship.findMany({
-    where: { topicId },
-    select: { userId: true, roleId: true },
-  });
+  if (!authors) {
+    authors = await prisma.authorship.findMany({
+      where: { topicId },
+      select: { userId: true, roleId: true },
+    });
+  }
 
   const created = await prisma.topic.create({
     data: {

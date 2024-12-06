@@ -3,7 +3,7 @@ import type { BookSchema } from "$server/models/book";
 import createBook from "./createBook";
 import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
-import type { Book, Topic } from "@prisma/client";
+import type { Book, Prisma, Topic } from "@prisma/client";
 
 async function cloneBook(
   parentBook: BookSchema,
@@ -11,6 +11,7 @@ async function cloneBook(
   targetTopics: number[] | null | undefined,
   adjustBook?: (orig: Book["id"], target: Book["id"]) => Promise<void>,
   adjustTopic?: (orig: Topic["id"], target: Topic["id"]) => Promise<void>,
+  authors?: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<BookSchema | undefined> {
   // トピックを複製する
   const topics = await Promise.all(
@@ -27,7 +28,7 @@ async function cloneBook(
           relatedBooks: _relatedBooks,
           ...topic
         }) => 
-          cloneTopic(id, topic).then(
+          cloneTopic(id, topic, authors).then(
             (created) => created && ([id, created] as const)
           )
       )
@@ -66,10 +67,12 @@ async function cloneBook(
   }
   book.sections = newSections;
 
-  const authors = await prisma.authorship.findMany({
-    where: { bookId: parentBook.id },
-    select: { userId: true, roleId: true },
-  });
+  if (!authors) {
+    authors = await prisma.authorship.findMany({
+      where: { bookId: parentBook.id },
+      select: { userId: true, roleId: true },
+    });
+  }
 
   const created = await createBook(userId, book, authors);
   if (!created) throw new Error(`ブックの複製に失敗 ${book.name}`);
