@@ -8,6 +8,7 @@ import * as showPublicService from "$server/services/book/public";
 import * as showZoomService from "$server/services/book/zoom";
 import * as importService from "$server/services/bookImport";
 import * as releaseService from "$server/services/book/release";
+import * as cloneService from "$server/services/clone";
 
 const basePath = "/book";
 const pathWithParams = `${basePath}/:book_id`;
@@ -116,3 +117,15 @@ export async function bookRelease(fastify: FastifyInstance) {
     Body: releaseService.Props;
   }>(path, { schema: method.put, ...hooks.put }, handler(update));
 }
+
+export async function bookClone(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/clone`;
+  const { cloneSchema, cloneHooks, clone } = cloneService;
+  const hooks = makeHooks(fastify, cloneHooks);
+
+  fastify.post<{
+    Params: service.Params;
+    Body: importService.Params;
+  }>(path, { schema: cloneSchema, ...hooks.post }, handler(clone));
+}
+
