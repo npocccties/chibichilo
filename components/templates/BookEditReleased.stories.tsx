@@ -24,6 +24,7 @@ const defaultProps = {
   onReleaseUpdate: console.log,
   onRelease: console.log,
   onItemEditClick: console.log,
+  onClone: console.log,
 };
 
 export const Default = () => {
