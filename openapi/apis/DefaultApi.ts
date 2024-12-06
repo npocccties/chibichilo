@@ -180,6 +180,10 @@ export interface ApiV2BookBookIdAuthorsPutRequest {
     body?: InlineObject4;
 }
 
+export interface ApiV2BookBookIdClonePostRequest {
+    bookId: number;
+}
+
 export interface ApiV2BookBookIdDeleteRequest {
     bookId: number;
 }
@@ -592,6 +596,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2BookBookIdAuthorsPut(requestParameters: ApiV2BookBookIdAuthorsPutRequest): Promise<Array<InlineResponse2003BookAuthors>> {
         const response = await this.apiV2BookBookIdAuthorsPutRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * ブックを複製します。 教員または管理者でなければなりません。
+     * ブックの複製
+     */
+    async apiV2BookBookIdClonePostRaw(requestParameters: ApiV2BookBookIdClonePostRequest): Promise<runtime.ApiResponse<InlineResponse2006Books>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdClonePost.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/book/{book_id}/clone`.replace(`{${"book_id"}}`, encodeURIComponent(String(requestParameters.bookId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2006BooksFromJSON(jsonValue));
+    }
+
+    /**
+     * ブックを複製します。 教員または管理者でなければなりません。
+     * ブックの複製
+     */
+    async apiV2BookBookIdClonePost(requestParameters: ApiV2BookBookIdClonePostRequest): Promise<InlineResponse2006Books> {
+        const response = await this.apiV2BookBookIdClonePostRaw(requestParameters);
         return await response.value();
     }
 
