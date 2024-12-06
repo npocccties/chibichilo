@@ -140,3 +140,8 @@ export async function createReleaseBook({
   const res = await api.apiV2BookBookIdReleasePost({ bookId: id, body });
   return res as BookSchema;
 }
+
+export async function cloneBook(id: BookSchema["id"]): Promise<BookSchema> {
+  const res = await api.apiV2BookBookIdClonePost({ bookId: id });
+  return res as BookSchema;
+}

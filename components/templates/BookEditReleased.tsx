@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
@@ -32,6 +33,7 @@ export default function BookEditReleased({
   linked = false,
   onReleaseUpdate,
   onItemEditClick,
+  onClone,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -51,6 +53,14 @@ export default function BookEditReleased({
       confirmationText: "OK",
     });
     onDelete(book);
+  };
+  const handleCloneButtonClick = async () => {
+    await confirm({
+      title: `ブック「${book.name}」を複製します。よろしいですか？`,
+      cancellationText: "キャンセル",
+      confirmationText: "OK",
+    });
+    onClone(book);
   };
   if (!book.release) return <Placeholder />;
   const handleItemEditClick = async (index: number) => {
@@ -111,6 +121,10 @@ export default function BookEditReleased({
           />
         </>
       )}
+      <Button size="small" color="primary" onClick={handleCloneButtonClick}>
+        <PeopleOutlinedIcon />
+        ブックを複製
+      </Button>
       {editable && (
         <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
           <DeleteOutlinedIcon />
