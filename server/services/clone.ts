@@ -39,7 +39,8 @@ export async function clone({
   // TODO 見えるブックは複製できる
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  const created = await cloneBook(found, session.user.id, null, cloneBookUniqueIds, cloneTopicUniqueIds);
+  const authors = [{ userId: session.user.id, roleId: 1 }];
+  const created = await cloneBook(found, session.user.id, null, cloneBookUniqueIds, cloneTopicUniqueIds, authors);
   if (!created) return { status: 500 };
 
   return {
