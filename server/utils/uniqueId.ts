@@ -29,6 +29,16 @@ function releaseUniqueIds(orig: UniqueIds, release: UniqueIds) {
   orig.pid = release.vid;
 }
 
+function cloneUniqueIds(orig: UniqueIds, release: UniqueIds) {
+  if (!orig.poid) {
+    generateUniqueIds(orig);
+  }
+  release.poid = orig.poid;
+  release.oid = createId();
+  release.pid = orig.vid;
+  release.vid = "";
+}
+
 export async function findBookUniqueIds(
   bookId: Book["id"]
 ): Promise<UniqueIds | undefined> {
@@ -50,7 +60,7 @@ async function updateBookUniqueIds(
   });
 }
 
-export async function releaseBook(
+export async function releaseBookUniqueIds(
   origId: Book["id"],
   releaseId: Book["id"]
 ): Promise<void> {
@@ -62,6 +72,20 @@ export async function releaseBook(
 
   await updateBookUniqueIds(origId, orig);
   await updateBookUniqueIds(releaseId, release);
+
+  return;
+}
+
+export async function cloneBookUniqueIds(
+  origId: Book["id"],
+  cloneId: Book["id"]
+): Promise<void> {
+  const orig = await findBookUniqueIds(origId);
+  const clone = await findBookUniqueIds(cloneId);
+  if (!orig || !clone) return;
+
+  cloneUniqueIds(orig, clone);
+  await updateBookUniqueIds(cloneId, clone);
 
   return;
 }
@@ -87,7 +111,7 @@ async function updateTopicUniqueIds(
   });
 }
 
-export async function releaseTopic(
+export async function releaseTopicUniqueIds(
   origId: Topic["id"],
   releaseId: Topic["id"]
 ): Promise<void> {
@@ -99,6 +123,20 @@ export async function releaseTopic(
 
   await updateTopicUniqueIds(origId, orig);
   await updateTopicUniqueIds(releaseId, release);
+
+  return;
+}
+
+export async function cloneTopicUniqueIds(
+  origId: Topic["id"],
+  cloneId: Topic["id"]
+): Promise<void> {
+  const orig = await findTopicUniqueIds(origId);
+  const clone = await findTopicUniqueIds(cloneId);
+  if (!orig || !clone) return;
+
+  cloneUniqueIds(orig, clone);
+  await updateTopicUniqueIds(cloneId, clone);
 
   return;
 }

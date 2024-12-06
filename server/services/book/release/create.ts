@@ -11,7 +11,7 @@ import { createRelease } from "$server/utils/book/release";
 import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
 import cloneBook from "$server/utils/book/cloneBook";
-import { releaseBook, releaseTopic } from "$server/utils/uniqueId";
+import { releaseBookUniqueIds, releaseTopicUniqueIds } from "$server/utils/uniqueId";
 
 export const createSchema: FastifySchema = {
   summary: "ブックのリリースの作成",
@@ -46,7 +46,7 @@ export async function create({
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
   const { topics, ...release } = body;
-  const created = await cloneBook(found, session.user.id, topics, releaseBook, releaseTopic);
+  const created = await cloneBook(found, session.user.id, topics, releaseBookUniqueIds, releaseTopicUniqueIds);
   if (!created) return { status: 500 };
 
   const _ = await createRelease(created.id, release);
