@@ -1,4 +1,4 @@
-import type { Book, PrismaPromise } from "@prisma/client";
+import type { Book, PrismaPromise, Prisma } from "@prisma/client";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { SectionProps } from "$server/models/book/section";
 import type { PublicBookSchema } from "$server/models/book/public";
@@ -10,6 +10,8 @@ import cleanupSections from "./cleanupSections";
 import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectOrCreateInput";
 import keywordsDisconnectInput from "$server/utils/keyword/keywordsDisconnectInput";
 import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
+import { cloneTopic } from "../topic/cloneTopic";
+import { cloneTopicUniqueIds } from "../uniqueId";
 
 function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
   const sectionsCreateInput = sections.map(sectionCreateInput);
@@ -20,6 +22,30 @@ function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
   });
 }
 
+async function cloneSections(book: BookSchema, sections: SectionProps[], authors: Prisma.AuthorshipUncheckedCreateInput[]) {
+  const origTopics = (book?.sections || [])
+    .flatMap((section) => section.topics)
+    .map((topic) => topic.id);
+  for (const section of sections) {
+    for (const topic of section.topics) {
+      if (origTopics.includes(topic.id)) continue;
+      const found = await prisma.topic.findUnique({
+        where: { id: topic.id },
+        include: { resource: true, keywords: true }
+      });
+      if (!found) continue;
+      const { id: _id, resourceId: _resourceId, ...orig } = found;
+      found.shared = false;
+      const cloned = await cloneTopic(topic.id, orig, authors);
+      if (cloned) {
+        await cloneTopicUniqueIds(topic.id, cloned.id);
+        topic.id = cloned.id;
+      }
+    }
+  }
+  return sections;
+}
+
 async function updateBook(
   userId: number,
   {
@@ -27,11 +53,17 @@ async function updateBook(
     sections,
     publicBooks,
     ...book
-  }: Pick<Book, "id"> & BookProps
+  }: Pick<Book, "id"> & BookProps,
+  origBook: BookSchema,
+  noclone?: boolean
 ): Promise<BookSchema | undefined> {
   const ops: Array<PrismaPromise<unknown>> = [];
 
   if (sections != null) {
+    if (!noclone) {
+      const authors = [{ userId: userId, roleId: 1 }];
+      sections = await cloneSections(origBook, sections, authors);
+    }
     const cleanup = cleanupSections(id);
     const upsert = upsertSections(id, sections);
     ops.push(...cleanup, ...upsert);

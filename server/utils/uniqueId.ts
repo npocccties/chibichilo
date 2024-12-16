@@ -85,6 +85,8 @@ export async function cloneBookUniqueIds(
   if (!orig || !clone) return;
 
   cloneUniqueIds(orig, clone);
+
+  await updateBookUniqueIds(origId, orig);
   await updateBookUniqueIds(cloneId, clone);
 
   return;
@@ -136,6 +138,8 @@ export async function cloneTopicUniqueIds(
   if (!orig || !clone) return;
 
   cloneUniqueIds(orig, clone);
+
+  await updateTopicUniqueIds(origId, orig);
   await updateTopicUniqueIds(cloneId, clone);
 
   return;

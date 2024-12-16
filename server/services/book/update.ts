@@ -7,9 +7,9 @@ import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
-import bookExists from "$server/utils/book/bookExists";
 import updateBook from "$server/utils/book/updateBook";
 import { BookQuery } from "$server/validators/bookQuery";
+import findBook from "$server/utils/book/findBook";
 
 export const updateSchema: FastifySchema = {
   summary: "ブックの更新",
@@ -39,15 +39,15 @@ export async function update({
   params,
   query,
 }: FastifyRequest<{ Body: BookProps; Params: BookParams; Querystring: BookQuery; }>) {
-  const found = await bookExists(params.book_id);
-  console.log("@@@ BookUpdate: ", query);
+  const found = await findBook(params.book_id, session.user.id);
+
   if (!found) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
   const created = await updateBook(session.user.id, {
     ...body,
     id: params.book_id,
-  });
+  }, found, query.noclone);
 
   return {
     status: created == null ? 400 : 201,
