@@ -7,6 +7,7 @@ import sectionCreateInput from "./sectionCreateInput";
 import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectOrCreateInput";
 import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
 import type { Prisma } from "@prisma/client";
+import { cloneSections } from "./cloneSections";
 
 async function createBook(
   userId: UserSchema["id"],
@@ -14,11 +15,14 @@ async function createBook(
   authors?: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<BookSchema | undefined> {
   const timeRequired = await aggregateTimeRequired(book);
-  const sectionsCreateInput = book.sections?.map(sectionCreateInput) ?? [];
 
   if (!authors) {
     authors = [{ userId, roleId: 1 }];
   }
+
+  const sections = book.sections? await cloneSections([], book.sections, authors):[];
+  const sectionsCreateInput = sections?.map(sectionCreateInput) ?? [];
+
   const { id } = await prisma.book.create({
     data: {
       ...book,
