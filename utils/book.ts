@@ -75,10 +75,13 @@ export async function createBook(body: BookProps): Promise<BookSchema> {
 
 export async function updateBook({
   id,
+  noclone,
   ...body
-}: BookProps & { id: BookSchema["id"] }): Promise<BookSchema> {
+}: BookProps & { id: BookSchema["id"] } & {
+  noclone?: boolean;
+}): Promise<BookSchema> {
   // @ts-expect-error NOTE: body.sections[].topics[].name のUnion型に null 含むか否か異なる
-  const res = await api.apiV2BookBookIdPut({ bookId: id, body });
+  const res = await api.apiV2BookBookIdPut({ bookId: id, body, noclone });
   await mutate({ key, bookId: res.id }, res);
   return res as BookSchema;
 }
@@ -91,7 +94,7 @@ export async function addTopicToBook(
     ...book.sections,
     { name: null, topics: [{ id: topic.id }] },
   ];
-  return updateBook({ ...book, sections });
+  return updateBook({ ...book, sections, noclone: true });
 }
 
 export async function replaceTopicInBook(
