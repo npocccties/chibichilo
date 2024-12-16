@@ -167,7 +167,7 @@ export default function BookForm({
   };
   const { handleSubmit, register, setValue } =
     useForm<BookPropsWithSubmitOptions>({
-      defaultValues,
+      values: defaultValues,
     });
   const released = Boolean(book?.release);
 
