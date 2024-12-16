@@ -27,6 +27,7 @@ export async function book(fastify: FastifyInstance) {
 
   fastify.put<{
     Params: service.Params;
+    Querystring: service.Query;
     Body: service.Props;
   }>(pathWithParams, { schema: method.put, ...hooks.put }, handler(update));
 

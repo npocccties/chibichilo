@@ -199,6 +199,7 @@ export interface ApiV2BookBookIdImportPostRequest {
 
 export interface ApiV2BookBookIdPutRequest {
     bookId: number;
+    noclone?: boolean;
     body?: InlineObject2;
 }
 
@@ -739,6 +740,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.noclone !== undefined) {
+            queryParameters['noclone'] = requestParameters.noclone;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
