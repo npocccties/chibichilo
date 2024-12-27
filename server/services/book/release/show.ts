@@ -34,7 +34,7 @@ export async function show({
   const book = await findBook(params.book_id, session.user.id);
 
   if (!book) return { status: 404 };
-  if (!isUsersOrAdmin(session, book.authors)) return { status: 403 };
+  if (!isUsersOrAdmin(session, book.authors) && !book.release?.shared) return { status: 403 };
 
   const books = await findReleasedBooks(book, session.user.id);
   const releases = books.map(bookToReleaseItemSchema);
