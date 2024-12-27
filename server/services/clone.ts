@@ -36,8 +36,7 @@ export async function clone({
   const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
-  // TODO 見えるブックは複製できる
-  if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
+  if (!isUsersOrAdmin(session, found.authors) && !found.release?.shared) return { status: 403 };
 
   const authors = [{ userId: session.user.id, roleId: 1 }];
   const created = await cloneBook(found, session.user.id, null, cloneBookUniqueIds, cloneTopicUniqueIds, authors);
