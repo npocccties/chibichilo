@@ -8,7 +8,6 @@ import { isUsersOrAdmin } from "$server/utils/session";
 import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
 import { cloneBook } from "$server/utils/book/cloneBook";
-import { cloneBookUniqueIds, cloneTopicUniqueIds } from "$server/utils/uniqueId";
 
 export const cloneSchema: FastifySchema = {
   summary: "ブックの複製",
@@ -38,8 +37,7 @@ export async function clone({
   if (!found) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors) && !found.release?.shared) return { status: 403 };
 
-  const authors = [{ userId: session.user.id, roleId: 1 }];
-  const created = await cloneBook(found, session.user.id, null, cloneBookUniqueIds, cloneTopicUniqueIds, authors);
+  const created = await cloneBook(found, session.user.id);
   if (!created) return { status: 500 };
 
   return {
