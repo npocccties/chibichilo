@@ -4,18 +4,18 @@ import createBook from "./createBook";
 import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
 import type { Book, Prisma, Topic } from "@prisma/client";
+import type { SectionSchema } from "$server/models/book/section";
 
-async function cloneBook(
-  parentBook: BookSchema,
-  userId: UserSchema["id"],
+async function cloneBookSections(
+  sections: SectionSchema[],
   targetTopics: number[] | null | undefined,
-  adjustBook?: (orig: Book["id"], target: Book["id"]) => Promise<void>,
   adjustTopic?: (orig: Topic["id"], target: Topic["id"]) => Promise<void>,
   authors?: Prisma.AuthorshipUncheckedCreateInput[]
-): Promise<BookSchema | undefined> {
+)
+{
   // トピックを複製する
   const topics = await Promise.all(
-    parentBook.sections
+    sections
       .flatMap((section) => section.topics)
       .filter(({id}) => targetTopics?targetTopics.includes(id):true)
       .map(
@@ -38,17 +38,8 @@ async function cloneBook(
     topics.flatMap((created) => (created ? [created] : []))
   );
 
-  const {
-    id: _id,
-    publicBooks: _publicBooks,
-    ltiResourceLinks: _link,
-    authors: _authors,
-    release: _release,
-    ...book
-  } = structuredClone(parentBook);
-
   const newSections = [];
-  for (const section of book.sections) {
+  for (const section of sections) {
     const newTopics = [];
     for (const topic of section.topics) {
       const created = topicsMap.get(topic.id);
@@ -65,6 +56,28 @@ async function cloneBook(
       newSections.push(section);
     }
   }
+
+  return newSections;
+}
+
+export async function cloneBook(
+  parentBook: BookSchema,
+  userId: UserSchema["id"],
+  targetTopics: number[] | null | undefined,
+  adjustBook?: (orig: Book["id"], target: Book["id"]) => Promise<void>,
+  adjustTopic?: (orig: Topic["id"], target: Topic["id"]) => Promise<void>,
+  authors?: Prisma.AuthorshipUncheckedCreateInput[]
+): Promise<BookSchema | undefined> {
+  const {
+    id: _id,
+    publicBooks: _publicBooks,
+    ltiResourceLinks: _link,
+    authors: _authors,
+    release: _release,
+    ...book
+  } = structuredClone(parentBook);
+
+  const newSections = await cloneBookSections(book.sections, targetTopics, adjustTopic, authors);
   book.sections = newSections;
 
   if (!authors) {
@@ -82,5 +95,3 @@ async function cloneBook(
   }
   return created;
 }
-
-export default cloneBook;
