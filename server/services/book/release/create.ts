@@ -10,7 +10,7 @@ import { isUsersOrAdmin } from "$server/utils/session";
 import { createRelease } from "$server/utils/book/release";
 import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
-import cloneBook from "$server/utils/book/cloneBook";
+import { cloneBook } from "$server/utils/book/cloneBook";
 import { releaseBookUniqueIds, releaseTopicUniqueIds } from "$server/utils/uniqueId";
 
 export const createSchema: FastifySchema = {

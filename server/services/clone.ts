@@ -7,7 +7,7 @@ import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
 import { bookSchema } from "$server/models/book";
 import findBook from "$server/utils/book/findBook";
-import cloneBook from "$server/utils/book/cloneBook";
+import { cloneBook } from "$server/utils/book/cloneBook";
 import { cloneBookUniqueIds, cloneTopicUniqueIds } from "$server/utils/uniqueId";
 
 export const cloneSchema: FastifySchema = {
