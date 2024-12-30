@@ -3,8 +3,9 @@ import type { BookSchema } from "$server/models/book";
 import createBook from "./createBook";
 import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
-import type { Book, Prisma, Topic } from "@prisma/client";
+import type { Prisma, Topic } from "@prisma/client";
 import type { SectionSchema } from "$server/models/book/section";
+import { cloneBookUniqueIds, cloneTopicUniqueIds, releaseBookUniqueIds, releaseTopicUniqueIds } from "../uniqueId";
 
 async function cloneBookSections(
   sections: SectionSchema[],
@@ -60,13 +61,10 @@ async function cloneBookSections(
   return newSections;
 }
 
-export async function cloneBook(
+export async function cloneRelease(
   parentBook: BookSchema,
   userId: UserSchema["id"],
   targetTopics: number[] | null | undefined,
-  adjustBook?: (orig: Book["id"], target: Book["id"]) => Promise<void>,
-  adjustTopic?: (orig: Topic["id"], target: Topic["id"]) => Promise<void>,
-  authors?: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<BookSchema | undefined> {
   const {
     id: _id,
@@ -77,21 +75,46 @@ export async function cloneBook(
     ...book
   } = structuredClone(parentBook);
 
-  const newSections = await cloneBookSections(book.sections, targetTopics, adjustTopic, authors);
+  // トピックの作成者を複製する (ここでは指定しない)
+  const newSections = await cloneBookSections(book.sections, targetTopics, releaseTopicUniqueIds);
   book.sections = newSections;
 
-  if (!authors) {
-    authors = await prisma.authorship.findMany({
-      where: { bookId: parentBook.id },
-      select: { userId: true, roleId: true },
-    });
-  }
+  // ブックの作成者を複製する
+  const authors = await prisma.authorship.findMany({
+    where: { bookId: parentBook.id },
+    select: { userId: true, roleId: true },
+  });
+
+  const created = await createBook(userId, book, authors);
+  if (!created) throw new Error(`ブックのリリースに失敗 ${book.name}`);
+
+  await releaseBookUniqueIds(parentBook.id, created.id);
+
+  return created;
+}
+
+export async function cloneBook(
+  parentBook: BookSchema,
+  userId: UserSchema["id"],
+): Promise<BookSchema | undefined> {
+  const {
+    id: _id,
+    publicBooks: _publicBooks,
+    ltiResourceLinks: _link,
+    authors: _authors,
+    release: _release,
+    ...book
+  } = structuredClone(parentBook);
+
+  // ブック、トピックの作成者を自分にする
+  const authors = [{ userId, roleId: 1 }];
+  const newSections = await cloneBookSections(book.sections, null, cloneTopicUniqueIds, authors);
+  book.sections = newSections;
 
   const created = await createBook(userId, book, authors);
   if (!created) throw new Error(`ブックの複製に失敗 ${book.name}`);
 
-  if (adjustBook) {
-    await adjustBook(parentBook.id, created.id);
-  }
+  await cloneBookUniqueIds(parentBook.id, created.id);
+
   return created;
 }
