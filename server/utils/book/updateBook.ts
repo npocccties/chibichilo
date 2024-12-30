@@ -12,7 +12,7 @@ import keywordsDisconnectInput from "$server/utils/keyword/keywordsDisconnectInp
 import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
 import { cloneSections } from "./cloneSections";
 
-function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
+export function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
   const sectionsCreateInput = sections.map(sectionCreateInput);
   return sectionsCreateInput.map((input, order) => {
     return prisma.section.create({
