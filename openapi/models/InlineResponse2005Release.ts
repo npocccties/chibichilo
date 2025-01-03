@@ -43,12 +43,6 @@ export interface InlineResponse2005Release {
      * @memberof InlineResponse2005Release
      */
     shared?: boolean;
-    /**
-     * 
-     * @type {Array<number>}
-     * @memberof InlineResponse2005Release
-     */
-    topics?: Array<number>;
 }
 
 export function InlineResponse2005ReleaseFromJSON(json: any): InlineResponse2005Release {
@@ -65,7 +59,6 @@ export function InlineResponse2005ReleaseFromJSONTyped(json: any, ignoreDiscrimi
         'version': !exists(json, 'version') ? undefined : json['version'],
         'comment': !exists(json, 'comment') ? undefined : json['comment'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'topics': !exists(json, 'topics') ? undefined : json['topics'],
     };
 }
 
@@ -82,7 +75,6 @@ export function InlineResponse2005ReleaseToJSON(value?: InlineResponse2005Releas
         'version': value.version,
         'comment': value.comment,
         'shared': value.shared,
-        'topics': value.topics,
     };
 }
 

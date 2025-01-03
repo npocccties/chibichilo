@@ -731,7 +731,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックを更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックを更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。 追加トピックは複製されます。noclone=true を指定するとトピックを複製しません。
      * ブックの更新
      */
     async apiV2BookBookIdPutRaw(requestParameters: ApiV2BookBookIdPutRequest): Promise<runtime.ApiResponse<InlineResponse2006Books>> {
@@ -761,7 +761,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックを更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックを更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。 追加トピックは複製されます。noclone=true を指定するとトピックを複製しません。
      * ブックの更新
      */
     async apiV2BookBookIdPut(requestParameters: ApiV2BookBookIdPutRequest): Promise<InlineResponse2006Books> {
