@@ -14,11 +14,13 @@ export const releasePropsSchema = {
 
 export type ReleaseProps = FromSchema<typeof releasePropsSchema>;
 
+const {topics: _topics, ...releaseSchemaProps} = releasePropsSchema.properties;
+
 export const releaseSchema = {
   type: "object",
   properties: {
     releasedAt: { type: "string", format: "date-time" },
-    ...releasePropsSchema.properties,
+    ...releaseSchemaProps,
   },
   additionalProperties: false,
 } as const;
