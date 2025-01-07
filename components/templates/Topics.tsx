@@ -106,9 +106,7 @@ export default function Topics(props: Props) {
   const enableBookNewButton = true;
   const enableShareButton = false;
   const enableDeleteButton =
-    isAdministrator ||
-    searchProps.query.filter === "edit" ||
-    searchProps.query.filter === "release";
+    isAdministrator || searchProps.query.filter === "edit";
 
   return (
     <Container twoColumns maxWidth="xl">

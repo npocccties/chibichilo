@@ -7,6 +7,7 @@ import useTopics from "$utils/useTopics";
 import { destroyTopic, updateTopic } from "$utils/topic";
 import { useSearchAtom } from "$store/search";
 import { revalidateContents } from "$utils/useContents";
+import { getReleaseFromRelatedBooks } from "$utils/release";
 
 const Topics = (
   props: Omit<
@@ -41,7 +42,10 @@ function Index() {
   }
   async function handleTopicsDeleteClick(topics: TopicSchema[]) {
     for (const topic of topics) {
-      if (isContentEditable(topic)) {
+      if (
+        isContentEditable(topic) &&
+        !getReleaseFromRelatedBooks(topic.relatedBooks)
+      ) {
         await destroyTopic(topic.id);
       }
     }
