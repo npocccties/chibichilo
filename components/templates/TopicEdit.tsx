@@ -128,10 +128,12 @@ export default function TopicEdit(props: Props) {
           />
         </>
       )}
-      <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
-        <DeleteOutlinedIcon />
-        トピックを削除
-      </Button>
+      {!release && (
+        <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
+          <DeleteOutlinedIcon />
+          トピックを削除
+        </Button>
+      )}
     </Container>
   );
 }
