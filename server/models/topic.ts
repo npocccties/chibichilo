@@ -89,6 +89,7 @@ export const topicSchema = {
     stopTime: { type: "number", nullable: true },
     shared: { type: "boolean" },
     license: { type: "string" },
+    licenser: { type: "string" },
     description: { type: "string" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },

@@ -63,6 +63,7 @@ export const bookSchema = {
     timeRequired: { type: "integer", nullable: true },
     shared: { type: "boolean" },
     license: { type: "string" },
+    licenser: { type: "string" },
     publishedAt: { type: "string", format: "date-time" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
