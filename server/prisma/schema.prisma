@@ -104,6 +104,8 @@ model Topic {
   authors      Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license      String       @default("")
+  /// 著作権者
+  licenser     String       @default("")
   /// 作成日
   createdAt    DateTime     @default(now()) @map("created_at")
   /// 更新日
@@ -237,6 +239,8 @@ model Book {
   authors          Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license          String            @default("")
+  /// 著作権者
+  licenser         String            @default("")
   /// zoomミーティングid
   zoomMeetingId    BigInt?           @map("zoom_meeting_id")
   /// 公開日
