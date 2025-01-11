@@ -44,7 +44,6 @@ import type {
 } from "$server/models/videoTrack";
 import { useSessionAtom } from "$store/session";
 import languages from "$utils/languages";
-import licenses from "$utils/licenses";
 import providers from "$utils/providers";
 import useVideoResourceProps from "$utils/useVideoResourceProps";
 import usePaused from "$utils/video/usePaused";
@@ -609,39 +608,6 @@ export default function TopicForm(props: Props) {
           {` `}
           に一部準拠しています
         </Typography>
-        <Accordion>
-          <AccordionSummary>
-            <Typography>詳細を設定する</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TextField
-              label="教材の主要な言語"
-              select
-              defaultValue={defaultValues.language}
-              inputProps={register("language")}
-              disabled={released}
-            >
-              {Object.entries(languages).map(([value, label]) => (
-                <MenuItem key={value} value={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="ライセンス"
-              select
-              defaultValue={defaultValues.license}
-              inputProps={{ displayEmpty: true, ...register("license") }}
-            >
-              <MenuItem value="">未設定</MenuItem>
-              {Object.entries(licenses).map(([value, { name }]) => (
-                <MenuItem key={value} value={value}>
-                  {name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </AccordionDetails>
-        </Accordion>
         <Divider className={classes.divider} />
         <Button variant="contained" color="primary" type="submit">
           {label[variant]}
