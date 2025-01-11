@@ -125,7 +125,6 @@ function Edit({ bookId, context }: Query) {
     );
   }
   async function handleMetainfoUpdate(metainfo: MetainfoProps) {
-    console.log(metainfo);
     if (book) {
       const _res = await updateMetainfoBook(book.id, metainfo);
       await revalidateBook(book.id);
