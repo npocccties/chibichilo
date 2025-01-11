@@ -9,6 +9,7 @@ import * as showZoomService from "$server/services/book/zoom";
 import * as importService from "$server/services/bookImport";
 import * as releaseService from "$server/services/book/release";
 import * as cloneService from "$server/services/clone";
+import * as metainfoService from "$server/services/book/metainfo";
 
 const basePath = "/book";
 const pathWithParams = `${basePath}/:book_id`;
@@ -126,7 +127,16 @@ export async function bookClone(fastify: FastifyInstance) {
 
   fastify.post<{
     Params: service.Params;
-    Body: importService.Params;
   }>(path, { schema: cloneSchema, ...hooks.post }, handler(clone));
 }
 
+export async function bookMetainfo(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/metainfo`;
+  const { method, update } = metainfoService;
+  const hooks = makeHooks(fastify, metainfoService.hooks);
+
+  fastify.put<{
+    Params: metainfoService.Params;
+    Body: metainfoService.Props;
+  }>(path, { schema: method.put, ...hooks.put }, handler(update));
+}
