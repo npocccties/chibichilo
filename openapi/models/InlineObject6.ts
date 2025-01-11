@@ -24,25 +24,19 @@ export interface InlineObject6 {
      * @type {string}
      * @memberof InlineObject6
      */
-    version?: string;
+    language?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject6
      */
-    comment?: string;
+    license?: string;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof InlineObject6
      */
-    shared?: boolean;
-    /**
-     * 
-     * @type {Array<number>}
-     * @memberof InlineObject6
-     */
-    topics?: Array<number>;
+    licenser?: string;
 }
 
 export function InlineObject6FromJSON(json: any): InlineObject6 {
@@ -55,10 +49,9 @@ export function InlineObject6FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'version': !exists(json, 'version') ? undefined : json['version'],
-        'comment': !exists(json, 'comment') ? undefined : json['comment'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'topics': !exists(json, 'topics') ? undefined : json['topics'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
     };
 }
 
@@ -71,10 +64,9 @@ export function InlineObject6ToJSON(value?: InlineObject6 | null): any {
     }
     return {
         
-        'version': value.version,
-        'comment': value.comment,
-        'shared': value.shared,
-        'topics': value.topics,
+        'language': value.language,
+        'license': value.license,
+        'licenser': value.licenser,
     };
 }
 

@@ -16,39 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject16
+ * @interface InlineObject18
  */
-export interface InlineObject16 {
+export interface InlineObject18 {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject16
+     * @memberof InlineObject18
      */
-    language?: string;
+    memoContent?: string;
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject16
+     * @type {number}
+     * @memberof InlineObject18
      */
-    content?: string;
+    topicId?: number;
 }
 
-export function InlineObject16FromJSON(json: any): InlineObject16 {
-    return InlineObject16FromJSONTyped(json, false);
+export function InlineObject18FromJSON(json: any): InlineObject18 {
+    return InlineObject18FromJSONTyped(json, false);
 }
 
-export function InlineObject16FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject16 {
+export function InlineObject18FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject18 {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'language': !exists(json, 'language') ? undefined : json['language'],
-        'content': !exists(json, 'content') ? undefined : json['content'],
+        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
+        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
     };
 }
 
-export function InlineObject16ToJSON(value?: InlineObject16 | null): any {
+export function InlineObject18ToJSON(value?: InlineObject18 | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,8 +57,8 @@ export function InlineObject16ToJSON(value?: InlineObject16 | null): any {
     }
     return {
         
-        'language': value.language,
-        'content': value.content,
+        'memoContent': value.memoContent,
+        'topicId': value.topicId,
     };
 }
 
