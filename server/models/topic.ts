@@ -39,12 +39,10 @@ export type RelatedBook = FromSchema<
 export type TopicProps = Pick<
   Prisma.TopicCreateInput,
   | "name"
-  | "language"
   | "timeRequired"
   | "startTime"
   | "stopTime"
   | "shared"
-  | "license"
   | "description"
 > & {
   resource: ResourceProps;
@@ -63,12 +61,10 @@ export const TopicProps = {
   type: "object",
   properties: {
     name: { type: "string" },
-    language: { type: "string" },
     timeRequired: { type: "integer" },
     startTime: { type: "number" },
     stopTime: { type: "number", nullable: true },
     shared: { type: "boolean" },
-    license: { type: "string", format: "license" },
     description: { type: "string" },
     resource: resourcePropsSchema,
     keywords: {
