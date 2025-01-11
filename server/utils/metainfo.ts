@@ -5,8 +5,8 @@ import type { MetainfoProps } from '$server/models/metainfo';
 export async function updateBookMetainfo(
   bookId: Book["id"],
   metainfo: MetainfoProps
-): Promise<void> {
-  const _updated = await prisma.book.update({
+): Promise<MetainfoProps> {
+  return await prisma.book.update({
     where: { id: bookId},
     data: metainfo,
   });
@@ -15,8 +15,8 @@ export async function updateBookMetainfo(
 export async function updateTopicMetainfo(
   topicId: Topic["id"],
   metainfo: MetainfoProps
-): Promise<void> {
-  const _updated = await prisma.topic.update({
+): Promise<MetainfoProps> {
+  return await prisma.topic.update({
     where: { id: topicId},
     data: metainfo,
   });
