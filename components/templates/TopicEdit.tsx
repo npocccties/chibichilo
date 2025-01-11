@@ -18,10 +18,15 @@ import { getReleaseFromRelatedBooks } from "$utils/release";
 import useReleaseTopics from "$utils/useReleaseTopics";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import ReleaseForm from "$organisms/ReleaseForm";
+import MetainfoForm from "$organisms/MetainfoForm";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(1),
+    "& > :not($title):not($content)": {
+      marginBottom: theme.spacing(2),
+    },
   },
   title: {
     marginBottom: theme.spacing(4),
@@ -37,6 +42,16 @@ const useStyles = makeStyles((theme) => ({
   form: {
     marginBottom: theme.spacing(2),
   },
+  subtitle: {
+    "& span": {
+      verticalAlign: "middle",
+    },
+    "& .RequiredDot": {
+      marginRight: theme.spacing(0.5),
+      marginBottom: theme.spacing(0.75),
+      marginLeft: theme.spacing(2),
+    },
+  },
 }));
 
 type Props = {
@@ -51,6 +66,7 @@ type Props = {
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onImportClick(): void;
   onItemEditClick(id: TopicSchema["id"]): void;
+  onMetainfoUpdate(metainfo: MetainfoProps): void;
 };
 
 export default function TopicEdit(props: Props) {
@@ -66,6 +82,7 @@ export default function TopicEdit(props: Props) {
     onAuthorSubmit,
     onImportClick,
     onItemEditClick,
+    onMetainfoUpdate,
   } = props;
   const classes = useStyles();
   const confirm = useConfirm();
@@ -106,6 +123,9 @@ export default function TopicEdit(props: Props) {
         </Typography>
       )}
       {release && <ReleaseForm release={release} />}
+      <Typography className={classes.subtitle} variant="h5">
+        基本情報
+      </Typography>
       <TopicForm
         className={classes.form}
         topic={topic}
@@ -117,9 +137,13 @@ export default function TopicEdit(props: Props) {
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      <Typography className={classes.subtitle} variant="h5">
+        メタ情報
+      </Typography>
+      <MetainfoForm metainfo={topic} onSubmit={onMetainfoUpdate} />
       {releases && (
         <>
-          <Typography className={classes.title} variant="h5">
+          <Typography className={classes.subtitle} variant="h5">
             リリース一覧
           </Typography>
           <ReleaseItemList

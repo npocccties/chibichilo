@@ -13,11 +13,18 @@ import TopicEdit from "$templates/TopicEdit";
 import TopicNotFoundProblem from "$templates/TopicNotFoundProblem";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { useVideoTrackAtom } from "$store/videoTrack";
-import { destroyTopic, updateTopic, useTopic } from "$utils/topic";
+import {
+  destroyTopic,
+  revalidateTopic,
+  updateMetainfoTopic,
+  updateTopic,
+  useTopic,
+} from "$utils/topic";
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import { useWowzaUpload } from "$utils/wowza/useWowzaUplooad";
 import { pagesPath } from "$utils/$path";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 export type Query =
   | { topicId: TopicSchema["id"] }
@@ -89,6 +96,12 @@ function Edit({ topicId, back }: EditProps) {
   const handleItemEditClick = async (topicId: TopicSchema["id"]) => {
     return router.push(pagesPath.topics.edit.$url({ query: { topicId } }));
   };
+  async function handleMetainfoUpdate(metainfo: MetainfoProps) {
+    if (topic) {
+      const _res = await updateMetainfoTopic(topic.id, metainfo);
+      await revalidateTopic(topic.id);
+    }
+  }
   const handlers = {
     onSubmit: handleSubmit,
     onDelete: handleDelete,
@@ -99,6 +112,7 @@ function Edit({ topicId, back }: EditProps) {
     onAuthorSubmit: handleAuthorSubmit,
     onImportClick: handleImportClick,
     onItemEditClick: handleItemEditClick,
+    onMetainfoUpdate: handleMetainfoUpdate,
   };
 
   if (!topic) return <Placeholder />;

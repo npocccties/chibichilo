@@ -1,6 +1,7 @@
 import useSWR, { mutate } from "swr";
 import type { TopicProps, TopicSchema } from "$server/models/topic";
 import { api } from "./api";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 const key = "/api/v2/topic/{topic_id}";
 
@@ -58,4 +59,12 @@ export function revalidateTopic(
   res?: TopicSchema
 ): Promise<TopicSchema | void> {
   return mutate({ key, topicId: id }, res);
+}
+
+export async function updateMetainfoTopic(
+  id: TopicSchema["id"],
+  body: MetainfoProps
+): Promise<MetainfoProps> {
+  const res = await api.apiV2TopicTopicIdMetainfoPut({ topicId: id, body });
+  return res as MetainfoProps;
 }
