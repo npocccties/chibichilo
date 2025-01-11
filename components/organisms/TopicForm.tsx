@@ -43,7 +43,6 @@ import type {
   VideoTrackSchema,
 } from "$server/models/videoTrack";
 import { useSessionAtom } from "$store/session";
-import languages from "$utils/languages";
 import providers from "$utils/providers";
 import useVideoResourceProps from "$utils/useVideoResourceProps";
 import usePaused from "$utils/video/usePaused";
@@ -210,8 +209,6 @@ export default function TopicForm(props: Props) {
     name: topic?.name,
     description: topic?.description ?? "",
     shared: Boolean(topic?.shared),
-    language: topic?.language ?? Object.getOwnPropertyNames(languages)[0],
-    license: topic?.license ?? "",
     timeRequired: topic?.timeRequired,
     startTime: topic?.startTime,
     stopTime: topic?.stopTime,

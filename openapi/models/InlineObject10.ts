@@ -38,12 +38,6 @@ export interface InlineObject10 {
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject10
-     */
-    language?: string;
-    /**
-     * 
      * @type {number}
      * @memberof InlineObject10
      */
@@ -66,12 +60,6 @@ export interface InlineObject10 {
      * @memberof InlineObject10
      */
     shared?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject10
-     */
-    license?: string;
     /**
      * 
      * @type {string}
@@ -103,12 +91,10 @@ export function InlineObject10FromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
         'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
         'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'license': !exists(json, 'license') ? undefined : json['license'],
         'description': !exists(json, 'description') ? undefined : json['description'],
         'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
@@ -125,12 +111,10 @@ export function InlineObject10ToJSON(value?: InlineObject10 | null): any {
     return {
         
         'name': value.name,
-        'language': value.language,
         'timeRequired': value.timeRequired,
         'startTime': value.startTime,
         'stopTime': value.stopTime,
         'shared': value.shared,
-        'license': value.license,
         'description': value.description,
         'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
