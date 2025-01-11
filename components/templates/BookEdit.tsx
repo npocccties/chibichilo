@@ -22,6 +22,8 @@ import AddIcon from "@mui/icons-material/Add";
 import type { ReleaseProps } from "$server/models/book/release";
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
+import type { MetainfoProps } from "$server/models/metainfo";
+import MetainfoForm from "$organisms/MetainfoForm";
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -67,6 +69,7 @@ export type Props = {
   onRelease(book: BookSchema): void;
   onItemEditClick(id: BookSchema["id"]): void;
   onClone(book: BookSchema): void;
+  onMetainfoUpdate(metainfo: MetainfoProps): void;
 };
 
 export default function BookEdit({
@@ -87,6 +90,7 @@ export default function BookEdit({
   onRelease,
   onItemEditClick,
   onClone,
+  onMetainfoUpdate,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -169,6 +173,10 @@ export default function BookEdit({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      <Typography className={classes.subtitle} variant="h5">
+        メタ情報
+      </Typography>
+      <MetainfoForm metainfo={book} onSubmit={onMetainfoUpdate} />
       {releases && (
         <>
           <Typography className={classes.subtitle} variant="h5">

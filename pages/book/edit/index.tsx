@@ -12,7 +12,9 @@ import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import {
   cloneBook,
   destroyBook,
+  revalidateBook,
   updateBook,
+  updateMetainfoBook,
   updateReleaseBook,
   useBook,
 } from "$utils/book";
@@ -21,6 +23,7 @@ import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import type { ReleaseProps } from "$server/models/book/release";
 import { mutateReleasebooks } from "$utils/useReleaseBooks";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -121,6 +124,13 @@ function Edit({ bookId, context }: Query) {
       })
     );
   }
+  async function handleMetainfoUpdate(metainfo: MetainfoProps) {
+    console.log(metainfo);
+    if (book) {
+      const _res = await updateMetainfoBook(book.id, metainfo);
+      await revalidateBook(book.id);
+    }
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -139,6 +149,7 @@ function Edit({ bookId, context }: Query) {
     onRelease: handleRelease,
     onItemEditClick: handleItemEditClick,
     onClone: handleClone,
+    onMetainfoUpdate: handleMetainfoUpdate,
   };
 
   if (error) return <BookNotFoundProblem />;

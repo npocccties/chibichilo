@@ -16,6 +16,7 @@ import Placeholder from "./Placeholder";
 import { useStyles, type Props } from "./BookEdit";
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
+import MetainfoForm from "$organisms/MetainfoForm";
 
 export default function BookEditReleased({
   book,
@@ -34,6 +35,7 @@ export default function BookEditReleased({
   onReleaseUpdate,
   onItemEditClick,
   onClone,
+  onMetainfoUpdate,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -110,6 +112,10 @@ export default function BookEditReleased({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      <Typography className={classes.subtitle} variant="h5">
+        メタ情報
+      </Typography>
+      <MetainfoForm metainfo={book} onSubmit={onMetainfoUpdate} />
       {releases && (
         <>
           <Typography className={classes.subtitle} variant="h5">
