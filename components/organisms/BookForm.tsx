@@ -4,7 +4,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
@@ -36,10 +35,8 @@ import type { PublicBookSchema } from "$server/models/book/public";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { AuthorSchema } from "$server/models/author";
 import { useAuthorsAtom } from "store/authors";
-import languages from "$utils/languages";
 import useKeywordsInput from "$utils/useKeywordsInput";
 import useDomainsInput from "$utils/useDomainsInput";
-import licenses from "$utils/licenses";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -156,8 +153,6 @@ export default function BookForm({
     name: book?.name ?? "",
     description: book?.description ?? "",
     shared: Boolean(book?.shared),
-    language: book?.language ?? Object.getOwnPropertyNames(languages)[0],
-    license: book?.license ?? "",
     sections: book?.sections,
     authors: book?.authors ?? [],
     keywords: book?.keywords ?? [],
@@ -321,33 +316,6 @@ export default function BookForm({
             {` `}
             に一部準拠しています
           </Typography>
-          <TextField
-            label="教材の主要な言語"
-            select
-            defaultValue={defaultValues.language}
-            inputProps={register("language")}
-            disabled={released}
-          >
-            {Object.entries(languages).map(([value, label]) => (
-              <MenuItem key={value} value={value}>
-                {label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="ライセンス"
-            select
-            defaultValue={defaultValues.license}
-            inputProps={{ displayEmpty: true, ...register("license") }}
-            disabled={variant === "other"}
-          >
-            <MenuItem value="">未設定</MenuItem>
-            {Object.entries(licenses).map(([value, { name }]) => (
-              <MenuItem key={value} value={value}>
-                {name}
-              </MenuItem>
-            ))}
-          </TextField>
         </AccordionDetails>
       </Accordion>
 
