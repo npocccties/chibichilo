@@ -10,6 +10,7 @@ import { revalidateSession } from "./session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -147,4 +148,12 @@ export async function createReleaseBook({
 export async function cloneBook(id: BookSchema["id"]): Promise<BookSchema> {
   const res = await api.apiV2BookBookIdClonePost({ bookId: id });
   return res as BookSchema;
+}
+
+export async function updateMetainfoBook(
+  id: BookSchema["id"],
+  body: MetainfoProps
+): Promise<MetainfoProps> {
+  const res = await api.apiV2BookBookIdMetainfoPut({ bookId: id, body });
+  return res as MetainfoProps;
 }
