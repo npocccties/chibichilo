@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject17 {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof InlineObject17
      */
-    memoContent?: string;
+    tagId?: number;
     /**
      * 
      * @type {number}
@@ -43,7 +43,7 @@ export function InlineObject17FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
+        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
     };
 }
@@ -57,7 +57,7 @@ export function InlineObject17ToJSON(value?: InlineObject17 | null): any {
     }
     return {
         
-        'memoContent': value.memoContent,
+        'tagId': value.tagId,
         'topicId': value.topicId,
     };
 }

@@ -48,6 +48,12 @@ import {
     InlineObject17,
     InlineObject17FromJSON,
     InlineObject17ToJSON,
+    InlineObject18,
+    InlineObject18FromJSON,
+    InlineObject18ToJSON,
+    InlineObject19,
+    InlineObject19FromJSON,
+    InlineObject19ToJSON,
     InlineObject2,
     InlineObject2FromJSON,
     InlineObject2ToJSON,
@@ -197,6 +203,11 @@ export interface ApiV2BookBookIdImportPostRequest {
     body?: InlineObject5;
 }
 
+export interface ApiV2BookBookIdMetainfoPutRequest {
+    bookId: number;
+    body?: InlineObject6;
+}
+
 export interface ApiV2BookBookIdPutRequest {
     bookId: number;
     noclone?: boolean;
@@ -209,12 +220,12 @@ export interface ApiV2BookBookIdReleaseGetRequest {
 
 export interface ApiV2BookBookIdReleasePostRequest {
     bookId: number;
-    body?: InlineObject7;
+    body?: InlineObject8;
 }
 
 export interface ApiV2BookBookIdReleasePutRequest {
     bookId: number;
-    body?: InlineObject6;
+    body?: InlineObject7;
 }
 
 export interface ApiV2BookPostRequest {
@@ -236,15 +247,15 @@ export interface ApiV2BookmarkIdDeleteRequest {
 
 export interface ApiV2BookmarkMemoContentIdPutRequest {
     id: number;
-    body?: InlineObject17;
+    body?: InlineObject19;
 }
 
 export interface ApiV2BookmarkMemoContentPostRequest {
-    body?: InlineObject16;
+    body?: InlineObject18;
 }
 
 export interface ApiV2BookmarkPostRequest {
-    body?: InlineObject15;
+    body?: InlineObject17;
 }
 
 export interface ApiV2BookmarkStatsGetRequest {
@@ -265,7 +276,7 @@ export interface ApiV2BooksGetRequest {
 }
 
 export interface ApiV2BooksImportPostRequest {
-    body?: InlineObject8;
+    body?: InlineObject9;
 }
 
 export interface ApiV2EventPostRequest {
@@ -353,7 +364,7 @@ export interface ApiV2ResourceResourceIdOembedGetRequest {
 
 export interface ApiV2ResourceResourceIdVideoTrackPostRequest {
     resourceId: number;
-    body?: InlineObject14;
+    body?: InlineObject16;
 }
 
 export interface ApiV2ResourceResourceIdVideoTrackVideoTrackIdDeleteRequest {
@@ -383,18 +394,18 @@ export interface ApiV2SearchGetRequest {
 }
 
 export interface ApiV2TopicPostRequest {
-    body?: InlineObject10;
+    body?: InlineObject11;
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
     topicId: number;
     currentLtiContextOnly?: boolean;
-    body?: InlineObject11;
+    body?: InlineObject12;
 }
 
 export interface ApiV2TopicTopicIdAuthorsPutRequest {
     topicId: number;
-    body?: InlineObject12;
+    body?: InlineObject13;
 }
 
 export interface ApiV2TopicTopicIdDeleteRequest {
@@ -407,12 +418,17 @@ export interface ApiV2TopicTopicIdGetRequest {
 
 export interface ApiV2TopicTopicIdImportPostRequest {
     topicId: number;
-    body?: InlineObject13;
+    body?: InlineObject14;
+}
+
+export interface ApiV2TopicTopicIdMetainfoPutRequest {
+    topicId: number;
+    body?: InlineObject15;
 }
 
 export interface ApiV2TopicTopicIdPutRequest {
     topicId: number;
-    body?: InlineObject9;
+    body?: InlineObject10;
 }
 
 export interface ApiV2TopicTopicIdReleaseGetRequest {
@@ -731,6 +747,41 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * ブックのメタ情報を更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのメタ情報の更新
+     */
+    async apiV2BookBookIdMetainfoPutRaw(requestParameters: ApiV2BookBookIdMetainfoPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2BookBookIdMetainfoPut.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v2/book/{book_id}/metainfo`.replace(`{${"book_id"}}`, encodeURIComponent(String(requestParameters.bookId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InlineObject6ToJSON(requestParameters.body),
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * ブックのメタ情報を更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのメタ情報の更新
+     */
+    async apiV2BookBookIdMetainfoPut(requestParameters: ApiV2BookBookIdMetainfoPutRequest): Promise<{ [key: string]: object; }> {
+        const response = await this.apiV2BookBookIdMetainfoPutRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * ブックを更新します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。 追加トピックは複製されます。noclone=true を指定するとトピックを複製しません。
      * ブックの更新
      */
@@ -821,7 +872,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject7ToJSON(requestParameters.body),
+            body: InlineObject8ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2006BooksFromJSON(jsonValue));
@@ -856,7 +907,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject6ToJSON(requestParameters.body),
+            body: InlineObject7ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1021,7 +1072,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject17ToJSON(requestParameters.body),
+            body: InlineObject19ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1052,7 +1103,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject16ToJSON(requestParameters.body),
+            body: InlineObject18ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1083,7 +1134,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject15ToJSON(requestParameters.body),
+            body: InlineObject17ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1260,7 +1311,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject8ToJSON(requestParameters.body),
+            body: InlineObject9ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
@@ -2036,7 +2087,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject14ToJSON(requestParameters.body),
+            body: InlineObject16ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2005ResourceTracksFromJSON(jsonValue));
@@ -2274,7 +2325,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject10ToJSON(requestParameters.body),
+            body: InlineObject11ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2005TopicsFromJSON(jsonValue));
@@ -2313,7 +2364,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject11ToJSON(requestParameters.body),
+            body: InlineObject12ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -2348,7 +2399,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject12ToJSON(requestParameters.body),
+            body: InlineObject13ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2003BookAuthorsFromJSON));
@@ -2446,7 +2497,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject13ToJSON(requestParameters.body),
+            body: InlineObject14ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
@@ -2458,6 +2509,41 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2TopicTopicIdImportPost(requestParameters: ApiV2TopicTopicIdImportPostRequest): Promise<InlineResponse2011> {
         const response = await this.apiV2TopicTopicIdImportPostRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * トピックのメタ情報を更新します。 教員または管理者でなければなりません。 教員は自身の著作のトピックでなければなりません。
+     * トピックのメタ情報の更新
+     */
+    async apiV2TopicTopicIdMetainfoPutRaw(requestParameters: ApiV2TopicTopicIdMetainfoPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2TopicTopicIdMetainfoPut.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v2/topic/{topic_id}/metainfo`.replace(`{${"topic_id"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InlineObject15ToJSON(requestParameters.body),
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * トピックのメタ情報を更新します。 教員または管理者でなければなりません。 教員は自身の著作のトピックでなければなりません。
+     * トピックのメタ情報の更新
+     */
+    async apiV2TopicTopicIdMetainfoPut(requestParameters: ApiV2TopicTopicIdMetainfoPutRequest): Promise<{ [key: string]: object; }> {
+        const response = await this.apiV2TopicTopicIdMetainfoPutRaw(requestParameters);
         return await response.value();
     }
 
@@ -2481,7 +2567,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject9ToJSON(requestParameters.body),
+            body: InlineObject10ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2005TopicsFromJSON(jsonValue));
