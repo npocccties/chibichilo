@@ -48,22 +48,10 @@ export interface InlineObject3 {
     description?: string;
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject3
-     */
-    language?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof InlineObject3
      */
     shared?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject3
-     */
-    license?: string;
     /**
      * 
      * @type {Array<ApiV2BookBookIdSections>}
@@ -96,9 +84,7 @@ export function InlineObject3FromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'name': !exists(json, 'name') ? undefined : json['name'],
         'description': !exists(json, 'description') ? undefined : json['description'],
-        'language': !exists(json, 'language') ? undefined : json['language'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'license': !exists(json, 'license') ? undefined : json['license'],
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
         'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2005PublicBooksFromJSON)),
@@ -116,9 +102,7 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
         
         'name': value.name,
         'description': value.description,
-        'language': value.language,
         'shared': value.shared,
-        'license': value.license,
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
         'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2005PublicBooksToJSON)),

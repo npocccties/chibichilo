@@ -13,9 +13,7 @@ import { releaseSchema } from "./book/release";
 export type BookProps = {
   name: string;
   description?: string;
-  language?: string;
   shared?: boolean;
-  license?: string;
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
   publicBooks?: PublicBookSchema[];
@@ -35,9 +33,7 @@ export const bookPropsSchema = {
   properties: {
     name: { type: "string" },
     description: { type: "string" },
-    language: { type: "string", nullable: true },
     shared: { type: "boolean", nullable: true },
-    license: { type: "string" },
     sections: {
       type: "array",
       items: sectionPropsSchema,
