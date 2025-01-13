@@ -5,9 +5,10 @@ import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
-import bookExists from "$server/utils/book/bookExists";
 import destroyBook from "$server/utils/book/destroyBook";
 import { BookDestroyQuery } from "$server/validators/bookQuery";
+import findBook from "$server/utils/book/findBook";
+import destroyTopic from "$server/utils/topic/destroyTopic";
 
 export const destroySchema: FastifySchema = {
   summary: "ブックの削除",
@@ -34,12 +35,21 @@ export async function destroy({
   params,
   query,
 }: FastifyRequest<{ Params: BookParams; Querystring: BookDestroyQuery; }>) {
-  console.log(JSON.stringify(query));
-  const found = await bookExists(params.book_id);
+  const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
+  // トピックを削除
+  if (query.withtopic) {
+    for (const section of found.sections) {
+      for (const topic of section.topics) {
+        await destroyTopic(topic.id);
+      }
+    }
+  }
+
+  // ブックを削除
   await destroyBook(params.book_id);
 
   if (session.ltiResourceLink?.bookId === params.book_id) {
