@@ -26,9 +26,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
-  const { register, handleSubmit, setValue } = useForm<ReleaseProps>({
-    values: release,
-  });
+  const { register, handleSubmit, setValue, formState } = useForm<ReleaseProps>(
+    {
+      values: release,
+    }
+  );
   const cardClasses = useCardStyles();
   const releasedAt = release.releasedAt
     ? getLocaleDateString(release.releasedAt, "ja")
@@ -111,7 +113,12 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         <>
           <Divider sx={{ mx: "-50%" }} />
           <div className="release-form-row">
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={!formState.isDirty}
+            >
               {release.version ? "更新" : "作成"}
             </Button>
           </div>
