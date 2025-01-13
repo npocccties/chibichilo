@@ -18,7 +18,7 @@ export default function MetainfoForm({
   metainfo,
   onSubmit,
 }: MetainfoFormProps) {
-  const { register, handleSubmit } = useForm<MetainfoProps>({
+  const { register, handleSubmit, formState } = useForm<MetainfoProps>({
     values: metainfo,
   });
   const cardClasses = useCardStyles();
@@ -70,7 +70,12 @@ export default function MetainfoForm({
         <>
           <Divider sx={{ mx: "-50%" }} />
           <div className="release-form-row">
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={!formState.isDirty}
+            >
               更新
             </Button>
           </div>
