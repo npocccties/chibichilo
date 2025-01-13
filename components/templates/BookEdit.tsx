@@ -53,7 +53,7 @@ export const useStyles = makeStyles((theme) => ({
 export type Props = {
   book: BookSchema;
   onSubmit(book: BookPropsWithSubmitOptions): void;
-  onDelete(book: BookSchema): void;
+  onDelete(book: BookSchema, withtopic?: boolean): void;
   onCancel(): void;
   onSectionsUpdate(sections: SectionProps[]): void;
   onTopicImportClick(): void;

@@ -192,6 +192,7 @@ export interface ApiV2BookBookIdClonePostRequest {
 
 export interface ApiV2BookBookIdDeleteRequest {
     bookId: number;
+    withtopic?: boolean;
 }
 
 export interface ApiV2BookBookIdGetRequest {
@@ -649,7 +650,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックを削除します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックを削除します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。 withtopic=trueを指定すると、ブックに含まれるトピックも同時に削除します。
      * ブックの削除
      */
     async apiV2BookBookIdDeleteRaw(requestParameters: ApiV2BookBookIdDeleteRequest): Promise<runtime.ApiResponse<void>> {
@@ -658,6 +659,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.withtopic !== undefined) {
+            queryParameters['withtopic'] = requestParameters.withtopic;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -672,7 +677,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックを削除します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックを削除します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。 withtopic=trueを指定すると、ブックに含まれるトピックも同時に削除します。
      * ブックの削除
      */
     async apiV2BookBookIdDelete(requestParameters: ApiV2BookBookIdDeleteRequest): Promise<void> {
