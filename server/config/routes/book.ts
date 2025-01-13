@@ -28,12 +28,13 @@ export async function book(fastify: FastifyInstance) {
 
   fastify.put<{
     Params: service.Params;
-    Querystring: service.Query;
+    Querystring: service.UpdateQuery;
     Body: service.Props;
   }>(pathWithParams, { schema: method.put, ...hooks.put }, handler(update));
 
   fastify.delete<{
     Params: service.Params;
+    Querystring: service.DestroyQuery;
   }>(
     pathWithParams,
     { schema: method.delete, ...hooks.delete },

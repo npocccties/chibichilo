@@ -4,11 +4,12 @@ import { showSchema, showHooks, show } from "./show";
 import { createSchema, createHooks, create } from "./create";
 import { updateSchema, updateHooks, update } from "./update";
 import { destroySchema, destroyHooks, destroy } from "./destroy";
-import type { BookQuery } from "$server/validators/bookQuery";
+import type { BookUpdateQuery, BookDestroyQuery } from "$server/validators/bookQuery";
 
 export type Params = BookParams;
 export type Props = BookProps;
-export type Query = BookQuery;
+export type UpdateQuery = BookUpdateQuery;
+export type DestroyQuery = BookDestroyQuery;
 
 export const method = {
   get: showSchema,
