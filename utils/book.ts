@@ -113,8 +113,8 @@ export async function replaceTopicInBook(
   return updateBook({ ...book, sections });
 }
 
-export async function destroyBook(id: BookSchema["id"]) {
-  await api.apiV2BookBookIdDelete({ bookId: id });
+export async function destroyBook(id: BookSchema["id"], withtopic: boolean) {
+  await api.apiV2BookBookIdDelete({ bookId: id, withtopic });
   await revalidateSession();
 }
 
