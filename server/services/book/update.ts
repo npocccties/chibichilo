@@ -8,7 +8,7 @@ import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isUsersOrAdmin } from "$server/utils/session";
 import updateBook from "$server/utils/book/updateBook";
-import { BookQuery } from "$server/validators/bookQuery";
+import { BookUpdateQuery } from "$server/validators/bookQuery";
 import findBook from "$server/utils/book/findBook";
 
 export const updateSchema: FastifySchema = {
@@ -19,7 +19,7 @@ export const updateSchema: FastifySchema = {
     教員は自身の著作のブックでなければなりません。
     追加トピックは複製されます。noclone=true を指定するとトピックを複製しません。`,
   params: bookParamsSchema,
-  querystring: BookQuery,
+  querystring: BookUpdateQuery,
   body: bookPropsSchema,
   response: {
     201: bookSchema,
@@ -38,7 +38,7 @@ export async function update({
   body,
   params,
   query,
-}: FastifyRequest<{ Body: BookProps; Params: BookParams; Querystring: BookQuery; }>) {
+}: FastifyRequest<{ Body: BookProps; Params: BookParams; Querystring: BookUpdateQuery; }>) {
   const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
