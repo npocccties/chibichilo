@@ -29,14 +29,14 @@ function releaseUniqueIds(orig: UniqueIds, release: UniqueIds) {
   orig.pid = release.vid;
 }
 
-function cloneUniqueIds(orig: UniqueIds, release: UniqueIds) {
+function cloneUniqueIds(orig: UniqueIds, clone: UniqueIds) {
   if (!orig.poid) {
     generateUniqueIds(orig);
   }
-  release.poid = orig.poid;
-  release.oid = createId();
-  release.pid = orig.vid;
-  release.vid = "";
+  clone.poid = orig.poid;
+  clone.oid = createId();
+  clone.pid = orig.vid;
+  clone.vid = "";
 }
 
 export async function findBookUniqueIds(
