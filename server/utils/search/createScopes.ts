@@ -60,7 +60,8 @@ export function createScopesTopic(
 ): Array<Prisma.TopicWhereInput> {
   const scopes = {
     sharedScope: { topicSection: { some: { section: { book: { release: { shared: true }}}}}},
-    selfScope: { authors: { some: { userId: filter.by } } },
+    selfScope: { OR: [{ authors: { some: { userId: filter.by } } },
+                      { topicSection: { some: { section: { book: { release: { isNot: null}, authors: { some: { userId: filter.by }}}}}}}]},
     editScope: { topicSection: { every: { section: { book: { release: null }}}}},
   };
   return createScopes<Prisma.TopicWhereInput>(filter, scopes);
