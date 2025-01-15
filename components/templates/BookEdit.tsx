@@ -111,6 +111,14 @@ export default function BookEdit({
     });
     onDelete(book);
   };
+  const handleDeleteWithTopicButtonClick = async () => {
+    await confirm({
+      title: `ブック「${book.name}」と、ブックに含まれるトピックを削除します。よろしいですか？`,
+      cancellationText: "キャンセル",
+      confirmationText: "OK",
+    });
+    onDelete(book, true);
+  };
   const handleReleaseButtonClick = async () => {
     await confirm({
       title: `ブック「${book.name}」をリリースします。よろしいですか？`,
@@ -199,6 +207,14 @@ export default function BookEdit({
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
         <DeleteOutlinedIcon />
         ブックを削除
+      </Button>
+      <Button
+        size="small"
+        color="primary"
+        onClick={handleDeleteWithTopicButtonClick}
+      >
+        <DeleteOutlinedIcon />
+        ブック/トピックを削除
       </Button>
       {previewTopic && (
         <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
