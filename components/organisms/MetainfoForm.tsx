@@ -45,6 +45,7 @@ export default function MetainfoForm({
         select
         defaultValue={metainfo.language}
         inputProps={register("language")}
+        disabled={!update}
       >
         {Object.entries(languages).map(([value, label]) => (
           <MenuItem key={value} value={value}>
@@ -57,6 +58,7 @@ export default function MetainfoForm({
         select
         defaultValue={metainfo.license}
         inputProps={{ displayEmpty: true, ...register("license") }}
+        disabled={!update}
       >
         <MenuItem value="">未設定</MenuItem>
         {Object.entries(licenses).map(([value, { name }]) => (
@@ -65,7 +67,12 @@ export default function MetainfoForm({
           </MenuItem>
         ))}
       </TextField>
-      <TextField inputProps={register("licenser")} label="著作権者" fullWidth />
+      <TextField
+        inputProps={register("licenser")}
+        label="著作権者"
+        fullWidth
+        disabled={!update}
+      />
       {update && (
         <>
           <Divider sx={{ mx: "-50%" }} />

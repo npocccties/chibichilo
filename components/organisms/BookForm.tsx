@@ -207,7 +207,7 @@ export default function BookForm({
         </div>
       )}
 
-      {released && variant !== "other" && (
+      {variant !== "other" && (
         <div>
           <InputLabel htmlFor="enable-public-book">
             ブックを公開する
@@ -319,32 +319,34 @@ export default function BookForm({
         </AccordionDetails>
       </Accordion>
 
-      <Divider className={classes.divider} />
       {variant !== "other" && (
-        <Button variant="contained" color="primary" type="submit">
-          {label[variant].submit}
-        </Button>
-      )}
-      {!linked && (
-        <FormControlLabel
-          className={classes.marginLeft}
-          label="コースへ配信"
-          title={
-            hasLtiTargetLinkUri
-              ? "ツールURLが指定されているため、リンクの切り替えはできません"
-              : "リンクを切り替える"
-          }
-          disabled={hasLtiTargetLinkUri || variant === "other"}
-          control={
-            <Checkbox
-              id="submit-with-link"
-              name="submitWithLink"
-              onChange={(_, checked) => setValue("submitWithLink", checked)}
-              defaultChecked={defaultValues.submitWithLink}
-              color="primary"
+        <>
+          <Divider className={classes.divider} />
+          <Button variant="contained" color="primary" type="submit">
+            {label[variant].submit}
+          </Button>
+          {!linked && (
+            <FormControlLabel
+              className={classes.marginLeft}
+              label="コースへ配信"
+              title={
+                hasLtiTargetLinkUri
+                  ? "ツールURLが指定されているため、リンクの切り替えはできません"
+                  : "リンクを切り替える"
+              }
+              disabled={hasLtiTargetLinkUri}
+              control={
+                <Checkbox
+                  id="submit-with-link"
+                  name="submitWithLink"
+                  onChange={(_, checked) => setValue("submitWithLink", checked)}
+                  defaultChecked={defaultValues.submitWithLink}
+                  color="primary"
+                />
+              }
             />
-          }
-        />
+          )}
+        </>
       )}
     </Card>
   );
