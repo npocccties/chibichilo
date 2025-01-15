@@ -115,7 +115,10 @@ export default function BookEditReleased({
       <Typography className={classes.subtitle} variant="h5">
         メタ情報
       </Typography>
-      <MetainfoForm metainfo={book} onSubmit={onMetainfoUpdate} />
+      <MetainfoForm
+        metainfo={book}
+        onSubmit={editable ? onMetainfoUpdate : undefined}
+      />
       {releases && (
         <>
           <Typography className={classes.subtitle} variant="h5">
