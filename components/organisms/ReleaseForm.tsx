@@ -26,19 +26,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
-  const { register, handleSubmit, setValue, formState } = useForm<ReleaseProps>(
-    {
+  const { register, handleSubmit, setValue, formState, reset } =
+    useForm<ReleaseProps>({
       values: release,
-    }
-  );
+    });
   const cardClasses = useCardStyles();
   const releasedAt = release.releasedAt
     ? getLocaleDateString(release.releasedAt, "ja")
     : "不明";
   const update = Boolean(onSubmit);
   const classes = useStyles();
-  if (!onSubmit) {
-    onSubmit = () => {};
+  async function submitHandler(release: ReleaseProps) {
+    if (onSubmit) {
+      await onSubmit(release);
+    }
+    reset(release);
   }
   return (
     <Card
@@ -52,7 +54,7 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         } as const
       }
       component="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(submitHandler)}
     >
       <div className="release-form-row">
         <TextField
@@ -93,7 +95,9 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         <Checkbox
           id="shared"
           name="shared"
-          onChange={(_, checked) => setValue("shared", checked)}
+          onChange={(_, checked) =>
+            setValue("shared", checked, { shouldDirty: true })
+          }
           defaultChecked={release.shared}
           color="primary"
           disabled={!update}
