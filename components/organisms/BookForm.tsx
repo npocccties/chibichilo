@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -116,6 +116,12 @@ type Props = {
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
 };
 
+type FormProps = BookPropsWithSubmitOptions & {
+  enablePublicBook: boolean;
+  expireAt: Date | null;
+  domains: string[];
+};
+
 export default function BookForm({
   book,
   topics,
@@ -131,39 +137,47 @@ export default function BookForm({
   const cardClasses = useCardStyles();
   const classes = useStyles();
   const { updateState: _updateState, ...authorsInputProps } = useAuthorsAtom();
-  const keywordsInputProps = useKeywordsInput(book?.keywords ?? []);
-  const [enablePublicBook, setEnablePublicBook] = useState(
-    Boolean(book?.publicBooks?.length)
-  );
-  const [expireAt, setExpireAt] = useState<Date | null>(
-    book?.publicBooks?.[0]?.expireAt ?? null
-  );
+
+  // 初期値の設定
+  const defaultKeywords = book?.keywords ?? [];
+  const defaultValues: FormProps = {
+    name: book?.name ?? "",
+    description: book?.description ?? "",
+    shared: Boolean(book?.shared),
+    authors: book?.authors ?? [],
+    keywords: defaultKeywords,
+    publicBooks: book?.publicBooks ?? [],
+    submitWithLink: linked,
+    topics: topics?.map((topic) => topic.id),
+    enablePublicBook: Boolean(book?.publicBooks?.length),
+    expireAt: book?.publicBooks?.[0]?.expireAt ?? null,
+    domains: book?.publicBooks?.[0]?.domains ?? [],
+  };
+  const keywordsInputProps = useKeywordsInput(defaultKeywords);
+  const domainsInputProps = useDomainsInput(defaultValues.domains);
+  const { handleSubmit, register, setValue, getValues, formState } =
+    useForm<FormProps>({
+      values: defaultValues,
+    });
+
+  // 更新が必要かどうか、状態を管理する
+  useEffect(() => {
+    setValue("keywords", keywordsInputProps.keywords, { shouldDirty: true });
+  }, [keywordsInputProps.keywords, setValue]);
+  useEffect(() => {
+    setValue("domains", domainsInputProps.domains, { shouldDirty: true });
+  }, [domainsInputProps.domains, setValue]);
+
+  // 公開期限のエラー処理
   const [expireAtError, setExpireAtError] = useState(false);
   const handleExpireAtChange = useCallback(
     (newValue: Date | null) => {
       setExpireAtError(newValue != null && Number.isNaN(newValue.getTime()));
-      setExpireAt(newValue);
+      setValue("expireAt", newValue, { shouldDirty: true });
     },
-    [setExpireAt]
+    [setValue]
   );
-  const domainsInputProps = useDomainsInput(
-    book?.publicBooks?.[0]?.domains ?? []
-  );
-  const defaultValues: BookPropsWithSubmitOptions = {
-    name: book?.name ?? "",
-    description: book?.description ?? "",
-    shared: Boolean(book?.shared),
-    sections: book?.sections,
-    authors: book?.authors ?? [],
-    keywords: book?.keywords ?? [],
-    publicBooks: book?.publicBooks ?? [],
-    submitWithLink: linked,
-    topics: topics?.map((topic) => topic.id),
-  };
-  const { handleSubmit, register, setValue } =
-    useForm<BookPropsWithSubmitOptions>({
-      values: defaultValues,
-    });
+
   const released = Boolean(book?.release);
 
   return (
@@ -173,12 +187,12 @@ export default function BookForm({
       id={id}
       component="form"
       onSubmit={handleSubmit((values) => {
-        if (expireAt && Number.isNaN(expireAt.getTime())) return;
+        if (values.expireAt && Number.isNaN(values.expireAt.getTime())) return;
 
-        if (enablePublicBook) {
+        if (values.enablePublicBook) {
           const publicBook = book?.publicBooks?.[0] ?? ({} as PublicBookSchema);
           // @ts-expect-error TODO: 画面上ではnullでないといけないが、送信時はundefinedでないといけない
-          publicBook.expireAt = expireAt ?? undefined;
+          publicBook.expireAt = values.expireAt ?? undefined;
           publicBook.domains = domainsInputProps.domains;
           values.publicBooks = [publicBook];
         } else {
@@ -198,7 +212,9 @@ export default function BookForm({
             title={"メッセージを表示しない"}
             control={
               <Checkbox
-                onChange={(_, checked) => setValue("shared", !checked)}
+                onChange={(_, checked) =>
+                  setValue("shared", !checked, { shouldDirty: true })
+                }
                 defaultChecked={!defaultValues.shared}
                 color="primary"
               />
@@ -222,14 +238,16 @@ export default function BookForm({
           <Checkbox
             id="enable-public-book"
             name="enablePublicBook"
-            onChange={(_, checked) => setEnablePublicBook(checked)}
-            defaultChecked={enablePublicBook}
+            onChange={(_, checked) =>
+              setValue("enablePublicBook", checked, { shouldDirty: true })
+            }
+            defaultChecked={defaultValues.enablePublicBook}
             color="primary"
           />
         </div>
       )}
 
-      {enablePublicBook && (
+      {getValues("enablePublicBook") && (
         <>
           <div>
             <LocalizationProvider
@@ -259,7 +277,7 @@ export default function BookForm({
                   </>
                 }
                 format="yyyy年MM月dd日 HH時mm分"
-                value={expireAt}
+                value={getValues("expireAt")}
                 onChange={handleExpireAtChange}
               />
             </LocalizationProvider>
@@ -322,7 +340,12 @@ export default function BookForm({
       {variant !== "other" && (
         <>
           <Divider className={classes.divider} />
-          <Button variant="contained" color="primary" type="submit">
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={!formState.isDirty}
+          >
             {label[variant].submit}
           </Button>
           {!linked && (
@@ -339,7 +362,9 @@ export default function BookForm({
                 <Checkbox
                   id="submit-with-link"
                   name="submitWithLink"
-                  onChange={(_, checked) => setValue("submitWithLink", checked)}
+                  onChange={(_, checked) =>
+                    setValue("submitWithLink", checked, { shouldDirty: true })
+                  }
                   defaultChecked={defaultValues.submitWithLink}
                   color="primary"
                 />
