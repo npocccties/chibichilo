@@ -13,6 +13,7 @@ import type { ContentAuthors } from "$server/models/content";
 import { pagesPath } from "$utils/$path";
 import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
+import useParentBookInfo from "$utils/useParentBookInfo";
 
 export type Query = { bookId: BookSchema["id"]; token?: string; zoom?: number };
 
@@ -39,6 +40,7 @@ function Show(query: Query) {
     session?.ltiResourceLink,
     query.token
   );
+  const parent = useParentBookInfo(query.bookId);
   const { data: bookActivity } = useBookActivity(book?.id);
   const { itemIndex, nextItemIndex, itemExists, updateItemIndex } =
     useBookAtom(book);
@@ -94,6 +96,7 @@ function Show(query: Query) {
   return (
     <Book
       book={book}
+      parent={parent}
       bookActivity={bookActivity}
       index={itemIndex}
       isPrivateBook={query.token === undefined}
