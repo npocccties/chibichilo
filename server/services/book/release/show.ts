@@ -3,18 +3,20 @@ import { outdent } from "outdent";
 import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
-import authInstructor from "$server/auth/authInstructor";
-import { isUsersOrAdmin } from "$server/utils/session";
+import { isInstructor, isUsersOrAdmin } from "$server/utils/session";
 import findBook from "$server/utils/book/findBook";
 import { ReleaseResultSchema } from "$server/models/releaseResult";
-import { bookToReleaseItemSchema, findReleasedBooks } from "$server/utils/book/release";
+import type { BookWithRelease } from "$server/utils/book/release";
+import { bookToReleaseItemSchema, findReleasedBooks, findParentBook } from "$server/utils/book/release";
 
 export const showSchema: FastifySchema = {
   summary: "ブックのリリース一覧取得",
   description: outdent`
     ブックのリリース一覧を取得します。
-    教員または管理者でなければなりません。
-    教員は自身の著作のブックでなければなりません。`,
+    管理者は、すべてのリリースの情報が取得できます。
+    教員は自身の著作のブックと共有されたリリースに関する、すべてのリリースの情報が取得できます。
+    教員または管理者いずれでもない場合、LTIリソースとしてリンクされているブックと親ブックの情報が取得できます。`,
+
   params: bookParamsSchema,
   response: {
     200: ReleaseResultSchema,
@@ -24,7 +26,7 @@ export const showSchema: FastifySchema = {
 };
 
 export const showHooks = {
-  auth: [authUser, authInstructor],
+  auth: [authUser],
 };
 
 export async function show({
@@ -34,9 +36,17 @@ export async function show({
   const book = await findBook(params.book_id, session.user.id);
 
   if (!book) return { status: 404 };
-  if (!isUsersOrAdmin(session, book.authors) && !book.release?.shared) return { status: 403 };
 
-  const books = await findReleasedBooks(book, session.user.id);
+  let books: Array<BookWithRelease> = [];
+
+  if (isUsersOrAdmin(session, book.authors) || (isInstructor(session) && book.release?.shared)) {
+    books = await findReleasedBooks(book, session.user.id);
+  } else if (session.ltiResourceLink?.bookId === params.book_id) {
+    books = await findParentBook(book);
+  } else {
+    return { status: 403 };
+  }
+  
   const releases = books.map(bookToReleaseItemSchema);
 
   return {

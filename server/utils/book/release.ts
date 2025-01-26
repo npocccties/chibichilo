@@ -91,3 +91,24 @@ export function bookToReleaseItemSchema(
     release: release,
   };
 }
+
+export async function findParentBook(
+  book: BookSchema,
+): Promise<Array<BookWithRelease>> {
+  const ids = await findBookUniqueIds(book.id);
+  if (!ids?.pid) return [];
+
+  const where: Prisma.BookWhereInput = {
+    OR: [
+      { id: book.id },  // this book
+      { vid: ids.pid }  // parent book
+    ],
+    NOT: { release: null },
+  };
+  const found = await prisma.book.findMany({
+    ...bookIncludingArg,
+    where,
+  })
+  return found;
+}
+
