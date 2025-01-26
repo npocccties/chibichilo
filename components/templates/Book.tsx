@@ -29,6 +29,7 @@ import sumPixels from "$utils/sumPixels";
 import type { ActivitySchema } from "$server/models/activity";
 import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
+import type { ReleaseItemSchema } from "$server/models/releaseResult";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -108,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
 type Props = {
   linked?: boolean;
   book: BookSchema | null;
+  parent?: ReleaseItemSchema;
   bookActivity?: ActivitySchema[];
   index: ItemIndex;
   isPrivateBook?: boolean;
@@ -124,6 +126,7 @@ export default function Book(props: Props) {
   const {
     linked,
     book,
+    parent,
     bookActivity,
     index: [sectionIndex, topicIndex],
     isPrivateBook = false,
@@ -253,7 +256,12 @@ export default function Book(props: Props) {
             </Link>
           </div>
           <CollapsibleContent expanded={expanded}>
-            <BookInfo id="book-info" className={classes.info} book={book} />
+            <BookInfo
+              id="book-info"
+              className={classes.info}
+              book={book}
+              parent={parent}
+            />
           </CollapsibleContent>
         </>
       )}
