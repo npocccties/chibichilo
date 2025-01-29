@@ -89,7 +89,6 @@ export default function BookEdit({
   onOverwriteClick,
   onRelease,
   onItemEditClick,
-  onClone,
   onMetainfoUpdate,
 }: Props) {
   const { session } = useSessionAtom();
@@ -126,14 +125,6 @@ export default function BookEdit({
       confirmationText: "OK",
     });
     onRelease(book);
-  };
-  const handleCloneButtonClick = async () => {
-    await confirm({
-      title: `ブック「${book.name}」を複製します。よろしいですか？`,
-      cancellationText: "キャンセル",
-      confirmationText: "OK",
-    });
-    onClone(book);
   };
   const handleItemEditClick = async (index: number) => {
     const id = releases?.[index]?.id;
@@ -199,10 +190,6 @@ export default function BookEdit({
       <Button size="small" color="primary" onClick={handleReleaseButtonClick}>
         <PeopleOutlinedIcon />
         ブックをリリース
-      </Button>
-      <Button size="small" color="primary" onClick={handleCloneButtonClick}>
-        <PeopleOutlinedIcon />
-        ブックを複製
       </Button>
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
         <DeleteOutlinedIcon />
