@@ -42,8 +42,7 @@ export async function update({
   if (!found || !found.release) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  const { topics: _topics, ...release } = body;
-  const updated = await updateRelease(params.book_id, release);
+  const updated = await updateRelease(params.book_id, body);
 
   return {
     status: 201,

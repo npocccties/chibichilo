@@ -826,7 +826,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックのリリース一覧を取得します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのリリース一覧を取得します。 管理者は、すべてのリリースの情報が取得できます。 教員は自身の著作のブックと共有されたリリースに関する、すべてのリリースの情報が取得できます。 教員または管理者いずれでもない場合、LTIリソースとしてリンクされているブックと親ブックの情報が取得できます。
      * ブックのリリース一覧取得
      */
     async apiV2BookBookIdReleaseGetRaw(requestParameters: ApiV2BookBookIdReleaseGetRequest): Promise<runtime.ApiResponse<InlineResponse2009>> {
@@ -849,7 +849,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * ブックのリリース一覧を取得します。 教員または管理者でなければなりません。 教員は自身の著作のブックでなければなりません。
+     * ブックのリリース一覧を取得します。 管理者は、すべてのリリースの情報が取得できます。 教員は自身の著作のブックと共有されたリリースに関する、すべてのリリースの情報が取得できます。 教員または管理者いずれでもない場合、LTIリソースとしてリンクされているブックと親ブックの情報が取得できます。
      * ブックのリリース一覧取得
      */
     async apiV2BookBookIdReleaseGet(requestParameters: ApiV2BookBookIdReleaseGetRequest): Promise<InlineResponse2009> {

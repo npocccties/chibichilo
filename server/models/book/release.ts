@@ -7,14 +7,13 @@ export const releasePropsSchema = {
     version: { type: "string" },
     comment: { type: "string" },
     shared: { type: "boolean" },
-    topics: { type: "array", items: { type: "integer" } },
   },
   additionalProperties: false,
 } as const;
 
 export type ReleaseProps = FromSchema<typeof releasePropsSchema>;
 
-const {topics: _topics, ...releaseSchemaProps} = releasePropsSchema.properties;
+const {...releaseSchemaProps} = releasePropsSchema.properties;
 
 export const releaseSchema = {
   type: "object",
