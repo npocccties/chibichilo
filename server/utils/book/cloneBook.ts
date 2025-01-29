@@ -3,12 +3,9 @@ import type { BookSchema } from "$server/models/book";
 import createBook from "./createBook";
 import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
-import type { Prisma, PrismaPromise, Topic } from "@prisma/client";
+import type { Prisma, Topic } from "@prisma/client";
 import type { SectionSchema } from "$server/models/book/section";
 import { cloneBookUniqueIds, cloneTopicUniqueIds, releaseBookUniqueIds, releaseTopicUniqueIds } from "../uniqueId";
-import cleanupSections from "./cleanupSections";
-import { upsertSections } from "./updateBook";
-import aggregateTimeRequired from "./aggregateTimeRequired";
 
 async function cloneBookSections(
   sections: SectionSchema[],
@@ -67,7 +64,6 @@ async function cloneBookSections(
 export async function cloneRelease(
   parentBook: BookSchema,
   userId: UserSchema["id"],
-  targetTopics: number[] | null | undefined,
 ): Promise<BookSchema | undefined> {
   const {
     id: _id,
@@ -79,8 +75,8 @@ export async function cloneRelease(
   } = structuredClone(parentBook);
 
   // トピックを複製する, 作成者も複製する
-  const newSections = await cloneBookSections(book.sections, targetTopics, releaseTopicUniqueIds);
-  book.sections = parentBook.sections;
+  const newSections = await cloneBookSections(book.sections, null, releaseTopicUniqueIds);
+  book.sections = newSections;
 
   // ブックの作成者を複製する
   const authors = await prisma.authorship.findMany({
@@ -92,24 +88,7 @@ export async function cloneRelease(
   const created = await createBook(userId, book, authors);
   if (!created) throw new Error(`ブックのリリースに失敗 ${book.name}`);
 
-  // ブックの学習時間を集計する
-  const timeRequired = await aggregateTimeRequired({ sections: newSections });
-
-  // 対象ブックの sections を newSections で置き換える
-  const ops: Array<PrismaPromise<unknown>> = [];
-  const cleanup = cleanupSections(parentBook.id);
-  const upsert = upsertSections(parentBook.id, newSections);
-  ops.push(...cleanup, ...upsert);
-
-  // ブックの学習時間を更新する
-  const update = prisma.book.update({
-    where: { id: parentBook.id },
-    data: { timeRequired },
-  });
-  ops.push(update);
-  await prisma.$transaction(ops);
-
-  await releaseBookUniqueIds(created.id, parentBook.id);
+  await releaseBookUniqueIds(parentBook.id, created.id);
 
   return parentBook;
 }

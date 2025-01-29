@@ -44,8 +44,8 @@ export async function create({
   if (!found || found.release) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  const { topics, ...release } = body;
-  const released = await cloneRelease(found, session.user.id, topics);
+  const { topics:_topics , ...release } = body;
+  const released = await cloneRelease(found, session.user.id);
   if (!released) return { status: 500 };
 
   const _ = await createRelease(released.id, release);

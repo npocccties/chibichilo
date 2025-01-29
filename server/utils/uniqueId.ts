@@ -18,15 +18,15 @@ function generateUniqueIds(ids: UniqueIds) {
   ids.vid = "";
 }
 
-function releaseUniqueIds(orig: UniqueIds, release: UniqueIds) {
-  if (!orig.poid) {
-    generateUniqueIds(orig);
+function releaseUniqueIds(edit: UniqueIds, release: UniqueIds) {
+  if (!edit.poid) {
+    generateUniqueIds(edit);
   }
-  release.poid = orig.poid;
-  release.oid = orig.oid;
-  release.pid = orig.pid;
+  release.poid = edit.poid;
+  release.oid = edit.oid;
+  release.pid = edit.pid;
   release.vid = createId();
-  orig.pid = release.vid;
+  edit.pid = release.vid;
 }
 
 function cloneUniqueIds(orig: UniqueIds, clone: UniqueIds) {
@@ -61,16 +61,16 @@ async function updateBookUniqueIds(
 }
 
 export async function releaseBookUniqueIds(
-  origId: Book["id"],
-  releaseId: Book["id"]
+  releaseId: Book["id"],
+  editId: Book["id"]
 ): Promise<void> {
-  const orig = await findBookUniqueIds(origId);
+  const edit = await findBookUniqueIds(editId);
   const release = await findBookUniqueIds(releaseId);
-  if (!orig || !release) return;
+  if (!edit || !release) return;
 
-  releaseUniqueIds(orig, release);
+  releaseUniqueIds(edit, release);
 
-  await updateBookUniqueIds(origId, orig);
+  await updateBookUniqueIds(editId, edit);
   await updateBookUniqueIds(releaseId, release);
 
   return;
@@ -114,16 +114,16 @@ async function updateTopicUniqueIds(
 }
 
 export async function releaseTopicUniqueIds(
-  origId: Topic["id"],
-  releaseId: Topic["id"]
+  releaseId: Topic["id"],
+  editId: Topic["id"]
 ): Promise<void> {
-  const orig = await findTopicUniqueIds(origId);
+  const edit = await findTopicUniqueIds(editId);
   const release = await findTopicUniqueIds(releaseId);
-  if (!orig || !release) return;
+  if (!edit || !release) return;
 
-  releaseUniqueIds(orig, release);
+  releaseUniqueIds(edit, release);
 
-  await updateTopicUniqueIds(origId, orig);
+  await updateTopicUniqueIds(editId, edit);
   await updateTopicUniqueIds(releaseId, release);
 
   return;
