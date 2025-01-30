@@ -30,6 +30,7 @@ import type { ActivitySchema } from "$server/models/activity";
 import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
+import License from "$atoms/License";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -190,6 +191,9 @@ export default function Book(props: Props) {
               (book?.timeRequired ?? 0) * 1000
             )}`}
           />
+          {book?.license && (
+            <License license={book?.license} clickable={false} />
+          )}
           {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
             book &&
