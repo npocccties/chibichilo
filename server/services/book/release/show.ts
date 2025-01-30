@@ -3,7 +3,7 @@ import { outdent } from "outdent";
 import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
-import { isInstructor, isUsersOrAdmin } from "$server/utils/session";
+import { isAdministrator, isInstructor, isUsersOrAdmin } from "$server/utils/session";
 import findBook from "$server/utils/book/findBook";
 import { ReleaseResultSchema } from "$server/models/releaseResult";
 import type { BookWithRelease } from "$server/utils/book/release";
@@ -40,7 +40,7 @@ export async function show({
   let books: Array<BookWithRelease> = [];
 
   if (isUsersOrAdmin(session, book.authors) || (isInstructor(session) && book.release?.shared)) {
-    books = await findReleasedBooks(book, session.user.id);
+    books = await findReleasedBooks(book, session.user.id, isAdministrator(session));
   } else if (session.ltiResourceLink?.bookId === params.book_id) {
     books = await findParentBook(book);
   } else {
