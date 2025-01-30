@@ -58,11 +58,12 @@ export type BookWithRelease = Prisma.BookGetPayload<
 export async function findReleasedBooks(
   book: BookSchema,
   userId: number,
+  admin: boolean,
 ): Promise<Array<BookWithRelease>> {
   const filter: AuthorFilter = {
     type: "all",
     by: userId,
-    admin: false,
+    admin,
   };
   const ids = await findBookUniqueIds(book.id);
   if (!ids?.poid) return [];
