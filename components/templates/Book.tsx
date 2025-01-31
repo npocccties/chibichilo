@@ -191,9 +191,7 @@ export default function Book(props: Props) {
               (book?.timeRequired ?? 0) * 1000
             )}`}
           />
-          {book?.license && (
-            <License license={book?.license} clickable={false} />
-          )}
+          {book?.license && <License license={book?.license} />}
           {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
             book &&
