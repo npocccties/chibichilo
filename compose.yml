@@ -1,7 +1,7 @@
 # NOTE: DON'T USE IT IN PRODUCTION. 本番環境で使用しないで。
 services:
   mariadb:
-    image: "mariadb:11.1.2-jammy"
+    image: "mariadb:11.2.6-jammy"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: bitnami_moodle
@@ -22,15 +22,15 @@ services:
       - moodle_data_v4:/bitnami/moodle
       - moodledata_data_v4:/bitnami/moodledata
   db:
-    image: "postgres:15.4-alpine3.18"
+    image: "postgres:17.2-alpine3.21"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports: ["5432:5432"]
     volumes:
-      - postgres_data_v15:/var/lib/postgresql/data
+      - postgres_data_v17:/var/lib/postgresql/data
   app:
-    image: "node:18.17.1-alpine3.18"
+    image: "node:22.13.1-alpine3.21"
     environment:
       FRONTEND_ORIGIN: "http://localhost:3000"
       SESSION_SECRET: super_secret_characters_for_session
@@ -49,4 +49,4 @@ volumes:
   mariadb_data_v10:
   moodle_data_v4:
   moodledata_data_v4:
-  postgres_data_v15:
+  postgres_data_v17:

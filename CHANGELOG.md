@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [2025]
 
 ### Added
+
 - Deep Linking support from Blackboard (OU)
 
 ## [2024]
 
 ### Added
+
 - Version management feature (NII)
 - Tag/note registration (OU)
 - Word cloud (OU)
@@ -19,6 +21,7 @@ All notable changes to this project will be documented in this file.
 ## [2023]
 
 ### Added
+
 - Video thumbnail display
 - Viewing status timeline (OU)
 - Names and Role Provisioning Services support (OU)
@@ -28,12 +31,14 @@ All notable changes to this project will be documented in this file.
 - Deep Linking support
 
 ### Changed
+
 - Removal of IP address-based client authentication
 - Video interaction log improvement (NII)
 
 ## [2022]
 
 ### Added
+
 - Keyword registration (NII)
 - Multiple author registration (NII)
 - License registration (NII)
@@ -50,6 +55,7 @@ All notable changes to this project will be documented in this file.
 ## [2021]
 
 ### Added
+
 - LTI 1.1 authentication from Blackboard (OU)
 - Viewing history (OU)
 - Learning analytics (OU)
@@ -68,6 +74,7 @@ All notable changes to this project will be documented in this file.
 ## [2020]
 
 ### Added
+
 - RDB support (NII)
 - LTI 1.1 authentication from Moodle (NII)
 - Role-based access control (NII)
@@ -76,14 +83,18 @@ All notable changes to this project will be documented in this file.
 - Video interaction log output (NII)
 
 ### Changed
+
 - Complete migration from PHP to TypeScript
 
 ## Development
+
 - The initial development of this project was carried out by NII.
 
 ## Note
+
 - Contribution attributions vary due to differences in documentation practices.
 
 ## Organization Abbreviations
+
 - NII: National Institute of Informatics
 - OU: Osaka University
