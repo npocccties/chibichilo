@@ -47,7 +47,16 @@ async function findLtiMembers(
           },
         },
         include: {
-          learner: { select: { id: true, name: true, email: true } },
+          ltiContext: { select: { id: true, title: true, label: true } },
+          learner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              ltiUserId: true,
+              ltiConsumerId: true,
+            },
+          },
           topic: {
             select: { id: true, name: true, timeRequired: true },
           },

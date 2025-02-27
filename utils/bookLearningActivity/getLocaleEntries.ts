@@ -5,11 +5,13 @@ import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
 
 export const keyOrder = [
+  "learner.ltiConsumerId",
+  "ltiContext.id",
+  "ltiContext.title",
+  "learner.ltiUserId",
   "learner.id",
   "learner.name",
   "learner.email",
-  "ltiContext.label",
-  "ltiContext.title",
   "book.id",
   "book.name",
   "topic.id",
@@ -23,11 +25,13 @@ export const keyOrder = [
 ] as const;
 
 export const label: Readonly<{ [key in (typeof keyOrder)[number]]: string }> = {
+  "learner.ltiConsumerId": "LMSクライアントID",
+  "ltiContext.id": "LMSコースID",
+  "ltiContext.title": "LMSコース名",
+  "learner.ltiUserId": "LMSユーザID",
   "learner.id": "ユーザID",
   "learner.name": "ユーザ名",
   "learner.email": "メールアドレス",
-  "ltiContext.label": "コースID",
-  "ltiContext.title": "コース名",
   "book.id": "ブックID",
   "book.name": "ブック名",
   "topic.id": "トピックID",

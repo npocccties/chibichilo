@@ -26,6 +26,10 @@ import {
     InlineResponse2008TopicFromJSON,
     InlineResponse2008TopicFromJSONTyped,
     InlineResponse2008TopicToJSON,
+    LTIContext,
+    LTIContextFromJSON,
+    LTIContextFromJSONTyped,
+    LTIContextToJSON,
 } from './';
 
 /**
@@ -46,6 +50,12 @@ export interface InlineResponse2008Activity {
      * @memberof InlineResponse2008Activity
      */
     learner: InlineResponse2008Learner;
+    /**
+     * 
+     * @type {LTIContext}
+     * @memberof InlineResponse2008Activity
+     */
+    ltiContext?: LTIContext;
     /**
      * 
      * @type {InlineResponse2008Topic}
@@ -96,6 +106,7 @@ export function InlineResponse2008ActivityFromJSONTyped(json: any, ignoreDiscrim
         
         'id': json['id'],
         'learner': InlineResponse2008LearnerFromJSON(json['learner']),
+        'ltiContext': !exists(json, 'ltiContext') ? undefined : LTIContextFromJSON(json['ltiContext']),
         'topic': InlineResponse2008TopicFromJSON(json['topic']),
         'completed': json['completed'],
         'totalTimeMs': json['totalTimeMs'],
@@ -116,6 +127,7 @@ export function InlineResponse2008ActivityToJSON(value?: InlineResponse2008Activ
         
         'id': value.id,
         'learner': InlineResponse2008LearnerToJSON(value.learner),
+        'ltiContext': LTIContextToJSON(value.ltiContext),
         'topic': InlineResponse2008TopicToJSON(value.topic),
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,

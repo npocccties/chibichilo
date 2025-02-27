@@ -30,6 +30,10 @@ import {
     InlineResponse2008TopicFromJSON,
     InlineResponse2008TopicFromJSONTyped,
     InlineResponse2008TopicToJSON,
+    LTIContext,
+    LTIContextFromJSON,
+    LTIContextFromJSONTyped,
+    LTIContextToJSON,
 } from './';
 
 /**
@@ -50,6 +54,12 @@ export interface InlineResponse20014BookActivities {
      * @memberof InlineResponse20014BookActivities
      */
     learner: InlineResponse2008Learner;
+    /**
+     * 
+     * @type {LTIContext}
+     * @memberof InlineResponse20014BookActivities
+     */
+    ltiContext?: LTIContext;
     /**
      * 
      * @type {InlineResponse2008Topic}
@@ -112,6 +122,7 @@ export function InlineResponse20014BookActivitiesFromJSONTyped(json: any, ignore
         
         'id': !exists(json, 'id') ? undefined : json['id'],
         'learner': InlineResponse2008LearnerFromJSON(json['learner']),
+        'ltiContext': !exists(json, 'ltiContext') ? undefined : LTIContextFromJSON(json['ltiContext']),
         'topic': InlineResponse2008TopicFromJSON(json['topic']),
         'completed': !exists(json, 'completed') ? undefined : json['completed'],
         'totalTimeMs': !exists(json, 'totalTimeMs') ? undefined : json['totalTimeMs'],
@@ -134,6 +145,7 @@ export function InlineResponse20014BookActivitiesToJSON(value?: InlineResponse20
         
         'id': value.id,
         'learner': InlineResponse2008LearnerToJSON(value.learner),
+        'ltiContext': LTIContextToJSON(value.ltiContext),
         'topic': InlineResponse2008TopicToJSON(value.topic),
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,
