@@ -16,7 +16,8 @@ export type EventType =
   | "pagehide-ended"
   | "unload-ended"
   | "hidden-ended"
-  | "current-time";
+  | "current-time"
+  | "admin-download"; // ダウンロードページ用
 
 export const EventSchema = {
   title: "syslogに記録するための視聴ログオブジェクト (v1互換)",

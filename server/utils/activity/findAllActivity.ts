@@ -15,11 +15,15 @@ async function findLtiMembers(
     consumerId,
     contextId,
   }: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">,
-  currentLtiContextOnly: boolean
+  currentLtiContextOnly?: boolean
 ) {
-  const activityScope = currentLtiContextOnly
-    ? { ltiConsumerId: consumerId, ltiContextId: contextId }
-    : { ltiConsumerId: "", ltiContextId: "" };
+  const activityScope =
+    currentLtiContextOnly === undefined
+      ? {}
+      : currentLtiContextOnly
+      ? { ltiConsumerId: consumerId, ltiContextId: contextId }
+      : { ltiConsumerId: "", ltiContextId: "" };
+
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
     select: {
@@ -78,7 +82,7 @@ async function findLtiMembers(
  */
 async function findAllActivity(
   session: SessionSchema,
-  currentLtiContextOnly: boolean
+  currentLtiContextOnly?: boolean | undefined
 ): Promise<{
   learners: Array<LearnerSchema>;
   courseBooks: Array<CourseBookSchema>;

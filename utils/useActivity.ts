@@ -10,7 +10,7 @@ async function fetchActivity({
   currentLtiContextOnly,
 }: {
   key: typeof key;
-  currentLtiContextOnly: boolean;
+  currentLtiContextOnly?: boolean | undefined;
 }) {
   const res = await api.apiV2ActivityGet({ currentLtiContextOnly });
   const learners = res["learners"] as Array<LearnerSchema>;
@@ -24,7 +24,7 @@ async function fetchActivity({
  * 学習活動を取得する
  * @param currentLtiContextOnly 学習活動の LTI Context ごとでの取得
  */
-function useActivity(currentLtiContextOnly: boolean) {
+function useActivity(currentLtiContextOnly?: boolean | undefined) {
   const { data, error } = useSWR({ key, currentLtiContextOnly }, fetchActivity);
   return { data, error };
 }

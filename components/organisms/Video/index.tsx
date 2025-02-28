@@ -328,11 +328,13 @@ export default function Video({
           tagMenu={bookmarkTagMenu}
         />
       )}
-      <Box sx={{ 
-        display: 'flex',
-        flexDirection: 'column', 
-        position: 'relative'
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+        }}
+      >
         <Tabs
           aria-label="トピックビデオの詳細情報"
           className={tabsStyle}
@@ -340,7 +342,7 @@ export default function Video({
           value={tabIndex}
           onChange={handleTabIndexChange}
           sx={{
-            width: '80%' 
+            width: "80%",
           }}
         >
           <Tab label="解説" id="tab-0" aria-controls="panel-0" />
@@ -354,19 +356,21 @@ export default function Video({
           />
         </Tabs>
         {topic.license && (
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            height: '72px',
-            mt: '-72px', 
-          }}>
-            <License 
-              sx={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-              }} 
-              license={topic.license} 
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              height: "72px",
+              mt: "-72px",
+            }}
+          >
+            <License
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+              license={topic.license}
             />
           </Box>
         )}

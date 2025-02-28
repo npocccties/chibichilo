@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import StyleIcon from "@mui/icons-material/Style";
 import LinkIcon from "@mui/icons-material/Link";
 import CellTowerIcon from "@mui/icons-material/CellTower";
@@ -74,6 +75,7 @@ type Props = ComponentProps<typeof MuiAppBar> & {
   onBookClick?(): void;
   onDashboardClick?(): void;
   onBookmarksClick?(): void;
+  onDownloadClick?(): void;
 };
 
 const role = (session: SessionSchema) => {
@@ -92,6 +94,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
     onBookClick,
     onDashboardClick,
     onBookmarksClick,
+    onDownloadClick,
     ...others
   } = props;
   const isDeepLink =
@@ -206,6 +209,14 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                 label="タグ管理"
                 onClick={onBookmarksClick}
               />
+              {onDownloadClick && isAdministrator(session) && (
+                <AppBarNavButton
+                  color="inherit"
+                  icon={<DownloadOutlinedIcon />}
+                  label="ダウンロード"
+                  onClick={onDownloadClick}
+                />
+              )}
             </div>
           )}
           {isInstructor && (
