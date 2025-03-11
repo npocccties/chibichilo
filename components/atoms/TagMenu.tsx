@@ -22,6 +22,7 @@ const menuItem = css({
 
 type Props = {
   topicId: number;
+  bookId: number;
   selectedTag: TagSchema[];
   tagMenu: BookmarkTagMenu;
   handleTagChange: (tag: TagSchema) => void;
@@ -31,6 +32,7 @@ type Props = {
 
 export default function TagMenu({
   topicId,
+  bookId,
   selectedTag,
   tagMenu,
   handleTagChange,
@@ -40,9 +42,9 @@ export default function TagMenu({
   const onClick = useCallback(
     async (option: TagSchema) => {
       handleTagChange(option);
-      await onSubmitBookmark({ topicId, tagId: option.id });
+      await onSubmitBookmark({ topicId, bookId, tagId: option.id });
     },
-    [handleTagChange, onSubmitBookmark, topicId]
+    [handleTagChange, onSubmitBookmark, topicId, bookId]
   );
 
   const filterTags = tagMenu.filter((tag) => {

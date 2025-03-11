@@ -9,8 +9,15 @@ import { useBookmarksByTopicId } from "$utils/bookmark/useBookmarks";
 import BookmarkStats from "./BookmarkStats";
 import { useWordCloud } from "../../utils/useWordCloud";
 
-function ListItem(topic: { id: number; name: string }) {
-  const data = useBookmarksByTopicId({ topicId: topic.id, isAllUsers: true });
+function ListItem(
+  topic: { id: number; name: string },
+  book: { id: number; name: string }
+) {
+  const data = useBookmarksByTopicId({
+    topicId: topic.id,
+    bookId: book.id,
+    isAllUsers: true,
+  });
   if (data.isLoading) return null;
 
   return (

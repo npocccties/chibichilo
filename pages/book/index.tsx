@@ -39,6 +39,7 @@ function Show(query: Query) {
     session?.ltiResourceLink,
     query.token
   );
+
   const { data: bookActivity } = useBookActivity(book?.id);
   const { itemIndex, nextItemIndex, itemExists, updateItemIndex } =
     useBookAtom(book);

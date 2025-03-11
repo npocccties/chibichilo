@@ -49,11 +49,17 @@ const alertClass = css({
 
 type Props = {
   topicId: number;
+  bookId: number;
   bookmarks: BookmarkSchema[];
   tagMenu: BookmarkTagMenu;
 };
 
-export default function TagList({ topicId, bookmarks, tagMenu }: Props) {
+export default function TagList({
+  topicId,
+  bookId,
+  bookmarks,
+  tagMenu,
+}: Props) {
   const handlers = useBookmarkHandler();
   const [selectedTag, setSelectedTag] = useState<TagSchema[]>(
     bookmarks
@@ -74,19 +80,21 @@ export default function TagList({ topicId, bookmarks, tagMenu }: Props) {
   const confirm = useConfirm();
   const handleBookmarkDeleteClick = async (
     id: BookmarkParams["id"],
-    topicId: BookmarkProps["topicId"]
+    topicId: BookmarkProps["topicId"],
+    bookId: BookmarkProps["bookId"]
   ) => {
     await confirm({
       title: "コメントを削除します。よろしいですか？",
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
-    await handlers.onDeleteBookmark(id, topicId);
+    await handlers.onDeleteBookmark(id, topicId, bookId);
   };
   const [open, setOpen] = useState(false);
   const defaultValues: BookmarkMemoContentProps = {
     memoContent: bookmarkMemoContent?.memoContent ?? "",
     topicId,
+    bookId,
   };
   const {
     handleSubmit,
@@ -130,6 +138,7 @@ export default function TagList({ topicId, bookmarks, tagMenu }: Props) {
           <TagWithDeleteButton
             key={tag.id}
             topicId={topicId}
+            bookId={bookId}
             bookmark={bookmark}
             {...handlers}
           />
@@ -137,6 +146,7 @@ export default function TagList({ topicId, bookmarks, tagMenu }: Props) {
       })}
       <TagMenu
         topicId={topicId}
+        bookId={bookId}
         selectedTag={selectedTag}
         tagMenu={tagMenu}
         handleTagChange={handleTagChange}
@@ -242,7 +252,11 @@ export default function TagList({ topicId, bookmarks, tagMenu }: Props) {
                   color="inherit"
                   type="button"
                   onClick={() =>
-                    handleBookmarkDeleteClick(bookmarkMemoContent.id, topicId)
+                    handleBookmarkDeleteClick(
+                      bookmarkMemoContent.id,
+                      topicId,
+                      bookId
+                    )
                   }
                 >
                   削除

@@ -248,6 +248,7 @@ export interface ApiV2BookmarkStatsGetRequest {
 export interface ApiV2BookmarksGetRequest {
     isAllUsers: boolean;
     topicId?: number;
+    bookId?: number;
     tagIds?: string;
     isExistMemoContent?: boolean;
 }
@@ -1122,6 +1123,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.topicId !== undefined) {
             queryParameters['topicId'] = requestParameters.topicId;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['bookId'] = requestParameters.bookId;
         }
 
         if (requestParameters.tagIds !== undefined) {

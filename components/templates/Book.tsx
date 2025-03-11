@@ -269,6 +269,7 @@ export default function Book(props: Props) {
         >
           <Sections
             index={[sectionIndex, topicIndex]}
+            bookId={book?.id ?? -1}
             sections={book?.sections ?? []}
             onItemClick={handleItemClick}
             onItemEditClick={handleItemEditClick}

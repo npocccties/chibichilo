@@ -14,6 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    InlineResponse20016Book,
+    InlineResponse20016BookFromJSON,
+    InlineResponse20016BookFromJSONTyped,
+    InlineResponse20016BookToJSON,
     InlineResponse20016Topic,
     InlineResponse20016TopicFromJSON,
     InlineResponse20016TopicFromJSONTyped,
@@ -42,6 +46,12 @@ export interface InlineResponse20016Bookmark {
      * @memberof InlineResponse20016Bookmark
      */
     topicId: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20016Bookmark
+     */
+    bookId: number;
     /**
      * 
      * @type {number}
@@ -86,6 +96,12 @@ export interface InlineResponse20016Bookmark {
     topic: InlineResponse20016Topic;
     /**
      * 
+     * @type {InlineResponse20016Book}
+     * @memberof InlineResponse20016Bookmark
+     */
+    book: InlineResponse20016Book;
+    /**
+     * 
      * @type {LTIContext}
      * @memberof InlineResponse20016Bookmark
      */
@@ -104,6 +120,7 @@ export function InlineResponse20016BookmarkFromJSONTyped(json: any, ignoreDiscri
         
         'id': json['id'],
         'topicId': json['topicId'],
+        'bookId': json['bookId'],
         'tagId': json['tagId'],
         'userId': json['userId'],
         'ltiContextId': !exists(json, 'ltiContextId') ? undefined : json['ltiContextId'],
@@ -111,6 +128,7 @@ export function InlineResponse20016BookmarkFromJSONTyped(json: any, ignoreDiscri
         'tag': json['tag'],
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
         'topic': InlineResponse20016TopicFromJSON(json['topic']),
+        'book': InlineResponse20016BookFromJSON(json['book']),
         'ltiContext': LTIContextFromJSON(json['ltiContext']),
     };
 }
@@ -126,6 +144,7 @@ export function InlineResponse20016BookmarkToJSON(value?: InlineResponse20016Boo
         
         'id': value.id,
         'topicId': value.topicId,
+        'bookId': value.bookId,
         'tagId': value.tagId,
         'userId': value.userId,
         'ltiContextId': value.ltiContextId,
@@ -133,6 +152,7 @@ export function InlineResponse20016BookmarkToJSON(value?: InlineResponse20016Boo
         'tag': value.tag,
         'memoContent': value.memoContent,
         'topic': InlineResponse20016TopicToJSON(value.topic),
+        'book': InlineResponse20016BookToJSON(value.book),
         'ltiContext': LTIContextToJSON(value.ltiContext),
     };
 }
