@@ -19,14 +19,20 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 
 .env:
 
-| 環境変数                                | 説明                                                                                                                      |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_PATH`             | API の URL のベースとなるパス (デフォルト: 同一オリジン "")                                                               |
-| `NEXT_PUBLIC_BASE_PATH`                 | 静的コンテンツの URL のベースとなるパス (デフォルト: "")                                                                  |
-| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY` | 学習活動の LTI Context ごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
-| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL`    | 学習活動の送信間隔 (秒) (デフォルト:`10`)                                                                                 |
-| `NEXT_PUBLIC_VIDEO_MAX_HEIGHT`          | スクロール追従する動画プレイヤーの max-height (デフォルト: `40vh`)                                                        |
-| `NEXT_PUBLIC_NO_EMBED`                  | 埋め込みを許可しない (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効)                |
+| 環境変数                                      | 説明                                                                                                                                                             |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_PATH`                   | API の URL のベースとなるパス (デフォルト: 同一オリジン "")                                                                                                      |
+| `NEXT_PUBLIC_BASE_PATH`                       | 静的コンテンツの URL のベースとなるパス (デフォルト: "")                                                                                                         |
+| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY`       | 学習活動の LTI Context ごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効)                                        |
+| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL`          | 学習活動の送信間隔 (秒) (デフォルト:`10`)                                                                                                                        |
+| `NEXT_PUBLIC_VIDEO_MAX_HEIGHT`                | スクロール追従する動画プレイヤーの max-height (デフォルト: `40vh`)                                                                                               |
+| `NEXT_PUBLIC_NO_EMBED`                        | 埋め込みを許可しない (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効)                                                       |
+| `NEXT_PUBLIC_ACTIVITY_REWATCH_RATE_THRESHOLD` | 繰返視聴割合に基づく可視化のための閾値 (0〜1の値) (デフォルト: `0.1`)                                                                                            |
+| `NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD`   | グラフにプロットする視聴回数の上限閾値 (回数) (デフォルト: `20`)                                                                                                 |
+| `NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE`         | グラフのプロットの点の半径の大きさ (デフォルト: `5.0`)                                                                                                           |
+| `NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD`        | 視聴記録の有効化 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 有効)                                                           |
+| `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | タグ・感想機能の有効化 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 有効)                                                     |
+| `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | DeepLink用のUIを無効にする。BlackboardでDeepLinkを使用する際には有効にする (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
 
 ## フロントエンド周りのビルド
 

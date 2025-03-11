@@ -13,6 +13,8 @@ import type { ActivityTimeRangeLogProps } from "$server/validators/activityTimeR
 import type { ActivityTimeRangeCountProps } from "$server/validators/activityTimeRangeCount";
 import prisma from "$server/utils/prisma";
 
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+
 const NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL2 = Number(
   process.env.NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL ?? 10
 );
@@ -49,6 +51,7 @@ function findActivity({
     },
     select: {
       id: true,
+      topic: true,
       timeRanges: { orderBy: { startMs: "asc" } },
       timeRangeCounts: { orderBy: { startMs: "asc" } },
     },
@@ -327,6 +330,34 @@ function upsert({
   });
 }
 
+function padZeroTimeRangeCount(
+  timeRangeCounts: ActivityTimeRangeCountProps[],
+  topic: Topic
+): ActivityTimeRangeCountProps[] {
+  const startTime = topic.startTime ?? 0;
+  const stopTime = topic.stopTime ?? topic.timeRequired;
+
+  for (let t = startTime; t < stopTime; t += ACTIVITY_COUNT_INTERVAL2) {
+    if (
+      timeRangeCounts.find((c) => {
+        return (
+          c.startMs === t * 1000 &&
+          c.endMs === (t + ACTIVITY_COUNT_INTERVAL2) * 1000
+        );
+      })
+    )
+      continue;
+
+    timeRangeCounts.push({
+      startMs: t * 1000,
+      endMs: (t + ACTIVITY_COUNT_INTERVAL2) * 1000,
+      count: 0,
+    });
+  }
+
+  return timeRangeCounts;
+}
+
 async function upsertActivity({
   learnerId,
   bookId,
@@ -350,28 +381,39 @@ async function upsertActivity({
     ltiContextId,
   });
   let recentTimeRangeLogs: ActivityTimeRangeLogProps[] = [];
+  let timeRangeLogs: ActivityTimeRangeLogProps[] = [];
   let timeRangeCounts: ActivityTimeRangeCountProps[] = [];
-  if (exists?.id) {
+  if (NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD && exists?.id) {
     recentTimeRangeLogs = await findRecentActivityTimeRangeLog(exists.id);
-    timeRangeCounts = await findActivityTimeRangeCount(exists.id);
+    const tempTimeRangeCounts = await findActivityTimeRangeCount(exists.id);
+    timeRangeCounts = padZeroTimeRangeCount(tempTimeRangeCounts, exists.topic);
   }
 
-  if (!timeRangeCounts.length) {
+  if (NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD && !timeRangeCounts.length) {
     timeRangeCounts = await initActivityTimeRangeCount(topicId);
   }
 
   const timeRanges = merge(exists?.timeRanges ?? [], activity.timeRanges);
-  const timeRangeLogs = concatAndMerge(
-    recentTimeRangeLogs,
-    activity.timeRanges
-  );
-  const purgedTimeRangeLogs = purge(recentTimeRangeLogs, activity.timeRanges);
 
-  timeRangeCounts = countTimeRange(timeRangeCounts, purgedTimeRangeLogs);
+  if (NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) {
+    timeRangeLogs = concatAndMerge(recentTimeRangeLogs, activity.timeRanges);
+    const purgedTimeRangeLogs = purge(recentTimeRangeLogs, activity.timeRanges);
+
+    timeRangeCounts = countTimeRange(
+      timeRangeCounts,
+      purgedTimeRangeLogs
+    ).filter((c) => {
+      return c.count != 0;
+    });
+  }
 
   await prisma.$transaction([
-    ...(exists ? [cleanupTimeRangeCounts(exists.id)] : []),
-    ...(exists ? [cleanupRecentTimeRangeLogs(recentTimeRangeLogs)] : []),
+    ...(NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD && exists
+      ? [cleanupTimeRangeCounts(exists.id)]
+      : []),
+    ...(NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD && exists
+      ? [cleanupRecentTimeRangeLogs(recentTimeRangeLogs)]
+      : []),
     ...(exists ? [cleanup(exists.id)] : []),
     upsert({
       learnerId,

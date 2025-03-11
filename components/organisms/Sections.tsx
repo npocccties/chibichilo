@@ -18,6 +18,8 @@ import formatInterval from "$utils/formatInterval";
 import TagCount from "$molecules/TagCount";
 import { Box } from "@mui/material";
 
+import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
+
 function SectionItem({
   section,
   sectionItemIndex,
@@ -152,7 +154,9 @@ export default function Sections({
                   >
                     {formatInterval(0, topic.timeRequired * 1000)}
                   </Typography>
-                  {isPrivateBook && <TagCount topicId={topic.id} />}
+                  {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && isPrivateBook && (
+                    <TagCount topicId={topic.id} />
+                  )}
                 </Box>
               </ListItemText>
               {!isContentEditable(topic) && isCompleted(topic.id) && (

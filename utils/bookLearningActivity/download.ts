@@ -4,6 +4,8 @@ import type { SessionSchema } from "$server/models/session";
 import * as csv from "$utils/csv";
 import fetchRewatchRate from "$utils/fetchRewatchRate";
 
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+
 /**
  * ブラウザーで視聴分析データをCSVファイル(BOM付きUTF-8)に変換しエクスポート
  * @param data 視聴分析データ
@@ -18,7 +20,9 @@ async function download(
 ) {
   if (data.length === 0) return;
 
-  const rewatchRate = await fetchRewatchRate({ currentLtiContextOnly });
+  const rewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
+    ? await fetchRewatchRate({ currentLtiContextOnly })
+    : undefined;
 
   const decoratedData = data
     .filter(
@@ -34,9 +38,9 @@ async function download(
     .map((a) =>
       getLocaleEntries(
         a,
-        rewatchRate.activityRewatchRate.find(
+        rewatchRate?.activityRewatchRate.find(
           (r) => r.learnerId === a.learner.id && r.topicId === a.topic.id
-        ),
+        ) ?? undefined,
         session
       )
     );

@@ -2,6 +2,14 @@ import type { Client } from "openid-client";
 import { SignJWT, importJWK, type JWK } from "jose";
 import { generators } from "openid-client";
 
+type LineItem = {
+  label?: string;
+  scoreMaximum: number;
+  resourceId?: string;
+  tag?: string;
+  gradesReleased?: boolean;
+};
+
 /** https://www.imsglobal.org/spec/lti-dl/v2p0#content-item-types */
 export type ContentItem =
   /** https://www.imsglobal.org/spec/lti-dl/v2p0#link */
@@ -62,13 +70,7 @@ export type ContentItem =
         width?: number;
         height?: number;
       };
-      lineItem?: {
-        label?: string;
-        scoreMaximum: number;
-        resourceId?: string;
-        tag?: string;
-        gradesReleased?: boolean;
-      };
+      lineItem?: LineItem;
       available?: {
         startDateTime?: string;
         endDateTime?: string;
@@ -145,6 +147,32 @@ export type DlResponseMessagePrivateClaim = {
   "https://purl.imsglobal.org/spec/lti-dl/claim/errormsg"?: string;
   "https://purl.imsglobal.org/spec/lti-dl/claim/errorlog"?: string;
 };
+
+/**
+ * Deep linking responseに含めるltiResourceLink型のcontentItemを作成するファクトリ関数
+ * @see https://www.imsglobal.org/spec/lti-dl/v2p0#deep-linking-response-example
+ */
+export function createLtiResourceLinkContentItem({
+  url,
+  scoreMaximum,
+  title,
+  text,
+}: {
+  url: string;
+  scoreMaximum: number;
+  title?: string;
+  text?: string;
+}): Extract<ContentItem, { type: "ltiResourceLink" }> {
+  return {
+    type: "ltiResourceLink",
+    title: title || "",
+    text: text || "",
+    url: url,
+    lineItem: {
+      scoreMaximum,
+    },
+  };
+}
 
 /**
  * LTI-DL 2.0 Deep Linking Response Message JWT の取得

@@ -11,7 +11,6 @@ function useRewatchRate(currentLtiContextOnly: boolean) {
     { key, currentLtiContextOnly },
     fetchRewatchRate
   );
-  console.log(error);
   return { data, error };
 }
 

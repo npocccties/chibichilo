@@ -20,6 +20,7 @@ import * as bookmarkTagMenu from "./bookmarkTagMenu";
 import * as bookmarkMemoContent from "./bookmarkMemoContent";
 import * as wordCloud from "./wordCloud";
 import * as activityTimeRangeCount from "./activityTimeRangeCount";
+import * as activityTimeRangeCountByTopic from "./activityTimeRangeCountByTopic";
 import * as activityRewatchRate from "./activityRewatchRate";
 
 const routers = [
@@ -43,6 +44,7 @@ const routers = [
   bookmarkMemoContent,
   wordCloud,
   activityTimeRangeCount,
+  activityTimeRangeCountByTopic,
   activityRewatchRate,
 ];
 

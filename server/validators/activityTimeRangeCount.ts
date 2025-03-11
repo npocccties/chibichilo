@@ -4,6 +4,7 @@ export const ActivityTimeRangeCountProps = {
   type: "object",
   required: ["startMs", "endMs"],
   properties: {
+    activityId: { type: "number" },
     startMs: { type: "integer" },
     endMs: { type: "integer" },
     count: { type: "number" },

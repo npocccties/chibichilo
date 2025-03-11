@@ -11,6 +11,8 @@ import BookmarkPreview from "$organisms/BookmarkPreview";
 import type { TopicSchema } from "$server/models/topic";
 import BookmarkMultiSelect from "$molecules/BookmarkMultiSelect";
 
+import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
+
 const title = css({
   fontSize: 32,
   marginBottom: 32,
@@ -94,7 +96,7 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
     ...dialogProps
   } = useDialogProps<TopicSchema>();
 
-  return (
+  return NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
     <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">
       <Typography variant="h4" className={title}>
         タグ管理
@@ -137,6 +139,12 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
           isPrivateBook={true}
         />
       )}
+    </Container>
+  ) : (
+    <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">
+      <Typography variant="h4" className={title}>
+        この機能は無効です。
+      </Typography>
     </Container>
   );
 }

@@ -183,8 +183,8 @@ class DeepLinkingSettingsClaim {
   @IsString({ each: true })
   accept_presentation_document_targets!: string[];
   @IsOptional()
-  @IsString({ each: true })
-  accept_media_types?: string[];
+  @IsString()
+  accept_media_types?: string;
   @IsOptional()
   @IsBoolean()
   accept_multiple?: boolean;

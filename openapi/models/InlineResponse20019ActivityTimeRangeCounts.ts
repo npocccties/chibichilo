@@ -24,6 +24,12 @@ export interface InlineResponse20019ActivityTimeRangeCounts {
      * @type {number}
      * @memberof InlineResponse20019ActivityTimeRangeCounts
      */
+    activityId?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20019ActivityTimeRangeCounts
+     */
     startMs: number;
     /**
      * 
@@ -49,6 +55,7 @@ export function InlineResponse20019ActivityTimeRangeCountsFromJSONTyped(json: an
     }
     return {
         
+        'activityId': !exists(json, 'activityId') ? undefined : json['activityId'],
         'startMs': json['startMs'],
         'endMs': json['endMs'],
         'count': !exists(json, 'count') ? undefined : json['count'],
@@ -64,6 +71,7 @@ export function InlineResponse20019ActivityTimeRangeCountsToJSON(value?: InlineR
     }
     return {
         
+        'activityId': value.activityId,
         'startMs': value.startMs,
         'endMs': value.endMs,
         'count': value.count,

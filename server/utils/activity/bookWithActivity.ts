@@ -10,8 +10,9 @@ import isCompleted from "./isCompleted";
 import { isInstructor } from "$server/utils/session";
 
 function bookToCourseBook(session: SessionSchema, book: BookWithTopics) {
-  const courseBook = getDisplayableBook(bookToBookSchema(book), (content) =>
-    contentBy(content, session.user),
+  const courseBook = getDisplayableBook(
+    bookToBookSchema(book),
+    (content) => contentBy(content, session.user),
     undefined,
     undefined,
     isInstructor(session)
@@ -46,7 +47,8 @@ export function toSchema({
     book.sections.flatMap(({ topics }) =>
       topics.flatMap((topic) =>
         activities.flatMap((activity) => {
-          if (!isInstructor(session) && activity.topic.id !== topic.id) return [];
+          if (!isInstructor(session) || activity.topic.id !== topic.id)
+            return [];
           return [
             {
               ...activity,

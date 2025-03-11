@@ -6,6 +6,8 @@ import type { SessionSchema } from "$server/models/session";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
 import { round } from "$server/utils/math";
 
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+
 export const keyOrder = [
   "learner.id",
   "learner.name",
@@ -62,6 +64,10 @@ export function getLocaleEntries(
     session,
   });
 
+  if (!NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) {
+    rewatchRate = undefined;
+  }
+
   const a = {
     ...flattenActivity,
     "topic.timeRequired": fromS(
@@ -74,7 +80,7 @@ export function getLocaleEntries(
       -3 // 小数点第4位で四捨五入
     ),
     status: learningStatusLabel[activity.status],
-    rewatchRate: rewatchRate?.rewatchRate ?? 0,
+    rewatchRate: rewatchRate?.rewatchRate ?? undefined,
     createdAt: activity.createdAt?.toLocaleString(),
     updatedAt: activity.updatedAt?.toLocaleString(),
   };

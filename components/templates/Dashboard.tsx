@@ -37,6 +37,9 @@ import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 import useRewatchRate from "$utils/useRewatchRate";
 
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
+
 type TabPanelProps = {
   className?: string;
   children?: React.ReactNode;
@@ -107,6 +110,11 @@ const useStyles = makeStyles((theme) => ({
   },
   topicTitleColumn: {
     width: "70%",
+    marginRight: theme.spacing(1),
+    alignItems: "center",
+  },
+  topicTitleColumnLong: {
+    width: "80%",
     marginRight: theme.spacing(1),
     alignItems: "center",
   },
@@ -286,7 +294,7 @@ export default function Dashboard(props: Props) {
           <Tab label="ブック" />
           <Tab label="トピック" />
           <Tab label="学習者" />
-          <Tab label="タグ" />
+          {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? <Tab label="タグ" /> : ""}
         </Tabs>
         <TabPanel className={classes.items} value={tabIndex} index={0}>
           {activitiesByBooks.map((activitiesByBook, index) => (
@@ -302,15 +310,25 @@ export default function Dashboard(props: Props) {
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
           <div className={classes.topicLabel}>
-            <div className={classes.topicTitleColumn}></div>
+            {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
+              <div className={classes.topicTitleColumn}></div>
+            ) : (
+              <div className={classes.topicTitleColumnLong}></div>
+            )}
+
             <div className={classes.topicColumn}>動画の長さ（秒）</div>
             <div className={classes.topicColumn}>平均学習完了率</div>
-            <div className={classes.topicColumn}>平均繰返視聴割合</div>
+            {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
+              <div className={classes.topicColumn}>平均繰返視聴割合</div>
+            ) : (
+              ""
+            )}
           </div>
           {activitiesByBooksAndTopics.map(
             (activitiesByBookAndTopics, index) => (
               <BookAndTopicActivityItem
                 key={index}
+                scope={scope === "current-lti-context-only"}
                 book={activitiesByBookAndTopics}
                 rewatchRates={rewatchRates?.activityRewatchRate ?? []}
               />
@@ -343,11 +361,15 @@ export default function Dashboard(props: Props) {
             />
           ))}
         </TabPanel>
-        <TabPanel className={classes.items} value={tabIndex} index={3}>
-          {activitiesByBooks.map((book, index) => (
-            <BookmarkStatsDialog key={index} book={book} />
-          ))}
-        </TabPanel>
+        {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
+          <TabPanel className={classes.items} value={tabIndex} index={3}>
+            {activitiesByBooks.map((book, index) => (
+              <BookmarkStatsDialog key={index} book={book} />
+            ))}
+          </TabPanel>
+        ) : (
+          ""
+        )}
       </Card>
       {data && (
         <LearnerActivityDialog

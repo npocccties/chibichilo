@@ -102,6 +102,9 @@ import {
     InlineResponse20019,
     InlineResponse20019FromJSON,
     InlineResponse20019ToJSON,
+    InlineResponse20019ActivityTimeRangeCounts,
+    InlineResponse20019ActivityTimeRangeCountsFromJSON,
+    InlineResponse20019ActivityTimeRangeCountsToJSON,
     InlineResponse2002,
     InlineResponse2002FromJSON,
     InlineResponse2002ToJSON,
@@ -168,6 +171,11 @@ export interface ApiV2ActivityRewatchRateGetRequest {
 
 export interface ApiV2ActivityTimeRangeCountActivityIdGetRequest {
     activityId: number;
+}
+
+export interface ApiV2ActivityTimeRangeCountByTopicTopicIdGetRequest {
+    topicId: number;
+    currentLtiContextOnly?: boolean;
 }
 
 export interface ApiV2BookBookIdActivityGetRequest {
@@ -537,6 +545,42 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async apiV2ActivityTimeRangeCountActivityIdGet(requestParameters: ApiV2ActivityTimeRangeCountActivityIdGetRequest): Promise<InlineResponse20019> {
         const response = await this.apiV2ActivityTimeRangeCountActivityIdGetRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * トピックごとの受講者の視聴行動回数を取得します。 教員または管理者でなければなりません。
+     * トピックごとの受講者の視聴行動回数の取得
+     */
+    async apiV2ActivityTimeRangeCountByTopicTopicIdGetRaw(requestParameters: ApiV2ActivityTimeRangeCountByTopicTopicIdGetRequest): Promise<runtime.ApiResponse<Array<InlineResponse20019ActivityTimeRangeCounts>>> {
+        if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
+            throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2ActivityTimeRangeCountByTopicTopicIdGet.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.currentLtiContextOnly !== undefined) {
+            queryParameters['current_lti_context_only'] = requestParameters.currentLtiContextOnly;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/activityTimeRangeCountByTopic/{topicId}`.replace(`{${"topicId"}}`, encodeURIComponent(String(requestParameters.topicId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse20019ActivityTimeRangeCountsFromJSON));
+    }
+
+    /**
+     * トピックごとの受講者の視聴行動回数を取得します。 教員または管理者でなければなりません。
+     * トピックごとの受講者の視聴行動回数の取得
+     */
+    async apiV2ActivityTimeRangeCountByTopicTopicIdGet(requestParameters: ApiV2ActivityTimeRangeCountByTopicTopicIdGetRequest): Promise<Array<InlineResponse20019ActivityTimeRangeCounts>> {
+        const response = await this.apiV2ActivityTimeRangeCountByTopicTopicIdGetRaw(requestParameters);
         return await response.value();
     }
 

@@ -15,7 +15,7 @@ const basicEventsMap = [
 
 export type PlayerStats = Pick<
   PlayerTracker,
-  "providerUrl" | "url" | "currentTime" | "firstPlay"
+  "providerUrl" | "url" | "currentTime" | "firstPlay" | "topicId"
 >;
 
 type CustomEvents = {
@@ -48,6 +48,8 @@ export class PlayerTracker extends (EventEmitter as {
   readonly providerUrl: string;
   /** ビデオURL */
   readonly url: string;
+  /** トピックID */
+  topicId = 0;
   /** 現在再生時間 */
   currentTime = 0;
   /** 初回再生 */
@@ -93,8 +95,8 @@ export class PlayerTracker extends (EventEmitter as {
   }
 
   get stats(): PlayerStats {
-    const { providerUrl, url, currentTime, firstPlay } = this;
-    return { providerUrl, url, currentTime, firstPlay };
+    const { providerUrl, url, currentTime, firstPlay, topicId } = this;
+    return { providerUrl, url, currentTime, firstPlay, topicId };
   }
 
   private intoVideoJs(player: VideoJsPlayer) {

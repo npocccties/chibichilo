@@ -11,9 +11,11 @@ const useStyles = makeStyles({
     borderRadius: 4,
     "&$completed": {
       backgroundColor: learningStatus["completed"],
+      color: learningStatus["unopened"],
     },
     "&$incompleted": {
       backgroundColor: learningStatus["incompleted"],
+      color: learningStatus["completed"],
     },
     "&$unopened": {
       backgroundColor: learningStatus["unopened"],
@@ -35,21 +37,39 @@ const useStyles = makeStyles({
   unopened: {},
   default: {},
   large: {},
+  rewatch: {
+    display: "grid",
+    alignItems: "center",
+    justifyContent: "center",
+    "&::before": {
+      content: "'↻'",
+      fontSize: 14,
+      fontWeight: "bold",
+    },
+  },
 });
 
 type Props = {
   status: LearningStatus;
   size?: "default" | "large";
+  isRewatched?: "default" | "rewatch";
 };
 
 export default function LearningStatusDot(props: Props) {
-  const { status, size = "default" } = props;
+  const { status, size = "default", isRewatched = "default" } = props;
+
   const classes = useStyles();
+
   return (
     <span
       role="img"
       aria-label={label[status]}
-      className={clsx(classes.root, classes[status], classes[size])}
+      className={clsx(
+        classes.root,
+        classes[status],
+        classes[size],
+        classes[isRewatched]
+      )}
     />
   );
 }
