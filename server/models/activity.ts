@@ -18,6 +18,9 @@ export const ActivitySchema = {
       required: ["id", "name", "timeRequired"],
       additionalProperties: false,
     },
+    bookId: {
+      type: "integer",
+    },
     /** 学習状況 - 完了: true, それ以外: false */
     completed: { type: "boolean" },
     /** 合計学習時間 (ms) */

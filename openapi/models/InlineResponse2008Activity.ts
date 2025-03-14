@@ -54,6 +54,12 @@ export interface InlineResponse2008Activity {
     topic: InlineResponse2008Topic;
     /**
      * 
+     * @type {number}
+     * @memberof InlineResponse2008Activity
+     */
+    bookId?: number;
+    /**
+     * 
      * @type {boolean}
      * @memberof InlineResponse2008Activity
      */
@@ -97,6 +103,7 @@ export function InlineResponse2008ActivityFromJSONTyped(json: any, ignoreDiscrim
         'id': json['id'],
         'learner': InlineResponse2008LearnerFromJSON(json['learner']),
         'topic': InlineResponse2008TopicFromJSON(json['topic']),
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
         'completed': json['completed'],
         'totalTimeMs': json['totalTimeMs'],
         'timeRanges': ((json['timeRanges'] as Array<any>).map(InlineResponse2008TimeRangesFromJSON)),
@@ -117,6 +124,7 @@ export function InlineResponse2008ActivityToJSON(value?: InlineResponse2008Activ
         'id': value.id,
         'learner': InlineResponse2008LearnerToJSON(value.learner),
         'topic': InlineResponse2008TopicToJSON(value.topic),
+        'bookId': value.bookId,
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,
         'timeRanges': ((value.timeRanges as Array<any>).map(InlineResponse2008TimeRangesToJSON)),

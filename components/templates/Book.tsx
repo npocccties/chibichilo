@@ -252,6 +252,7 @@ export default function Book(props: Props) {
           {topic && (
             <TopicViewer
               topic={topic}
+              book={book}
               bookActivity={bookActivity}
               onEnded={onTopicEnded}
               offset={offset}

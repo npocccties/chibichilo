@@ -38,6 +38,12 @@ export interface ApiV2BookBookIdSections {
      * @memberof ApiV2BookBookIdSections
      */
     topics?: Array<ApiV2BookBookIdTopics>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiV2BookBookIdSections
+     */
+    bookId?: number;
 }
 
 export function ApiV2BookBookIdSectionsFromJSON(json: any): ApiV2BookBookIdSections {
@@ -52,6 +58,7 @@ export function ApiV2BookBookIdSectionsFromJSONTyped(json: any, ignoreDiscrimina
         
         'name': !exists(json, 'name') ? undefined : json['name'],
         'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(ApiV2BookBookIdTopicsFromJSON)),
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
     };
 }
 
@@ -66,6 +73,7 @@ export function ApiV2BookBookIdSectionsToJSON(value?: ApiV2BookBookIdSections | 
         
         'name': value.name,
         'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(ApiV2BookBookIdTopicsToJSON)),
+        'bookId': value.bookId,
     };
 }
 
