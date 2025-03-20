@@ -43,8 +43,9 @@ const useStyles = makeStyles({
     justifyContent: "center",
     "&::before": {
       content: "'↻'",
-      fontSize: 14,
-      fontWeight: "bold",
+      fontSize: 15,
+      lineHeight: "15px",
+      fontWeight: 900,  // Black (Heavy)
     },
   },
 });
