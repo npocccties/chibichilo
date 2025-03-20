@@ -3,6 +3,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { learningStatus } from "$theme/colors";
 import label from "$utils/learningStatusLabel";
 import type { LearningStatus } from "$server/models/learningStatus";
+import rewatchLabel from "$utils/rewatchLabel";
 import { grey } from "@mui/material/colors";
 
 const useStyles = makeStyles({
@@ -42,10 +43,10 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     "&::before": {
-      content: "'↻'",
+      content: "'" + rewatchLabel + "'",
       fontSize: 15,
       lineHeight: "15px",
-      fontWeight: 900,  // Black (Heavy)
+      fontWeight: 900, // Black (Heavy)
     },
   },
 });
