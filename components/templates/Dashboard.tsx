@@ -123,6 +123,12 @@ const useStyles = makeStyles((theme) => ({
     width: "10%",
     justifyContent: "center",
   },
+  rewatchLabel: {
+    content: "'↻'",
+    fontSize: 14,
+    lineHeight: "12px",
+    fontWeight: 900, // Black (Heavy)
+  },
 }));
 
 type Props = {
@@ -350,6 +356,10 @@ export default function Dashboard(props: Props) {
             <div>
               <LearningStatusDot status="unopened" />
               <span>{label.unopened}</span>
+            </div>
+            <div>
+              <span className={classes.rewatchLabel}>↻</span>
+              <span>繰返視聴</span>
             </div>
           </div>
           {learnerActivities.map(([learner, activities], index) => (
