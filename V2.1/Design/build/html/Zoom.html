@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="ja" >
+<html class="writer-html5" lang="ja" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4. ZOOM連携機能 &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=fce829b6" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+  
+        <script src="_static/jquery.js?v=8dae8fb0"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7b29d1e1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
@@ -26,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CHiBi-CHiLO
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -71,8 +78,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">4. </span>ZOOM連携機能</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>ZOOM連携機能</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Zoom.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -83,15 +90,15 @@
            <div itemprop="articleBody">
              
   <section id="zoom">
-<h1><span class="section-number">4. </span>ZOOM連携機能<a class="headerlink" href="#zoom" title="このヘッドラインへのパーマリンク"></a></h1>
+<h1><span class="section-number">4. </span>ZOOM連携機能<a class="headerlink" href="#zoom" title="Link to this heading"></a></h1>
 <p>Zoomでクラウド録画した動画ファイルを，CHiBi-CHiLOのトピックとして自動登録し，LMSで利用する機能である．</p>
 <section id="id1">
-<h2><span class="section-number">4.1. </span>ZOOM連携機能の概要<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">4.1. </span>ZOOM連携機能の概要<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <p>本機能の概要は次の通り．</p>
 <img alt="_images/image3.png" src="_images/image3.png" />
 </section>
 <section id="id2">
-<h2><span class="section-number">4.2. </span>ZOOM連携機能の流れ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">4.2. </span>ZOOM連携機能の流れ<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>本機能の流れは次の通り．</p>
 <p class="plantuml">
 <img src="_images/plantuml-992f27ce3266908eec272b60ea6adda1c06aa8f2.png" alt="actor 学習者
@@ -123,7 +130,7 @@ RO -&gt; VOD : 参照（1:n）" />
 </ol>
 </section>
 <section id="id3">
-<h2><span class="section-number">4.3. </span>想定している条件<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">4.3. </span>想定している条件<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>VODは、当面、Wowzaのみを想定しているが将来的にはVimeo等にも拡張できるよう配慮すること．</p></li>
 <li><p>Zoomライセンスはアカデミックライセンス，ビジネスライセンス等有料ライセンスを想定している．</p></li>
@@ -131,7 +138,7 @@ RO -&gt; VOD : 参照（1:n）" />
 </ul>
 </section>
 <section id="chibi-chilo">
-<h2><span class="section-number">4.4. </span>CHiBi-CHiLOの改良<a class="headerlink" href="#chibi-chilo" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">4.4. </span>CHiBi-CHiLOの改良<a class="headerlink" href="#chibi-chilo" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>CHiBi-CHiLOのユーザーテーブルにはメールアドレスをもうもうける．</p></li>
 <li><p>Zoom録画で作成したトピックはそれがわかるようにアイコン等つける．</p></li>
@@ -143,9 +150,9 @@ RO -&gt; VOD : 参照（1:n）" />
 * Wowzaに登録されたビデオのアクセス制限は，Wowzaが提供するSecureTokenにより行うことする．そのため，CHiBi-CHiLOのトピックにWowzaのURLを直接記載すると，本人以外のビデオを参照できる．</p>
 </section>
 <section id="id4">
-<h2><span class="section-number">4.5. </span>検討事項<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">4.5. </span>検討事項<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <section id="zoomapi">
-<h3><span class="section-number">4.5.1. </span>ZoomのAPIによる動画の複製，削除<a class="headerlink" href="#zoomapi" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">4.5.1. </span>ZoomのAPIによる動画の複製，削除<a class="headerlink" href="#zoomapi" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Zoom APIによるクラウド録画へのアクセスは，管理者アカウントで可能か</p></li>
 <li><p>管理者アカウントで行うことで，工数の節約ができるか</p></li>
@@ -154,7 +161,7 @@ RO -&gt; VOD : 参照（1:n）" />
 </ul>
 </section>
 <section id="id5">
-<h3><span class="section-number">4.5.2. </span>自動登録のタイミング<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">4.5.2. </span>自動登録のタイミング<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <p>Zoom動画動画のVODへの自動複製，VODからトピックの自動登録はどのようなタイミングでおこなうのか</p>
 <ul class="simple">
 <li><p>何らかのイベントをハックする</p></li>
@@ -163,7 +170,7 @@ RO -&gt; VOD : 参照（1:n）" />
 </ul>
 </section>
 <section id="lmschibi-chilo">
-<h3><span class="section-number">4.5.3. </span>複数のLMSからのCHiBi-CHiLOにアクセスした場合のユーザー突き合わせへの応用<a class="headerlink" href="#lmschibi-chilo" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">4.5.3. </span>複数のLMSからのCHiBi-CHiLOにアクセスした場合のユーザー突き合わせへの応用<a class="headerlink" href="#lmschibi-chilo" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>CHiBi-CHiLOのユーザーテーブルにメールアドレスを記録することで，メールアドレスでユーザーを付き合わせることで，複数のLMSからCHiBi-CHiLOのリソースにアクセスできるようになるのではないか．</p></li>
 </ul>

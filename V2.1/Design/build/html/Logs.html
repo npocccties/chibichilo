@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="ja" >
+<html class="writer-html5" lang="ja" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3. 視聴ログ出力機能 &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=fce829b6" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+  
+        <script src="_static/jquery.js?v=8dae8fb0"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7b29d1e1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
@@ -26,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CHiBi-CHiLO
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -74,8 +81,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">3. </span>視聴ログ出力機能</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>視聴ログ出力機能</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Logs.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -86,13 +93,13 @@
            <div itemprop="articleBody">
              
   <section id="sect-event">
-<span id="id1"></span><h1><span class="section-number">3. </span>視聴ログ出力機能<a class="headerlink" href="#sect-event" title="このヘッドラインへのパーマリンク"></a></h1>
+<span id="id1"></span><h1><span class="section-number">3. </span>視聴ログ出力機能<a class="headerlink" href="#sect-event" title="Link to this heading"></a></h1>
 <p>本機能は学習者がBO(Book Object)を表示した場合、発生するイベントを動画視聴ログとして出力する機能である。</p>
 <section id="id2">
-<h2><span class="section-number">3.1. </span>イベント<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">3.1. </span>イベント<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>本システムのログデータを理解するためには、本システムが扱う「イベント」についても理解しておく必要がある。</p>
 <section id="id3">
-<h3><span class="section-number">3.1.1. </span>イベントとは<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.1.1. </span>イベントとは<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>イベントとは、LTIシステムで、学生が学習コンテンツを視聴した時と行動を記録するために定義された「きっかけ」を記録する。イベントの発生源は、</p>
 <ol class="arabic simple">
 <li><p>video.js</p></li>
@@ -101,14 +108,14 @@
 <p>がある。</p>
 </section>
 <section id="id4">
-<h3><span class="section-number">3.1.2. </span>ログとして出力するイベント<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.1.2. </span>ログとして出力するイベント<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>video.jsは、多数のイベントを取得できるが、現時点のシテスムでは、下記のイベントのみをログに書き出す。</p>
 <p>詳細は、個別に記述する。</p>
-<table class="colwidths-given docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 6%" />
-<col style="width: 63%" />
+<col style="width: 31.2%" />
+<col style="width: 6.2%" />
+<col style="width: 62.5%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>イベント</p></th>
@@ -328,16 +335,16 @@ if(!session.role){
 </section>
 </section>
 <section id="id5">
-<h2><span class="section-number">3.2. </span>ログ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">3.2. </span>ログ<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
 <section id="id6">
-<h3><span class="section-number">3.2.1. </span>ログ出力をする対象者<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク"></a></h3>
-<table class="colwidths-given docutils align-default" id="id11">
-<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク"></a></caption>
+<h3><span class="section-number">3.2.1. </span>ログ出力をする対象者<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<span id="table-definition-of-logging-user"></span><table class="docutils align-default" id="id11">
+<caption><span class="caption-text">ログ出力するユーザーの定義</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 12%" />
-<col style="width: 5%" />
-<col style="width: 48%" />
-<col style="width: 36%" />
+<col style="width: 11.9%" />
+<col style="width: 4.8%" />
+<col style="width: 47.6%" />
+<col style="width: 35.7%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>対象</p></th>
@@ -386,26 +393,26 @@ if(!session.role){
 </table>
 </section>
 <section id="id7">
-<h3><span class="section-number">3.2.2. </span>ログの出力先<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.2.2. </span>ログの出力先<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <p>syslogへ出力する。</p>
 <p>本ログの識別子として、固定値で 'videoplayerlog' を出力している。</p>
 </section>
 <section id="id8">
-<h3><span class="section-number">3.2.3. </span>ログの出力タイミング<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.2.3. </span>ログの出力タイミング<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <p>イベントのタイミングで、出力する。</p>
 <p>なので、学生がVideo視聴している間10sec毎を基本として、各種イベントが起きた時には、下記のログフォーマットで書き出す。</p>
 </section>
 <section id="id9">
-<h3><span class="section-number">3.2.4. </span>ログのフォーマット<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.2.4. </span>ログのフォーマット<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
 <p>syslogへ、TSV(タブ区切り)で出力する。</p>
 <p>フォーマットについては、 <a class="reference external" href="https://github.com/npocccties/ChibiCHiLO/issues/18">ログ出力の仕様を整理・定義する · Issue #18 · npocccties/ChibiCHiLO</a> でも議論しているので、必要に応じて参照すること。</p>
-<span id="table"></span><table class="colwidths-given docutils align-default" id="id12">
-<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id12" title="このテーブルへのパーマリンク"></a></caption>
+<span id="table"></span><table class="docutils align-default" id="id12">
+<caption><span class="caption-text">ログフォーマット</span><a class="headerlink" href="#id12" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 5%" />
-<col style="width: 11%" />
-<col style="width: 42%" />
-<col style="width: 42%" />
+<col style="width: 5.3%" />
+<col style="width: 10.5%" />
+<col style="width: 42.1%" />
+<col style="width: 42.1%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>No.</p></th>
@@ -547,7 +554,7 @@ if(!session.role){
 </div>
 </td>
 <td><div class="line-block">
-<div class="line">将来追加予定</div>
+<div class="line"><br /></div>
 </div>
 </td>
 </tr>
@@ -558,7 +565,7 @@ if(!session.role){
 </div>
 </td>
 <td><div class="line-block">
-<div class="line">将来追加予定</div>
+<div class="line"><br /></div>
 </div>
 </td>
 </tr>
@@ -569,7 +576,7 @@ if(!session.role){
 </div>
 </td>
 <td><div class="line-block">
-<div class="line">将来追加予定</div>
+<div class="line"><br /></div>
 </div>
 </td>
 </tr>
@@ -628,7 +635,7 @@ moodleは&quot;6f9beca26ec542e84c71931ad1276137&quot;，backboardは&quot;352126
 </dl>
 </section>
 <section id="id10">
-<h3><span class="section-number">3.2.5. </span>ログの整形<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">3.2.5. </span>ログの整形<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <p>syslog出力時、ログのフォーマット以外の不要な情報が含まれている場合があるのでバッチ等で別途除去する。</p>
 <blockquote>
 <div><p>例：シェルスクリプトで前日のログを整形する</p>

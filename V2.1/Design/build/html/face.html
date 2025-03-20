@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="ja" >
+<html class="writer-html5" lang="ja" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5. 顔認証 &mdash; CHiBi-CHiLO V2.1 ドキュメント</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=fce829b6" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/translations.js"></script>
+  
+        <script src="_static/jquery.js?v=8dae8fb0"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7b29d1e1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
@@ -26,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> CHiBi-CHiLO
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CHiBi-CHiLO
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -70,8 +77,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">5. </span>顔認証</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">5. </span>顔認証</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/face.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,9 +89,9 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">5. </span>顔認証<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク"></a></h1>
+<h1><span class="section-number">5. </span>顔認証<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2><span class="section-number">5.1. </span>概要<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">5.1. </span>概要<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>想定している顔認証システムは， Moodleプラグイン，Webカメラ制御プログラム，顔画像サーバーから構成される（図1）．
 本開発の範囲は図1のうち顔画像サーバー部分とする．</p>
 <img alt="_images/image4.png" src="_images/image4.png" />
@@ -97,12 +104,12 @@
 </ol>
 </section>
 <section id="id3">
-<h2><span class="section-number">5.2. </span>顔認証システムの処理について<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">5.2. </span>顔認証システムの処理について<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p>想定している顔認証システムの処理を図2に示す．</p>
 <img alt="_images/image5.png" src="_images/image5.png" />
 <p>図2： 顔認証システムのプロセス</p>
 <section id="id4">
-<h3><span class="section-number">5.2.1. </span>顔画像サーバーの処理<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">5.2.1. </span>顔画像サーバーの処理<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>本開発範囲である顔画像サーバーの処理は以下の通りである．
 1. MoodleプラグインからLTIにより受講者ID等の学習者の属性情報を受け取る．
 2. 登録画像がなければ，登録を求める．
@@ -112,7 +119,7 @@
 6. 認証結果を，受講者ID，講習ID，照合画像，タイムスタンプと共に顔データベースに記録する．</p>
 </section>
 <section id="moodle">
-<h3><span class="section-number">5.2.2. </span>Moodleプラグインの処理<a class="headerlink" href="#moodle" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">5.2.2. </span>Moodleプラグインの処理<a class="headerlink" href="#moodle" title="Link to this heading"></a></h3>
 <p>Moodleプラグインの処理を参考までに記載する．
 Moodleプラグインでは顔認証機能等を実装せず，小テストモジュールと顔画像サーバーの通信を以下のように媒介する．</p>
 <ol class="arabic simple">
@@ -124,14 +131,14 @@ Moodleプラグインでは顔認証機能等を実装せず，小テストモ�
 </ol>
 </section>
 <section id="web">
-<h3><span class="section-number">5.2.3. </span>Webカメラ制御プログラムの処理<a class="headerlink" href="#web" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">5.2.3. </span>Webカメラ制御プログラムの処理<a class="headerlink" href="#web" title="Link to this heading"></a></h3>
 <p>Webカメラの制御は，Webブラウザから行うこととし，開発ツールとしてWebRTCを利用する．
 1. webカメラ制御プログラムは，Moodleプラグインからカメラ画像の撮影依頼を受け取る．
 2. Webでカメラ撮影を実施する．
 3. 撮影されたカメラ画像を顔画像サーバーに送信する．</p>
 </section>
 <section id="id5">
-<h3><span class="section-number">5.2.4. </span>エラー処理<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク"></a></h3>
+<h3><span class="section-number">5.2.4. </span>エラー処理<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <p>以下のエラー処理を行うことを想定している．なお，この処理は，小テストモジュールが最初に認証を求めた時点（試験の開始時）でのみ行う．</p>
 <ol class="arabic simple">
 <li><p>顔認証に失敗し，試験が開始できないというエラーを返す．</p></li>
@@ -141,7 +148,7 @@ Moodleプラグインでは顔認証機能等を実装せず，小テストモ�
 </section>
 </section>
 <section id="id6">
-<h2><span class="section-number">5.3. </span>検討事項<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク"></a></h2>
+<h2><span class="section-number">5.3. </span>検討事項<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Webカメラ制御プログラムの開発を行わず，顔認証サーバーの開発がおこなえるのか</p></li>
 <li><p>開発範囲として，エラー処理の配慮まで必要なのか</p></li>
