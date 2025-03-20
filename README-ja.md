@@ -32,7 +32,7 @@ CSV ファイルの各カラムの詳細は次のとおりです。
 | `トピック名`       | `topics.name`              | トピック - トピック名称                                                 |
 | `動画の長さ`       | `topics.time_required`     | トピック - 学習所要時間 (秒)                                            |
 | `ユニーク視聴時間` | `activities.total_time_ms` | 学習活動 - 合計時間 (ms)                                                |
-| `学習状況`         | -                          | 学習状況 - 完了: "completed", 未完了: "incompleted", 未開封: "unopened" |
+| `学習状況`         | -                          | 学習状況 - 完了: "completed", 未完了: "incompleted", 未視聴: "unopened" |
 | `学習完了率`       | -                          | 学習完了率 - ユニーク視聴時間が動画の長さを占める割合 (パーセント)      |
 | `初回アクセス`     | `activities.created_at`    | 学習活動 - 作成日                                                       |
 | `最終アクセス`     | `activities.updated_at`    | 学習活動 - 更新日                                                       |
