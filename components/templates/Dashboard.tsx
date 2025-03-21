@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   topicTitleColumn: {
-    width: "70%",
+    width: "60%",
     marginRight: theme.spacing(1),
     alignItems: "center",
   },
@@ -194,10 +194,11 @@ export default function Dashboard(props: Props) {
   const activitiesByBooksAndTopics = useMemo(
     () =>
       getActivitiesByBooksAndTopics({
+        learners,
         courseBooks,
         bookActivities,
       }),
-    [courseBooks, bookActivities]
+    [learners, courseBooks, bookActivities]
   );
 
   const { data, dispatch, ...dialogProps } = useDialogProps<{
@@ -319,6 +320,7 @@ export default function Dashboard(props: Props) {
             )}
 
             <div className={classes.topicColumn}>動画の長さ（秒）</div>
+            <div className={classes.topicColumn}>未視聴</div>
             <div className={classes.topicColumn}>平均学習完了率</div>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
               <div className={classes.topicColumn}>平均繰返視聴割合</div>
@@ -326,16 +328,14 @@ export default function Dashboard(props: Props) {
               ""
             )}
           </div>
-          {activitiesByBooksAndTopics.map(
-            (activitiesByBookAndTopics, index) => (
-              <BookAndTopicActivityItem
-                key={index}
-                scope={scope === "current-lti-context-only"}
-                book={activitiesByBookAndTopics}
-                rewatchRates={rewatchRates?.activityRewatchRate ?? []}
-              />
-            )
-          )}
+          {activitiesByBooksAndTopics.map((activitiesByBookAndTopic, index) => (
+            <BookAndTopicActivityItem
+              key={index}
+              scope={scope === "current-lti-context-only"}
+              book={activitiesByBookAndTopic}
+              rewatchRates={rewatchRates?.activityRewatchRate ?? []}
+            />
+          ))}
         </TabPanel>
         <TabPanel className={classes.learners} value={tabIndex} index={2}>
           <div className={classes.learnersLabel}>
