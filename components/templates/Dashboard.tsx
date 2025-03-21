@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   topicTitleColumnLong: {
-    width: "80%",
+    width: "70%",
     marginRight: theme.spacing(1),
     alignItems: "center",
   },
