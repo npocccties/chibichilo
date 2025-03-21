@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -331,15 +332,25 @@ export default function Dashboard(props: Props) {
             <div className={classes.topicColumn}>動画の長さ</div>
             <div className={classes.topicColumn}>未視聴</div>
             <div className={classes.topicColumn}>
-              平均学習
-              <br />
-              完了率
+              <Tooltip
+                title="1本の講義動画において、視聴を完了した割合のコース内平均値。※ 未視聴の学習者を除く"
+                arrow
+              >
+                平均学習
+                <br />
+                完了率
+              </Tooltip>
             </div>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
               <div className={classes.topicColumn}>
-                平均繰返
-                <br />
-                視聴割合
+                <Tooltip
+                  title="1本の講義動画において、繰り返し視聴した割合のコース内平均値。※ 未視聴の学習者を除く"
+                  arrow
+                >
+                  平均繰返
+                  <br />
+                  視聴割合
+                </Tooltip>
               </div>
             ) : (
               ""
