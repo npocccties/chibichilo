@@ -107,6 +107,7 @@ const useStyles = makeStyles((theme) => ({
   topicLabel: {
     flex: 1,
     display: "flex",
+    fontSize: "75%",
   },
   topicTitleColumn: {
     width: "60%",
@@ -122,6 +123,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     width: "10%",
     justifyContent: "center",
+  },
+  topicDataDescriptionArea: {
+    textAlign: "right",
+    fontSize: "60%",
+  },
+  topicDataDescription: {
+    padding: 0,
+    margin: 0,
   },
 }));
 
@@ -319,14 +328,32 @@ export default function Dashboard(props: Props) {
               <div className={classes.topicTitleColumnLong}></div>
             )}
 
-            <div className={classes.topicColumn}>動画の長さ（秒）</div>
+            <div className={classes.topicColumn}>動画の長さ</div>
             <div className={classes.topicColumn}>未視聴</div>
-            <div className={classes.topicColumn}>平均学習完了率</div>
+            <div className={classes.topicColumn}>
+              平均学習
+              <br />
+              完了率
+            </div>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
-              <div className={classes.topicColumn}>平均繰返視聴割合</div>
+              <div className={classes.topicColumn}>
+                平均繰返
+                <br />
+                視聴割合
+              </div>
             ) : (
               ""
             )}
+          </div>
+          <div className={classes.topicDataDescriptionArea}>
+            <p className={classes.topicDataDescription}>
+              平均学習完了率：1本の講義動画において、視聴を完了した割合のコース内平均値。※
+              未視聴の学習者を除く
+            </p>
+            <p className={classes.topicDataDescription}>
+              平均繰返視聴割合：1本の講義動画において、繰り返し視聴した割合のコース内平均値。※
+              未視聴の学習者を除く
+            </p>
           </div>
           {activitiesByBooksAndTopics.map((activitiesByBookAndTopic, index) => (
             <BookAndTopicActivityItem
