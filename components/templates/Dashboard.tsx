@@ -38,6 +38,7 @@ import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 import useRewatchRate from "$utils/useRewatchRate";
 
+import { tooltipMessage } from "$utils/tooltipMessage";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
@@ -332,24 +333,22 @@ export default function Dashboard(props: Props) {
             <div className={classes.topicColumn}>動画の長さ</div>
             <div className={classes.topicColumn}>未視聴</div>
             <div className={classes.topicColumn}>
-              <Tooltip
-                title="1本の講義動画において、視聴を完了した割合のコース内平均値。※ 未視聴の学習者を除く"
-                arrow
-              >
-                平均学習
-                <br />
-                完了率
+              <Tooltip title={tooltipMessage.completeRate} arrow>
+                <span>
+                  平均学習
+                  <br />
+                  完了率
+                </span>
               </Tooltip>
             </div>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
               <div className={classes.topicColumn}>
-                <Tooltip
-                  title="1本の講義動画において、繰り返し視聴した割合のコース内平均値。※ 未視聴の学習者を除く"
-                  arrow
-                >
-                  平均繰返
-                  <br />
-                  視聴割合
+                <Tooltip title={tooltipMessage.rewatchRate} arrow>
+                  <span>
+                    平均繰返
+                    <br />
+                    視聴割合
+                  </span>
                 </Tooltip>
               </div>
             ) : (
