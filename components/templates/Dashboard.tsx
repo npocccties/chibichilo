@@ -323,6 +323,12 @@ export default function Dashboard(props: Props) {
           ))}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
+          <div className={classes.topicDataDescriptionArea}>
+            <p className={classes.topicDataDescription}>
+              ※
+              平均学習完了率、平均繰返視聴割合の計算に未視聴の学習者は含みません
+            </p>
+          </div>
           <div className={classes.topicLabel}>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
               <div className={classes.topicTitleColumn}></div>
@@ -354,12 +360,6 @@ export default function Dashboard(props: Props) {
             ) : (
               ""
             )}
-          </div>
-          <div className={classes.topicDataDescriptionArea}>
-            <p className={classes.topicDataDescription}>
-              ※
-              平均学習完了率、平均繰返視聴割合の計算に未視聴の学習者は含みません
-            </p>
           </div>
           {activitiesByBooksAndTopics.map((activitiesByBookAndTopic, index) => (
             <BookAndTopicActivityItem
