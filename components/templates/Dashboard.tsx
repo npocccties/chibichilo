@@ -128,7 +128,8 @@ const useStyles = makeStyles((theme) => ({
   },
   topicDataDescriptionArea: {
     textAlign: "right",
-    fontSize: "60%",
+    fontSize: "50%",
+    marginBottom: "0.5em",
   },
   topicDataDescription: {
     padding: 0,
