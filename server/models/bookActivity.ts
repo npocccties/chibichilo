@@ -19,5 +19,10 @@ export const BookActivitySchema = {
 
 /** ブックでの学習活動 */
 export type BookActivitySchema = Pick<ActivitySchema, "learner" | "topic"> &
-  Partial<Pick<ActivitySchema, "totalTimeMs" | "createdAt" | "updatedAt">> &
+  Partial<
+    Pick<
+      ActivitySchema,
+      "id" | "ltiContext" | "totalTimeMs" | "createdAt" | "updatedAt"
+    >
+  > &
   Pick<FromSchema<typeof BookActivitySchema>, "book" | "status">;

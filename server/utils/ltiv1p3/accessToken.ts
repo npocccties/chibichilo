@@ -7,6 +7,8 @@ async function grant(client: Client): Promise<string> {
       grant_type: "client_credentials",
       scope: [
         "https://purl.imsglobal.org/spec/lti-ags/scope/score",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+        "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
         "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
       ].join(" "),
     });

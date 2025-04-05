@@ -13,6 +13,7 @@ import LearningStatusDot from "$atoms/LearningStatusDot";
 import type { ActivityScope } from "$types/activityScope";
 import ActivityScopeSelect from "$molecules/ActivityScopeSelect";
 import LearningActivityItem from "$molecules/LearningActivityItem";
+import BookAndTopicActivityItem from "$molecules/BookAndTopicActivityItem";
 import LearnerActivityItem from "$molecules/LearnerActivityItem";
 import LearnerActivityDialog from "$organisms/LearnerActivityDialog";
 import useCardStyles from "$styles/card";
@@ -27,12 +28,17 @@ import downloadBookmarkStats from "$utils/bookmark/download";
 import label from "$utils/learningStatusLabel";
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
+import getActivitiesByBooksAndTopics from "$utils/getActivitiesByBooksAndTopics";
 import useDialogProps from "$utils/useDialogProps";
 import useMemberships from "$utils/useMemberships";
 import MembersDialog from "$organisms/MembersDialog";
 import BookmarkStatsDialog from "$organisms/BookmarkStatsDialog";
 import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
+import useRewatchRate from "$utils/useRewatchRate";
+
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
 type TabPanelProps = {
   className?: string;
@@ -98,6 +104,25 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  topicLabel: {
+    flex: 1,
+    display: "flex",
+  },
+  topicTitleColumn: {
+    width: "70%",
+    marginRight: theme.spacing(1),
+    alignItems: "center",
+  },
+  topicTitleColumnLong: {
+    width: "80%",
+    marginRight: theme.spacing(1),
+    alignItems: "center",
+  },
+  topicColumn: {
+    display: "flex",
+    width: "10%",
+    justifyContent: "center",
+  },
 }));
 
 type Props = {
@@ -131,8 +156,13 @@ export default function Dashboard(props: Props) {
     setTabIndex(value);
   };
   const handleBookActivityDownloadClick = useCallback(() => {
-    void downloadBookActivity(bookActivities, "視聴分析データ.csv", session);
-  }, [bookActivities, session]);
+    void downloadBookActivity(
+      bookActivities,
+      "視聴分析データ.csv",
+      session,
+      scope === "current-lti-context-only"
+    );
+  }, [bookActivities, session, scope]);
   const handleBookmarkStatsDownloadClick = useCallback(async () => {
     await downloadBookmarkStats(
       "ブックマークの統計情報.csv",
@@ -156,6 +186,20 @@ export default function Dashboard(props: Props) {
       }),
     [courseBooks, bookActivities]
   );
+
+  const { data: rewatchRates } = useRewatchRate(
+    scope === "current-lti-context-only"
+  );
+
+  const activitiesByBooksAndTopics = useMemo(
+    () =>
+      getActivitiesByBooksAndTopics({
+        courseBooks,
+        bookActivities,
+      }),
+    [courseBooks, bookActivities]
+  );
+
   const { data, dispatch, ...dialogProps } = useDialogProps<{
     learner: LearnerSchema;
     bookActivities: Array<BookActivitySchema>;
@@ -221,15 +265,17 @@ export default function Dashboard(props: Props) {
           <GetAppOutlinedIcon fontSize="small" />
           視聴分析データをダウンロード
         </Button>
-        <Button
-          onClick={handleBookmarkStatsDownloadClick}
-          color="secondary"
-          variant="contained"
-          size="small"
-        >
-          <GetAppOutlinedIcon fontSize="small" />
-          ブックマークの統計情報をダウンロード
-        </Button>
+        {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
+          <Button
+            onClick={handleBookmarkStatsDownloadClick}
+            color="secondary"
+            variant="contained"
+            size="small"
+          >
+            <GetAppOutlinedIcon fontSize="small" />
+            ブックマークの統計情報をダウンロード
+          </Button>
+        )}
         <Button
           onClick={handleMembershipClick(memberships?.members || [])}
           color="primary"
@@ -248,8 +294,9 @@ export default function Dashboard(props: Props) {
           onChange={handleChange}
         >
           <Tab label="ブック" />
+          <Tab label="トピック" />
           <Tab label="学習者" />
-          <Tab label="タグ" />
+          {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? <Tab label="タグ" /> : ""}
         </Tabs>
         <TabPanel className={classes.items} value={tabIndex} index={0}>
           {activitiesByBooks.map((activitiesByBook, index) => (
@@ -263,7 +310,34 @@ export default function Dashboard(props: Props) {
             />
           ))}
         </TabPanel>
-        <TabPanel className={classes.learners} value={tabIndex} index={1}>
+        <TabPanel value={tabIndex} index={1}>
+          <div className={classes.topicLabel}>
+            {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
+              <div className={classes.topicTitleColumn}></div>
+            ) : (
+              <div className={classes.topicTitleColumnLong}></div>
+            )}
+
+            <div className={classes.topicColumn}>動画の長さ（秒）</div>
+            <div className={classes.topicColumn}>平均学習完了率</div>
+            {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
+              <div className={classes.topicColumn}>平均繰返視聴割合</div>
+            ) : (
+              ""
+            )}
+          </div>
+          {activitiesByBooksAndTopics.map(
+            (activitiesByBookAndTopics, index) => (
+              <BookAndTopicActivityItem
+                key={index}
+                scope={scope === "current-lti-context-only"}
+                book={activitiesByBookAndTopics}
+                rewatchRates={rewatchRates?.activityRewatchRate ?? []}
+              />
+            )
+          )}
+        </TabPanel>
+        <TabPanel className={classes.learners} value={tabIndex} index={2}>
           <div className={classes.learnersLabel}>
             <div>
               <LearningStatusDot status="completed" />
@@ -285,14 +359,19 @@ export default function Dashboard(props: Props) {
               activities={activities}
               onActivityClick={handleActivityClick(learner, activities)}
               session={session}
+              rewatchRates={rewatchRates?.activityRewatchRate ?? []}
             />
           ))}
         </TabPanel>
-        <TabPanel className={classes.items} value={tabIndex} index={2}>
-          {activitiesByBooks.map((book, index) => (
-            <BookmarkStatsDialog key={index} book={book} />
-          ))}
-        </TabPanel>
+        {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
+          <TabPanel className={classes.items} value={tabIndex} index={3}>
+            {activitiesByBooks.map((book, index) => (
+              <BookmarkStatsDialog key={index} book={book} />
+            ))}
+          </TabPanel>
+        ) : (
+          ""
+        )}
       </Card>
       {data && (
         <LearnerActivityDialog

@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import StyleIcon from "@mui/icons-material/Style";
 import LinkIcon from "@mui/icons-material/Link";
 import CellTowerIcon from "@mui/icons-material/CellTower";
@@ -21,9 +22,12 @@ import type { UserSettingsProps } from "$server/models/userSettings";
 import { gray } from "$theme/colors";
 import { isAdministrator, isInstructor } from "$utils/session";
 import { updateUserSettings } from "$utils/userSettings";
-import { NEXT_PUBLIC_BASE_PATH } from "$utils/env";
+import { NEXT_PUBLIC_BASE_PATH, NEXT_PUBLIC_NO_DEEP_LINK_UI } from "$utils/env";
 import { useRouter } from "next/router";
 import { pagesPath } from "$utils/$path";
+import MoveDownloadPageDialog from "$organisms/MoveDownloadPageDialog";
+
+import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -74,6 +78,7 @@ type Props = ComponentProps<typeof MuiAppBar> & {
   onBookClick?(): void;
   onDashboardClick?(): void;
   onBookmarksClick?(): void;
+  onDownloadClick?(): void;
 };
 
 const role = (session: SessionSchema) => {
@@ -92,12 +97,19 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
     onBookClick,
     onDashboardClick,
     onBookmarksClick,
+    onDownloadClick,
     ...others
   } = props;
-  const isDeepLink = !!session.ltiDlSettings?.deep_link_return_url;
+
+  const isDeepLink =
+    !!session.ltiDlSettings?.deep_link_return_url &&
+    !NEXT_PUBLIC_NO_DEEP_LINK_UI;
+
   const appBarClasses = useAppBarStyles();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [openDownload, setOpenDownload] = useState(false);
+
   const router = useRouter();
 
   const handleClick = () => {
@@ -105,6 +117,12 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleDownloadClick = () => {
+    setOpenDownload(true);
+  };
+  const handleDownloadClose = () => {
+    setOpenDownload(false);
   };
   const handleOpenUserSettings = () => {
     setShowZoomImportNotice(false);
@@ -119,6 +137,15 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
     session?.systemSettings?.zoomImportEnabled &&
       userSettings?.zoomImportEnabled == undefined
   );
+
+  if (
+    !NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK &&
+    !isAdministrator(session) &&
+    !isInstructor
+  ) {
+    return <></>;
+  }
+
   const actionZoomImportNotice = (
     <>
       <Button
@@ -198,12 +225,29 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                   onClick={onDashboardClick}
                 />
               )}
-              <AppBarNavButton
-                color="inherit"
-                icon={<StyleIcon />}
-                label="タグ管理"
-                onClick={onBookmarksClick}
-              />
+              {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
+                <AppBarNavButton
+                  color="inherit"
+                  icon={<StyleIcon />}
+                  label="タグ管理"
+                  onClick={onBookmarksClick}
+                />
+              )}
+              {onDownloadClick && isAdministrator(session) && (
+                <>
+                  <AppBarNavButton
+                    color="inherit"
+                    icon={<DownloadOutlinedIcon />}
+                    label="ダウンロード"
+                    onClick={handleDownloadClick}
+                  />
+                  <MoveDownloadPageDialog
+                    open={openDownload}
+                    onClose={handleDownloadClose}
+                    handleDownload={onDownloadClick}
+                  />
+                </>
+              )}
             </div>
           )}
           {isInstructor && (

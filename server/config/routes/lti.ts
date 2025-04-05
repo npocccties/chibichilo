@@ -7,6 +7,7 @@ import * as ltiCallbackService from "$server/services/ltiCallback";
 import * as ltiResourceLinkService from "$server/services/ltiResourceLink";
 import * as ltiKeys from "$server/services/ltiKeys";
 import * as ltiClients from "$server/services/ltiClients";
+import * as ltiContexts from "$server/services/ltiContexts";
 import * as linkSearch from "$server/services/linkSearch";
 import * as ltiMembersService from "$server/services/ltiMembers";
 import * as ltiDeepLinkingService from "$server/services/ltiDeepLinking";
@@ -74,6 +75,14 @@ export async function clients(fastify: FastifyInstance) {
   const path = "/lti/clients";
   const { method, index } = ltiClients;
   const hooks = makeHooks(fastify, ltiClients.hooks);
+
+  fastify.get(path, { schema: method.get, ...hooks.get }, handler(index));
+}
+
+export async function contexts(fastify: FastifyInstance) {
+  const path = "/lti/contexts";
+  const { method, index } = ltiContexts;
+  const hooks = makeHooks(fastify, ltiContexts.hooks);
 
   fastify.get(path, { schema: method.get, ...hooks.get }, handler(index));
 }

@@ -51,6 +51,7 @@ function Content({ children }: { children: ReactNode }) {
   const handleDashboardClick = () => router.push(pagesPath.dashboard.$url());
   const handleBookClick = () => router.push(pagesPath.$url());
   const handleBookmarksClick = () => router.push(pagesPath.bookmarks.$url());
+  const handleDownloadClick = () => router.push(pagesPath.download.$url());
 
   return (
     <>
@@ -65,6 +66,7 @@ function Content({ children }: { children: ReactNode }) {
           onDashboardClick={handleDashboardClick}
           onBookClick={handleBookClick}
           onBookmarksClick={handleBookmarksClick}
+          onDownloadClick={handleDownloadClick}
         />
       </Slide>
       {children}

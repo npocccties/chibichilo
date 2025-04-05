@@ -14,14 +14,18 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse20017Bookmark,
-    InlineResponse20017BookmarkFromJSON,
-    InlineResponse20017BookmarkFromJSONTyped,
-    InlineResponse20017BookmarkToJSON,
-    InlineResponse20017BookmarkTagMenu,
-    InlineResponse20017BookmarkTagMenuFromJSON,
-    InlineResponse20017BookmarkTagMenuFromJSONTyped,
-    InlineResponse20017BookmarkTagMenuToJSON,
+    InlineResponse20017BookActivities,
+    InlineResponse20017BookActivitiesFromJSON,
+    InlineResponse20017BookActivitiesFromJSONTyped,
+    InlineResponse20017BookActivitiesToJSON,
+    InlineResponse20017CourseBooks,
+    InlineResponse20017CourseBooksFromJSON,
+    InlineResponse20017CourseBooksFromJSONTyped,
+    InlineResponse20017CourseBooksToJSON,
+    InlineResponse2009Learner,
+    InlineResponse2009LearnerFromJSON,
+    InlineResponse2009LearnerFromJSONTyped,
+    InlineResponse2009LearnerToJSON,
 } from './';
 
 /**
@@ -32,16 +36,22 @@ import {
 export interface InlineResponse20017 {
     /**
      * 
-     * @type {Array<InlineResponse20017Bookmark>}
+     * @type {Array<InlineResponse2009Learner>}
      * @memberof InlineResponse20017
      */
-    bookmark: Array<InlineResponse20017Bookmark>;
+    learners: Array<InlineResponse2009Learner>;
     /**
      * 
-     * @type {Array<InlineResponse20017BookmarkTagMenu>}
+     * @type {Array<InlineResponse20017CourseBooks>}
      * @memberof InlineResponse20017
      */
-    bookmarkTagMenu?: Array<InlineResponse20017BookmarkTagMenu>;
+    courseBooks: Array<InlineResponse20017CourseBooks>;
+    /**
+     * 
+     * @type {Array<InlineResponse20017BookActivities>}
+     * @memberof InlineResponse20017
+     */
+    bookActivities: Array<InlineResponse20017BookActivities>;
 }
 
 export function InlineResponse20017FromJSON(json: any): InlineResponse20017 {
@@ -54,8 +64,9 @@ export function InlineResponse20017FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'bookmark': ((json['bookmark'] as Array<any>).map(InlineResponse20017BookmarkFromJSON)),
-        'bookmarkTagMenu': !exists(json, 'bookmarkTagMenu') ? undefined : ((json['bookmarkTagMenu'] as Array<any>).map(InlineResponse20017BookmarkTagMenuFromJSON)),
+        'learners': ((json['learners'] as Array<any>).map(InlineResponse2009LearnerFromJSON)),
+        'courseBooks': ((json['courseBooks'] as Array<any>).map(InlineResponse20017CourseBooksFromJSON)),
+        'bookActivities': ((json['bookActivities'] as Array<any>).map(InlineResponse20017BookActivitiesFromJSON)),
     };
 }
 
@@ -68,8 +79,9 @@ export function InlineResponse20017ToJSON(value?: InlineResponse20017 | null): a
     }
     return {
         
-        'bookmark': ((value.bookmark as Array<any>).map(InlineResponse20017BookmarkToJSON)),
-        'bookmarkTagMenu': value.bookmarkTagMenu === undefined ? undefined : ((value.bookmarkTagMenu as Array<any>).map(InlineResponse20017BookmarkTagMenuToJSON)),
+        'learners': ((value.learners as Array<any>).map(InlineResponse2009LearnerToJSON)),
+        'courseBooks': ((value.courseBooks as Array<any>).map(InlineResponse20017CourseBooksToJSON)),
+        'bookActivities': ((value.bookActivities as Array<any>).map(InlineResponse20017BookActivitiesToJSON)),
     };
 }
 

@@ -6,6 +6,7 @@ export const LtiContextSchema = {
   required: ["id"],
   properties: {
     id: { title: "Context ID", type: "string" },
+    consumerId: { title: "Consumer ID", type: "string" },
     label: { title: "コースコード", type: "string" },
     title: { title: "コースタイトルまたはコース名", type: "string" },
   },

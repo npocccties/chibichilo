@@ -30,6 +30,12 @@ export interface LTIContext {
      * @type {string}
      * @memberof LTIContext
      */
+    consumerId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LTIContext
+     */
     label?: string;
     /**
      * 
@@ -50,6 +56,7 @@ export function LTIContextFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'id': json['id'],
+        'consumerId': !exists(json, 'consumerId') ? undefined : json['consumerId'],
         'label': !exists(json, 'label') ? undefined : json['label'],
         'title': !exists(json, 'title') ? undefined : json['title'],
     };
@@ -65,6 +72,7 @@ export function LTIContextToJSON(value?: LTIContext | null): any {
     return {
         
         'id': value.id,
+        'consumerId': value.consumerId,
         'label': value.label,
         'title': value.title,
     };

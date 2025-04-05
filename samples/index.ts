@@ -12,4 +12,5 @@ export { default as activity } from "./activity";
 export { default as bookActivity } from "./bookActivity";
 export { default as relatedBook } from "./relatedBook";
 export { default as release } from "./release";
+export { default as rewatchRates } from "./rewatchRates";
 export * from "./bookmark";

@@ -39,8 +39,8 @@ export const bookmark = {
 };
 
 export const bookmarkTagMenu: BookmarkTagMenu = [
-  { label: "後で見る", emoji: "👀" },
-  { label: "難しい", emoji: "💪" },
+  { label: "後で見る", emoji: "📌" },
+  { label: "難しい", emoji: "😕" },
   { label: "重要", emoji: "❗" },
   { label: "お気に入り", emoji: "💖" },
   { label: "高評価", emoji: "👍" },

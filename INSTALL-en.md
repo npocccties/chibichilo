@@ -9,14 +9,20 @@ When changing the information of the connection destination of API, .env must be
 
 .env:
 
-| Environment variable                    | Explanation                                                                                                               |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_PATH`             | Base path for API URLs (デフォルト: 同一オリジン "")                                                                      |
-| `NEXT_PUBLIC_BASE_PATH`                 | Base path for static content URLs (デフォルト: "")                                                                        |
-| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY` | 学習活動の LTI Context ごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
-| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL`    | 学習活動の送信間隔 (秒) (デフォルト: `10`)                                                                                |
-| `NEXT_PUBLIC_VIDEO_MAX_HEIGHT`          | max-height for scroll-following video player (デフォルト: `40vh`)                                                         |
-| `NEXT_PUBLIC_NO_EMBED`                  | Do not allow anyone to embed. Disabled by default.                                                                        |
+| Environment variable                          | Explanation                                                                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_PATH`                   | Base path for API URLs (デフォルト: 同一オリジン "")                                                                      |
+| `NEXT_PUBLIC_BASE_PATH`                       | Base path for static content URLs (デフォルト: "")                                                                        |
+| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY`       | 学習活動の LTI Context ごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
+| `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL`          | 学習活動の送信間隔 (秒) (デフォルト: `10`)                                                                                |
+| `NEXT_PUBLIC_VIDEO_MAX_HEIGHT`                | max-height for scroll-following video player (デフォルト: `40vh`)                                                         |
+| `NEXT_PUBLIC_NO_EMBED`                        | Do not allow anyone to embed. Disabled by default.                                                                        |
+| `NEXT_PUBLIC_ACTIVITY_REWATCH_RATE_THRESHOLD` | Threshold for visualizing rewatched activities based on activity rewatch rate (between `0` and `1`) (Default: `0.1`)      |
+| `NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD`   | Threshold for plotting learners' activity counts on a rewatch graph (Default: `20`)                                       |
+| `NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE`         | Radius size of plot points on a rewatch graph (Default: `5.0`)                                                            |
+| `NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD`        | Option for enabling topic view record (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)     |
+| `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | Option for enabling tag and bookmark (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)      |
+| `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | Do not allow anyone to DeepLink UI. Disabled by default.                                                                  |
 
 ## Build front-ends
 

@@ -22,8 +22,7 @@ export const LtiDlSettingsSchema = {
       items: { type: "string" },
     },
     accept_media_types: {
-      type: "array",
-      items: { type: "string" },
+      type: "string",
     },
     accept_multiple: {
       type: "boolean",

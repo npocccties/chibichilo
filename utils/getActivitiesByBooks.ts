@@ -39,7 +39,9 @@ function getActivitiesByBooks({
         activitiesByLearner.every(({ status }) => status === "completed")
       ) {
         completedLearners.set(learnerId, activitiesByLearner);
-      } else {
+      } else if (
+        activitiesByLearner.every(({ status }) => status === "incompleted")
+      ) {
         incompletedLearners.set(learnerId, activitiesByLearner);
       }
     }

@@ -14,36 +14,42 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2006Books,
-    InlineResponse2006BooksFromJSON,
-    InlineResponse2006BooksFromJSONTyped,
-    InlineResponse2006BooksToJSON,
+    InlineResponse2006Contents,
+    InlineResponse2006ContentsFromJSON,
+    InlineResponse2006ContentsFromJSONTyped,
+    InlineResponse2006ContentsToJSON,
 } from './';
 
 /**
- * 作成したブックの一覧
+ * 
  * @export
  * @interface InlineResponse2006
  */
 export interface InlineResponse2006 {
     /**
      * 
-     * @type {Array<InlineResponse2006Books>}
+     * @type {number}
      * @memberof InlineResponse2006
      */
-    books?: Array<InlineResponse2006Books>;
+    totalCount: number;
+    /**
+     * 
+     * @type {Array<InlineResponse2006Contents>}
+     * @memberof InlineResponse2006
+     */
+    contents: Array<InlineResponse2006Contents>;
     /**
      * 
      * @type {number}
      * @memberof InlineResponse2006
      */
-    page?: number;
+    page: number;
     /**
      * 
      * @type {number}
      * @memberof InlineResponse2006
      */
-    perPage?: number;
+    perPage: number;
 }
 
 export function InlineResponse2006FromJSON(json: any): InlineResponse2006 {
@@ -56,9 +62,10 @@ export function InlineResponse2006FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2006BooksFromJSON)),
-        'page': !exists(json, 'page') ? undefined : json['page'],
-        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
+        'totalCount': json['totalCount'],
+        'contents': ((json['contents'] as Array<any>).map(InlineResponse2006ContentsFromJSON)),
+        'page': json['page'],
+        'perPage': json['perPage'],
     };
 }
 
@@ -71,7 +78,8 @@ export function InlineResponse2006ToJSON(value?: InlineResponse2006 | null): any
     }
     return {
         
-        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2006BooksToJSON)),
+        'totalCount': value.totalCount,
+        'contents': ((value.contents as Array<any>).map(InlineResponse2006ContentsToJSON)),
         'page': value.page,
         'perPage': value.perPage,
     };

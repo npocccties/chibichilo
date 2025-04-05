@@ -45,7 +45,9 @@ export async function index({
 }: FastifyRequest<{ Querystring: Query }>) {
   const body = await findAllActivity(
     session,
-    Boolean(query.current_lti_context_only)
+    query.current_lti_context_only,
+    query.lti_consumer_id,
+    query.lti_context_id
   );
 
   return { status: 200, body };

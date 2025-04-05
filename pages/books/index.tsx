@@ -11,6 +11,7 @@ import useLinkedBook from "$utils/useLinkedBook";
 import { pagesPath } from "$utils/$path";
 import useDialogProps from "$utils/useDialogProps";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
+import { NEXT_PUBLIC_NO_DEEP_LINK_UI } from "$utils/env";
 
 const Books = (
   props: Omit<
@@ -63,7 +64,9 @@ function Index() {
     onContentLinkClick,
     onLinkedBookClick: handleLinkedBookClick,
   };
-  const isDeepLink = !!session?.ltiDlSettings?.deep_link_return_url;
+  const isDeepLink =
+    !!session?.ltiDlSettings?.deep_link_return_url &&
+    !NEXT_PUBLIC_NO_DEEP_LINK_UI;
 
   if (isDeepLink) {
     return (

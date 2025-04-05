@@ -14,6 +14,7 @@ function send(eventType: EventType, event: PlayerStats, detail?: string) {
   const session = load();
   if (!session) return;
   const idPrefix = session.oauthClient.id;
+  const playbackRate = loadPlaybackRate();
   const id = (id: string) => [idPrefix, id].join(":");
   const body = {
     event: eventType,
@@ -27,6 +28,9 @@ function send(eventType: EventType, event: PlayerStats, detail?: string) {
     nonce: session.oauthClient.nonce,
     videoType: getVideoType(event.providerUrl),
     path: location.pathname,
+    topicId: event.topicId,
+    bookId: session.ltiResourceLink?.bookId,
+    playbackRate: playbackRate,
   };
   return api.apiV2EventPost({ body });
 }
@@ -122,16 +126,17 @@ function logger(tracker: PlayerTracker) {
 }
 
 /** ロギング開始 */
-export function useLoggerInit() {
+export function useLoggerInit(topicId: number) {
   const { session } = useSessionAtom();
   const playerTracker = usePlayerTrackerAtom();
-
   useLoggerSessionInit(session);
 
   useEffect(() => {
     if (!playerTracker) return;
-
+    if (topicId) {
+      playerTracker.topicId = topicId;
+    }
     const dispose = logger(playerTracker);
     return dispose;
-  }, [playerTracker]);
+  }, [playerTracker, topicId]);
 }

@@ -6,6 +6,7 @@ import { gray } from "$theme/colors";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { LearnerSchema } from "$server/models/learner";
 import type { SessionSchema } from "$server/models/session";
+import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,10 +48,11 @@ type Props = {
   activities: Array<BookActivitySchema>;
   onActivityClick?(activity: BookActivitySchema): void;
   session: SessionSchema;
+  rewatchRates: Array<ActivityRewatchRateProps>;
 };
 
 export default function LearnerActivityItem(props: Props) {
-  const { learner, activities, onActivityClick, session } = props;
+  const { learner, activities, onActivityClick, session, rewatchRates } = props;
   const classes = useStyles();
 
   return (
@@ -63,6 +65,11 @@ export default function LearnerActivityItem(props: Props) {
               activity={activity}
               onActivityClick={onActivityClick}
               session={session}
+              rewatchRate={rewatchRates.find(
+                (r) =>
+                  r.learnerId === activity.learner.id &&
+                  r.topicId === activity.topic.id
+              )}
             />
             {activities[index + 1] &&
               activities[index + 1].book.id !== activity.book.id && (

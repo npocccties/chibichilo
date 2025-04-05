@@ -43,7 +43,7 @@ export default function TopicViewerContent({
     return activity.timeRanges;
   }, [bookActivity, topic.id]);
 
-  useLoggerInit();
+  useLoggerInit(topic.id);
 
   return (
     <>

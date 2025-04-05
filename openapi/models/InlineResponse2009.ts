@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse2009Releases,
-    InlineResponse2009ReleasesFromJSON,
-    InlineResponse2009ReleasesFromJSONTyped,
-    InlineResponse2009ReleasesToJSON,
+    InlineResponse2009Activity,
+    InlineResponse2009ActivityFromJSON,
+    InlineResponse2009ActivityFromJSONTyped,
+    InlineResponse2009ActivityToJSON,
 } from './';
 
 /**
@@ -28,10 +28,10 @@ import {
 export interface InlineResponse2009 {
     /**
      * 
-     * @type {Array<InlineResponse2009Releases>}
+     * @type {Array<InlineResponse2009Activity>}
      * @memberof InlineResponse2009
      */
-    releases?: Array<InlineResponse2009Releases>;
+    activity: Array<InlineResponse2009Activity>;
 }
 
 export function InlineResponse2009FromJSON(json: any): InlineResponse2009 {
@@ -44,7 +44,7 @@ export function InlineResponse2009FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'releases': !exists(json, 'releases') ? undefined : ((json['releases'] as Array<any>).map(InlineResponse2009ReleasesFromJSON)),
+        'activity': ((json['activity'] as Array<any>).map(InlineResponse2009ActivityFromJSON)),
     };
 }
 
@@ -57,7 +57,7 @@ export function InlineResponse2009ToJSON(value?: InlineResponse2009 | null): any
     }
     return {
         
-        'releases': value.releases === undefined ? undefined : ((value.releases as Array<any>).map(InlineResponse2009ReleasesToJSON)),
+        'activity': ((value.activity as Array<any>).map(InlineResponse2009ActivityToJSON)),
     };
 }
 

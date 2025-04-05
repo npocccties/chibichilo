@@ -1,6 +1,7 @@
 import type { FromSchema } from "json-schema-to-ts";
 import { ActivityTimeRangeSchema } from "./activityTimeRange";
 import { LearnerSchema } from "./learner";
+import { LtiContextSchema } from "./ltiContext";
 
 /** 学習活動 */
 export const ActivitySchema = {
@@ -8,6 +9,7 @@ export const ActivitySchema = {
   properties: {
     id: { type: "integer" },
     learner: LearnerSchema,
+    ltiContext: LtiContextSchema,
     topic: {
       type: "object",
       properties: {

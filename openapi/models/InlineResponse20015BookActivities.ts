@@ -18,18 +18,22 @@ import {
     InlineResponse20015BookFromJSON,
     InlineResponse20015BookFromJSONTyped,
     InlineResponse20015BookToJSON,
-    InlineResponse2008Learner,
-    InlineResponse2008LearnerFromJSON,
-    InlineResponse2008LearnerFromJSONTyped,
-    InlineResponse2008LearnerToJSON,
-    InlineResponse2008TimeRanges,
-    InlineResponse2008TimeRangesFromJSON,
-    InlineResponse2008TimeRangesFromJSONTyped,
-    InlineResponse2008TimeRangesToJSON,
-    InlineResponse2008Topic,
-    InlineResponse2008TopicFromJSON,
-    InlineResponse2008TopicFromJSONTyped,
-    InlineResponse2008TopicToJSON,
+    InlineResponse2009Learner,
+    InlineResponse2009LearnerFromJSON,
+    InlineResponse2009LearnerFromJSONTyped,
+    InlineResponse2009LearnerToJSON,
+    InlineResponse2009TimeRanges,
+    InlineResponse2009TimeRangesFromJSON,
+    InlineResponse2009TimeRangesFromJSONTyped,
+    InlineResponse2009TimeRangesToJSON,
+    InlineResponse2009Topic,
+    InlineResponse2009TopicFromJSON,
+    InlineResponse2009TopicFromJSONTyped,
+    InlineResponse2009TopicToJSON,
+    LTIContext,
+    LTIContextFromJSON,
+    LTIContextFromJSONTyped,
+    LTIContextToJSON,
 } from './';
 
 /**
@@ -46,16 +50,22 @@ export interface InlineResponse20015BookActivities {
     id?: number;
     /**
      * 
-     * @type {InlineResponse2008Learner}
+     * @type {InlineResponse2009Learner}
      * @memberof InlineResponse20015BookActivities
      */
-    learner: InlineResponse2008Learner;
+    learner: InlineResponse2009Learner;
     /**
      * 
-     * @type {InlineResponse2008Topic}
+     * @type {LTIContext}
      * @memberof InlineResponse20015BookActivities
      */
-    topic: InlineResponse2008Topic;
+    ltiContext?: LTIContext;
+    /**
+     * 
+     * @type {InlineResponse2009Topic}
+     * @memberof InlineResponse20015BookActivities
+     */
+    topic: InlineResponse2009Topic;
     /**
      * 
      * @type {boolean}
@@ -70,10 +80,10 @@ export interface InlineResponse20015BookActivities {
     totalTimeMs?: number;
     /**
      * 
-     * @type {Array<InlineResponse2008TimeRanges>}
+     * @type {Array<InlineResponse2009TimeRanges>}
      * @memberof InlineResponse20015BookActivities
      */
-    timeRanges?: Array<InlineResponse2008TimeRanges>;
+    timeRanges?: Array<InlineResponse2009TimeRanges>;
     /**
      * 
      * @type {Date}
@@ -111,11 +121,12 @@ export function InlineResponse20015BookActivitiesFromJSONTyped(json: any, ignore
     return {
         
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'learner': InlineResponse2008LearnerFromJSON(json['learner']),
-        'topic': InlineResponse2008TopicFromJSON(json['topic']),
+        'learner': InlineResponse2009LearnerFromJSON(json['learner']),
+        'ltiContext': !exists(json, 'ltiContext') ? undefined : LTIContextFromJSON(json['ltiContext']),
+        'topic': InlineResponse2009TopicFromJSON(json['topic']),
         'completed': !exists(json, 'completed') ? undefined : json['completed'],
         'totalTimeMs': !exists(json, 'totalTimeMs') ? undefined : json['totalTimeMs'],
-        'timeRanges': !exists(json, 'timeRanges') ? undefined : ((json['timeRanges'] as Array<any>).map(InlineResponse2008TimeRangesFromJSON)),
+        'timeRanges': !exists(json, 'timeRanges') ? undefined : ((json['timeRanges'] as Array<any>).map(InlineResponse2009TimeRangesFromJSON)),
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
         'book': InlineResponse20015BookFromJSON(json['book']),
@@ -133,11 +144,12 @@ export function InlineResponse20015BookActivitiesToJSON(value?: InlineResponse20
     return {
         
         'id': value.id,
-        'learner': InlineResponse2008LearnerToJSON(value.learner),
-        'topic': InlineResponse2008TopicToJSON(value.topic),
+        'learner': InlineResponse2009LearnerToJSON(value.learner),
+        'ltiContext': LTIContextToJSON(value.ltiContext),
+        'topic': InlineResponse2009TopicToJSON(value.topic),
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,
-        'timeRanges': value.timeRanges === undefined ? undefined : ((value.timeRanges as Array<any>).map(InlineResponse2008TimeRangesToJSON)),
+        'timeRanges': value.timeRanges === undefined ? undefined : ((value.timeRanges as Array<any>).map(InlineResponse2009TimeRangesToJSON)),
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
         'book': InlineResponse20015BookToJSON(value.book),

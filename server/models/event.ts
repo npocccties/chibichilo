@@ -16,7 +16,8 @@ export type EventType =
   | "pagehide-ended"
   | "unload-ended"
   | "hidden-ended"
-  | "current-time";
+  | "current-time"
+  | "admin-download"; // ダウンロードページ用
 
 export const EventSchema = {
   title: "syslogに記録するための視聴ログオブジェクト (v1互換)",
@@ -84,4 +85,25 @@ OauthClient["id"] + ":" + LtiContext["id"]
   },
 } as const satisfies JSONSchema;
 
+export const EventActivitySchema = {
+  title: "syslogに記録するための視聴ログオブジェクト (v1互換)のActivity拡張",
+  description: `無効値 ("", null, undefined, [], false, 0, "0") ならば "-" として記録`,
+  type: "object",
+  properties: {
+    topicId: {
+      title: "topicId",
+      type: "string",
+    },
+    bookId: {
+      title: "bookId",
+      type: "string",
+    },
+    playbackRate: {
+      title: "playbackRate",
+      type: "string",
+    },
+  },
+} as const satisfies JSONSchema;
+
 export type EventSchema = FromSchema<typeof EventSchema>;
+export type EventActivitySchema = FromSchema<typeof EventActivitySchema>;

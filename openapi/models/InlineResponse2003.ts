@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    InlineResponse2003Contents,
-    InlineResponse2003ContentsFromJSON,
-    InlineResponse2003ContentsFromJSONTyped,
-    InlineResponse2003ContentsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -28,28 +21,10 @@ import {
 export interface InlineResponse2003 {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineResponse2003
      */
-    totalCount: number;
-    /**
-     * 
-     * @type {Array<InlineResponse2003Contents>}
-     * @memberof InlineResponse2003
-     */
-    contents: Array<InlineResponse2003Contents>;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse2003
-     */
-    page: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse2003
-     */
-    perPage: number;
+    jwt?: string;
 }
 
 export function InlineResponse2003FromJSON(json: any): InlineResponse2003 {
@@ -62,10 +37,7 @@ export function InlineResponse2003FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'totalCount': json['totalCount'],
-        'contents': ((json['contents'] as Array<any>).map(InlineResponse2003ContentsFromJSON)),
-        'page': json['page'],
-        'perPage': json['perPage'],
+        'jwt': !exists(json, 'jwt') ? undefined : json['jwt'],
     };
 }
 
@@ -78,10 +50,7 @@ export function InlineResponse2003ToJSON(value?: InlineResponse2003 | null): any
     }
     return {
         
-        'totalCount': value.totalCount,
-        'contents': ((value.contents as Array<any>).map(InlineResponse2003ContentsToJSON)),
-        'page': value.page,
-        'perPage': value.perPage,
+        'jwt': value.jwt,
     };
 }
 

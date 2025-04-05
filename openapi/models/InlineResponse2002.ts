@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse2002 {
     /**
      * 
-     * @type {string}
+     * @type {Array<object>}
      * @memberof InlineResponse2002
      */
-    jwt?: string;
+    keys?: Array<object>;
 }
 
 export function InlineResponse2002FromJSON(json: any): InlineResponse2002 {
@@ -37,7 +37,7 @@ export function InlineResponse2002FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'jwt': !exists(json, 'jwt') ? undefined : json['jwt'],
+        'keys': !exists(json, 'keys') ? undefined : json['keys'],
     };
 }
 
@@ -50,7 +50,7 @@ export function InlineResponse2002ToJSON(value?: InlineResponse2002 | null): any
     }
     return {
         
-        'jwt': value.jwt,
+        'keys': value.keys,
     };
 }
 

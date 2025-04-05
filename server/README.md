@@ -4,12 +4,12 @@
 
 ### 前提条件
 
-2023-09-07 現在、以下の環境で動作確認済み
+2025-01-19 現在、以下の環境で動作確認済み
 
 - Docker v24
 - Docker Compose v2
-- Node.js LTS
-- Yarn v1.22
+- Node.js 22.13.0
+- Yarn v1.22.22
 
 ### 手順
 
@@ -105,6 +105,7 @@ docker compose down
 | `ACTIVITY_RATE_MIN`                  | 学習活動の完了とみなす最小の視聴時間の割合 (デフォルト:`0.9`)                                                                                                      |
 | `VTT_ACCESS_TOKEN_EXPIRES_IN`        | 字幕を取得する際のアクセストークンの有効期限 (秒) (デフォルト: `5400`)                                                                                             |
 | `ACTIVITY_COUNT_INTERVAL`            | 実視聴回数を記録する際の区間の長さ (秒) (デフォルト:`1`)                                                                                                           |
+| `ACTIVITY_REWATCH_THRESHOLD`         | 繰り返し視聴したと判定する閾値 (回) (デフォルト:`2`)                                                                                                               |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
@@ -311,8 +312,8 @@ dist ディレクトリをサーバー上に配置し、各環境変数ととも
 
 | id  | label      | emoji |
 | --- | ---------- | ----- |
-| 1   | 後で見る   | 👀    |
-| 2   | 難しい     | 💪    |
+| 1   | 後で見る   | 📌    |
+| 2   | 難しい     | 😕    |
 | 3   | 重要       | ❗    |
 | 4   | お気に入り | 💖    |
 | 5   | 高評価     | 👍    |
@@ -323,5 +324,5 @@ dist ディレクトリをサーバー上に配置し、各環境変数ととも
 SQL:
 
 ```sql
-UPDATE "Tag" SET "label" = '後で見る', "emoji" = '👀' WHERE "id" = 1;
+UPDATE "Tag" SET "label" = '後で見る', "emoji" = '📌' WHERE "id" = 1;
 ```

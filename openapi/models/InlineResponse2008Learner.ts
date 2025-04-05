@@ -37,6 +37,18 @@ export interface InlineResponse2008Learner {
      * @memberof InlineResponse2008Learner
      */
     email: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2008Learner
+     */
+    ltiConsumerId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2008Learner
+     */
+    ltiUserId?: string;
 }
 
 export function InlineResponse2008LearnerFromJSON(json: any): InlineResponse2008Learner {
@@ -52,6 +64,8 @@ export function InlineResponse2008LearnerFromJSONTyped(json: any, ignoreDiscrimi
         'id': json['id'],
         'name': json['name'],
         'email': json['email'],
+        'ltiConsumerId': !exists(json, 'ltiConsumerId') ? undefined : json['ltiConsumerId'],
+        'ltiUserId': !exists(json, 'ltiUserId') ? undefined : json['ltiUserId'],
     };
 }
 
@@ -67,6 +81,8 @@ export function InlineResponse2008LearnerToJSON(value?: InlineResponse2008Learne
         'id': value.id,
         'name': value.name,
         'email': value.email,
+        'ltiConsumerId': value.ltiConsumerId,
+        'ltiUserId': value.ltiUserId,
     };
 }
 

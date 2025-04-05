@@ -9,6 +9,10 @@ export const LearnerSchema = {
     name: { type: "string" },
     /** メールアドレス ("" は無効値) */
     email: { type: "string" },
+    /** LMSクライアントID ("" は無効値) */
+    ltiConsumerId: { type: "string" },
+    /** LMSユーザID ("" は無効値) */
+    ltiUserId: { type: "string" },
   },
   required: ["id", "name", "email"],
   additionalProperties: false,

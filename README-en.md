@@ -17,7 +17,7 @@ Please read the installation guide (INSTALL-ja.md).
 Instructors or administrators can download CSV files (with BOM) as learning analytics data.
 The details of each column in the CSV file are as follows.
 
-| CSV                        | RDB                        | 説明                                                                                        |
+| CSV                        | RDB                        | Explanation                                                                                 |
 | -------------------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
 | `User ID`                  | `users.id`                 | Learner - Identifier                                                                        |
 | `Username`                 | `users.name`               | Learner - Full name                                                                         |
@@ -31,13 +31,13 @@ The details of each column in the CSV file are as follows.
 | `Video length`             | `topics.time_required`     | Topic - Required learning time (in seconds)                                                 |
 | `Viewing time`             | `activities.total_time_ms` | Learning activities - Total time (in ms)                                                    |
 | `Status of learning`       | -                          | Status of learning - Completed: "completed", Incomplete: "incomplete", Unopened: "unopened" |
-| `Learning completion rate` | -                          | 学習完了率 - ユニーク視聴時間が動画の長さを占める割合 (パーセント)                          |
-| `First access`             | `activities.created_at`    | 学習活動 - 作成日                                                                           |
-| `Last access`              | `activities.updated_at`    | 学習活動 - 更新日                                                                           |
+| `Learning completion rate` | -                          | Learning Completion Rate - Unique viewing time as a percentage of video length              |
+| `First access`             | `activities.created_at`    | Learning activities - creation date                                                         |
+| `Last access`              | `activities.updated_at`    | Learning activities - updated date                                                          |
 
 ## Architecture
 
-[アーキテクチャの概要](ARCHITECTURE.md)を参照してください。
+See [architecture](ARCHITECTURE.md) overview (japanese).
 
 ## Documents
 

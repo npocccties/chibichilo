@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2004Contents,
+    InlineResponse2004ContentsFromJSON,
+    InlineResponse2004ContentsFromJSONTyped,
+    InlineResponse2004ContentsToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -21,52 +28,28 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse2004 {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof InlineResponse2004
      */
-    consumerId: string;
+    totalCount: number;
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse2004Contents>}
      * @memberof InlineResponse2004
      */
-    id: string;
+    contents: Array<InlineResponse2004Contents>;
     /**
      * 
      * @type {number}
      * @memberof InlineResponse2004
      */
-    creatorId: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse2004
-     */
-    contextId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse2004
-     */
-    contextTitle: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse2004
-     */
-    contextLabel: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse2004
-     */
-    title: string;
+    page: number;
     /**
      * 
      * @type {number}
      * @memberof InlineResponse2004
      */
-    bookId: number;
+    perPage: number;
 }
 
 export function InlineResponse2004FromJSON(json: any): InlineResponse2004 {
@@ -79,14 +62,10 @@ export function InlineResponse2004FromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'consumerId': json['consumerId'],
-        'id': json['id'],
-        'creatorId': json['creatorId'],
-        'contextId': json['contextId'],
-        'contextTitle': json['contextTitle'],
-        'contextLabel': json['contextLabel'],
-        'title': json['title'],
-        'bookId': json['bookId'],
+        'totalCount': json['totalCount'],
+        'contents': ((json['contents'] as Array<any>).map(InlineResponse2004ContentsFromJSON)),
+        'page': json['page'],
+        'perPage': json['perPage'],
     };
 }
 
@@ -99,14 +78,10 @@ export function InlineResponse2004ToJSON(value?: InlineResponse2004 | null): any
     }
     return {
         
-        'consumerId': value.consumerId,
-        'id': value.id,
-        'creatorId': value.creatorId,
-        'contextId': value.contextId,
-        'contextTitle': value.contextTitle,
-        'contextLabel': value.contextLabel,
-        'title': value.title,
-        'bookId': value.bookId,
+        'totalCount': value.totalCount,
+        'contents': ((value.contents as Array<any>).map(InlineResponse2004ContentsToJSON)),
+        'page': value.page,
+        'perPage': value.perPage,
     };
 }
 
