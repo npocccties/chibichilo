@@ -16,7 +16,10 @@ import Placeholder from "$templates/Placeholder";
 import AppBar from "$organisms/AppBar";
 import Problem from "$organisms/Problem";
 import EmbedProblem from "$templates/EmbedProblem";
-import { NEXT_PUBLIC_NO_EMBED } from "$utils/env";
+import {
+  NEXT_PUBLIC_NO_EMBED,
+  NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK,
+} from "$utils/env";
 import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
 import { pagesPath } from "$utils/$path";
@@ -55,20 +58,22 @@ function Content({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Slide appear={false} direction="down" in={!trigger}>
-        <AppBar
-          isInstructor={isInstructor}
-          position="sticky"
-          session={session}
-          onBooksClick={handleBooksClick}
-          onTopicsClick={handleTopicsClick}
-          onCoursesClick={handleCoursesClick}
-          onDashboardClick={handleDashboardClick}
-          onBookClick={handleBookClick}
-          onBookmarksClick={handleBookmarksClick}
-          onDownloadClick={handleDownloadClick}
-        />
-      </Slide>
+      {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
+        <Slide appear={false} direction="down" in={!trigger}>
+          <AppBar
+            isInstructor={isInstructor}
+            position="sticky"
+            session={session}
+            onBooksClick={handleBooksClick}
+            onTopicsClick={handleTopicsClick}
+            onCoursesClick={handleCoursesClick}
+            onDashboardClick={handleDashboardClick}
+            onBookClick={handleBookClick}
+            onBookmarksClick={handleBookmarksClick}
+            onDownloadClick={handleDownloadClick}
+          />
+        </Slide>
+      )}
       {children}
     </>
   );
