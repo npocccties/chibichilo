@@ -16,7 +16,10 @@ import Placeholder from "$templates/Placeholder";
 import AppBar from "$organisms/AppBar";
 import Problem from "$organisms/Problem";
 import EmbedProblem from "$templates/EmbedProblem";
-import { NEXT_PUBLIC_NO_EMBED, NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
+import {
+  NEXT_PUBLIC_NO_EMBED,
+  NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK,
+} from "$utils/env";
 import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
 import { pagesPath } from "$utils/$path";
