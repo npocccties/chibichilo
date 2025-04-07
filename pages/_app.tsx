@@ -58,7 +58,7 @@ function Content({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
+      {(isInstructor || NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) && (
         <Slide appear={false} direction="down" in={!trigger}>
           <AppBar
             isInstructor={isInstructor}
