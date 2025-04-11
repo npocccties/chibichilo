@@ -261,9 +261,7 @@ export default function ContentPreview({
                   value: getLocaleDateString(content.updatedAt, "ja"),
                 },
               ]),
-          ...(content.licenser
-            ? [{ key: "著作権者", value: content.licenser }]
-            : []),
+          ...(content.licenser ? [{ key: "", value: content.licenser }] : []),
           ...authors(content),
         ]}
       />
