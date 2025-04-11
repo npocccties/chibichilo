@@ -245,9 +245,7 @@ export default function Book(props: Props) {
                   key: "更新日",
                   value: getLocaleDateString(book.updatedAt, "ja"),
                 },
-                ...(book.licenser
-                  ? [{ key: "著作権者", value: book.licenser }]
-                  : []),
+                ...(book.licenser ? [{ key: "", value: book.licenser }] : []),
                 ...authors(book),
               ]}
             />
