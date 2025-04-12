@@ -6,7 +6,11 @@ import type { FromSchema } from "json-schema-to-ts";
 import * as d3 from "d3";
 
 import { NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD } from "$utils/env";
-import { NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE } from "$utils/env";
+import {
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE,
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR,
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY,
+} from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 
 const ACTIVITY_COUNT_INTERVAL2 = Number(
@@ -151,8 +155,8 @@ export function PlotAndLineChart({
       .attr("cx", (d) => x(d.startMs / 1000))
       .attr("cy", (d) => y(d.count))
       .attr("r", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
-      .attr("fill", "gray")
-      .attr("opacity", 0.3)
+      .attr("fill", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR)
+      .attr("opacity", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
