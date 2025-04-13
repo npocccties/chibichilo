@@ -23,7 +23,7 @@ import { useSessionAtom } from "$store/session";
 import useSticky from "$utils/useSticky";
 import useAppBarOffset from "$utils/useAppBarOffset";
 import getLocaleDateString from "$utils/getLocaleDateString";
-import { authors } from "$utils/descriptionList";
+import { authors } from "$utils/authorList";
 import extractNumberFromPx from "$utils/extractNumberFromPx";
 import sumPixels from "$utils/sumPixels";
 import type { ActivitySchema } from "$server/models/activity";
@@ -245,8 +245,11 @@ export default function Book(props: Props) {
                   key: "更新日",
                   value: getLocaleDateString(book.updatedAt, "ja"),
                 },
-                ...(book.licenser ? [{ key: "", value: book.licenser }] : []),
-                ...authors(book),
+                // 著作権者または作成者
+                {
+                  key: "",
+                  value: book.licenser ? book.licenser : authors(book),
+                },
               ]}
             />
             <Link
