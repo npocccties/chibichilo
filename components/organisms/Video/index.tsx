@@ -27,7 +27,7 @@ import License from "$atoms/License";
 import DescriptionList from "$atoms/DescriptionList";
 import formatInterval from "$utils/formatInterval";
 import getLocaleDateString from "$utils/getLocaleDateString";
-import { authors } from "$utils/descriptionList";
+import { authors } from "$utils/authorList";
 import TagList from "$molecules/TagList";
 import { useBookmarksByTopicId } from "$utils/bookmark/useBookmarks";
 
@@ -447,8 +447,11 @@ export default function Video({
               key: "更新日",
               value: getLocaleDateString(topic.updatedAt, "ja"),
             },
-            ...(topic.licenser ? [{ key: "", value: topic.licenser }] : []),
-            ...authors(topic),
+            // 著作権者または作成者
+            {
+              key: "",
+              value: topic.licenser ? topic.licenser : authors(topic),
+            },
           ]}
         />
         {topic.keywords && (
