@@ -119,6 +119,20 @@ export default function BookEdit({
     onDelete(book, true);
   };
   const handleReleaseButtonClick = async () => {
+    const bookAuthors = book.authors.map((author) => author.id);
+    const canRelease = book.sections.every((sections) =>
+      sections.topics.every((topic) =>
+        topic.authors.some((author) => bookAuthors.includes(author.id))
+      )
+    );
+    if (!canRelease) {
+      await confirm({
+        title: `ブック「${book.name}」に他者のトピックが含まれているため、リリースすることができません。`,
+        hideCancelButton: true,
+        confirmationText: "OK",
+      });
+      return;
+    }
     await confirm({
       title: `ブック「${book.name}」をリリースします。よろしいですか？`,
       cancellationText: "キャンセル",
