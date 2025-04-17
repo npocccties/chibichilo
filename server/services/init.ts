@@ -15,7 +15,7 @@ const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 /** 起動時の初期化プロセス */
 async function init({ session }: FastifyRequest) {
   const systemSettings = getSystemSettings();
-  
+
   // 最初にユーザー情報を取得
   const user = await upsertUser({
     ltiConsumerId: session.oauthClient.id,
