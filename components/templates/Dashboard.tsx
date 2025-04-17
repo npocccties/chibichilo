@@ -27,6 +27,8 @@ import { gray } from "$theme/colors";
 import downloadBookActivity from "$utils/bookLearningActivity/download";
 import downloadBookmarkStats from "$utils/bookmark/download";
 import label from "$utils/learningStatusLabel";
+import rewatchLabel from "$utils/rewatchLabel";
+
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
 import getActivitiesByBooksAndTopics from "$utils/getActivitiesByBooksAndTopics";
@@ -134,6 +136,10 @@ const useStyles = makeStyles((theme) => ({
   topicDataDescription: {
     padding: 0,
     margin: 0,
+  rewatchLabel: {
+    fontSize: 14,
+    lineHeight: "12px",
+    fontWeight: 900, // Black (Heavy)
   },
 }));
 
@@ -384,6 +390,10 @@ export default function Dashboard(props: Props) {
             <div>
               <LearningStatusDot status="unopened" />
               <span>{label.unopened}</span>
+            </div>
+            <div>
+              <span className={classes.rewatchLabel}>{rewatchLabel}</span>
+              <span>繰返視聴</span>
             </div>
           </div>
           {learnerActivities.map(([learner, activities], index) => (
