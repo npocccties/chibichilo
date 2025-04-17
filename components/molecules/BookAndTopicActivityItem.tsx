@@ -59,6 +59,8 @@ type BookAndTopicProps = {
     activitiesByTopics: Array<
       Pick<TopicSchema, "id" | "name" | "timeRequired"> & {
         averageCompleteRate: number;
+      } & {
+        sizeOfUnopenedLearners: number;
       }
     >;
   };
@@ -69,6 +71,8 @@ type TopicProps = {
   scope: boolean;
   topic: Pick<TopicSchema, "id" | "name" | "timeRequired"> & {
     averageCompleteRate: number;
+  } & {
+    sizeOfUnopenedLearners: number;
   };
   averageRewatchRate: number;
 };
@@ -198,6 +202,7 @@ export function TopicActivityItem(props: TopicProps) {
         <TopicActivityViewer scope={scope} topic={topic} />
       </div>
       <div className={clsx(classes.column)}>{topic.timeRequired}</div>
+      <div className={clsx(classes.column)}>{topic.sizeOfUnopenedLearners}</div>
       <div className={clsx(classes.column)}>{topic.averageCompleteRate}</div>
       {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
         <div className={clsx(classes.column)}>{averageRewatchRate}</div>

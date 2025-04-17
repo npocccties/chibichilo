@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -39,6 +40,7 @@ import useLtiMembersHandler from "$utils/useLtiMembersHandler";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
 import useRewatchRate from "$utils/useRewatchRate";
 
+import { tooltipMessage } from "$utils/tooltipMessage";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
@@ -109,14 +111,15 @@ const useStyles = makeStyles((theme) => ({
   topicLabel: {
     flex: 1,
     display: "flex",
+    fontSize: "75%",
   },
   topicTitleColumn: {
-    width: "70%",
+    width: "60%",
     marginRight: theme.spacing(1),
     alignItems: "center",
   },
   topicTitleColumnLong: {
-    width: "80%",
+    width: "70%",
     marginRight: theme.spacing(1),
     alignItems: "center",
   },
@@ -125,6 +128,14 @@ const useStyles = makeStyles((theme) => ({
     width: "10%",
     justifyContent: "center",
   },
+  topicDataDescriptionArea: {
+    textAlign: "right",
+    fontSize: "50%",
+    marginBottom: "0.5em",
+  },
+  topicDataDescription: {
+    padding: 0,
+    margin: 0,
   rewatchLabel: {
     fontSize: 14,
     lineHeight: "12px",
@@ -201,10 +212,11 @@ export default function Dashboard(props: Props) {
   const activitiesByBooksAndTopics = useMemo(
     () =>
       getActivitiesByBooksAndTopics({
+        learners,
         courseBooks,
         bookActivities,
       }),
-    [courseBooks, bookActivities]
+    [learners, courseBooks, bookActivities]
   );
 
   const { data, dispatch, ...dialogProps } = useDialogProps<{
@@ -318,6 +330,12 @@ export default function Dashboard(props: Props) {
           ))}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
+          <div className={classes.topicDataDescriptionArea}>
+            <p className={classes.topicDataDescription}>
+              ※
+              平均学習完了率、平均繰返視聴割合の計算に未視聴の学習者は含みません
+            </p>
+          </div>
           <div className={classes.topicLabel}>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
               <div className={classes.topicTitleColumn}></div>
@@ -325,24 +343,39 @@ export default function Dashboard(props: Props) {
               <div className={classes.topicTitleColumnLong}></div>
             )}
 
-            <div className={classes.topicColumn}>動画の長さ（秒）</div>
-            <div className={classes.topicColumn}>平均学習完了率</div>
+            <div className={classes.topicColumn}>動画の長さ</div>
+            <div className={classes.topicColumn}>未視聴</div>
+            <div className={classes.topicColumn}>
+              <Tooltip title={tooltipMessage.completeRate} arrow>
+                <span>
+                  平均学習
+                  <br />
+                  完了率
+                </span>
+              </Tooltip>
+            </div>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
-              <div className={classes.topicColumn}>平均繰返視聴割合</div>
+              <div className={classes.topicColumn}>
+                <Tooltip title={tooltipMessage.rewatchRate} arrow>
+                  <span>
+                    平均繰返
+                    <br />
+                    視聴割合
+                  </span>
+                </Tooltip>
+              </div>
             ) : (
               ""
             )}
           </div>
-          {activitiesByBooksAndTopics.map(
-            (activitiesByBookAndTopics, index) => (
-              <BookAndTopicActivityItem
-                key={index}
-                scope={scope === "current-lti-context-only"}
-                book={activitiesByBookAndTopics}
-                rewatchRates={rewatchRates?.activityRewatchRate ?? []}
-              />
-            )
-          )}
+          {activitiesByBooksAndTopics.map((activitiesByBookAndTopic, index) => (
+            <BookAndTopicActivityItem
+              key={index}
+              scope={scope === "current-lti-context-only"}
+              book={activitiesByBookAndTopic}
+              rewatchRates={rewatchRates?.activityRewatchRate ?? []}
+            />
+          ))}
         </TabPanel>
         <TabPanel className={classes.learners} value={tabIndex} index={2}>
           <div className={classes.learnersLabel}>
