@@ -147,6 +147,50 @@ export function PlotAndLineChart({
       .attr("transform", "rotate(-90)")
       .text("count");
 
+    // 凡例
+    const legend = svg
+      .selectAll(".legends")
+      .data(["平均視聴回数", "視聴回数"])
+      .enter()
+      .append("g")
+      .attr("transform", function (d, i) {
+        {
+          return (
+            "translate(" + (width - marginRight) + "," + (i + 1) * 20 + ")"
+          );
+        }
+      });
+
+    legend
+      .append("rect") // 平均視聴回数の記号
+      .data(["平均視聴回数"])
+      .attr("x", 0)
+      .attr("y", 5)
+      .attr("width", 10)
+      .attr("height", 1)
+      .attr("opacity", 0.8)
+      .style("fill", "red");
+
+    legend
+      .append("circle") // 視聴回数の記号
+      .data(["視聴回数"])
+      .attr("cx", 0 + NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
+      .attr("cy", 25)
+      .attr("r", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
+      .attr("fill", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR)
+      .attr("opacity", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY);
+
+    legend
+      .append("text") // 凡例の文言
+      .attr("x", 20)
+      .attr("y", 10)
+      .text(function (d) {
+        return d;
+      })
+      .attr("class", "textselected")
+      .style("text-anchor", "start")
+      .style("font-size", 15);
+
     svg
       .selectAll("circle")
       .data(plot)
