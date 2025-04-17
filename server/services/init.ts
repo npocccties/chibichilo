@@ -15,6 +15,14 @@ const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 /** 起動時の初期化プロセス */
 async function init({ session }: FastifyRequest) {
   const systemSettings = getSystemSettings();
+  
+  // 最初にユーザー情報を取得
+  const user = await upsertUser({
+    ltiConsumerId: session.oauthClient.id,
+    ltiUserId: session.ltiUser.id,
+    name: session.ltiUser.name ?? "",
+    email: session.ltiUser.email ?? "",
+  });
 
   let ltiResourceLink: LtiResourceLinkSchema | null = null;
 
@@ -50,7 +58,7 @@ async function init({ session }: FastifyRequest) {
   ) {
     ltiResourceLink = {
       bookId: Number(bookId),
-      creatorId: ltiResourceLink?.creatorId ?? session.user.id,
+      creatorId: ltiResourceLink?.creatorId ?? user.id, // 直接user.idを使用
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
       id: session.ltiResourceLinkRequest.id,
@@ -71,13 +79,6 @@ async function init({ session }: FastifyRequest) {
       contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
     });
   }
-
-  const user = await upsertUser({
-    ltiConsumerId: session.oauthClient.id,
-    ltiUserId: session.ltiUser.id,
-    name: session.ltiUser.name ?? "",
-    email: session.ltiUser.email ?? "",
-  });
 
   Object.assign(session, {
     ltiTargetLinkUri,
