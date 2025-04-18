@@ -136,6 +136,7 @@ const useStyles = makeStyles((theme) => ({
   topicDataDescription: {
     padding: 0,
     margin: 0,
+  },
   rewatchLabel: {
     fontSize: 14,
     lineHeight: "12px",
