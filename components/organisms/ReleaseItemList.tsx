@@ -56,16 +56,18 @@ function ReleaseItem({
                 lineHeight: 2.5,
               }}
             >
-              <DescriptionList
-                nowrap
-                sx={{ mx: 2 }}
-                value={[
-                  {
-                    key: "バージョン",
-                    value: item.release?.version || "",
-                  },
-                ]}
-              />
+              {item.release?.version && (
+                <DescriptionList
+                  nowrap
+                  sx={{ mx: 2 }}
+                  value={[
+                    {
+                      key: "バージョン",
+                      value: item.release?.version || "",
+                    },
+                  ]}
+                />
+              )}
               {item.release?.releasedAt && (
                 <DescriptionList
                   nowrap
@@ -106,7 +108,7 @@ function categorizeReleases(props: Props): CategorizedItems {
   const self = releases.filter((release) => release.id === id)[0];
   const editing = releases.filter((release) => !release.release)[0];
   const branch = releases
-    .filter((release) => release.oid === self?.oid)
+    .filter((release) => release.oid === self?.oid && release.release)
     .sort(compareReleasedAt);
   let from;
   if (branch.length > 0) {
@@ -114,7 +116,10 @@ function categorizeReleases(props: Props): CategorizedItems {
     from = releases.filter((release) => release.vid === oldestPid)[0];
   }
   const to = releases
-    .filter((release) => release.oid !== self?.oid && release.pid === self?.vid)
+    .filter(
+      (release) =>
+        release.oid !== self?.oid && release.pid && release.pid === self?.vid
+    )
     .sort(compareReleasedAt);
   return { self, editing, branch, from, to };
 }
@@ -148,11 +153,17 @@ function createList(items: CategorizedItems) {
 }
 
 export default function ReleaseItemList(props: Props) {
-  const { onItemEditClick } = props;
+  const { releases, onItemEditClick } = props;
   const cardClasses = useCardStyles();
   const items = categorizeReleases(props);
   const { list, categories } = createList(items);
-
+  const handleItemEditClick = async (index: number) => {
+    if (!onItemEditClick) return;
+    const id = list?.[index]?.id;
+    if (!id) return;
+    index = releases.findIndex((release) => release.id === id);
+    if (index >= 0) onItemEditClick(index);
+  };
   return (
     <Card classes={cardClasses}>
       <TreeView>
@@ -162,7 +173,7 @@ export default function ReleaseItemList(props: Props) {
             item={item}
             category={categories[index]}
             index={index}
-            onItemEditClick={onItemEditClick}
+            onItemEditClick={handleItemEditClick}
           />
         ))}
       </TreeView>
