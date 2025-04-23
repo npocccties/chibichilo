@@ -113,7 +113,9 @@ function categorizeReleases(props: Props): CategorizedItems {
   let from;
   if (branch.length > 0) {
     const oldestPid = branch.slice(-1)[0].pid;
-    from = releases.filter((release) => release.vid === oldestPid)[0];
+    if (oldestPid) {
+      from = releases.filter((release) => release.vid === oldestPid)[0];
+    }
   }
   const to = releases
     .filter(
