@@ -8,19 +8,28 @@ import getLocaleDateString from "$utils/getLocaleDateTimeString";
 import EditButton from "$atoms/EditButton";
 import useCardStyles from "$styles/card";
 import TreeView from "@mui/lab/TreeView";
+import type { BookSchema } from "$server/models/book";
+import type { TopicSchema } from "$server/models/topic";
 
 type Props = {
+  id: BookSchema["id"] | TopicSchema["id"];
   releases: Array<ReleaseItemSchema>;
   onItemEditClick?(index: number): void;
 };
 
 type ReleaseItemProps = {
   item: ReleaseItemSchema;
+  category: string;
   index: number;
   onItemEditClick?(index: number): void;
 };
 
-function ReleaseItem({ item, index, onItemEditClick }: ReleaseItemProps) {
+function ReleaseItem({
+  item,
+  category,
+  index,
+  onItemEditClick,
+}: ReleaseItemProps) {
   const treeItemClasses = useTreeItemStyle();
   return (
     <>
@@ -30,6 +39,7 @@ function ReleaseItem({ item, index, onItemEditClick }: ReleaseItemProps) {
         key={index}
         label={
           <>
+            {category}
             {item.name}
             <EditButton
               variant="book"
@@ -76,17 +86,81 @@ function ReleaseItem({ item, index, onItemEditClick }: ReleaseItemProps) {
   );
 }
 
+type CategorizedItems = {
+  self?: ReleaseItemSchema;
+  editing?: ReleaseItemSchema;
+  branch?: Array<ReleaseItemSchema>;
+  from?: ReleaseItemSchema;
+  to?: Array<ReleaseItemSchema>;
+};
+
+function compareReleasedAt(a: ReleaseItemSchema, b: ReleaseItemSchema) {
+  const ad = a.release?.releasedAt;
+  const bd = b.release?.releasedAt;
+  if (!ad || !bd) return 0;
+  return bd.getTime() - ad.getTime();
+}
+
+function categorizeReleases(props: Props): CategorizedItems {
+  const { id, releases } = props;
+  const self = releases.filter((release) => release.id === id)[0];
+  const editing = releases.filter((release) => !release.release)[0];
+  const branch = releases
+    .filter((release) => release.oid === self?.oid)
+    .sort(compareReleasedAt);
+  let from;
+  if (branch.length > 0) {
+    const oldestPid = branch.slice(-1)[0].pid;
+    from = releases.filter((release) => release.vid === oldestPid)[0];
+  }
+  const to = releases
+    .filter((release) => release.oid !== self?.oid && release.pid === self?.vid)
+    .sort(compareReleasedAt);
+  return { self, editing, branch, from, to };
+}
+
+function createList(items: CategorizedItems) {
+  const list: ReleaseItemSchema[] = [];
+  const categories: string[] = [];
+
+  if (items.editing) {
+    list.push(items.editing);
+    categories.push("編集中　");
+  }
+  if (items.branch) {
+    for (const item of items.branch) {
+      list.push(item);
+      categories.push("　　　　");
+    }
+  }
+  if (items.from) {
+    list.push(items.from);
+    categories.push("複製元　");
+  }
+  if (items.to) {
+    for (const item of items.to) {
+      list.push(item);
+      categories.push("複製先　");
+    }
+  }
+
+  return { list, categories };
+}
+
 export default function ReleaseItemList(props: Props) {
-  const { releases, onItemEditClick } = props;
+  const { onItemEditClick } = props;
   const cardClasses = useCardStyles();
+  const items = categorizeReleases(props);
+  const { list, categories } = createList(items);
 
   return (
     <Card classes={cardClasses}>
       <TreeView>
-        {releases.map((item, index) => (
+        {list.map((item, index) => (
           <ReleaseItem
             key={index}
             item={item}
+            category={categories[index]}
             index={index}
             onItemEditClick={onItemEditClick}
           />

@@ -125,6 +125,7 @@ export default function BookEditReleased({
             リリース一覧
           </Typography>
           <ReleaseItemList
+            id={book.id}
             releases={releases}
             onItemEditClick={handleItemEditClick}
           />
