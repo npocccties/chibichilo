@@ -66,14 +66,28 @@ export async function findReleasedBooks(
     admin,
   };
   const ids = await findBookUniqueIds(book.id);
-  if (!ids?.poid) return [];
+  if (!ids?.poid || !ids?.oid) return [];
 
   const where: Prisma.BookWhereInput = {
     AND: [
       ...createScopesBook(filter),
-      { poid: ids.poid },
+      {
+        OR: [
+          {
+            AND: [
+              { poid: ids.poid },
+              { NOT: { release: null }},
+            ]
+          },
+          {
+            AND: [
+              { oid: ids.oid },
+              { release: null },
+            ]
+          }
+        ]
+      }
     ],
-    NOT: { release: null },
   };
   const found = await prisma.book.findMany({
     ...bookIncludingArg,
@@ -85,12 +99,14 @@ export async function findReleasedBooks(
 export function bookToReleaseItemSchema(
   { authors, release, ...book }: BookWithRelease
 ): ReleaseItemSchema | undefined {
-  if (!release) return;
-  return {
+  const ret = {
     ...book,
     authors: authors.map(authorToAuthorSchema),
-    release: release,
   };
+  if (release !== null) {
+    Object.assign(ret, { release });
+  }
+  return ret;
 }
 
 export async function findParentBook(
