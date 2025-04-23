@@ -16,6 +16,7 @@ const author1 = {
 };
 
 const item1: ReleaseItemSchema = {
+  id: 138,
   name: "数学I",
   createdAt: new Date("2024-09-03T23:22:00.593Z"),
   updatedAt: new Date("2024-09-14T04:41:03.563Z"),
@@ -25,9 +26,14 @@ const item1: ReleaseItemSchema = {
     version: "1.0",
     comment: "2022年度",
   },
+  poid: "xd76tqcjb5uts9pxf7wazalx",
+  oid: "xd76tqcjb5uts9pxf7wazalx",
+  pid: "",
+  vid: "ybbscmnc7vjj4ipngtytxj6y",
 };
 
 const item2: ReleaseItemSchema = {
+  id: 139,
   name: "数学I",
   createdAt: new Date("2024-09-03T23:22:00.593Z"),
   updatedAt: new Date("2024-09-14T04:41:03.563Z"),
@@ -37,9 +43,14 @@ const item2: ReleaseItemSchema = {
     version: "2.0",
     comment: "2023年度",
   },
+  poid: "xd76tqcjb5uts9pxf7wazalx",
+  oid: "xd76tqcjb5uts9pxf7wazalx",
+  pid: "ybbscmnc7vjj4ipngtytxj6y",
+  vid: "hijy2bi14nh6h55yypw76q4j",
 };
 
 const item3: ReleaseItemSchema = {
+  id: 140,
   name: "数学I",
   createdAt: new Date("2024-09-03T23:22:00.593Z"),
   updatedAt: new Date("2024-09-14T04:41:03.563Z"),
@@ -49,11 +60,16 @@ const item3: ReleaseItemSchema = {
     version: "3.0",
     comment: "2024年度",
   },
+  poid: "xd76tqcjb5uts9pxf7wazalx",
+  oid: "xd76tqcjb5uts9pxf7wazalx",
+  pid: "hijy2bi14nh6h55yypw76q4j",
+  vid: "w1rcge8n94zpgt39q901dp1r",
 };
 
 const releases: Array<ReleaseItemSchema> = [item1, item2, item3];
 
 const defaultProps = {
+  id: 140,
   releases,
 };
 
