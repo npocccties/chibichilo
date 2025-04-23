@@ -147,6 +147,7 @@ export default function TopicEdit(props: Props) {
             リリース一覧
           </Typography>
           <ReleaseItemList
+            id={topic.id}
             releases={releases}
             onItemEditClick={handleItemEditClick}
           />
