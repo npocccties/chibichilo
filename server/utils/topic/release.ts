@@ -1,11 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { authorArg, authorToAuthorSchema } from "../author/authorToAuthorSchema";
-import type { TopicSchema } from "$server/models/topic";
 import type { AuthorFilter } from "$server/models/authorFilter";
 import { createScopesTopic } from "../search/createScopes";
 import prisma from "../prisma";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
-import { findTopicUniqueIds, selectUniqueIds } from "../uniqueId";
+import { selectUniqueIds } from "../uniqueId";
+import type { UniqueIds } from "../uniqueId";
 
 const topicIncludingArg = {
   select: {
@@ -24,7 +24,7 @@ export type TopicWithRelease = Prisma.TopicGetPayload<
 >;
 
 export async function findReleasedTopics(
-  topic: TopicSchema,
+  ids: UniqueIds | undefined,
   userId: number,
 ): Promise<Array<TopicWithRelease>> {
   const filter: AuthorFilter = {
@@ -32,7 +32,6 @@ export async function findReleasedTopics(
     by: userId,
     admin: false,
   };
-  const ids = await findTopicUniqueIds(topic.id);
   if (!ids?.poid) return [];
 
   const where: Prisma.TopicWhereInput = {
@@ -49,8 +48,10 @@ export async function findReleasedTopics(
 }
 
 export function topicToReleaseItemSchema(
+  ids: UniqueIds | undefined,
   { authors, topicSection, ...topic }: TopicWithRelease
 ): ReleaseItemSchema | undefined {
+  // リリースされたトピック
   for (const ts of topicSection) {
     if (ts.section?.book?.release) {
       return {
@@ -58,6 +59,13 @@ export function topicToReleaseItemSchema(
         authors: authors.map(authorToAuthorSchema),
         release: ts.section?.book?.release,
       };
+    }
+  }
+  // 編集中トピック
+  if (topic.oid === ids?.oid) {
+    return {
+      ...topic,
+      authors: authors.map(authorToAuthorSchema),
     }
   }
   return undefined;
