@@ -64,6 +64,11 @@ const skipButton = css({
   lineHeight: 1,
 });
 
+const markdownContainerStyle = css({
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
+});
+
 function SkipButton(props: ButtonProps) {
   return (
     <Button {...props} className={skipButton} size="small" color="secondary">
@@ -386,7 +391,7 @@ export default function Video({
         )}
       </Box>
       <TabPanel value={tabIndex} index={0}>
-        <article>
+        <article className={markdownContainerStyle}>
           <Markdown>{topic.description}</Markdown>
         </article>
       </TabPanel>
