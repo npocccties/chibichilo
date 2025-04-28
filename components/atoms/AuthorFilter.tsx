@@ -12,7 +12,7 @@ const options: ReadonlyArray<{
 }> = [
   { value: "edit", label: "編集中" },
   { value: "release", label: "リリース" },
-  { value: "other-release", label: "共有されたリリース" },
+  { value: "release-shared", label: "リリース(共有)" },
 ];
 
 type Props = {

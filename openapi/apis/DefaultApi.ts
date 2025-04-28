@@ -3185,7 +3185,7 @@ export enum ApiV2SearchGetFilterEnum {
     other = 'other',
     edit = 'edit',
     release = 'release',
-    other_release = 'other-release'
+    release_shared = 'release-shared'
 }
 /**
     * @export

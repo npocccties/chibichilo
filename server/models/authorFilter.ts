@@ -41,8 +41,8 @@ export type AuthorFilter =
       admin: boolean;
     }
   | {
-      /** 他者のリリース */
-      type: "other-release";
+      /** リリース(共有) */
+      type: "release-shared";
       /** 利用者 */
       by: UserSchema["id"];
       /** 利用者が管理者であるか否か (管理者: true、それ以外: false) */
