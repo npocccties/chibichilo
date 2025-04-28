@@ -177,7 +177,7 @@ export class ImportTopic {
   timeRequired = 0;
 
   @IsBoolean({ message: "真偽値ではないか未設定です。" })
-  shared = true;
+  shared = false;
 
   @IsISO8601({}, { message: "ISO8601形式の日時ではないか未設定です。" })
   createdAt = new Date().toISOString();
@@ -251,7 +251,7 @@ export class ImportBook {
   language = "ja";
 
   @IsBoolean({ message: "真偽値ではないか未設定です。" })
-  shared = true;
+  shared = false;
 
   @IsISO8601({}, { message: "ISO8601形式の日時ではないか未設定です。" })
   publishedAt = new Date().toISOString();
