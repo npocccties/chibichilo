@@ -15,14 +15,14 @@ function defaultScopes<T>(
     case "other": return [sharedScope, { NOT: selfScope }];
     case "edit": return [selfScope, editScope];
     case "release": return [selfScope, { NOT: editScope }];
-    case "release-shared": return [sharedScope, { NOT: selfScope }, { NOT: editScope }];
+    case "release-shared": return [sharedScope, { NOT: editScope }];
     default: return [];
   }
 }
 
 function adminScopes<T>(
   filter: AuthorFilter,
-  { selfScope, editScope }: Scopes<T>
+  { sharedScope, selfScope, editScope }: Scopes<T>
 ){
   switch(filter?.type) {
     case "all": return [];
@@ -30,7 +30,7 @@ function adminScopes<T>(
     case "other": return [{ NOT: selfScope }];
     case "edit": return [editScope];
     case "release": return [{ NOT: editScope }];
-    case "release-shared": return [{ NOT: selfScope }, { NOT: editScope }];
+    case "release-shared": return [sharedScope, { NOT: editScope }];
     default: return [];
   }
 }
