@@ -71,6 +71,7 @@ export async function cloneRelease(
     ltiResourceLinks: _link,
     authors: _authors,
     release: _release,
+    shared: _shared,
     ...book
   } = structuredClone(parentBook);
 
@@ -103,6 +104,7 @@ export async function cloneBook(
     ltiResourceLinks: _link,
     authors: _authors,
     release: _release,
+    shared: _shared,
     ...book
   } = structuredClone(parentBook);
 

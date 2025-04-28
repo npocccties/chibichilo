@@ -20,6 +20,7 @@ export async function cloneTopic(
   const created = await prisma.topic.create({
     data: {
       ...topicInput(topic),
+      shared: false,
       authors: { create: authors },
       resource: resourceConnectOrCreateInput(topic.resource),
       keywords: keywordsConnectOrCreateInput(topic.keywords ?? []),
