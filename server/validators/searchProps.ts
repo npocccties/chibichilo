@@ -12,7 +12,7 @@ export const SearchProps = {
     q: { type: "string" },
     filter: {
       type: "string",
-      enum: ["all", "self", "other", "edit", "release", "other-release"],
+      enum: ["all", "self", "other", "edit", "release", "release-shared"],
     },
     sort: {
       type: "string",
