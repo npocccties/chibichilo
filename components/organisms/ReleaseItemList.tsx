@@ -103,24 +103,29 @@ function compareReleasedAt(a: ReleaseItemSchema, b: ReleaseItemSchema) {
   return bd.getTime() - ad.getTime();
 }
 
+function sameId(a: string | undefined, b: string | undefined) {
+  return a && a === b;
+}
+
 function categorizeReleases(props: Props): CategorizedItems {
   const { id, releases } = props;
   const self = releases.filter((release) => release.id === id)[0];
   const editing = releases.filter((release) => !release.release)[0];
   const branch = releases
-    .filter((release) => release.oid === self?.oid && release.release)
+    .filter((release) => sameId(self?.oid, release.oid) && release.release)
     .sort(compareReleasedAt);
   let from;
   if (branch.length > 0) {
     const oldestPid = branch.slice(-1)[0].pid;
     if (oldestPid) {
-      from = releases.filter((release) => release.vid === oldestPid)[0];
+      from = releases.filter((release) => sameId(release.vid, oldestPid))[0];
     }
   }
   const to = releases
     .filter(
       (release) =>
-        release.oid !== self?.oid && release.pid && release.pid === self?.vid
+        release.oid !== self?.oid &&
+        branch.some((b) => sameId(b.vid, release.pid))
     )
     .sort(compareReleasedAt);
   return { self, editing, branch, from, to };
