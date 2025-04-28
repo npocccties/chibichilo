@@ -1,20 +1,12 @@
 import type { ReactNode, MouseEvent } from "react";
 import TreeItem from "@mui/lab/TreeItem";
 import Checkbox from "@mui/material/Checkbox";
-import makeStyles from "@mui/styles/makeStyles";
 import PreviewButton from "$atoms/PreviewButton";
 import EditButton from "$atoms/EditButton";
-import SharedIndicator from "$atoms/SharedIndicator";
 import useTreeItemStyle from "$styles/treeItem";
 import type { SectionSchema } from "$server/models/book/section";
 import type { IsContentEditable } from "$server/models/content";
 import { isNamedSection, getOutlineNumber } from "$utils/outline";
-
-const useStyles = makeStyles((theme) => ({
-  shared: {
-    margin: theme.spacing(0, 0.5),
-  },
-}));
 
 type SectionProps = {
   bookId: number;
@@ -92,7 +84,6 @@ export default function SectionsTree(props: Props) {
     selectedIndexes,
     isContentEditable,
   } = props;
-  const classes = useStyles();
   const treeItemClasses = useTreeItemStyle();
   return (
     <>
@@ -135,9 +126,6 @@ export default function SectionsTree(props: Props) {
                     )}
                     {getOutlineNumber(section, sectionIndex, topicIndex) + " "}
                     {topic.name}
-                    {topic.shared && (
-                      <SharedIndicator className={classes.shared} />
-                    )}
                     {onItemPreviewClick && (
                       <PreviewButton
                         variant="topic"
