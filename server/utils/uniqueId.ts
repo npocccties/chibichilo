@@ -2,13 +2,14 @@ import { createId } from '@paralleldrive/cuid2';
 import type { Book, Topic } from '@prisma/client';
 import prisma from './prisma';
 
-export type UniqueIds = Pick<Book, "poid" | "oid" | "pid" | "vid">;
+export type UniqueIds = Pick<Book, "poid" | "oid" | "pid" | "vid" | "spid">;
 
 export const selectUniqueIds = {
   poid: true,
   oid: true,
   pid: true,
   vid: true,
+  spid: true,
 };
 
 function generateUniqueIds(ids: UniqueIds) {
@@ -16,6 +17,7 @@ function generateUniqueIds(ids: UniqueIds) {
   ids.oid = ids.poid;
   ids.pid = "";
   ids.vid = "";
+  ids.spid = "";
 }
 
 function releaseUniqueIds(edit: UniqueIds, release: UniqueIds) {
@@ -26,7 +28,9 @@ function releaseUniqueIds(edit: UniqueIds, release: UniqueIds) {
   release.oid = edit.oid;
   release.pid = edit.pid;
   release.vid = createId();
+  release.spid = edit.pid;
   edit.pid = release.vid;
+  edit.spid = release.vid;
 }
 
 function cloneUniqueIds(orig: UniqueIds, clone: UniqueIds) {
@@ -37,6 +41,7 @@ function cloneUniqueIds(orig: UniqueIds, clone: UniqueIds) {
   clone.oid = createId();
   clone.pid = orig.vid;
   clone.vid = "";
+  clone.spid = orig.vid;
 }
 
 export async function findBookUniqueIds(
