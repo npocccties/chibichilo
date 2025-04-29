@@ -15,6 +15,7 @@ export const ReleaseItemSchema = {
     oid: { type: "string" },
     pid: { type: "string" },
     vid: { type: "string" },
+    spid: { type: "string" },
     release: {
       ...releaseSchema,
     },

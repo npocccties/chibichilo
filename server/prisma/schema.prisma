@@ -121,6 +121,8 @@ model Topic {
   pid      String   @default("")
   // 版番号ID (cuid2, 編集中は "", リリース時に採番)
   vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@map("topics")
 }
@@ -262,6 +264,8 @@ model Book {
   pid      String   @default("")
   // 版番号ID (cuid2, 編集中は "", リリース時に採番)
   vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@index([zoomMeetingId])
   @@map("books")

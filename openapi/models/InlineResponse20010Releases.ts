@@ -92,6 +92,12 @@ export interface InlineResponse20010Releases {
     vid?: string;
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse20010Releases
+     */
+    spid?: string;
+    /**
+     * 
      * @type {InlineResponse2006Release}
      * @memberof InlineResponse20010Releases
      */
@@ -118,6 +124,7 @@ export function InlineResponse20010ReleasesFromJSONTyped(json: any, ignoreDiscri
         'oid': !exists(json, 'oid') ? undefined : json['oid'],
         'pid': !exists(json, 'pid') ? undefined : json['pid'],
         'vid': !exists(json, 'vid') ? undefined : json['vid'],
+        'spid': !exists(json, 'spid') ? undefined : json['spid'],
         'release': !exists(json, 'release') ? undefined : InlineResponse2006ReleaseFromJSON(json['release']),
     };
 }
@@ -141,6 +148,7 @@ export function InlineResponse20010ReleasesToJSON(value?: InlineResponse20010Rel
         'oid': value.oid,
         'pid': value.pid,
         'vid': value.vid,
+        'spid': value.spid,
         'release': InlineResponse2006ReleaseToJSON(value.release),
     };
 }
