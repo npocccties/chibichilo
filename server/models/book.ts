@@ -19,7 +19,7 @@ export type BookProps = {
   publicBooks?: PublicBookSchema[];
 };
 
-export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid"> & {
+export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid" | "spid" > & {
   authors: AuthorSchema[];
   sections: SectionSchema[];
   ltiResourceLinks: LtiResourceLinkSchema[];
