@@ -116,17 +116,18 @@ function categorizeReleases(props: Props): CategorizedItems {
     .sort(compareReleasedAt);
   let from;
   if (branch.length > 0) {
-    const oldestPid = branch.slice(-1)[0].pid;
+    const oldest = branch.slice(-1)[0];
+    const oldestPid = oldest.spid ?? oldest.pid;
     if (oldestPid) {
       from = releases.filter((release) => sameId(release.vid, oldestPid))[0];
     }
   }
   const to = releases
-    .filter(
-      (release) =>
-        release.oid !== self?.oid &&
-        branch.some((b) => sameId(b.vid, release.pid))
-    )
+    .filter((release) => {
+      if (release.oid === self?.oid) return false;
+      const pid = release.spid ?? release.pid;
+      return branch.some((b) => sameId(b.vid, pid));
+    })
     .sort(compareReleasedAt);
   return { self, editing, branch, from, to };
 }

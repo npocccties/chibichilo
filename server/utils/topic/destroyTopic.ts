@@ -1,7 +1,9 @@
 import type { Topic } from "@prisma/client";
 import prisma from "$server/utils/prisma";
+import { updateTopicSpid } from "../uniqueId";
 
 async function destroyTopic(id: Topic["id"]) {
+  await updateTopicSpid(id);
   try {
     await prisma.$transaction([
       prisma.topicSection.deleteMany({
