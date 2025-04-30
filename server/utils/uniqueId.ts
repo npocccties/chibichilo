@@ -100,13 +100,10 @@ export async function cloneBookUniqueIds(
   return;
 }
 
-export async function updateBookSpid(
-  bookId: Book["id"],
-): Promise<void> {
-  const ids = await findBookUniqueIds(bookId);
-  // unique id が見つからない、vid が空の場合は何もしない
-  if (!ids || !ids.vid) return;
-  const _updated = await prisma.book.updateMany({
+export function updateBookSpid(
+  ids: UniqueIds,
+) {
+  return prisma.book.updateMany({
     where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
     data: { spid: ids.spid ?? ids.pid }
   });
@@ -168,13 +165,10 @@ export async function cloneTopicUniqueIds(
   return;
 }
 
-export async function updateTopicSpid(
-  topicId: Topic["id"],
-): Promise<void> {
-  const ids = await findTopicUniqueIds(topicId);
-  // unique id が見つからない、vid が空の場合は何もしない
-  if (!ids || !ids.vid) return;
-  const _updated = await prisma.topic.updateMany({
+export function updateTopicSpid(
+  ids: UniqueIds,
+) {
+  return prisma.topic.updateMany({
     where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
     data: { spid: ids.spid ?? ids.pid }
   });
