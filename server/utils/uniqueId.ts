@@ -28,7 +28,7 @@ function releaseUniqueIds(edit: UniqueIds, release: UniqueIds) {
   release.oid = edit.oid;
   release.pid = edit.pid;
   release.vid = createId();
-  release.spid = edit.pid;
+  release.spid = edit.spid;
   edit.pid = release.vid;
   edit.spid = release.vid;
 }
@@ -44,6 +44,9 @@ function cloneUniqueIds(orig: UniqueIds, clone: UniqueIds) {
   clone.spid = orig.vid;
 }
 
+//
+// book
+//
 export async function findBookUniqueIds(
   bookId: Book["id"]
 ): Promise<UniqueIds | undefined> {
@@ -97,6 +100,21 @@ export async function cloneBookUniqueIds(
   return;
 }
 
+export async function updateBookSpid(
+  bookId: Book["id"],
+): Promise<void> {
+  const ids = await findBookUniqueIds(bookId);
+  // unique id が見つからない、vid が空の場合は何もしない
+  if (!ids || !ids.vid) return;
+  const _updated = await prisma.book.updateMany({
+    where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
+    data: { spid: ids.spid ?? ids.pid }
+  });
+}
+
+//
+// topic
+//
 export async function findTopicUniqueIds(
   topicId: Topic["id"]
 ): Promise<UniqueIds | undefined> {
@@ -148,4 +166,16 @@ export async function cloneTopicUniqueIds(
   await updateTopicUniqueIds(cloneId, clone);
 
   return;
+}
+
+export async function updateTopicSpid(
+  topicId: Topic["id"],
+): Promise<void> {
+  const ids = await findTopicUniqueIds(topicId);
+  // unique id が見つからない、vid が空の場合は何もしない
+  if (!ids || !ids.vid) return;
+  const _updated = await prisma.topic.updateMany({
+    where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
+    data: { spid: ids.spid ?? ids.pid }
+  });
 }
