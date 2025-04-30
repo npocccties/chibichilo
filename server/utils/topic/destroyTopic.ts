@@ -1,11 +1,10 @@
 import type { Topic } from "@prisma/client";
 import prisma from "$server/utils/prisma";
-import { updateTopicSpid } from "../uniqueId";
+import { findTopicUniqueIds, updateTopicSpid } from "../uniqueId";
 
 async function destroyTopic(id: Topic["id"]) {
-  await updateTopicSpid(id);
   try {
-    await prisma.$transaction([
+    const ops = [
       prisma.topicSection.deleteMany({
         where: { topicId: id },
       }),
@@ -36,7 +35,13 @@ async function destroyTopic(id: Topic["id"]) {
       prisma.resource.deleteMany({
         where: { topics: { every: { id } } },
       }),
-    ]);
+    ];
+    const ids = await findTopicUniqueIds(id);
+    // unique id が見つかって、vid があるとき、spid を更新する
+    if (ids && ids.vid) {
+      ops.push(updateTopicSpid(ids));
+    }
+    await prisma.$transaction(ops);
   } catch {
     return;
   }
