@@ -5,9 +5,13 @@ import { cloneTopic } from "../topic/cloneTopic";
 import { cloneTopicUniqueIds } from "../uniqueId";
 
 export async function cloneSections(origTopics: number[], sections: SectionProps[], authors: Prisma.AuthorshipUncheckedCreateInput[]) {
+  const used: number[] = [];
   for (const section of sections) {
     for (const topic of section.topics) {
-      if (origTopics && origTopics.includes(topic.id)) continue;
+      if (origTopics && origTopics.includes(topic.id) && !used.includes(topic.id)) {
+        used.push(topic.id);
+        continue;
+      }
       const found = await prisma.topic.findUnique({
         where: { id: topic.id },
         include: { resource: true, keywords: true }
