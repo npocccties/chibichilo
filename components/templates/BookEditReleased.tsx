@@ -127,6 +127,7 @@ export default function BookEditReleased({
           <ReleaseItemList
             id={book.id}
             releases={releases}
+            variant="book"
             onItemEditClick={handleItemEditClick}
           />
         </>

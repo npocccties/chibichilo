@@ -74,5 +74,5 @@ const defaultProps = {
 };
 
 export const Default = () => {
-  return <ReleaseItemList {...defaultProps} />;
+  return <ReleaseItemList {...defaultProps} variant="book" />;
 };
