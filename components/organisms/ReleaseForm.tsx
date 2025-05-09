@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
-  const { register, handleSubmit, setValue, formState, reset } =
+  const { register, handleSubmit, formState, reset, getValues } =
     useForm<ReleaseProps>({
       values: release,
     });
@@ -93,12 +93,8 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
           </Typography>
         </InputLabel>
         <Checkbox
-          id="shared"
-          name="shared"
-          onChange={(_, checked) =>
-            setValue("shared", checked, { shouldDirty: true })
-          }
-          defaultChecked={release.shared}
+          inputProps={update ? register("shared") : {}}
+          checked={getValues("shared")}
           color="primary"
           disabled={!update}
         />
