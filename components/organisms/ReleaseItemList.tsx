@@ -14,6 +14,7 @@ import type { TopicSchema } from "$server/models/topic";
 type Props = {
   id: BookSchema["id"] | TopicSchema["id"];
   releases: Array<ReleaseItemSchema>;
+  variant: "book" | "topic";
   onItemEditClick?(index: number): void;
 };
 
@@ -21,6 +22,7 @@ type ReleaseItemProps = {
   item: ReleaseItemSchema;
   category: string;
   index: number;
+  variant: "book" | "topic";
   onItemEditClick?(index: number): void;
 };
 
@@ -28,6 +30,7 @@ function ReleaseItem({
   item,
   category,
   index,
+  variant,
   onItemEditClick,
 }: ReleaseItemProps) {
   const treeItemClasses = useTreeItemStyle();
@@ -42,7 +45,7 @@ function ReleaseItem({
             {category}
             {item.name}
             <EditButton
-              variant="book"
+              variant={variant}
               onClick={(event) => {
                 event.stopPropagation();
                 onItemEditClick && onItemEditClick(index);
@@ -184,6 +187,7 @@ export default function ReleaseItemList(props: Props) {
             item={item}
             category={categories[index]}
             index={index}
+            variant={props.variant}
             onItemEditClick={handleItemEditClick}
           />
         ))}

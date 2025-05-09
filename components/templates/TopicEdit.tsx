@@ -149,6 +149,7 @@ export default function TopicEdit(props: Props) {
           <ReleaseItemList
             id={topic.id}
             releases={releases}
+            variant="topic"
             onItemEditClick={handleItemEditClick}
           />
         </>
