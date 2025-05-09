@@ -117,7 +117,11 @@ function Edit({ bookId, context }: Query) {
     );
   }
   async function handleItemEditClick(bookId: BookSchema["id"]) {
-    return router.push(pagesPath.book.edit.$url({ query: { bookId } }));
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { bookId, ...(context && { context }) },
+      })
+    );
   }
   async function handleClone({ id }: Pick<BookSchema, "id">) {
     const created = await cloneBook(id);
