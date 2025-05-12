@@ -14,6 +14,7 @@ function ReleaseEdit(props: Props) {
   const handleSubmit = (props: ReleaseProps) => {
     onSubmit({ ...props });
   };
+  const release = { version: "", comment: "", shared: false };
   return (
     <Container
       maxWidth="md"
@@ -25,7 +26,7 @@ function ReleaseEdit(props: Props) {
       }}
     >
       <Typography variant="h4">{book.name}</Typography>
-      <ReleaseForm release={book.release ?? {}} onSubmit={handleSubmit} />
+      <ReleaseForm release={release} onSubmit={handleSubmit} />
     </Container>
   );
 }

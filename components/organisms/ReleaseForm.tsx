@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import TextField from "$atoms/TextField";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import gray from "$theme/colors/gray";
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
-  const { register, handleSubmit, formState, reset, getValues } =
+  const { register, handleSubmit, formState, reset, control } =
     useForm<ReleaseProps>({
       values: release,
     });
@@ -92,11 +92,14 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
             他の教材作成者とブックを共有します
           </Typography>
         </InputLabel>
-        <Checkbox
-          inputProps={update ? register("shared") : {}}
-          checked={getValues("shared")}
-          color="primary"
+        <Controller
+          name="shared"
+          control={control}
+          rules={{ required: false }}
           disabled={!update}
+          render={({ field }) => (
+            <Checkbox {...field} color="primary" checked={field.value} />
+          )}
         />
       </div>
       {release.version && (
