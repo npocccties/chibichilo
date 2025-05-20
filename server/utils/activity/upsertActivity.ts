@@ -25,6 +25,9 @@ const ACTIVITY_COUNT_INTERVAL2 = Number(
 const ACTIVITY_COUNT_INTERVAL_THRESHOLD_MS =
   (ACTIVITY_COUNT_INTERVAL2 * 1000) / 2.0;
 
+const ACTIVITY_COUNT_PREVIOUS_INTERVAL =
+  NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL2 * 1.5 * 1000;
+
 function findActivity({
   learnerId,
   topicId,
@@ -64,9 +67,7 @@ function findTopic(topicId: Topic["id"]) {
 
 function findRecentActivityTimeRangeLog(activityId: Activity["id"]) {
   const now = new Date();
-  const date = new Date(
-    now.getTime() - NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL2 * 1.5 * 1000
-  );
+  const date = new Date(now.getTime() - ACTIVITY_COUNT_PREVIOUS_INTERVAL);
 
   return prisma.activityTimeRangeLog.findMany({
     where: {
