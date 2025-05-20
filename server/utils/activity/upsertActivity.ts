@@ -75,7 +75,6 @@ function findRecentActivityTimeRangeLog(activityId: Activity["id"]) {
         gte: date,
       },
     },
-    orderBy: { updatedAt: "desc" },
   });
 }
 
