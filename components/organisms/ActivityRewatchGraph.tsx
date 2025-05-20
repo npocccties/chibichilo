@@ -13,10 +13,7 @@ import {
   NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY,
 } from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
-
-const ACTIVITY_COUNT_INTERVAL2 = Number(
-  process.env.ACTIVITY_COUNT_INTERVAL ?? 1
-);
+import { NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL } from "$utils/env";
 
 const useStyles = makeStyles(() => ({
   outilerDescriptionArea: {
@@ -262,13 +259,17 @@ function padZeroTimeRangeCount(
   const activityIds = [...new Set(counts.map((c) => c.activityId))];
 
   activityIds.forEach((activityId) => {
-    for (let t = startTime; t < stopTime; t += ACTIVITY_COUNT_INTERVAL2) {
+    for (
+      let t = startTime;
+      t < stopTime;
+      t += NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL
+    ) {
       if (
         counts.find((c) => {
           return (
             c.activityId === activityId &&
             c.startMs === t * 1000 &&
-            c.endMs === (t + ACTIVITY_COUNT_INTERVAL2) * 1000
+            c.endMs === (t + NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL) * 1000
           );
         })
       )
@@ -277,7 +278,7 @@ function padZeroTimeRangeCount(
       counts.push({
         activityId: activityId,
         startMs: t * 1000,
-        endMs: (t + ACTIVITY_COUNT_INTERVAL2) * 1000,
+        endMs: (t + NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL) * 1000,
         count: 0,
       });
     }
