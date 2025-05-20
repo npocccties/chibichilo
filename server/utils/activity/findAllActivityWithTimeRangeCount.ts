@@ -2,6 +2,7 @@ import type { SessionSchema } from "$server/models/session";
 import prisma from "$server/utils/prisma";
 
 function findAllActivityWithTimeRangeCount(
+  rewatchThreshold: number,
   session: SessionSchema,
   currentLtiContextOnly: boolean
 ) {
@@ -18,7 +19,17 @@ function findAllActivityWithTimeRangeCount(
       totalTimeMs: true,
       topic: true,
       learner: true,
-      timeRangeCounts: true,
+      _count: {
+        select: {
+          timeRangeCounts: {
+            where: {
+              count: {
+                gte: rewatchThreshold,
+              },
+            },
+          },
+        },
+      },
     },
     where: {
       ...activityScope,

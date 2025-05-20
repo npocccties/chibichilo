@@ -53,19 +53,17 @@ export async function index({
   }
 
   const activities = await findAllActivityWithTimeRangeCount(
+    ACTIVITY_REWATCH_THRESHOLD2,
     session,
     Boolean(query.current_lti_context_only)
   );
 
   const activityRewatchRate = activities.map((activity) => {
-    const rewatchRanges = activity.timeRangeCounts.filter((t) => {
-      return t.count >= ACTIVITY_REWATCH_THRESHOLD2;
-    });
     return {
       topicId: activity.topic.id,
       learnerId: activity.learner.id,
       rewatchRate: round(
-        rewatchRanges.length /
+        activity._count.timeRangeCounts /
           (activity.topic.timeRequired / ACTIVITY_COUNT_INTERVAL2),
         -3
       ),
