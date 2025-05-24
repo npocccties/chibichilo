@@ -12,16 +12,10 @@ function Index() {
   const { session } = useSessionAtom();
   const { data, error } = useDownloadData();
 
-  const learners = data
-    ? ([
-        ...new Set(data.map((res) => res["learners"]).flat()),
-      ] as Array<LearnerSchema>)
-    : [];
-  const courseBooks = data
-    ? ([
-        ...new Set(data.map((res) => res["courseBooks"]).flat()),
-      ] as Array<CourseBookSchema>)
-    : [];
+  // ダウンロードデータに不要なので空配列
+  const learners: Array<LearnerSchema> = [];
+  const courseBooks: Array<CourseBookSchema> = [];
+
   const bookActivities = data
     ? ([
         ...new Set(data.map((res) => res["bookActivities"]).flat()),
