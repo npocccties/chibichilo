@@ -23,6 +23,7 @@ When changing the information of the connection destination of API, .env must be
 | `NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD`        | Option for enabling topic view record (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)     |
 | `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | Option for enabling tag and bookmark (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)      |
 | `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | Do not allow anyone to DeepLink UI. Disabled by default.                                                                  |
+| `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | The number of data per file on download page (Default: `0`) `0` means that the download data is not splitted.             |
 
 ## Build front-ends
 
