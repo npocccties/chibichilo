@@ -33,7 +33,7 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 | `NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD`        | 視聴記録の有効化 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 有効)                                                           |
 | `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | タグ・感想機能の有効化 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 有効)                                                     |
 | `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | DeepLink用のUIを無効にする。BlackboardでDeepLinkを使用する際には有効にする (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
-| `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | ダウンロードページでの分割視聴分析データの1ファイルあたりのデータ数 (デフォルト: `0`) `0`のとき、視聴分析データは分割されない|
+| `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | ダウンロードページでの分割視聴分析データの1ファイルあたりのデータ数 (デフォルト: `0`) `0`のとき、視聴分析データは分割されない                                    |
 
 ## フロントエンド周りのビルド
 
