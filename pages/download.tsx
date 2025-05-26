@@ -2,8 +2,7 @@ import Download from "$templates/Download";
 import Placeholder from "$templates/Placeholder";
 import Problem from "$organisms/Problem";
 import { useSessionAtom } from "$store/session";
-import useActivityByConsumer from "$utils/useActivityByConsumer";
-import useContext from "$utils/courses/useContext";
+import useDownloadData from "$utils/useDownloadData";
 import { isAdministrator } from "$utils/session";
 import type { LearnerSchema } from "$server/models/learner";
 import type { CourseBookSchema } from "$server/models/courseBook";
@@ -11,27 +10,12 @@ import type { BookActivitySchema } from "$server/models/bookActivity";
 
 function Index() {
   const { session } = useSessionAtom();
-  const contexts = useContext();
-  const ltiConsumerIds = contexts.flatMap(({ consumerId }) => consumerId ?? "");
-  const ltiContextIds = contexts.flatMap(({ id }) => id ?? "");
+  const { data, error } = useDownloadData();
 
-  // ltiConsumerId/ltiContextId毎に分割して取得
-  const { data, error } = useActivityByConsumer(
-    undefined,
-    ltiConsumerIds,
-    ltiContextIds
-  );
+  // ダウンロードデータに不要なので空配列
+  const learners: Array<LearnerSchema> = [];
+  const courseBooks: Array<CourseBookSchema> = [];
 
-  const learners = data
-    ? ([
-        ...new Set(data.map((res) => res["learners"]).flat()),
-      ] as Array<LearnerSchema>)
-    : [];
-  const courseBooks = data
-    ? ([
-        ...new Set(data.map((res) => res["courseBooks"]).flat()),
-      ] as Array<CourseBookSchema>)
-    : [];
   const bookActivities = data
     ? ([
         ...new Set(data.map((res) => res["bookActivities"]).flat()),
