@@ -172,7 +172,9 @@ export default function Book(props: Props) {
       : undefined;
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth={matches ? "lg" : false}
+      disableGutters={!matches}
+    >
       <ActionHeader sx={{ pb: 0 }} considerAppBar={considerAppBar}>
         <header className={classes.header}>
           <Typography
