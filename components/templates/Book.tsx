@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
       flexShrink: 0,
     },
   },
+  headerHidden: {
+    visibility: 'hidden',
+  },
   title: {
     fontSize: "1.75rem",
     overflow: "hidden",
@@ -176,7 +179,9 @@ export default function Book(props: Props) {
       disableGutters={!matches}
     >
       <ActionHeader sx={{ pb: 0 }} considerAppBar={considerAppBar}>
-        <header className={classes.header}>
+        <header className={clsx(classes.header, {
+          [classes.headerHidden]: trigger
+        })}>
           <Typography
             className={clsx(classes.title, { [classes.mobile]: !matches })}
             variant="h4"
