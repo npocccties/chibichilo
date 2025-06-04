@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import usePrevious from "@rooks/use-previous";
-import clsx from "clsx";
 import { css } from "@emotion/css";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import type { TopicSchema } from "$server/models/topic";
 import type { VideoResourceSchema } from "$server/models/videoResource";
@@ -33,15 +34,6 @@ import TagList from "$molecules/TagList";
 import { useBookmarksByTopicId } from "$utils/bookmark/useBookmarks";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
-
-const hidden = css({
-  m: 0,
-  width: 0,
-  height: 0,
-  "& *": {
-    visibility: "hidden",
-  },
-});
 
 const videoStyle = {
   "& > *": {
@@ -183,6 +175,8 @@ export default function Video({
   isPrivateBook = false,
   isBookPage = false,
 }: Props) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { video, preloadVideo } = useVideoAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const { session } = useSessionAtom();
@@ -324,12 +318,18 @@ export default function Video({
         Array.from(video.entries()).map(([id, videoInstance]) => (
           <VideoPlayer
             key={id}
-            className={clsx(className, {
-              [hidden]: String(topic.id) !== id,
-            })}
-            sx={{ ...videoStyle, ...sx }}
+            sx={{
+              ...videoStyle,
+              ...sx,
+              position: String(topic.id) === id ? "sticky" : "static",
+              top: String(topic.id) === id ? (isMobile ? 0 : 56) : "auto",
+              zIndex: String(topic.id) === id ? 10 : "auto",
+              backgroundColor:
+                String(topic.id) === id ? "#ffffff" : "transparent",
+            }}
             videoInstance={videoInstance}
             autoplay={String(topic.id) === id}
+            hidden={String(topic.id) !== id}
             onEnded={String(topic.id) === id ? onEnded : undefined}
           />
         ))
