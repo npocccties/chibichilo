@@ -318,13 +318,14 @@ export default function Video({
         Array.from(video.entries()).map(([id, videoInstance]) => (
           <VideoPlayer
             key={id}
-            sx={{ 
-              ...videoStyle, 
+            sx={{
+              ...videoStyle,
               ...sx,
               position: String(topic.id) === id ? "sticky" : "static",
               top: String(topic.id) === id ? (isMobile ? 0 : 56) : "auto",
               zIndex: String(topic.id) === id ? 10 : "auto",
-              backgroundColor: String(topic.id) === id ? "#ffffff" : "transparent",
+              backgroundColor:
+                String(topic.id) === id ? "#ffffff" : "transparent",
             }}
             videoInstance={videoInstance}
             autoplay={String(topic.id) === id}
