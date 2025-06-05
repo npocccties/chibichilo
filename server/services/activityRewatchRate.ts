@@ -61,7 +61,7 @@ export async function index({
   const activityRewatchRate = activities.map((activity) => {
     return {
       topicId: activity.topic.id,
-      learnerId: activity.learner.id,
+      learnerId: activity.learnerId,
       rewatchRate: round(
         activity._count.timeRangeCounts /
           (activity.topic.timeRequired / ACTIVITY_COUNT_INTERVAL2),

@@ -17,8 +17,13 @@ function findAllActivityWithTimeRangeCount(
     select: {
       id: true,
       totalTimeMs: true,
-      topic: true,
-      learner: true,
+      topic: {
+        select: {
+          id: true,
+          timeRequired: true,
+        },
+      },
+      learnerId: true,
       _count: {
         select: {
           timeRangeCounts: {
