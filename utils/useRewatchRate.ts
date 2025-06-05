@@ -9,7 +9,11 @@ const key = "/api/v2/activityRewatchRate";
 function useRewatchRate(currentLtiContextOnly: boolean) {
   const { data, error } = useSWR(
     { key, currentLtiContextOnly },
-    fetchRewatchRate
+    fetchRewatchRate,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    }
   );
   return { data, error };
 }
