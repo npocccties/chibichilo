@@ -1,5 +1,6 @@
 import fetchRewatchRate from "$utils/fetchRewatchRate";
 import useSWR from "swr";
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 
 const key = "/api/v2/activityRewatchRate";
 
@@ -8,7 +9,9 @@ const key = "/api/v2/activityRewatchRate";
  */
 function useRewatchRate(currentLtiContextOnly: boolean) {
   const { data, error } = useSWR(
-    { key, currentLtiContextOnly },
+    NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
+      ? { key, currentLtiContextOnly }
+      : null,
     fetchRewatchRate,
     {
       revalidateIfStale: false,
