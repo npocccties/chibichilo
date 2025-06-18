@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineResponse20011 {
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof InlineResponse20011
      */
-    bookIds?: Array<string>;
+    publicToken: string;
 }
 
 export function InlineResponse20011FromJSON(json: any): InlineResponse20011 {
@@ -37,7 +37,7 @@ export function InlineResponse20011FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'bookIds': !exists(json, 'bookIds') ? undefined : json['bookIds'],
+        'publicToken': json['publicToken'],
     };
 }
 
@@ -50,7 +50,7 @@ export function InlineResponse20011ToJSON(value?: InlineResponse20011 | null): a
     }
     return {
         
-        'bookIds': value.bookIds,
+        'publicToken': value.publicToken,
     };
 }
 

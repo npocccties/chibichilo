@@ -78,6 +78,7 @@ type Props = {
   onTopicPreviewClick(topic: TopicSchema): void;
   onTopicEditClick?(topic: TopicSchema): void;
   isContentEditable?: IsContentEditable;
+  noedit?: boolean;
 };
 
 export default function SectionsEdit(props: Props) {
@@ -88,6 +89,7 @@ export default function SectionsEdit(props: Props) {
     onTopicEditClick,
     onSectionsUpdate,
     isContentEditable,
+    noedit,
   } = props;
   const cardClasses = useCardStyles();
   const classes = useStyles();
@@ -108,58 +110,62 @@ export default function SectionsEdit(props: Props) {
   } = useSortableSectionsProps(sections, onSectionsUpdate);
   return (
     <Card classes={cardClasses} className={clsx(className, classes.root)}>
-      <div className={classes.items}>
-        <Button
-          size="small"
-          color="primary"
-          disabled={sortable}
-          onClick={props.onBookImportClick}
-        >
-          <GetAppIcon className={classes.icon} />
-          ブックの再利用
-        </Button>
-        <Button
-          size="small"
-          color="primary"
-          disabled={sortable}
-          onClick={props.onTopicImportClick}
-        >
-          <GetAppIcon className={classes.icon} />
-          トピックの再利用
-        </Button>
-        <Button
-          size="small"
-          color="primary"
-          disabled={sortable}
-          onClick={props.onTopicNewClick}
-        >
-          <AddIcon className={classes.icon} />
-          トピックの作成
-        </Button>
-        <FormControlLabel
-          classes={formControlLabelClasses}
-          control={
-            <Switch
+      {!noedit && (
+        <>
+          <div className={classes.items}>
+            <Button
               size="small"
               color="primary"
-              checked={sortable}
-              onChange={handleSortableChange}
-            />
-          }
-          label={
-            <Typography
-              className={classes.label}
-              variant="button"
-              color="primary"
+              disabled={sortable}
+              onClick={props.onBookImportClick}
             >
-              <DragIndicatorIcon />
-              トピック順の編集
-            </Typography>
-          }
-          labelPlacement="start"
-        />
-      </div>
-      <Divider className={classes.divider} />
+              <GetAppIcon className={classes.icon} />
+              ブックの再利用
+            </Button>
+            <Button
+              size="small"
+              color="primary"
+              disabled={sortable}
+              onClick={props.onTopicImportClick}
+            >
+              <GetAppIcon className={classes.icon} />
+              トピックの再利用
+            </Button>
+            <Button
+              size="small"
+              color="primary"
+              disabled={sortable}
+              onClick={props.onTopicNewClick}
+            >
+              <AddIcon className={classes.icon} />
+              トピックの作成
+            </Button>
+            <FormControlLabel
+              classes={formControlLabelClasses}
+              control={
+                <Switch
+                  size="small"
+                  color="primary"
+                  checked={sortable}
+                  onChange={handleSortableChange}
+                />
+              }
+              label={
+                <Typography
+                  className={classes.label}
+                  variant="button"
+                  color="primary"
+                >
+                  <DragIndicatorIcon />
+                  トピック順の編集
+                </Typography>
+              }
+              labelPlacement="start"
+            />
+          </div>
+          <Divider className={classes.divider} />
+        </>
+      )}
       {inProgress && (
         <Alert className={classes.alert} severity="info">
           トピック順の編集内容が未保存です。反映する場合はトピック順の編集中に保存ボタンをクリックしてください

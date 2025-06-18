@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
+    ApiV2BookBookIdKeywords,
+    ApiV2BookBookIdKeywordsFromJSON,
+    ApiV2BookBookIdKeywordsFromJSONTyped,
+    ApiV2BookBookIdKeywordsToJSON,
+    ApiV2TopicTopicIdResource,
+    ApiV2TopicTopicIdResourceFromJSON,
+    ApiV2TopicTopicIdResourceFromJSONTyped,
+    ApiV2TopicTopicIdResourceToJSON,
 } from './';
 
 /**
@@ -28,34 +32,52 @@ import {
 export interface InlineObject11 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject11
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject11
+     */
+    timeRequired?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject11
+     */
+    startTime?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject11
+     */
+    stopTime?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject11
+     */
+    shared?: boolean;
     /**
      * 
      * @type {string}
      * @memberof InlineObject11
      */
-    provider: string;
+    description?: string;
     /**
      * 
-     * @type {string}
+     * @type {ApiV2TopicTopicIdResource}
      * @memberof InlineObject11
      */
-    wowzaBaseUrl: string;
+    resource?: ApiV2TopicTopicIdResource;
     /**
      * 
-     * @type {string}
+     * @type {Array<ApiV2BookBookIdKeywords>}
      * @memberof InlineObject11
      */
-    json?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject11
-     */
-    file?: string;
+    keywords?: Array<ApiV2BookBookIdKeywords>;
 }
 
 export function InlineObject11FromJSON(json: any): InlineObject11 {
@@ -68,11 +90,14 @@ export function InlineObject11FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
-        'provider': json['provider'],
-        'wowzaBaseUrl': json['wowzaBaseUrl'],
-        'json': !exists(json, 'json') ? undefined : json['json'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
+        'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
+        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
     };
 }
 
@@ -85,11 +110,14 @@ export function InlineObject11ToJSON(value?: InlineObject11 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
-        'provider': value.provider,
-        'wowzaBaseUrl': value.wowzaBaseUrl,
-        'json': value.json,
-        'file': value.file,
+        'name': value.name,
+        'timeRequired': value.timeRequired,
+        'startTime': value.startTime,
+        'stopTime': value.stopTime,
+        'shared': value.shared,
+        'description': value.description,
+        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
+        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
     };
 }
 

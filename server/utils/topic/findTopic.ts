@@ -15,7 +15,22 @@ async function findTopic(
   });
   if (topic == null) return;
 
-  return topicToTopicSchema(topic);
+  const relatedBooks = topic.topicSection.map((topicSection) => {
+    const book = topicSection.section.book;
+    return {
+      id: book.id,
+      name: book.name,
+      description: book.description,
+      language: book.language,
+      shared: book.shared,
+      release: book.release,
+    };
+  });
+
+  return {
+    ...topicToTopicSchema(topic),
+    relatedBooks
+  };
 }
 
 export default findTopic;

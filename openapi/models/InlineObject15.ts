@@ -24,13 +24,19 @@ export interface InlineObject15 {
      * @type {string}
      * @memberof InlineObject15
      */
-    memoContent?: string;
+    language?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject15
      */
-    topicId?: number;
+    license?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject15
+     */
+    licenser?: string;
 }
 
 export function InlineObject15FromJSON(json: any): InlineObject15 {
@@ -43,8 +49,9 @@ export function InlineObject15FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
     };
 }
 
@@ -57,8 +64,9 @@ export function InlineObject15ToJSON(value?: InlineObject15 | null): any {
     }
     return {
         
-        'memoContent': value.memoContent,
-        'topicId': value.topicId,
+        'language': value.language,
+        'license': value.license,
+        'licenser': value.licenser,
     };
 }
 

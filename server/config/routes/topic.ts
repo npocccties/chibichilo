@@ -5,6 +5,8 @@ import * as service from "$server/services/topic";
 import * as activityService from "$server/services/topic/activity";
 import * as authorsService from "$server/services/topic/authors";
 import * as importService from "$server/services/topicImport";
+import * as releaseService from "$server/services/topic/release";
+import * as metainfoService from "$server/services/topic/metainfo";
 
 const basePath = "/topic";
 const pathWithParams = `${basePath}/:topic_id`;
@@ -67,4 +69,25 @@ export async function topicImport(fastify: FastifyInstance) {
     Params: service.Params;
     Body: importService.Params;
   }>(path, { schema: importSchema, ...hooks.post }, handler(importTopic));
+}
+
+export async function topicRelease(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/release`;
+  const { method, show } = releaseService;
+  const hooks = makeHooks(fastify, releaseService.hooks);
+
+  fastify.get<{
+    Params: releaseService.Params;
+  }>(path, { schema: method.get, ...hooks.get }, handler(show));
+}
+
+export async function topicMetainfo(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/metainfo`;
+  const { method, update } = metainfoService;
+  const hooks = makeHooks(fastify, metainfoService.hooks);
+
+  fastify.put<{
+    Params: metainfoService.Params;
+    Body: metainfoService.Props;
+  }>(path, { schema: method.put, ...hooks.put }, handler(update));
 }

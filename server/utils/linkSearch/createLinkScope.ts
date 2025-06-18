@@ -1,5 +1,5 @@
 import type { AuthorFilter } from "$server/models/authorFilter";
-import createScopes from "$server/utils/search/createScopes";
+import { createScopesBook } from "$server/utils/search/createScopes";
 
 function createLinkScope(
   filter: AuthorFilter,
@@ -10,11 +10,12 @@ function createLinkScope(
     OR: [
       {
         consumerId: course.oauthClientId,
-        contextId: course.ltiContextId,
+//        contextId: course.ltiContextId,
+        contextId: "3",
       },
       {
         creatorId: filter.by,
-        book: { AND: createScopes(filter) },
+        book: { AND: createScopesBook(filter) },
       },
     ],
   };

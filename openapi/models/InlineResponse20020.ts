@@ -13,24 +13,25 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse20019BookmarkTagMenu,
+    InlineResponse20019BookmarkTagMenuFromJSON,
+    InlineResponse20019BookmarkTagMenuFromJSONTyped,
+    InlineResponse20019BookmarkTagMenuToJSON,
+} from './';
+
 /**
- * 
+ * 成功時
  * @export
  * @interface InlineResponse20020
  */
 export interface InlineResponse20020 {
     /**
      * 
-     * @type {string}
+     * @type {Array<InlineResponse20019BookmarkTagMenu>}
      * @memberof InlineResponse20020
      */
-    text: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20020
-     */
-    value: number;
+    bookmarkTagMenu: Array<InlineResponse20019BookmarkTagMenu>;
 }
 
 export function InlineResponse20020FromJSON(json: any): InlineResponse20020 {
@@ -43,8 +44,7 @@ export function InlineResponse20020FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'text': json['text'],
-        'value': json['value'],
+        'bookmarkTagMenu': ((json['bookmarkTagMenu'] as Array<any>).map(InlineResponse20019BookmarkTagMenuFromJSON)),
     };
 }
 
@@ -57,8 +57,7 @@ export function InlineResponse20020ToJSON(value?: InlineResponse20020 | null): a
     }
     return {
         
-        'text': value.text,
-        'value': value.value,
+        'bookmarkTagMenu': ((value.bookmarkTagMenu as Array<any>).map(InlineResponse20019BookmarkTagMenuToJSON)),
     };
 }
 

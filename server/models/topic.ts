@@ -5,6 +5,7 @@ import { resourcePropsSchema, resourceSchema } from "./resource";
 import { AuthorSchema } from "./author";
 import { KeywordPropSchema, KeywordSchema } from "./keyword";
 import type { BookmarkSchema } from "./bookmark";
+import { releaseSchema } from "./book/release";
 
 const RelatedBook = {
   type: "object",
@@ -15,28 +16,40 @@ const RelatedBook = {
     description: { type: "string" },
     language: { type: "string" },
     shared: { type: "boolean" },
+    release: { ...releaseSchema, nullable: true },
   },
   additionalProperties: false,
 } as const;
 
-export type RelatedBook = FromSchema<typeof RelatedBook>;
+export type RelatedBook = FromSchema<
+  typeof RelatedBook,
+  {
+    deserialize: [
+      {
+        pattern: {
+          type: "string";
+          format: "date-time";
+        };
+        output: Date;
+      },
+    ];
+  }
+>;
 
 export type TopicProps = Pick<
   Prisma.TopicCreateInput,
   | "name"
-  | "language"
   | "timeRequired"
   | "startTime"
   | "stopTime"
   | "shared"
-  | "license"
   | "description"
 > & {
   resource: ResourceProps;
   keywords?: KeywordPropSchema[];
 };
 
-export type TopicSchema = Topic & {
+export type TopicSchema = Omit<Topic, "poid" | "oid" | "pid" | "vid" | "spid"> & {
   authors: AuthorSchema[];
   keywords: KeywordSchema[];
   relatedBooks?: RelatedBook[];
@@ -48,12 +61,10 @@ export const TopicProps = {
   type: "object",
   properties: {
     name: { type: "string" },
-    language: { type: "string" },
     timeRequired: { type: "integer" },
     startTime: { type: "number" },
     stopTime: { type: "number", nullable: true },
     shared: { type: "boolean" },
-    license: { type: "string", format: "license" },
     description: { type: "string" },
     resource: resourcePropsSchema,
     keywords: {
@@ -74,6 +85,7 @@ export const topicSchema = {
     stopTime: { type: "number", nullable: true },
     shared: { type: "boolean" },
     license: { type: "string" },
+    licenser: { type: "string" },
     description: { type: "string" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },

@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
+    ApiV2BookBookIdKeywords,
+    ApiV2BookBookIdKeywordsFromJSON,
+    ApiV2BookBookIdKeywordsFromJSONTyped,
+    ApiV2BookBookIdKeywordsToJSON,
+    ApiV2TopicTopicIdResource,
+    ApiV2TopicTopicIdResourceFromJSON,
+    ApiV2TopicTopicIdResourceFromJSONTyped,
+    ApiV2TopicTopicIdResourceToJSON,
 } from './';
 
 /**
@@ -28,10 +32,52 @@ import {
 export interface InlineObject10 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject10
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    timeRequired?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    startTime?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject10
+     */
+    stopTime?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject10
+     */
+    shared?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject10
+     */
+    description?: string;
+    /**
+     * 
+     * @type {ApiV2TopicTopicIdResource}
+     * @memberof InlineObject10
+     */
+    resource?: ApiV2TopicTopicIdResource;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdKeywords>}
+     * @memberof InlineObject10
+     */
+    keywords?: Array<ApiV2BookBookIdKeywords>;
 }
 
 export function InlineObject10FromJSON(json: any): InlineObject10 {
@@ -44,7 +90,14 @@ export function InlineObject10FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
+        'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
+        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
     };
 }
 
@@ -57,7 +110,14 @@ export function InlineObject10ToJSON(value?: InlineObject10 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
+        'name': value.name,
+        'timeRequired': value.timeRequired,
+        'startTime': value.startTime,
+        'stopTime': value.stopTime,
+        'shared': value.shared,
+        'description': value.description,
+        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
+        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
     };
 }
 

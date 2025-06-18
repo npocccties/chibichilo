@@ -91,6 +91,12 @@ export interface InlineResponse2006Topics {
      * @type {string}
      * @memberof InlineResponse2006Topics
      */
+    licenser?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2006Topics
+     */
     description?: string;
     /**
      * 
@@ -154,6 +160,7 @@ export function InlineResponse2006TopicsFromJSONTyped(json: any, ignoreDiscrimin
         'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
         'description': !exists(json, 'description') ? undefined : json['description'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
@@ -182,6 +189,7 @@ export function InlineResponse2006TopicsToJSON(value?: InlineResponse2006Topics 
         'stopTime': value.stopTime,
         'shared': value.shared,
         'license': value.license,
+        'licenser': value.licenser,
         'description': value.description,
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),

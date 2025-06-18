@@ -5,6 +5,7 @@ import { bookPropsSchema, bookSchema } from "$server/models/book";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import createBook from "$server/utils/book/createBook";
+import { cloneSections } from "$server/utils/book/cloneSections";
 
 export const createSchema: FastifySchema = {
   summary: "ブックの作成",
@@ -26,7 +27,11 @@ export async function create({
   session,
   body,
 }: FastifyRequest<{ Body: BookProps }>) {
-  const created = await createBook(session.user.id, body);
+  const authors = [{ userId: session.user.id, roleId: 1 }];
+  if (body.sections) {
+    body.sections = await cloneSections([], body.sections, authors);
+  }
+  const created = await createBook(session.user.id, body, authors);
 
   return {
     status: created == null ? 400 : 201,

@@ -7,6 +7,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Version Management
+
+/// リリース
+model Release {
+  bookId     Int      @id @map("book_id")
+  book       Book     @relation(fields: [bookId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  releasedAt DateTime @default(now()) @map("released_at")
+  version    String   @default("0.0.0")
+  comment    String   @default("")
+  /// 共有可否 (true: シェアする, それ以外: シェアしない)
+  shared       Boolean      @default(false)
+
+  @@map("release")
+}
+
 // Resource Objects
 
 /// Zoomインポート履歴
@@ -84,17 +99,30 @@ model Topic {
   /// 再生終了時間 (秒, 0 は無効)
   stopTime     Float?       @map("stop_time")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared       Boolean      @default(true)
+  shared       Boolean      @default(false)
   /// 著作者
   authors      Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license      String       @default("")
+  /// 著作権者
+  licenser     String       @default("")
   /// 作成日
   createdAt    DateTime     @default(now()) @map("created_at")
   /// 更新日
   updatedAt    DateTime     @default(now()) @map("updated_at")
   /// 詳細
   details      Json
+
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@map("topics")
 }
@@ -208,11 +236,13 @@ model Book {
   /// 学習所要時間 (秒)
   timeRequired     Int?              @map("time_required")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared           Boolean           @default(true)
+  shared           Boolean           @default(false)
   /// 著作者
   authors          Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license          String            @default("")
+  /// 著作権者
+  licenser         String            @default("")
   /// zoomミーティングid
   zoomMeetingId    BigInt?           @map("zoom_meeting_id")
   /// 公開日
@@ -223,6 +253,19 @@ model Book {
   updatedAt        DateTime          @default(now()) @map("updated_at")
   /// 詳細
   details          Json
+  /// 版管理 リリース (未リリースの場合は null)
+  release Release?
+
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@index([zoomMeetingId])
   @@map("books")

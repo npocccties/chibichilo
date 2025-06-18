@@ -10,8 +10,9 @@ import cleanupSections from "./cleanupSections";
 import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectOrCreateInput";
 import keywordsDisconnectInput from "$server/utils/keyword/keywordsDisconnectInput";
 import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
+import { cloneSections } from "./cloneSections";
 
-function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
+export function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
   const sectionsCreateInput = sections.map(sectionCreateInput);
   return sectionsCreateInput.map((input, order) => {
     return prisma.section.create({
@@ -22,11 +23,25 @@ function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
 
 async function updateBook(
   userId: number,
-  { id, sections, publicBooks, ...book }: Pick<Book, "id"> & BookProps
+  {
+    id,
+    sections,
+    publicBooks,
+    ...book
+  }: Pick<Book, "id"> & BookProps,
+  origBook: BookSchema,
+  noclone?: boolean
 ): Promise<BookSchema | undefined> {
   const ops: Array<PrismaPromise<unknown>> = [];
 
   if (sections != null) {
+    if (!noclone) {
+      const authors = [{ userId: userId, roleId: 1 }];
+      const origTopics = (origBook?.sections || [])
+        .flatMap((section) => section.topics)
+        .map((topic) => topic.id);
+      sections = await cloneSections(origTopics, sections, authors);
+    }
     const cleanup = cleanupSections(id);
     const upsert = upsertSections(id, sections);
     ops.push(...cleanup, ...upsert);

@@ -217,7 +217,7 @@ class ImportBooksUtil {
 
   async updateBook(
     id: number,
-    { sections: _sections, publicBooks: _publicBooks, ...book }: BookProps
+    { sections: _sections, publicBooks: _publicBooks, ...book }: BookProps & Pick<Book, "language">
   ) {
     const keywordsBeforeUpdate = await prisma.keyword.findMany({
       where: { books: { some: { id } } },
@@ -231,6 +231,7 @@ class ImportBooksUtil {
           ...keywordsDisconnectInput(keywordsBeforeUpdate, book.keywords ?? []),
         },
         updatedAt: new Date(),
+        release: undefined,
       },
     };
   }

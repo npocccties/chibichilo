@@ -48,12 +48,6 @@ export interface InlineObject2 {
     description?: string;
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject2
-     */
-    language?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof InlineObject2
      */
@@ -90,7 +84,6 @@ export function InlineObject2FromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'name': !exists(json, 'name') ? undefined : json['name'],
         'description': !exists(json, 'description') ? undefined : json['description'],
-        'language': !exists(json, 'language') ? undefined : json['language'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
@@ -109,7 +102,6 @@ export function InlineObject2ToJSON(value?: InlineObject2 | null): any {
         
         'name': value.name,
         'description': value.description,
-        'language': value.language,
         'shared': value.shared,
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),

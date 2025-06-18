@@ -464,7 +464,10 @@ export default function Video({
               key: "更新日",
               value: getLocaleDateString(topic.updatedAt, "ja"),
             },
-            ...authors(topic),
+            // 著作権者または作成者
+            ...(topic.licenser
+              ? [{ key: "", value: topic.licenser }]
+              : authors(topic)),
           ]}
         />
         {topic.keywords && (

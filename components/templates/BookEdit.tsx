@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import makeStyles from "@mui/styles/makeStyles";
 import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
@@ -18,8 +19,13 @@ import { useConfirm } from "material-ui-confirm";
 import { useSessionAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import AddIcon from "@mui/icons-material/Add";
+import type { ReleaseProps } from "$server/models/book/release";
+import useReleaseBooks from "$utils/useReleaseBooks";
+import ReleaseItemList from "$organisms/ReleaseItemList";
+import type { MetainfoProps } from "$server/models/metainfo";
+import MetainfoForm from "$organisms/MetainfoForm";
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(1),
     "& > :not($title):not($content)": {
@@ -44,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+export type Props = {
   book: BookSchema;
   onSubmit(book: BookPropsWithSubmitOptions): void;
-  onDelete(book: BookSchema): void;
+  onDelete(book: BookSchema, withtopic?: boolean): void;
   onCancel(): void;
   onSectionsUpdate(sections: SectionProps[]): void;
   onTopicImportClick(): void;
@@ -59,6 +65,11 @@ type Props = {
   isContentEditable?: IsContentEditable;
   linked?: boolean;
   onOverwriteClick(): void;
+  onReleaseUpdate(release: ReleaseProps): void;
+  onRelease(book: BookSchema): void;
+  onItemEditClick(id: BookSchema["id"]): void;
+  onClone(book: BookSchema): void;
+  onMetainfoUpdate(metainfo: MetainfoProps): void;
 };
 
 export default function BookEdit({
@@ -76,6 +87,9 @@ export default function BookEdit({
   isContentEditable,
   linked = false,
   onOverwriteClick,
+  onRelease,
+  onItemEditClick,
+  onMetainfoUpdate,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -85,6 +99,7 @@ export default function BookEdit({
     dispatch: setPreviewTopic,
     ...dialogProps
   } = useDialogProps<TopicSchema>();
+  const { releases, error: _ } = useReleaseBooks(book.id);
   const handleTopicPreviewClick = (topic: TopicSchema) =>
     setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
@@ -94,6 +109,40 @@ export default function BookEdit({
       confirmationText: "OK",
     });
     onDelete(book);
+  };
+  const handleDeleteWithTopicButtonClick = async () => {
+    await confirm({
+      title: `ブック「${book.name}」と、ブックに含まれるトピックを削除します。よろしいですか？`,
+      cancellationText: "キャンセル",
+      confirmationText: "OK",
+    });
+    onDelete(book, true);
+  };
+  const handleReleaseButtonClick = async () => {
+    const bookAuthors = book.authors.map((author) => author.id);
+    const canRelease = book.sections.every((sections) =>
+      sections.topics.every((topic) =>
+        topic.authors.some((author) => bookAuthors.includes(author.id))
+      )
+    );
+    if (!canRelease) {
+      await confirm({
+        title: `ブック「${book.name}」に他者のトピックが含まれているため、リリースすることができません。`,
+        hideCancelButton: true,
+        confirmationText: "OK",
+      });
+      return;
+    }
+    await confirm({
+      title: `ブック「${book.name}」をリリースします。よろしいですか？`,
+      cancellationText: "キャンセル",
+      confirmationText: "OK",
+    });
+    onRelease(book);
+  };
+  const handleItemEditClick = async (index: number) => {
+    const id = releases?.[index]?.id;
+    if (id) onItemEditClick(id);
   };
 
   return (
@@ -137,9 +186,38 @@ export default function BookEdit({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      <Typography className={classes.subtitle} variant="h5">
+        メタ情報
+      </Typography>
+      <MetainfoForm metainfo={book} onSubmit={onMetainfoUpdate} />
+      {releases && (
+        <>
+          <Typography className={classes.subtitle} variant="h5">
+            リリース一覧
+          </Typography>
+          <ReleaseItemList
+            id={book.id}
+            releases={releases}
+            variant="book"
+            onItemEditClick={handleItemEditClick}
+          />
+        </>
+      )}
+      <Button size="small" color="primary" onClick={handleReleaseButtonClick}>
+        <PeopleOutlinedIcon />
+        ブックをリリース
+      </Button>
       <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
         <DeleteOutlinedIcon />
         ブックを削除
+      </Button>
+      <Button
+        size="small"
+        color="primary"
+        onClick={handleDeleteWithTopicButtonClick}
+      >
+        <DeleteOutlinedIcon />
+        ブック/トピックを削除
       </Button>
       {previewTopic && (
         <TopicPreviewDialog {...dialogProps} topic={previewTopic} />
