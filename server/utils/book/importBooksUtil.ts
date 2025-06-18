@@ -512,8 +512,12 @@ class ImportBooksUtil {
       };
       yauzl.open(file, options, (err, zipfile) => {
         if (err) {
-          this.errors.push(`zipファイルのopenでエラーが発生しました。\n${err}`);
-          resolve({});
+          try {
+            resolve(JSON.parse(fs.readFileSync(file).toString()));
+          } catch (e) {
+            this.errors.push(`ファイルがzipではありません。\n${err}`);
+            resolve({});
+          }
           return;
         }
         zipfile.readEntry();

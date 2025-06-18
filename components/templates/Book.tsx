@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
   side: {
     gridArea: "side",
+    overflowY: "auto",
     "&$mobile": {
       marginBottom: theme.spacing(2),
     },
