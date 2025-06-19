@@ -353,6 +353,7 @@ model ActivityTimeRangeLog {
   /// 視聴活動更新日
   updatedAt     DateTime            @default(now()) @map("updated_at")
 
+  @@index([activityId, updatedAt])
   @@map("activities_time_range_logs")
 }
 

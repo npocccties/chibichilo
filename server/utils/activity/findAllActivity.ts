@@ -22,10 +22,9 @@ async function findLtiMembers(
   // NOTE: 表示可能な範囲
   // 教員・TAの場合…すべて表示
   // それ以外… 共有されている範囲または著者に含まれる範
-  const displayable = isInstructor(session) ? undefined : [
-      { shared: true },
-      { authors: { some: { userId: session.user.id } } },
-  ];
+  const displayable = isInstructor(session)
+    ? undefined
+    : [{ shared: true }, { authors: { some: { userId: session.user.id } } }];
   const topicActivityScope = {
     topic: {
       topicSection: {

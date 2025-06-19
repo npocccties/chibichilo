@@ -8,10 +8,15 @@ All notable changes to this project will be documented in this file.
 
 - Deep Linking support from Blackboard (OU)
 - Bulk learning analytics export for administrators (NII)
+- View count visualization and learning analytics data (OU)
 
 ### Changed
 
 - Enhanced learning analytics export with additional LMS identifiers (NII)
+- Modified analytics access control (OU)
+- Improved system logging capabilities (OU)
+- Optimized view count recording performance (OU)
+- Optional tag/note registration and view count recording
 
 ## [2024]
 
