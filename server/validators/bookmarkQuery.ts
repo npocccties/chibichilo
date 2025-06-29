@@ -5,6 +5,7 @@ export const BookmarkQuery = {
   type: "object",
   properties: {
     topicId: { type: "number" },
+    bookId: { type: "number" },
     tagIds: { type: "string" },
     isExistMemoContent: { type: "boolean" },
     isAllUsers: { type: "boolean" },

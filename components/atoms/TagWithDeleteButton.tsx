@@ -45,12 +45,18 @@ const closeButton = css({
 
 type Props = {
   topicId: BookmarkProps["topicId"];
+  bookId: BookmarkProps["bookId"];
   bookmark: BookmarkSchema;
-  onDeleteBookmark: (id: number, topicId: number) => Promise<void>;
+  onDeleteBookmark: (
+    id: number,
+    topicId: number,
+    bookId: number
+  ) => Promise<void>;
 };
 
 export default function TagWithDeleteButton({
   topicId,
+  bookId,
   bookmark,
   onDeleteBookmark,
 }: Props) {
@@ -62,7 +68,9 @@ export default function TagWithDeleteButton({
       <p className={text}>{bookmark.tag.label}</p>
       <button
         className={closeButton}
-        onClick={async () => await onDeleteBookmark(bookmark.id, topicId)}
+        onClick={async () =>
+          await onDeleteBookmark(bookmark.id, topicId, bookId)
+        }
       >
         <CloseIcon titleAccess="削除" />
       </button>

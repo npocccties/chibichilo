@@ -1,7 +1,7 @@
 import type { FastifySchema, FastifyRequest } from "fastify";
 import type { TopicParams } from "$server/validators/topicParams";
 import { topicParamsSchema } from "$server/validators/topicParams";
-import { ActivityQuery } from "$server/validators/activityQuery";
+import { TopicActivityQuery } from "$server/validators/topicActivityQuery";
 import { ActivityProps } from "$server/validators/activityProps";
 import authUser from "$server/auth/authUser";
 import topicExists from "$server/utils/topic/topicExists";
@@ -9,14 +9,14 @@ import upsertTopicActivity from "$server/utils/activity/upsertTopicActivity";
 import upsertLtiContextActivity from "$server/utils/activity/upsertLtiContextActivity";
 
 export type Params = TopicParams;
-export type Query = ActivityQuery;
+export type Query = TopicActivityQuery;
 export type Props = ActivityProps;
 
 export const updateSchema: FastifySchema = {
   summary: "学習活動の更新",
   description: "自身の学習活動を更新します。",
   params: topicParamsSchema,
-  querystring: ActivityQuery,
+  querystring: TopicActivityQuery,
   body: ActivityProps,
   response: {
     201: ActivityProps,
@@ -48,6 +48,7 @@ export async function update({
 
   const ltiContextActivity = await upsertLtiContextActivity({
     learnerId: session.user.id,
+    bookId: query.book_id,
     topicId: params.topic_id,
     ltiConsumerId: session.oauthClient.id,
     ltiContextId: session.ltiContext.id,
@@ -58,6 +59,7 @@ export async function update({
 
   const topicActivity = await upsertTopicActivity({
     learnerId: session.user.id,
+    bookId: query.book_id,
     topicId: params.topic_id,
     activity: body,
   });

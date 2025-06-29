@@ -264,6 +264,7 @@ export interface ApiV2BookmarkStatsGetRequest {
 export interface ApiV2BookmarksGetRequest {
     isAllUsers: boolean;
     topicId?: number;
+    bookId?: number;
     tagIds?: string;
     isExistMemoContent?: boolean;
 }
@@ -397,6 +398,7 @@ export interface ApiV2TopicPostRequest {
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
+    bookId: number;
     topicId: number;
     currentLtiContextOnly?: boolean;
     ltiConsumerId?: string;
@@ -1207,6 +1209,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.topicId !== undefined) {
             queryParameters['topicId'] = requestParameters.topicId;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['bookId'] = requestParameters.bookId;
         }
 
         if (requestParameters.tagIds !== undefined) {
@@ -2360,6 +2366,10 @@ export class DefaultApi extends runtime.BaseAPI {
      * 学習活動の更新
      */
     async apiV2TopicTopicIdActivityPutRaw(requestParameters: ApiV2TopicTopicIdActivityPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
+        }
+
         if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
             throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
         }
@@ -2373,9 +2383,11 @@ export class DefaultApi extends runtime.BaseAPI {
         if (requestParameters.ltiConsumerId !== undefined) {
             queryParameters['lti_consumer_id'] = requestParameters.ltiConsumerId;
         }
-
         if (requestParameters.ltiContextId !== undefined) {
             queryParameters['lti_context_id'] = requestParameters.ltiContextId;
+	}
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['book_id'] = requestParameters.bookId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

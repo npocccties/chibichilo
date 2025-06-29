@@ -10,6 +10,7 @@ export const bookmark = {
     label: "お気に入り",
   },
   topicId: 1,
+  bookId: 2,
   topic: {
     id: 1,
     name: "topic-name",

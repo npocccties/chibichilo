@@ -13,6 +13,7 @@ export const Default: Story = {
   render: () => (
     <TagMenu
       topicId={bookmark.topicId}
+      bookId={bookmark.bookId}
       selectedTag={[bookmark.tag]}
       tagMenu={bookmarkTagMenu}
       handleTagChange={() => {}}

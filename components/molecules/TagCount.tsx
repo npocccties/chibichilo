@@ -7,14 +7,19 @@ import { useMemo } from "react";
 
 type Props = {
   topicId: number;
+  bookId: number;
 };
 
 const text = css({
   fontSize: "12px",
 });
 
-export default function TagCount({ topicId }: Props) {
-  const { bookmarks } = useBookmarksByTopicId({ topicId, isAllUsers: true });
+export default function TagCount({ topicId, bookId }: Props) {
+  const { bookmarks } = useBookmarksByTopicId({
+    topicId,
+    bookId,
+    isAllUsers: true,
+  });
 
   const tagWithCounts = useMemo(() => {
     const tags = bookmarks.flatMap((bookmark) => bookmark.tag);
