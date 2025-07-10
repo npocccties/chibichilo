@@ -199,8 +199,6 @@ model Book {
   sections         Section[]
   publicBooks      PublicBook[]
   ltiResourceLinks LtiResourceLink[]
-  activities       Activity[]
-  bookmarks        Bookmark[]
   /// 題名
   name             String
   /// 説明 (Markdown)
@@ -310,7 +308,6 @@ model Activity {
   timeRanges    ActivityTimeRange[]
   timeRangeLogs    ActivityTimeRangeLog[]
   timeRangeCounts    ActivityTimeRangeCount[]
-  book          Book?               @relation(fields: [bookId], references: [id])
   bookId        Int?                @map("book_id")
   topic         Topic               @relation(fields: [topicId], references: [id])
   topicId       Int                 @map("topic_id")
@@ -429,7 +426,6 @@ model Bookmark {
   topic   Topic @relation(fields: [topicId], references: [id])
 
   bookId  Int?  @map("book_id")
-  book    Book? @relation(fields: [bookId], references: [id])
 
   memoContent String @default("")
 

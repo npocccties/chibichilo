@@ -315,11 +315,12 @@ function upsert({
         ltiConsumerId,
         ltiContextId,
       },
+
     },
     create: {
       ...input,
       learner: { connect: { id: learnerId } },
-      book: { connect: { id: bookId } },
+      bookId: bookId,
       topic: { connect: { id: topicId } },
       ltiContext: {
         connect: {
@@ -418,7 +419,7 @@ async function upsertActivity({
     ...(exists ? [cleanup(exists.id)] : []),
     upsert({
       learnerId,
-      bookId,
+      bookId: ltiConsumerId && ltiContextId ? bookId : 0,
       topicId,
       ltiConsumerId,
       ltiContextId,
