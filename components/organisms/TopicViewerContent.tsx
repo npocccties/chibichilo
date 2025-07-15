@@ -8,6 +8,7 @@ import { isVideoResource } from "$utils/videoResource";
 import { gray } from "$theme/colors";
 import type { ActivitySchema } from "$server/models/activity";
 import { useLoggerInit } from "$utils/eventLogger/logger";
+import { NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY } from "$utils/env";
 
 type Props = {
   topic: TopicSchema;
@@ -39,7 +40,9 @@ export default function TopicViewerContent({
     }
     const activity = bookActivity.find(
       (activity) =>
-        activity.topic.id === topic.id && activity.bookId === book?.id
+        activity.topic.id === topic.id &&
+        activity.bookId ===
+          (NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY ? book?.id : 0)
     );
     if (!activity) {
       return [];

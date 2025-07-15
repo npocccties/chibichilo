@@ -24,61 +24,13 @@ export interface InlineResponse20016Book {
      * @type {number}
      * @memberof InlineResponse20016Book
      */
-    id?: number;
+    id: number;
     /**
      * 
      * @type {string}
      * @memberof InlineResponse20016Book
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20016Book
-     */
-    description?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineResponse20016Book
-     */
-    language?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20016Book
-     */
-    timeRequired?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InlineResponse20016Book
-     */
-    shared?: boolean;
-    /**
-     * 
-     * @type {Date}
-     * @memberof InlineResponse20016Book
-     */
-    publishedAt?: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof InlineResponse20016Book
-     */
-    createdAt?: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof InlineResponse20016Book
-     */
-    updatedAt?: Date;
-    /**
-     * 
-     * @type {object}
-     * @memberof InlineResponse20016Book
-     */
-    details?: object;
+    name: string;
 }
 
 export function InlineResponse20016BookFromJSON(json: any): InlineResponse20016Book {
@@ -91,16 +43,8 @@ export function InlineResponse20016BookFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'id': !exists(json, 'id') ? undefined : json['id'],
-        'name': !exists(json, 'name') ? undefined : json['name'],
-        'description': !exists(json, 'description') ? undefined : json['description'],
-        'language': !exists(json, 'language') ? undefined : json['language'],
-        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'publishedAt': !exists(json, 'publishedAt') ? undefined : (new Date(json['publishedAt'])),
-        'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
-        'details': !exists(json, 'details') ? undefined : json['details'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
@@ -115,14 +59,6 @@ export function InlineResponse20016BookToJSON(value?: InlineResponse20016Book | 
         
         'id': value.id,
         'name': value.name,
-        'description': value.description,
-        'language': value.language,
-        'timeRequired': value.timeRequired,
-        'shared': value.shared,
-        'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt.toISOString()),
-        'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
-        'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
-        'details': value.details,
     };
 }
 

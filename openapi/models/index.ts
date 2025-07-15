@@ -14,6 +14,7 @@ export * from './InlineObject12';
 export * from './InlineObject13';
 export * from './InlineObject14';
 export * from './InlineObject15';
+export * from './InlineObject16';
 export * from './InlineObject2';
 export * from './InlineObject3';
 export * from './InlineObject4';

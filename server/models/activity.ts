@@ -40,6 +40,7 @@ export const ActivitySchema = {
   required: [
     "id",
     "learner",
+    "bookId",
     "topic",
     "completed",
     "totalTimeMs",

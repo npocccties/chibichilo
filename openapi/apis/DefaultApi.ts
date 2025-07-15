@@ -42,6 +42,9 @@ import {
     InlineObject15,
     InlineObject15FromJSON,
     InlineObject15ToJSON,
+    InlineObject16,
+    InlineObject16FromJSON,
+    InlineObject16ToJSON,
     InlineObject2,
     InlineObject2FromJSON,
     InlineObject2ToJSON,
@@ -246,15 +249,15 @@ export interface ApiV2BookmarkIdDeleteRequest {
 
 export interface ApiV2BookmarkMemoContentIdPutRequest {
     id: number;
-    body?: InlineObject15;
+    body?: InlineObject16;
 }
 
 export interface ApiV2BookmarkMemoContentPostRequest {
-    body?: InlineObject14;
+    body?: InlineObject15;
 }
 
 export interface ApiV2BookmarkPostRequest {
-    body?: InlineObject13;
+    body?: InlineObject14;
 }
 
 export interface ApiV2BookmarkStatsGetRequest {
@@ -1061,7 +1064,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject15ToJSON(requestParameters.body),
+            body: InlineObject16ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1092,7 +1095,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject14ToJSON(requestParameters.body),
+            body: InlineObject15ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1123,7 +1126,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject13ToJSON(requestParameters.body),
+            body: InlineObject14ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1335,7 +1338,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SyslogV1ToJSON(requestParameters.body),
+            body: InlineObject13ToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
@@ -2385,7 +2388,8 @@ export class DefaultApi extends runtime.BaseAPI {
         }
         if (requestParameters.ltiContextId !== undefined) {
             queryParameters['lti_context_id'] = requestParameters.ltiContextId;
-	}
+        }
+
         if (requestParameters.bookId !== undefined) {
             queryParameters['book_id'] = requestParameters.bookId;
         }

@@ -136,6 +136,7 @@ export default function Book(props: Props) {
     onItemClick,
     considerAppBar = true,
   } = props;
+
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
   const { isInstructor, isContentEditable } = useSessionAtom();
   const [expanded, setExpanded] = useState(false);
