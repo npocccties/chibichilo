@@ -308,7 +308,7 @@ model Activity {
   timeRanges    ActivityTimeRange[]
   timeRangeLogs    ActivityTimeRangeLog[]
   timeRangeCounts    ActivityTimeRangeCount[]
-  bookId        Int?                @map("book_id")
+  bookId        Int                 @default(0) @map("book_id")
   topic         Topic               @relation(fields: [topicId], references: [id])
   topicId       Int                 @map("topic_id")
   learner       User                @relation(fields: [learnerId], references: [id])
@@ -425,7 +425,7 @@ model Bookmark {
   topicId Int   @map("topic_id")
   topic   Topic @relation(fields: [topicId], references: [id])
 
-  bookId  Int?  @map("book_id")
+  bookId  Int  @default(0) @map("book_id")
 
   memoContent String @default("")
 

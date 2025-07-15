@@ -55,7 +55,7 @@ export function useActivityTracking() {
       playerTracker &&
       buildUpdateHandler(topic.id, book.id, playerTracker)
     );
-  }, [isInstructor, unchanged, topic, playerTracker, loggedin]);
+  }, [isInstructor, unchanged, topic, book, playerTracker, loggedin]);
   const throttled = useMemo(
     () =>
       updateHandler &&

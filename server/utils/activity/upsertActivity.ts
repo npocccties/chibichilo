@@ -377,7 +377,7 @@ async function upsertActivity({
 }): Promise<ActivityProps> {
   const exists = await findActivity({
     learnerId,
-    bookId,
+    bookId: ltiConsumerId && ltiContextId ? bookId : 0,
     topicId,
     ltiConsumerId,
     ltiContextId,
