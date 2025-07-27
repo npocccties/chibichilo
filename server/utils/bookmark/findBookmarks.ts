@@ -4,11 +4,13 @@ import type { BookmarkQuery } from "$server/validators/bookmarkQuery";
 import type { User } from "@prisma/client";
 
 type TopicIdParam = {
+  bookId?: BookmarkSchema["bookId"];
   topicId: BookmarkSchema["topicId"];
   tagIds?: BookmarkSchema["tagId"][];
   isExistMemoContent?: BookmarkQuery["isExistMemoContent"];
 };
 type TagIdParam = {
+  bookId?: BookmarkSchema["bookId"];
   topicId?: BookmarkSchema["topicId"];
   tagIds: BookmarkSchema["tagId"][];
   isExistMemoContent?: BookmarkQuery["isExistMemoContent"];
@@ -74,6 +76,7 @@ async function findBookmarks({
   ltiContextId,
   ltiConsumerId,
   topicId,
+  bookId,
   tagIds,
   isExistMemoContent = false,
   userId,
@@ -87,6 +90,7 @@ async function findBookmarks({
         ltiContextId: ltiContextId,
         ltiConsumerId: ltiConsumerId,
         topicId: topicId,
+        bookId: bookId,
         userId: userId,
       },
       ...bookmarkWithTopicQuery,
