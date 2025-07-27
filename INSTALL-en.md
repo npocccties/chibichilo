@@ -26,6 +26,7 @@ When changing the information of the connection destination of API, .env must be
 | `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | Option for enabling tag and bookmark (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)      |
 | `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | Do not allow anyone to DeepLink UI. Disabled by default.                                                                  |
 | `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | The number of data per file on download page (Default: `0`) `0` means that the download data is not splitted.             |
+| `NEXT_PUBLIC_ENABLE_BOOK_RELATION`            | Option for enabling book-related analysis (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `false`)|
 
 ## Build front-ends
 
