@@ -49,6 +49,7 @@ async function findLtiMembersWithTimeRangeCount(
       activities: {
         select: {
           id: true,
+          bookId: true,
           totalTimeMs: true,
           topic: {
             select: {

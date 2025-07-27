@@ -79,10 +79,12 @@ type TopicProps = {
 
 function getAverageRewatchRate(
   rewatchRates: Array<ActivityRewatchRateProps>,
-  topicId: number
+  topicId: number,
+  bookId: number
 ) {
   const topicRewatchRates =
-    rewatchRates.filter((r) => topicId === r.topicId) ?? [];
+    rewatchRates.filter((r) => topicId === r.topicId && bookId === r.bookId) ??
+    [];
 
   const averageRewatchRate =
     topicRewatchRates
@@ -109,7 +111,7 @@ export default function BookAndTopicActivityItem(props: BookAndTopicProps) {
             topic={topic}
             averageRewatchRate={
               NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-                ? getAverageRewatchRate(rewatchRates, topic.id)
+                ? getAverageRewatchRate(rewatchRates, topic.id, book.id)
                 : 0
             }
           />

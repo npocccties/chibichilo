@@ -17,6 +17,7 @@ async function findLtiMembers(
     consumerId,
     contextId,
   }: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">,
+  bookIds: Array<number>,
   currentLtiContextOnly?: boolean
 ) {
   // NOTE: 表示可能な範囲
@@ -50,6 +51,8 @@ async function findLtiMembers(
         }
       : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
 
+  const bookActivityScope = { bookId: { in: bookIds } };
+
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
     select: {
@@ -60,6 +63,7 @@ async function findLtiMembers(
       activities: {
         where: {
           ...activityScope,
+          ...bookActivityScope,
         },
         include: {
           ltiContext: { select: { id: true, title: true, label: true } },
@@ -109,11 +113,6 @@ async function findAllActivity(
     ? ltiConsumerId ?? ""
     : session.oauthClient.id;
   const contextId = isDownloadPage ? ltiContextId ?? "" : session.ltiContext.id;
-  const ltiMembers = await findLtiMembers(
-    session,
-    { consumerId, contextId },
-    currentLtiContextOnly
-  );
 
   const ltiResourceLinks = await prisma.ltiResourceLink.findMany({
     where: { consumerId, contextId },
@@ -121,6 +120,12 @@ async function findAllActivity(
     select: { book: bookIncludingTopicsArg },
   });
   const books = ltiResourceLinks.map(({ book }) => book);
+  const ltiMembers = await findLtiMembers(
+    session,
+    { consumerId, contextId },
+    books.map(({ id }) => id),
+    currentLtiContextOnly
+  );
 
   const activities = ltiMembers.flatMap(({ activities }) => activities);
 
