@@ -10,6 +10,8 @@ import { isInstructor } from "$server/utils/session";
 import { isAdministrator } from "$utils/session";
 import type { LtiContextSchema } from "$server/models/ltiContext";
 
+import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
+
 /** 受講者の取得 */
 async function findLtiMembers(
   session: SessionSchema,
@@ -42,16 +44,16 @@ async function findLtiMembers(
     },
   };
 
+  const bookActivityScope = { bookId: { in: bookIds } };
   const activityScope =
-    currentLtiContextOnly ?? true
+    (currentLtiContextOnly ?? true) && NEXT_PUBLIC_ENABLE_BOOK_RELATION
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,
           ...topicActivityScope,
+          ...bookActivityScope,
         }
       : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
-
-  const bookActivityScope = { bookId: { in: bookIds } };
 
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
@@ -63,7 +65,6 @@ async function findLtiMembers(
       activities: {
         where: {
           ...activityScope,
-          ...bookActivityScope,
         },
         include: {
           ltiContext: { select: { id: true, title: true, label: true } },

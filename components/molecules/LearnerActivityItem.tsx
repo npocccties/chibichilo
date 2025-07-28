@@ -8,6 +8,8 @@ import type { LearnerSchema } from "$server/models/learner";
 import type { SessionSchema } from "$server/models/session";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
 
+import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -69,7 +71,8 @@ export default function LearnerActivityItem(props: Props) {
                 (r) =>
                   r.learnerId === activity.learner.id &&
                   r.topicId === activity.topic.id &&
-                  r.bookId === activity.book.id
+                  r.bookId ===
+                    (NEXT_PUBLIC_ENABLE_BOOK_RELATION ? activity.book.id : 0)
               )}
             />
             {activities[index + 1] &&
