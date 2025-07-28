@@ -5,6 +5,8 @@ import type { WordCloudSchema } from "$server/models/wordCloud";
 import { getBookIncludingArg } from "$server/utils/book/bookToBookSchema";
 import findBookmarks from "../bookmark/findBookmarks";
 
+import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
+
 function buildTokenizer() {
   return new Promise<kuromoji.Tokenizer<kuromoji.IpadicFeatures>>(
     (resolve, reject) => {
@@ -68,7 +70,7 @@ async function findWordCloud(
       ltiContextId,
       ltiConsumerId,
       topicId: topicSection.topic.id,
-      bookId: bookId,
+      bookId: NEXT_PUBLIC_ENABLE_BOOK_RELATION ? bookId : undefined,
     });
     for (const bookmark of bookmarks.bookmark) {
       if (!bookmark.memoContent) {
