@@ -42,7 +42,7 @@ export function useBookmarksByTopicId({
   isAllUsers = false,
 }: {
   topicId: number;
-  bookId: number;
+  bookId: number | undefined;
   isAllUsers?: BookmarkQuery["isAllUsers"];
 }) {
   return useBookmarks({ topicId, bookId, isAllUsers });

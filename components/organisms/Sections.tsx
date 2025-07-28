@@ -19,6 +19,7 @@ import TagCount from "$molecules/TagCount";
 import { Box } from "@mui/material";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
+import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
 
 function SectionItem({
   section,
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   className?: string;
-  bookId: number;
+  bookId?: number | undefined;
   sections: SectionSchema[];
   index: ItemIndex;
   isContentEditable(topic: ContentAuthors): boolean;
@@ -157,7 +158,12 @@ export default function Sections({
                     {formatInterval(0, topic.timeRequired * 1000)}
                   </Typography>
                   {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && isPrivateBook && (
-                    <TagCount topicId={topic.id} bookId={bookId} />
+                    <TagCount
+                      topicId={topic.id}
+                      bookId={
+                        NEXT_PUBLIC_ENABLE_BOOK_RELATION ? bookId : undefined
+                      }
+                    />
                   )}
                 </Box>
               </ListItemText>

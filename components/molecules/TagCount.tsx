@@ -7,7 +7,7 @@ import { useMemo } from "react";
 
 type Props = {
   topicId: number;
-  bookId: number;
+  bookId?: number | undefined;
 };
 
 const text = css({
