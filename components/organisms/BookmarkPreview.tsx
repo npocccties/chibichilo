@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 
 import { css } from "@emotion/css";
 
+import type { SessionSchema } from "$server/models/session";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import formatInterval from "$utils/formatInterval";
 import DescriptionList from "$atoms/DescriptionList";
@@ -10,6 +11,8 @@ import getLocaleDateString from "$utils/getLocaleDateString";
 import Tag from "$atoms/Tag";
 import { useTopic } from "$utils/topic";
 import type { TopicSchema } from "$server/models/topic";
+
+import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
 
 const bookmarkButton = css({
   textAlign: "left",
@@ -28,11 +31,13 @@ const bookmarkTitle = css({
 });
 
 type Props = {
+  session: SessionSchema;
   bookmark: BookmarkSchema;
   onBookmarkPreviewClick(content: TopicSchema): void;
 };
 
 export default function BookmarkPreview({
+  session,
   bookmark,
   onBookmarkPreviewClick,
 }: Props) {
@@ -91,10 +96,18 @@ export default function BookmarkPreview({
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {courseBookmark.map((bookmark) => {
-          if (bookmark.tag) {
+          if (
+            (!NEXT_PUBLIC_ENABLE_BOOK_RELATION ||
+              bookmark.bookId === (session.ltiResourceLink?.bookId ?? null)) &&
+            bookmark.tag
+          ) {
             return <Tag key={bookmark.id} tag={bookmark.tag} />;
           }
-          if (bookmark.memoContent) {
+          if (
+            (!NEXT_PUBLIC_ENABLE_BOOK_RELATION ||
+              bookmark.bookId === (session.ltiResourceLink?.bookId ?? null)) &&
+            bookmark.memoContent
+          ) {
             return <Tag key={bookmark.id} memoContent={bookmark.memoContent} />;
           }
 

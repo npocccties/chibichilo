@@ -32,6 +32,7 @@ export const bookmarkWithTopicQuery = {
         bookmarks: {
           select: {
             id: true,
+            bookId: true,
             updatedAt: true,
             tag: true,
             ltiContext: true,
@@ -55,6 +56,7 @@ export const createIncludeQueryWithUserContext = (userId?: User["id"]) => {
           bookmarks: {
             select: {
               id: true,
+              bookId: true,
               updatedAt: true,
               tag: true,
               memoContent: true,
