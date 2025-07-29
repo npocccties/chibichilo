@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { TopicSchema } from "$server/models/topic";
+import type { BookSchema } from "$server/models/book";
 import { useTheme } from "@mui/material/styles";
 import Video from "$organisms/Video";
 import useSticky from "$utils/useSticky";
@@ -7,9 +8,11 @@ import { isVideoResource } from "$utils/videoResource";
 import { gray } from "$theme/colors";
 import type { ActivitySchema } from "$server/models/activity";
 import { useLoggerInit } from "$utils/eventLogger/logger";
+import { NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY } from "$utils/env";
 
 type Props = {
   topic: TopicSchema;
+  book?: BookSchema;
   bookActivity?: ActivitySchema[];
   onEnded?: () => void;
   offset?: string;
@@ -19,6 +22,7 @@ type Props = {
 
 export default function TopicViewerContent({
   topic,
+  book,
   bookActivity,
   onEnded,
   offset,
@@ -35,13 +39,16 @@ export default function TopicViewerContent({
       return [];
     }
     const activity = bookActivity.find(
-      (activity) => activity.topic.id === topic.id
+      (activity) =>
+        activity.topic.id === topic.id &&
+        activity.bookId ===
+          (NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY ? book?.id : 0)
     );
     if (!activity) {
       return [];
     }
     return activity.timeRanges;
-  }, [bookActivity, topic.id]);
+  }, [bookActivity, topic.id, book?.id]);
 
   useLoggerInit(topic.id);
 

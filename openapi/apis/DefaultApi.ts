@@ -42,6 +42,9 @@ import {
     InlineObject15,
     InlineObject15FromJSON,
     InlineObject15ToJSON,
+    InlineObject16,
+    InlineObject16FromJSON,
+    InlineObject16ToJSON,
     InlineObject2,
     InlineObject2FromJSON,
     InlineObject2ToJSON,
@@ -246,15 +249,15 @@ export interface ApiV2BookmarkIdDeleteRequest {
 
 export interface ApiV2BookmarkMemoContentIdPutRequest {
     id: number;
-    body?: InlineObject15;
+    body?: InlineObject16;
 }
 
 export interface ApiV2BookmarkMemoContentPostRequest {
-    body?: InlineObject14;
+    body?: InlineObject15;
 }
 
 export interface ApiV2BookmarkPostRequest {
-    body?: InlineObject13;
+    body?: InlineObject14;
 }
 
 export interface ApiV2BookmarkStatsGetRequest {
@@ -264,6 +267,7 @@ export interface ApiV2BookmarkStatsGetRequest {
 export interface ApiV2BookmarksGetRequest {
     isAllUsers: boolean;
     topicId?: number;
+    bookId?: number;
     tagIds?: string;
     isExistMemoContent?: boolean;
 }
@@ -397,6 +401,7 @@ export interface ApiV2TopicPostRequest {
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
+    bookId: number;
     topicId: number;
     currentLtiContextOnly?: boolean;
     ltiConsumerId?: string;
@@ -1059,7 +1064,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject15ToJSON(requestParameters.body),
+            body: InlineObject16ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1090,7 +1095,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject14ToJSON(requestParameters.body),
+            body: InlineObject15ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1121,7 +1126,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject13ToJSON(requestParameters.body),
+            body: InlineObject14ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1207,6 +1212,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.topicId !== undefined) {
             queryParameters['topicId'] = requestParameters.topicId;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['bookId'] = requestParameters.bookId;
         }
 
         if (requestParameters.tagIds !== undefined) {
@@ -1329,7 +1338,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SyslogV1ToJSON(requestParameters.body),
+            body: InlineObject13ToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
@@ -2360,6 +2369,10 @@ export class DefaultApi extends runtime.BaseAPI {
      * 学習活動の更新
      */
     async apiV2TopicTopicIdActivityPutRaw(requestParameters: ApiV2TopicTopicIdActivityPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
+        }
+
         if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
             throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
         }
@@ -2373,9 +2386,12 @@ export class DefaultApi extends runtime.BaseAPI {
         if (requestParameters.ltiConsumerId !== undefined) {
             queryParameters['lti_consumer_id'] = requestParameters.ltiConsumerId;
         }
-
         if (requestParameters.ltiContextId !== undefined) {
             queryParameters['lti_context_id'] = requestParameters.ltiContextId;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['book_id'] = requestParameters.bookId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

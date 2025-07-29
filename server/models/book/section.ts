@@ -5,6 +5,7 @@ import { topicSchema } from "$server/models/topic";
 export type SectionProps = {
   name?: Section["name"];
   topics: Array<Pick<Topic, "id">>;
+  bookId?: number;
 };
 
 export const sectionPropsSchema = {
@@ -15,6 +16,7 @@ export const sectionPropsSchema = {
       type: "array",
       items: { type: "object", properties: { id: topicSchema.properties.id } },
     },
+    bookId: { type: "number", nullable: true },
   },
 } as const;
 
@@ -31,5 +33,6 @@ export const sectionSchema = {
       type: "array",
       items: topicSchema,
     },
+    bookId: { type: "number", nullable: true },
   },
 } as const;

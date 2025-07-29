@@ -31,6 +31,12 @@ export interface InlineObject15 {
      * @memberof InlineObject15
      */
     topicId?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject15
+     */
+    bookId?: number;
 }
 
 export function InlineObject15FromJSON(json: any): InlineObject15 {
@@ -45,6 +51,7 @@ export function InlineObject15FromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
     };
 }
 
@@ -59,6 +66,7 @@ export function InlineObject15ToJSON(value?: InlineObject15 | null): any {
         
         'memoContent': value.memoContent,
         'topicId': value.topicId,
+        'bookId': value.bookId,
     };
 }
 

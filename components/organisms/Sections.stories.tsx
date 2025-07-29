@@ -10,6 +10,7 @@ const activityBySections = sections
   .map((topic) => ({
     id: topic.id,
     topic,
+    bookId: 1,
     learner: user,
     completed: Math.floor(Math.random() * 2) === 0,
     totalTimeMs: 100_000,

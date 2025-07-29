@@ -10,23 +10,30 @@ const key = "/api/v2/bookmark";
 
 async function createBookmark(body: BookmarkProps): Promise<BookmarkSchema> {
   const res = await api.apiV2BookmarkPost({ body });
-  await mutate({ key, topicId: body.topicId, isAllUsers: false }, res);
+  await mutate(
+    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    res
+  );
   return res as unknown as BookmarkSchema;
 }
 
 async function deleteBookmark(
   id: BookmarkParams["id"],
-  topicId: BookmarkProps["topicId"]
+  topicId: BookmarkProps["topicId"],
+  bookId: BookmarkProps["bookId"]
 ): Promise<void> {
   const res = await api.apiV2BookmarkIdDelete({ id });
-  await mutate({ key, topicId, isAllUsers: false }, res);
+  await mutate({ key, topicId, bookId, isAllUsers: false }, res);
 }
 
 async function createBookmarkMemoContent(
   body: BookmarkMemoContentProps
 ): Promise<BookmarkSchema> {
   const res = await api.apiV2BookmarkMemoContentPost({ body });
-  await mutate({ key, topicId: body.topicId, isAllUsers: false }, res);
+  await mutate(
+    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    res
+  );
   return res as unknown as BookmarkSchema;
 }
 
@@ -35,7 +42,10 @@ async function updateBookmarkMemoContent(
   body: BookmarkMemoContentProps
 ): Promise<void> {
   const res = await api.apiV2BookmarkMemoContentIdPut({ id, body });
-  await mutate({ key, topicId: body.topicId, isAllUsers: false }, res);
+  await mutate(
+    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    res
+  );
 }
 
 function useBookmarkHandler() {
@@ -44,8 +54,12 @@ function useBookmarkHandler() {
   }, []);
 
   const onDeleteBookmark = useCallback(
-    async (id: BookmarkParams["id"], topicId: BookmarkProps["topicId"]) => {
-      await deleteBookmark(id, topicId);
+    async (
+      id: BookmarkParams["id"],
+      topicId: BookmarkProps["topicId"],
+      bookId: BookmarkProps["bookId"]
+    ) => {
+      await deleteBookmark(id, topicId, bookId);
     },
     []
   );

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import throttle from "lodash.throttle";
 import usePrevious from "@rooks/use-previous";
 import type { TopicSchema } from "$server/models/topic";
+import type { BookSchema } from "$server/models/book";
 import { useSessionAtom } from "$store/session";
 import { useBookAtom } from "$store/book";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
@@ -15,7 +16,12 @@ import {
 const secToMs = (sec: number) => Math.floor(sec * 1000);
 
 const buildUpdateHandler =
-  (topicId: TopicSchema["id"], playerTracker: PlayerTracker) => async () => {
+  (
+    topicId: TopicSchema["id"],
+    bookId: BookSchema["id"],
+    playerTracker: PlayerTracker
+  ) =>
+  async () => {
     const timeRanges = await playerTracker.getPlayed();
     const body = {
       timeRanges: timeRanges.map(([low, high]) => ({
@@ -26,6 +32,7 @@ const buildUpdateHandler =
     await api.apiV2TopicTopicIdActivityPut({
       topicId,
       currentLtiContextOnly: NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY,
+      bookId,
       body,
     });
   };
@@ -33,7 +40,7 @@ const buildUpdateHandler =
 /** 学習活動のトラッキングの開始 (要: useBook()) */
 export function useActivityTracking() {
   const { session, isInstructor } = useSessionAtom();
-  const { itemIndex, itemExists } = useBookAtom();
+  const { book, itemIndex, itemExists } = useBookAtom();
   const loggedin = Boolean(session?.user?.id);
   const topic = itemExists(itemIndex);
   const playerTracker = usePlayerTrackerAtom();
@@ -43,9 +50,12 @@ export function useActivityTracking() {
     if (isInstructor) return;
     if (unchanged) return;
     return (
-      topic && playerTracker && buildUpdateHandler(topic.id, playerTracker)
+      topic &&
+      book &&
+      playerTracker &&
+      buildUpdateHandler(topic.id, book.id, playerTracker)
     );
-  }, [isInstructor, unchanged, topic, playerTracker, loggedin]);
+  }, [isInstructor, unchanged, topic, book, playerTracker, loggedin]);
   const throttled = useMemo(
     () =>
       updateHandler &&

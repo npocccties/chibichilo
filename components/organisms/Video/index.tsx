@@ -196,6 +196,7 @@ export default function Video({
   const oembed = useOembed(topic.resource.id);
   const prevItemIndex = usePrevious(itemIndex);
   useEffect(() => {
+    if (!book) return;
     const topic = itemExists(itemIndex);
     const startTime = topic?.startTime;
     const stopTime = topic?.stopTime;
@@ -275,7 +276,7 @@ export default function Video({
       videoInstance.player.off("play", handleFirstPlay);
     };
     // TODO: videoの内容の変更検知は機能しないので修正したい。Mapオブジェクトでの管理をやめるかMap.prototype.set()を使用しないようにするなど必要かもしれない。
-  }, [video, itemExists, prevItemIndex, itemIndex, onEnded]);
+  }, [book, video, itemExists, prevItemIndex, itemIndex, onEnded]);
 
   const handleSkipWatch = useCallback(async () => {
     const videoInstance = video.get(String(topic?.id));
@@ -305,6 +306,7 @@ export default function Video({
 
   const bookmarksByTopicId = useBookmarksByTopicId({
     topicId: topic.id,
+    bookId: book?.id ?? -1,
   });
 
   const { bookmarks, bookmarkTagMenu, isLoading } =
@@ -351,6 +353,7 @@ export default function Video({
           <TagList
             key={topic.id}
             topicId={topic.id}
+            bookId={book?.id ?? -1}
             bookmarks={bookmarks}
             tagMenu={bookmarkTagMenu}
           />

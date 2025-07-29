@@ -44,6 +44,12 @@ export interface InlineResponse2005Sections {
      * @memberof InlineResponse2005Sections
      */
     topics?: Array<InlineResponse2005Topics>;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2005Sections
+     */
+    bookId?: number;
 }
 
 export function InlineResponse2005SectionsFromJSON(json: any): InlineResponse2005Sections {
@@ -59,6 +65,7 @@ export function InlineResponse2005SectionsFromJSONTyped(json: any, ignoreDiscrim
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': !exists(json, 'name') ? undefined : json['name'],
         'topics': !exists(json, 'topics') ? undefined : ((json['topics'] as Array<any>).map(InlineResponse2005TopicsFromJSON)),
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
     };
 }
 
@@ -74,6 +81,7 @@ export function InlineResponse2005SectionsToJSON(value?: InlineResponse2005Secti
         'id': value.id,
         'name': value.name,
         'topics': value.topics === undefined ? undefined : ((value.topics as Array<any>).map(InlineResponse2005TopicsToJSON)),
+        'bookId': value.bookId,
     };
 }
 
