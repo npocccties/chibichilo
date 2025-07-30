@@ -56,6 +56,9 @@ const activityInclude = {
       // select: { id: true, name: true, timeRequired: true },
       ...topicInclude,
     },
+    timeRanges: true,
+    timeRangeLogs: true,
+    timeRangeCounts: true,
   },
 };
 
@@ -68,6 +71,39 @@ type BookmarkProps = {
   topicId: number;
   bookId: number;
   memoContent: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ActivityTimeRangeProps = {
+  startMs: number;
+  endMs: number;
+};
+
+type ActivityTimeRangeLogProps = {
+  startMs: number;
+  endMs: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ActivityTimeRangeCountProps = {
+  startMs: number;
+  endMs: number;
+  count: number;
+};
+
+type ActivityProps = {
+  id: number;
+  timeRanges: ActivityTimeRangeProps[];
+  timeRangeLogs: ActivityTimeRangeLogProps[];
+  timeRangeCounts: ActivityTimeRangeCountProps[];
+  bookId: number;
+  topicId: number;
+  learnerId: number;
+  ltiConsumerId: string;
+  ltiContextId: string;
+  totalTimeMs: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -88,6 +124,22 @@ async function createBookmark({
   const created = await prisma.bookmark.create({
     data: { ...bookmark },
     ...bookmarkInclude,
+  });
+
+  if (!created) {
+    return;
+  }
+  return created;
+}
+
+async function createActivity({
+  activity,
+}: {
+  activity: ActivityProps;
+}): Promise<ActivitySchema | undefined> {
+  const created = await prisma.activity.create({
+    data: { ...activity },
+    ...activityInclude,
   });
 
   if (!created) {
@@ -127,13 +179,45 @@ async function bookmark_migration() {
 
 async function activity_migration() {
   const activities = await findAllActivities();
-  activities.forEach((activity) => {
-    activity.topic.topicSection.forEach((topic_section) => {
-      const bookId = topic_section.section.bookId;
-      console.log(bookId);
-    });
-  });
-  console.log(activities);
+
+  for (const activity of activities) {
+    for (const topicSection of activity.topic.topicSection) {
+      const created = await createActivity({
+        activity: {
+          timeRanges: {
+            create: activity.timeRanges.map(({ startMs, endMs }) => ({
+              startMs,
+              endMs,
+            })),
+          },
+          timeRangeLogs: {
+            create: activity.timeRangeLogs.map(
+              ({ startMs, endMs, createdAt, updatedAt }) => ({
+                startMs,
+                endMs,
+                createdAt,
+                updatedAt,
+              })
+            ),
+          },
+          timeRangeCounts: {
+            create: activity.timeRangeCounts.map(
+              ({ startMs, endMs, count }) => ({ startMs, endMs, count })
+            ),
+          },
+
+          bookId: topicSection.section.bookId,
+          topicId: activity.topicId,
+          learnerId: activity.learnerId,
+          ltiConsumerId: activity.ltiConsumerId,
+          ltiContextId: activity.ltiContextId,
+          totalTimeMs: activity.totalTimeMs,
+          createdAt: activity.createdAt,
+          updatedAt: activity.updatedAt,
+        },
+      });
+    }
+  }
 }
 
 async function main() {
@@ -141,8 +225,8 @@ async function main() {
   let exitCode = 1;
   try {
     console.log("Seeding...");
-    await bookmark_migration();
-    //    await activity_migration();
+    //    await bookmark_migration();
+    await activity_migration();
     console.log("Seeding completed.");
     exitCode = 0;
   } catch (error) {
