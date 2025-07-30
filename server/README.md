@@ -326,3 +326,11 @@ SQL:
 ```sql
 UPDATE "Tag" SET "label" = '後で見る', "emoji" = '📌' WHERE "id" = 1;
 ```
+
+## ActivityとBookmarkのスキーマにbookIdを追加する際のデータの移行
+
+過去にActivityとBookmarkのスキーマにbookIdがないバージョンを利用して既にデータが蓄積されている場合、以下を実行することでbookIdが追加されたスキーマへのデータの移行ができます。
+
+```sh
+yarn data-migration
+```
