@@ -22,19 +22,6 @@ const bookmarkInclude = {
     tag: true,
     topic: {
       ...topicInclude,
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   timeRequired: true,
-      //   bookmarks: {
-      //     select: {
-      //       id: true,
-      //       updatedAt: true,
-      //       tag: true,
-      //       ltiContext: true,
-      //     },
-      //   },
-      // },
     },
     ltiContext: true,
   },
@@ -53,7 +40,6 @@ const activityInclude = {
       },
     },
     topic: {
-      // select: { id: true, name: true, timeRequired: true },
       ...topicInclude,
     },
     timeRanges: true,
@@ -120,7 +106,6 @@ async function createBookmark({
 }: {
   bookmark: BookmarkProps;
 }): Promise<BookmarkSchema | undefined> {
-  console.log(bookmark);
   const created = await prisma.bookmark.create({
     data: { ...bookmark },
     ...bookmarkInclude,
@@ -155,9 +140,8 @@ async function findAllActivities() {
   return activities;
 }
 
-async function bookmark_migration() {
+async function bookmarkMigration() {
   const bookmarks = await findAllBookmarks();
-  console.log(bookmarks);
   for (const bookmark of bookmarks) {
     for (const topicSection of bookmark.topic.topicSection) {
       const created = await createBookmark({
@@ -177,7 +161,7 @@ async function bookmark_migration() {
   }
 }
 
-async function activity_migration() {
+async function activityMigration() {
   const activities = await findAllActivities();
 
   for (const activity of activities) {
@@ -225,8 +209,10 @@ async function main() {
   let exitCode = 1;
   try {
     console.log("Seeding...");
-    //    await bookmark_migration();
-    await activity_migration();
+    console.log("Migrating Bookmark...");
+    await bookmarkMigration();
+    console.log("Migrating Activity...");
+    await activityMigration();
     console.log("Seeding completed.");
     exitCode = 0;
   } catch (error) {
