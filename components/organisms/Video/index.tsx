@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import usePrevious from "@rooks/use-previous";
 import { css } from "@emotion/css";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import type { TopicSchema } from "$server/models/topic";
 import type { VideoResourceSchema } from "$server/models/videoResource";
@@ -62,6 +64,11 @@ const skipButton = css({
   fontSize: "8px",
   marginRight: "8px",
   lineHeight: 1,
+});
+
+const markdownContainerStyle = css({
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
 });
 
 function SkipButton(props: ButtonProps) {
@@ -168,6 +175,8 @@ export default function Video({
   isPrivateBook = false,
   isBookPage = false,
 }: Props) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { video, preloadVideo } = useVideoAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const { session } = useSessionAtom();
@@ -309,7 +318,15 @@ export default function Video({
         Array.from(video.entries()).map(([id, videoInstance]) => (
           <VideoPlayer
             key={id}
-            sx={{ ...videoStyle, ...sx }}
+            sx={{
+              ...videoStyle,
+              ...sx,
+              position: String(topic.id) === id ? "sticky" : "static",
+              top: String(topic.id) === id ? (isMobile ? 0 : 56) : "auto",
+              zIndex: String(topic.id) === id ? 10 : "auto",
+              backgroundColor:
+                String(topic.id) === id ? "#ffffff" : "transparent",
+            }}
             videoInstance={videoInstance}
             autoplay={String(topic.id) === id}
             hidden={String(topic.id) !== id}
@@ -386,7 +403,7 @@ export default function Video({
         )}
       </Box>
       <TabPanel value={tabIndex} index={0}>
-        <article>
+        <article className={markdownContainerStyle}>
           <Markdown>{topic.description}</Markdown>
         </article>
       </TabPanel>

@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
       flexShrink: 0,
     },
   },
+  headerHidden: {
+    visibility: "hidden",
+  },
   title: {
     fontSize: "1.75rem",
     overflow: "hidden",
@@ -95,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
   side: {
     gridArea: "side",
+    overflowY: "auto",
     "&$mobile": {
       marginBottom: theme.spacing(2),
     },
@@ -175,9 +179,13 @@ export default function Book(props: Props) {
       : undefined;
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth={matches ? "lg" : false} disableGutters={!matches}>
       <ActionHeader sx={{ pb: 0 }} considerAppBar={considerAppBar}>
-        <header className={classes.header}>
+        <header
+          className={clsx(classes.header, {
+            [classes.headerHidden]: trigger,
+          })}
+        >
           <Typography
             className={clsx(classes.title, { [classes.mobile]: !matches })}
             variant="h4"
