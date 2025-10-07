@@ -43,7 +43,7 @@ export async function getMemberships(
     });
 
     if (retry) {
-      return await getMemberships(client, contextMembershipsUrl, false);
+      return await getMemberships(client, contextMembershipsUrl, false, query);
     }
   }
 
