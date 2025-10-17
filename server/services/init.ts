@@ -20,22 +20,22 @@ const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 
 async function getCreatorByNRPS(session: FastifySessionObject) {
   const instructors = await getInstructors(session);
-  let creatorId: number | undefined;
+  const creators: number[] = [];
   if (instructors?.members) {
-    const instructor = instructors.members.find((member) => {
-      return !isAdministrator(member.roles);
-    });
-    if (instructor) {
+    for (const member of instructors.members) {
+      if (isAdministrator(member.roles)) {
+        continue;
+      }
       const user = await findUserByEmailAndLtiConsumerId(
-        instructor.email || "",
+        member.email || "",
         session.oauthClient.id
       );
       if (user) {
-        creatorId = user.id;
+        creators.push(user.id);
       }
     }
   }
-  return creatorId;
+  return creators;
 }
 
 /** 起動時の初期化プロセス */
@@ -81,13 +81,14 @@ async function init({ session }: FastifyRequest) {
     session.ltiResourceLinkRequest?.id &&
     Boolean(ltiTargetLinkUri)
   ) {
-    let creatorId: number | undefined;
+    let creators: number[] = [];
     if (!ltiResourceLink?.creatorId && !isInstructor(session.ltiRoles)) {
-      creatorId = await getCreatorByNRPS(session);
+      creators = await getCreatorByNRPS(session);
     }
     ltiResourceLink = {
       bookId: Number(bookId),
-      creatorId: ltiResourceLink?.creatorId ?? creatorId ?? user.id, // 直接user.idを使用
+      creatorId: ltiResourceLink?.creatorId ?? creators[0] ?? user.id, // 直接user.idを使用
+      creators,
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
       id: session.ltiResourceLinkRequest.id,
