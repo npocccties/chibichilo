@@ -224,23 +224,25 @@ export default function Dashboard(props: Props) {
     learner: LearnerSchema;
     bookActivities: Array<BookActivitySchema>;
   }>();
-  const {
-    data: membersData,
-    dispatch: membersDispatch,
-    ...membersDialogProps
-  } = useDialogProps<{
-    members: LtiNrpsContextMemberSchema[];
-  }>();
+
+  const [showMembersDialog, setShowMembersDialog] = useState(true);
+  const [firstTime, setFirstTime] = useState(true);
+  const handleCloseLtiMembers = useCallback(() => {
+    setShowMembersDialog(false);
+    setFirstTime(false);
+  }, []);
 
   const handleUpdateLtiMembers = useCallback(
-    async (members: LtiNrpsContextMemberSchema[]) => {
-      await updateLtiMembers({
-        members,
-        currentLtiContextOnly: scope === "current-lti-context-only",
-      });
-      membersDialogProps.onClose();
+    async (members: LtiNrpsContextMemberSchema[] | undefined) => {
+      if (members) {
+        await updateLtiMembers({
+          members,
+          currentLtiContextOnly: scope === "current-lti-context-only",
+        });
+      }
+      handleCloseLtiMembers();
     },
-    [membersDialogProps, scope, updateLtiMembers]
+    [scope, updateLtiMembers, handleCloseLtiMembers]
   );
   const handleLearnerClick = useCallback(
     (book: Pick<BookSchema, "id">) => (learner: LearnerSchema) =>
@@ -258,9 +260,8 @@ export default function Dashboard(props: Props) {
     [dispatch]
   );
   const handleMembershipClick = useCallback(
-    (members: LtiNrpsContextMemberSchema[]) => () =>
-      membersDispatch({ members }),
-    [membersDispatch]
+    () => () => setShowMembersDialog(true),
+    [setShowMembersDialog]
   );
   return (
     <Container maxWidth="md">
@@ -297,7 +298,7 @@ export default function Dashboard(props: Props) {
           </Button>
         )}
         <Button
-          onClick={handleMembershipClick(memberships?.members || [])}
+          onClick={handleMembershipClick()}
           color="primary"
           variant="contained"
           size="small"
@@ -427,14 +428,14 @@ export default function Dashboard(props: Props) {
           {...dialogProps}
         />
       )}
-      {membersData && (
-        <MembersDialog
-          members={membersData.members}
-          newLtiMembers={newLtiMembers}
-          handleUpdateLtiMembers={handleUpdateLtiMembers}
-          {...membersDialogProps}
-        />
-      )}
+      <MembersDialog
+        members={memberships?.members}
+        newLtiMembers={newLtiMembers}
+        handleUpdateLtiMembers={handleUpdateLtiMembers}
+        onClose={handleCloseLtiMembers}
+        open={showMembersDialog}
+        firstTime={firstTime}
+      />
     </Container>
   );
 }
