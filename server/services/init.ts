@@ -77,10 +77,7 @@ async function init({ session }: FastifyRequest) {
     session.ltiResourceLinkRequest?.id &&
     Boolean(ltiTargetLinkUri)
   ) {
-    let instructors: number[] = [];
-    if (!ltiResourceLink?.creatorId && !isInstructor(session.ltiRoles)) {
-      instructors = await getInstructorsByNRPS(session);
-    }
+    const instructors = await getInstructorsByNRPS(session);
     ltiResourceLink = {
       bookId: Number(bookId),
       creatorId: ltiResourceLink?.creatorId ?? instructors[0] ?? user.id, // 直接user.idを使用

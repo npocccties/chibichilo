@@ -16,10 +16,10 @@ export function isDisplayableBook(
   return book.shared || linked || isContentEditable?.(book) || publicBook;
 }
 
-function contentByCreators(content: ContentAuthors, creators?: number[]) {
-  if (!creators) return false;
-  for (const creatorId of creators) {
-    if (contentBy(content, { id: creatorId })) {
+function contentByInstructors(content: ContentAuthors, instructors?: number[]) {
+  if (!instructors) return false;
+  for (const id of instructors) {
+    if (contentBy(content, { id })) {
       return true;
     }
   }
@@ -50,7 +50,7 @@ export function getDisplayableBook<
       (topic) =>
         topic.shared ||
         contentBy(topic, { id: ltiResourceLink?.creatorId }) ||
-        contentByCreators(topic, ltiResourceLink?.instructors) ||
+        contentByInstructors(topic, ltiResourceLink?.instructors) ||
         (publicBook && contentBy(topic, { id: publicBook.userId })) ||
         isContentEditable?.(topic) ||
         isInstructor
