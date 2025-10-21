@@ -33,7 +33,7 @@ export function getDisplayableBook<
   isContentEditable: IsContentEditable | undefined,
   ltiResourceLink?: Pick<
     LtiResourceLinkSchema,
-    "bookId" | "creatorId" | "creators"
+    "bookId" | "creatorId" | "instructors"
   >,
   publicBook?: PublicBookSchema,
   isInstructor?: boolean | false
@@ -50,7 +50,7 @@ export function getDisplayableBook<
       (topic) =>
         topic.shared ||
         contentBy(topic, { id: ltiResourceLink?.creatorId }) ||
-        contentByCreators(topic, ltiResourceLink?.creators) ||
+        contentByCreators(topic, ltiResourceLink?.instructors) ||
         (publicBook && contentBy(topic, { id: publicBook.userId })) ||
         isContentEditable?.(topic) ||
         isInstructor

@@ -88,7 +88,7 @@ async function init({ session }: FastifyRequest) {
     ltiResourceLink = {
       bookId: Number(bookId),
       creatorId: ltiResourceLink?.creatorId ?? creators[0] ?? user.id, // 直接user.idを使用
-      creators,
+      instructors: creators,
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
       id: session.ltiResourceLinkRequest.id,
