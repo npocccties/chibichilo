@@ -2,7 +2,7 @@ import type { FastifyRequest } from "fastify";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { FRONTEND_ORIGIN, FRONTEND_PATH } from "$server/utils/env";
 import {
-  findUserByEmailAndLtiConsumerId,
+  findUserByLtiUserIdAndLtiConsumerId,
   upsertUser,
 } from "$server/utils/user";
 import {
@@ -26,8 +26,8 @@ async function getCreatorByNRPS(session: FastifySessionObject) {
       if (isAdministrator(member.roles)) {
         continue;
       }
-      const user = await findUserByEmailAndLtiConsumerId(
-        member.email || "",
+      const user = await findUserByLtiUserIdAndLtiConsumerId(
+        member.user_id || "",
         session.oauthClient.id
       );
       if (user) {
