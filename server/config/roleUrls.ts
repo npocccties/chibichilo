@@ -4,6 +4,7 @@ const roleUrls = {
   administrator: [
     "http://purl.imsglobal.org/vocab/lis/v2/system/person#Administrator",
     "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
+    "http://purl.imsglobal.org/vocab/lis/v2/person#Administrator", // moodle 4.0.2
   ],
   /** 教員 */
   instructor: [

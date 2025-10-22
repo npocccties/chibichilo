@@ -30,6 +30,7 @@ export async function upsertLtiResourceLink(
     contextLabel,
     bookId,
     creatorId,
+    instructors: _instructors,
     ...link
   } = props;
 

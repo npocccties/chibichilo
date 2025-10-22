@@ -1,7 +1,7 @@
 import type { BookSchema } from "$server/models/book";
 import type { PublicBookSchema } from "$server/models/book/public";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
-import type { IsContentEditable } from "$server/models/content";
+import type { ContentAuthors, IsContentEditable } from "$server/models/content";
 import contentBy from "./contentBy";
 
 export function isDisplayableBook(
@@ -16,12 +16,25 @@ export function isDisplayableBook(
   return book.shared || linked || isContentEditable?.(book) || publicBook;
 }
 
+function contentByInstructors(content: ContentAuthors, instructors?: number[]) {
+  if (!instructors) return false;
+  for (const id of instructors) {
+    if (contentBy(content, { id })) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function getDisplayableBook<
   Book extends Pick<BookSchema, "id" | "shared" | "authors" | "sections">,
 >(
   book: Book | undefined,
   isContentEditable: IsContentEditable | undefined,
-  ltiResourceLink?: Pick<LtiResourceLinkSchema, "bookId" | "creatorId">,
+  ltiResourceLink?: Pick<
+    LtiResourceLinkSchema,
+    "bookId" | "creatorId" | "instructors"
+  >,
   publicBook?: PublicBookSchema,
   isInstructor?: boolean | false
 ): Book | undefined {
@@ -37,6 +50,7 @@ export function getDisplayableBook<
       (topic) =>
         topic.shared ||
         contentBy(topic, { id: ltiResourceLink?.creatorId }) ||
+        contentByInstructors(topic, ltiResourceLink?.instructors) ||
         (publicBook && contentBy(topic, { id: publicBook.userId })) ||
         isContentEditable?.(topic) ||
         isInstructor
