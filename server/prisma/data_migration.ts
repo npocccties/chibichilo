@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { Prisma } from "@prisma/client";
 import prisma from "$server/utils/prisma";
 import type { ActivitySchema } from "$server/models/activity";
 import type { BookmarkSchema } from "$server/models/bookmark";
@@ -122,15 +123,75 @@ async function createActivity({
 }: {
   activity: ActivityProps;
 }): Promise<ActivitySchema | undefined> {
-  const created = await prisma.activity.create({
-    data: { ...activity },
-    ...activityInclude,
+  try {
+    const created = await prisma.activity.create({
+      data: { ...activity },
+      ...activityInclude,
+    });
+
+    if (!created) {
+      return;
+    }
+    return created;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      // 重複データができてしまったらスキップ
+      console.warn("Duplicate entry detected. Skipping creation.");
+      return;
+    } else {
+      throw error; // ロールバック
+    }
+  }
+}
+
+async function deleteOriginalBookActivity({
+  activity,
+}: {
+  activity: ActivityProps;
+}): Promise<ActivitySchema | undefined> {
+  const deleted = await prisma.$transaction(async (tx) => {
+    try {
+      await tx.activityTimeRange.deleteMany({
+        where: { activityId: activity.id },
+      });
+      await tx.activityTimeRangeLog.deleteMany({
+        where: { activityId: activity.id },
+      });
+      await tx.activityTimeRangeCount.deleteMany({
+        where: { activityId: activity.id },
+      });
+      await tx.activity.delete({
+        where: {
+          bookId_topicId_learnerId_ltiConsumerId_ltiContextId: {
+            bookId: 0,
+            topicId: activity.topicId,
+            learnerId: activity.learnerId,
+            ltiConsumerId: activity.ltiConsumerId,
+            ltiContextId: activity.ltiContextId,
+          },
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        // レコードが存在しなかったらスキップ
+        console.warn("Deletion skipped: target record not found.");
+      } else {
+        throw error; // ロールバック
+      }
+    }
   });
 
-  if (!created) {
+  if (!deleted) {
     return;
   }
-  return created;
+
+  return deleted;
 }
 
 async function findAllActivities() {
@@ -204,6 +265,7 @@ async function activityMigration() {
         },
       });
     }
+    await deleteOriginalBookActivity({ activity });
   }
 }
 
