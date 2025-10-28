@@ -244,6 +244,9 @@ async function findAllActivities() {
 async function bookmarkMigration() {
   const bookmarks = await findAllBookmarks();
   for (const bookmark of bookmarks) {
+    console.log(
+      `[Copy bookmark] topicId: ${bookmark.topicId}, userId: ${bookmark.userId}, tagId: ${bookmark.tagId}, ltiConsumerId: ${bookmark.ltiConsumerId}, ltiContextId: ${bookmark.ltiContextId}`
+    );
     for (const topicSection of bookmark.topic.topicSection) {
       const created = await createBookmark({
         bookmark: {
@@ -270,6 +273,9 @@ async function activityMigration() {
     if (!activity.ltiConsumerId || !activity.ltiContextId) {
       continue;
     }
+    console.log(
+      `[Copy activity] topicId: ${activity.topicId}, learnerId: ${activity.learnerId}, ltiConsumerId: ${activity.ltiConsumerId}, ltiContextId: ${activity.ltiContextId}`
+    );
     const timeRanges = activity.timeRanges.map(({ startMs, endMs }) => ({
       startMs,
       endMs,
