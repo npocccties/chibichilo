@@ -270,31 +270,33 @@ async function activityMigration() {
     if (!activity.ltiConsumerId || !activity.ltiContextId) {
       continue;
     }
+    const timeRanges = activity.timeRanges.map(({ startMs, endMs }) => ({
+      startMs,
+      endMs,
+    }));
+    const timeRangeLogs = activity.timeRangeLogs.map(
+      ({ startMs, endMs, createdAt, updatedAt }) => ({
+        startMs,
+        endMs,
+        createdAt,
+        updatedAt,
+      })
+    );
+    const timeRangeCounts = activity.timeRangeCounts.map(
+      ({ startMs, endMs, count }) => ({ startMs, endMs, count })
+    );
     for (const topicSection of activity.topic.topicSection) {
       const created = await createActivity({
         activity: {
           timeRanges: {
-            create: activity.timeRanges.map(({ startMs, endMs }) => ({
-              startMs,
-              endMs,
-            })),
+            create: timeRanges,
           },
           timeRangeLogs: {
-            create: activity.timeRangeLogs.map(
-              ({ startMs, endMs, createdAt, updatedAt }) => ({
-                startMs,
-                endMs,
-                createdAt,
-                updatedAt,
-              })
-            ),
+            create: timeRangeLogs,
           },
           timeRangeCounts: {
-            create: activity.timeRangeCounts.map(
-              ({ startMs, endMs, count }) => ({ startMs, endMs, count })
-            ),
+            create: timeRangeCounts,
           },
-
           bookId: topicSection.section.bookId,
           topicId: activity.topicId,
           learnerId: activity.learnerId,
