@@ -165,6 +165,9 @@ async function activityMigration() {
   const activities = await findAllActivities();
 
   for (const activity of activities) {
+    if (!activity.ltiConsumerId) {
+      continue;
+    }
     for (const topicSection of activity.topic.topicSection) {
       const created = await createActivity({
         activity: {
