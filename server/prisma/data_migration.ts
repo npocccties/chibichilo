@@ -267,7 +267,7 @@ async function activityMigration() {
   const activities = await findAllActivities();
 
   for (const activity of activities) {
-    if (!activity.ltiConsumerId) {
+    if (!activity.ltiConsumerId || !activity.ltiContextId) {
       continue;
     }
     for (const topicSection of activity.topic.topicSection) {
