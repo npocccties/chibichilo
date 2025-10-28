@@ -107,15 +107,28 @@ async function createBookmark({
 }: {
   bookmark: BookmarkProps;
 }): Promise<BookmarkSchema | undefined> {
-  const created = await prisma.bookmark.create({
-    data: { ...bookmark },
-    ...bookmarkInclude,
-  });
+  try {
+    const created = await prisma.bookmark.create({
+      data: { ...bookmark },
+      ...bookmarkInclude,
+    });
 
-  if (!created) {
-    return;
+    if (!created) {
+      return;
+    }
+    return created;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      // 重複データができてしまったらスキップ
+      console.warn("Duplicate entry detected. Skipping creation.");
+      return;
+    } else {
+      throw error; // ロールバック
+    }
   }
-  return created;
 }
 
 async function createActivity({
@@ -141,6 +154,33 @@ async function createActivity({
       // 重複データができてしまったらスキップ
       console.warn("Duplicate entry detected. Skipping creation.");
       return;
+    } else {
+      throw error; // ロールバック
+    }
+  }
+}
+
+async function deleteOriginalBookBookmark({
+  bookmark,
+}: {
+  bookmark: BookmarkProps;
+}): Promise<BookmarkSchema | undefined> {
+  try {
+    const deleted = await prisma.bookmark.delete({
+      where: { id: bookmark.id, bookId: 0 },
+    });
+
+    if (!deleted) {
+      return;
+    }
+    return deleted;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      // レコードが存在しなかったらスキップ
+      console.warn("Deletion skipped: target record not found.");
     } else {
       throw error; // ロールバック
     }
@@ -219,6 +259,7 @@ async function bookmarkMigration() {
         },
       });
     }
+    await deleteOriginalBookBookmark({ bookmark });
   }
 }
 
