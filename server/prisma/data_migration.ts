@@ -236,6 +236,16 @@ async function deleteOriginalBookActivity({
 
 async function findAllActivities() {
   const activities = await prisma.activity.findMany({
+    select: {
+      id: true,
+    },
+  });
+  return activities;
+}
+
+async function findActivity(id) {
+  const activities = await prisma.activity.findUnique({
+    where: { id: id },
     ...activityInclude,
   });
   return activities;
@@ -267,9 +277,12 @@ async function bookmarkMigration() {
 }
 
 async function activityMigration() {
+  // activityIdのみのリストを取得（timeRangeLogs等が大きい問題への対策）
   const activities = await findAllActivities();
 
-  for (const activity of activities) {
+  for (const a of activities) {
+    // 1件ずつActivityを取得（このときにtimeRangeLogs等も取得）
+    const activity = await findActivity(a.id);
     if (!activity.ltiConsumerId || !activity.ltiContextId) {
       continue;
     }
