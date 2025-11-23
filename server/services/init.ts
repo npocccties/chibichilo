@@ -79,12 +79,12 @@ async function init({ session }: FastifyRequest) {
   ) {
     const instructors = await getInstructorsByNRPS(session);
     let creatorId = ltiResourceLink?.creatorId;
-    if (!creatorId && !isInstructor(session.ltiRoles)) {
-      creatorId = instructors[0];
+    if (!creatorId) {
+      creatorId = isInstructor(session.ltiRoles) ? user.id : null;
     }
     ltiResourceLink = {
       bookId: Number(bookId),
-      creatorId: creatorId ?? user.id, // 直接user.idを使用
+      creatorId,
       instructors,
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
@@ -98,7 +98,7 @@ async function init({ session }: FastifyRequest) {
     };
   }
 
-  if (ltiResourceLink && isInstructor(session.ltiRoles)) {
+  if (ltiResourceLink) {
     await upsertLtiResourceLink({
       ...ltiResourceLink,
       title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,

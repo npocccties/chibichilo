@@ -181,8 +181,8 @@ model LtiResourceLink {
   title      String
   book       Book        @relation(fields: [bookId], references: [id])
   bookId     Int         @map("book_id")
-  creator    User        @relation(fields: [creatorId], references: [id])
-  creatorId  Int         @map("creator_id")
+  creator    User?       @relation(fields: [creatorId], references: [id])
+  creatorId  Int?        @map("creator_id")
   /// 作成日
   createdAt  DateTime    @default(now()) @map("created_at")
   /// 更新日
