@@ -432,7 +432,7 @@ model Bookmark {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId])
+  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId, bookId])
 }
 
 // Etc.
