@@ -32,7 +32,7 @@ export class LtiResourceLinkSchema extends LtiResourceLinkProps {
   id!: string;
 
   @IsInt()
-  creatorId!: number;
+  creatorId!: number | null;
 
   @IsOptional()
   @IsInt({ each: true })

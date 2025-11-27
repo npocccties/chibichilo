@@ -45,11 +45,14 @@ export function getDisplayableBook<
   )
     return;
 
+  const id = ltiResourceLink?.creatorId
+    ? ltiResourceLink?.creatorId
+    : undefined;
   const sections = book.sections.flatMap((section) => {
     const topics = section.topics.filter(
       (topic) =>
         topic.shared ||
-        contentBy(topic, { id: ltiResourceLink?.creatorId }) ||
+        contentBy(topic, { id }) ||
         contentByInstructors(topic, ltiResourceLink?.instructors) ||
         (publicBook && contentBy(topic, { id: publicBook.userId })) ||
         isContentEditable?.(topic) ||
