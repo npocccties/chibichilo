@@ -12,8 +12,6 @@ import Tag from "$atoms/Tag";
 import { useTopic } from "$utils/topic";
 import type { TopicSchema } from "$server/models/topic";
 
-import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
-
 const bookmarkButton = css({
   textAlign: "left",
   padding: "8px 32px",
@@ -97,15 +95,13 @@ export default function BookmarkPreview({
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {courseBookmark.map((bookmark) => {
           if (
-            (!NEXT_PUBLIC_ENABLE_BOOK_RELATION ||
-              bookmark.bookId === (session.ltiResourceLink?.bookId ?? null)) &&
+            bookmark.bookId === (session.ltiResourceLink?.bookId ?? 0) &&
             bookmark.tag
           ) {
             return <Tag key={bookmark.id} tag={bookmark.tag} />;
           }
           if (
-            (!NEXT_PUBLIC_ENABLE_BOOK_RELATION ||
-              bookmark.bookId === (session.ltiResourceLink?.bookId ?? null)) &&
+            bookmark.bookId === (session.ltiResourceLink?.bookId ?? 0) &&
             bookmark.memoContent
           ) {
             return <Tag key={bookmark.id} memoContent={bookmark.memoContent} />;

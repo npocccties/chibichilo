@@ -5,8 +5,6 @@ import type { BookmarkSchema, BookmarkTagMenu } from "$server/models/bookmark";
 import type { BookSchema } from "$server/models/book";
 import Emoji from "$atoms/Emoji";
 
-import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
-
 const listClass = css({
   listStyle: "none",
 });
@@ -68,9 +66,7 @@ function ListItem(props: {
       <ul className={ulClass}>
         {props.bookmarkTagMenu.map((t) => {
           const count = props.bookmarks.filter(
-            (b) =>
-              b.tagId === t.id &&
-              (!NEXT_PUBLIC_ENABLE_BOOK_RELATION || b.bookId === props.bookId)
+            (b) => b.tagId === t.id && b.bookId === props.bookId
           ).length;
 
           return (

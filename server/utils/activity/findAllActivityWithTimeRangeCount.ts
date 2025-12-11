@@ -3,8 +3,6 @@ import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import type { SessionSchema } from "$server/models/session";
 import prisma from "$server/utils/prisma";
 
-import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
-
 /** 受講者の取得 */
 async function findLtiMembersWithTimeRangeCount(
   rewatchThreshold: number,
@@ -38,7 +36,7 @@ async function findLtiMembersWithTimeRangeCount(
   };
 
   const activityScope =
-    (currentLtiContextOnly ?? true) && NEXT_PUBLIC_ENABLE_BOOK_RELATION
+    currentLtiContextOnly ?? true
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,

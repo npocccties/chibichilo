@@ -19,7 +19,6 @@ import TagCount from "$molecules/TagCount";
 import { Box } from "@mui/material";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
-import { NEXT_PUBLIC_ENABLE_BOOK_RELATION } from "$utils/env";
 
 function SectionItem({
   section,
@@ -158,12 +157,7 @@ export default function Sections({
                     {formatInterval(0, topic.timeRequired * 1000)}
                   </Typography>
                   {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && isPrivateBook && (
-                    <TagCount
-                      topicId={topic.id}
-                      bookId={
-                        NEXT_PUBLIC_ENABLE_BOOK_RELATION ? bookId : undefined
-                      }
-                    />
+                    <TagCount topicId={topic.id} bookId={bookId ?? 0} />
                   )}
                 </Box>
               </ListItemText>
