@@ -43,8 +43,14 @@ async function findLtiMembersWithTimeRangeCount(
           ltiConsumerId: consumerId,
           ltiContextId: contextId,
           ...topicActivityScope,
+          ...{ bookId: { not: 0 } },
         }
-      : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
+      : {
+          ltiConsumerId: "",
+          ltiContextId: "",
+          ...topicActivityScope,
+          ...{ bookId: 0 },
+        };
 
   const learners = await prisma.user.findMany({
     select: {

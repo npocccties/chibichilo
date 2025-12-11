@@ -53,7 +53,12 @@ async function findLtiMembers(
           ...topicActivityScope,
           ...bookActivityScope,
         }
-      : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
+      : {
+          ltiConsumerId: "",
+          ltiContextId: "",
+          ...topicActivityScope,
+          ...{ bookId: 0 },
+        };
 
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
