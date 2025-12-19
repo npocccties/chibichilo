@@ -8,7 +8,7 @@ import type {
   BookmarkTagMenu,
   TagSchema,
 } from "$server/models/bookmark";
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
@@ -106,8 +106,23 @@ export default function TagList({
     watch,
     formState: { errors },
   } = useForm<BookmarkMemoContentProps>({
-    defaultValues,
+    defaultValues: {
+      memoContent: bookmarkMemoContent?.memoContent ?? "",
+      topicId,
+      bookId,
+    },
   });
+
+  useEffect(() => {
+    if (bookmarkMemoContent) {
+      reset({
+        memoContent: bookmarkMemoContent.memoContent ?? "",
+        topicId,
+        bookId,
+      });
+    }
+  }, [bookmarkMemoContent, reset, topicId, bookId]);
+
   const onClose = () => {
     reset();
     setOpen(false);
