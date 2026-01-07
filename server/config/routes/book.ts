@@ -7,6 +7,9 @@ import * as authorsService from "$server/services/book/authors";
 import * as showPublicService from "$server/services/book/public";
 import * as showZoomService from "$server/services/book/zoom";
 import * as importService from "$server/services/bookImport";
+import * as releaseService from "$server/services/book/release";
+import * as cloneService from "$server/services/clone";
+import * as metainfoService from "$server/services/book/metainfo";
 
 const basePath = "/book";
 const pathWithParams = `${basePath}/:book_id`;
@@ -25,11 +28,13 @@ export async function book(fastify: FastifyInstance) {
 
   fastify.put<{
     Params: service.Params;
+    Querystring: service.UpdateQuery;
     Body: service.Props;
   }>(pathWithParams, { schema: method.put, ...hooks.put }, handler(update));
 
   fastify.delete<{
     Params: service.Params;
+    Querystring: service.DestroyQuery;
   }>(
     pathWithParams,
     { schema: method.delete, ...hooks.delete },
@@ -84,6 +89,7 @@ export async function bookZoom(fastify: FastifyInstance) {
     handler(method)
   );
 }
+
 export async function bookImport(fastify: FastifyInstance) {
   const path = `${pathWithParams}/import`;
   const { importSchema, importHooks, importBook } = importService;
@@ -93,4 +99,45 @@ export async function bookImport(fastify: FastifyInstance) {
     Params: service.Params;
     Body: importService.Params;
   }>(path, { schema: importSchema, ...hooks.post }, handler(importBook));
+}
+
+export async function bookRelease(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/release`;
+  const { method, show, create, update } = releaseService;
+  const hooks = makeHooks(fastify, releaseService.hooks);
+
+  fastify.get<{
+    Params: releaseService.Params;
+  }>(path, { schema: method.get, ...hooks.get }, handler(show));
+
+  fastify.post<{
+    Params: releaseService.Params;
+    Body: releaseService.Props;
+  }>(path, { schema: method.post, ...hooks.post }, handler(create));
+
+  fastify.put<{
+    Params: releaseService.Params;
+    Body: releaseService.Props;
+  }>(path, { schema: method.put, ...hooks.put }, handler(update));
+}
+
+export async function bookClone(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/clone`;
+  const { cloneSchema, cloneHooks, clone } = cloneService;
+  const hooks = makeHooks(fastify, cloneHooks);
+
+  fastify.post<{
+    Params: service.Params;
+  }>(path, { schema: cloneSchema, ...hooks.post }, handler(clone));
+}
+
+export async function bookMetainfo(fastify: FastifyInstance) {
+  const path = `${pathWithParams}/metainfo`;
+  const { method, update } = metainfoService;
+  const hooks = makeHooks(fastify, metainfoService.hooks);
+
+  fastify.put<{
+    Params: metainfoService.Params;
+    Body: metainfoService.Props;
+  }>(path, { schema: method.put, ...hooks.put }, handler(update));
 }

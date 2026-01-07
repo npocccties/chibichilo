@@ -14,10 +14,18 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse20017Stats,
-    InlineResponse20017StatsFromJSON,
-    InlineResponse20017StatsFromJSONTyped,
-    InlineResponse20017StatsToJSON,
+    InlineResponse20017BookActivities,
+    InlineResponse20017BookActivitiesFromJSON,
+    InlineResponse20017BookActivitiesFromJSONTyped,
+    InlineResponse20017BookActivitiesToJSON,
+    InlineResponse20017CourseBooks,
+    InlineResponse20017CourseBooksFromJSON,
+    InlineResponse20017CourseBooksFromJSONTyped,
+    InlineResponse20017CourseBooksToJSON,
+    InlineResponse2009Learner,
+    InlineResponse2009LearnerFromJSON,
+    InlineResponse2009LearnerFromJSONTyped,
+    InlineResponse2009LearnerToJSON,
 } from './';
 
 /**
@@ -28,10 +36,22 @@ import {
 export interface InlineResponse20017 {
     /**
      * 
-     * @type {Array<InlineResponse20017Stats>}
+     * @type {Array<InlineResponse2009Learner>}
      * @memberof InlineResponse20017
      */
-    stats?: Array<InlineResponse20017Stats>;
+    learners: Array<InlineResponse2009Learner>;
+    /**
+     * 
+     * @type {Array<InlineResponse20017CourseBooks>}
+     * @memberof InlineResponse20017
+     */
+    courseBooks: Array<InlineResponse20017CourseBooks>;
+    /**
+     * 
+     * @type {Array<InlineResponse20017BookActivities>}
+     * @memberof InlineResponse20017
+     */
+    bookActivities: Array<InlineResponse20017BookActivities>;
 }
 
 export function InlineResponse20017FromJSON(json: any): InlineResponse20017 {
@@ -44,7 +64,9 @@ export function InlineResponse20017FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'stats': !exists(json, 'stats') ? undefined : ((json['stats'] as Array<any>).map(InlineResponse20017StatsFromJSON)),
+        'learners': ((json['learners'] as Array<any>).map(InlineResponse2009LearnerFromJSON)),
+        'courseBooks': ((json['courseBooks'] as Array<any>).map(InlineResponse20017CourseBooksFromJSON)),
+        'bookActivities': ((json['bookActivities'] as Array<any>).map(InlineResponse20017BookActivitiesFromJSON)),
     };
 }
 
@@ -57,7 +79,9 @@ export function InlineResponse20017ToJSON(value?: InlineResponse20017 | null): a
     }
     return {
         
-        'stats': value.stats === undefined ? undefined : ((value.stats as Array<any>).map(InlineResponse20017StatsToJSON)),
+        'learners': ((value.learners as Array<any>).map(InlineResponse2009LearnerToJSON)),
+        'courseBooks': ((value.courseBooks as Array<any>).map(InlineResponse20017CourseBooksToJSON)),
+        'bookActivities': ((value.bookActivities as Array<any>).map(InlineResponse20017BookActivitiesToJSON)),
     };
 }
 

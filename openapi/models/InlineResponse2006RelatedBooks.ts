@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    InlineResponse2006Release,
+    InlineResponse2006ReleaseFromJSON,
+    InlineResponse2006ReleaseFromJSONTyped,
+    InlineResponse2006ReleaseToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -49,6 +56,12 @@ export interface InlineResponse2006RelatedBooks {
      * @memberof InlineResponse2006RelatedBooks
      */
     shared?: boolean;
+    /**
+     * 
+     * @type {InlineResponse2006Release}
+     * @memberof InlineResponse2006RelatedBooks
+     */
+    release?: InlineResponse2006Release;
 }
 
 export function InlineResponse2006RelatedBooksFromJSON(json: any): InlineResponse2006RelatedBooks {
@@ -66,6 +79,7 @@ export function InlineResponse2006RelatedBooksFromJSONTyped(json: any, ignoreDis
         'description': !exists(json, 'description') ? undefined : json['description'],
         'language': !exists(json, 'language') ? undefined : json['language'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'release': !exists(json, 'release') ? undefined : InlineResponse2006ReleaseFromJSON(json['release']),
     };
 }
 
@@ -83,6 +97,7 @@ export function InlineResponse2006RelatedBooksToJSON(value?: InlineResponse2006R
         'description': value.description,
         'language': value.language,
         'shared': value.shared,
+        'release': InlineResponse2006ReleaseToJSON(value.release),
     };
 }
 

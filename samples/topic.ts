@@ -37,6 +37,7 @@ const topic = {
   shared: true,
   language: "ja",
   license: "",
+  licenser: "",
   resource,
   bookmarks: [bookmark],
 };

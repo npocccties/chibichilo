@@ -30,6 +30,10 @@ import {
     InlineResponse2006PublicBooksFromJSON,
     InlineResponse2006PublicBooksFromJSONTyped,
     InlineResponse2006PublicBooksToJSON,
+    InlineResponse2006Release,
+    InlineResponse2006ReleaseFromJSON,
+    InlineResponse2006ReleaseFromJSONTyped,
+    InlineResponse2006ReleaseToJSON,
     InlineResponse2006Sections,
     InlineResponse2006SectionsFromJSON,
     InlineResponse2006SectionsFromJSONTyped,
@@ -78,6 +82,18 @@ export interface InlineResponse2007Books {
      * @memberof InlineResponse2007Books
      */
     shared?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2007Books
+     */
+    license?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2007Books
+     */
+    licenser?: string;
     /**
      * 
      * @type {Date}
@@ -132,6 +148,12 @@ export interface InlineResponse2007Books {
      * @memberof InlineResponse2007Books
      */
     publicBooks?: Array<InlineResponse2006PublicBooks>;
+    /**
+     * 
+     * @type {InlineResponse2006Release}
+     * @memberof InlineResponse2007Books
+     */
+    release?: InlineResponse2006Release;
 }
 
 export function InlineResponse2007BooksFromJSON(json: any): InlineResponse2007Books {
@@ -150,6 +172,8 @@ export function InlineResponse2007BooksFromJSONTyped(json: any, ignoreDiscrimina
         'language': !exists(json, 'language') ? undefined : json['language'],
         'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
         'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
         'publishedAt': !exists(json, 'publishedAt') ? undefined : (new Date(json['publishedAt'])),
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
         'updatedAt': !exists(json, 'updatedAt') ? undefined : (new Date(json['updatedAt'])),
@@ -159,6 +183,7 @@ export function InlineResponse2007BooksFromJSONTyped(json: any, ignoreDiscrimina
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(InlineResponse2006SectionsFromJSON)),
         'ltiResourceLinks': !exists(json, 'ltiResourceLinks') ? undefined : ((json['ltiResourceLinks'] as Array<any>).map(InlineResponse2005FromJSON)),
         'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2006PublicBooksFromJSON)),
+        'release': !exists(json, 'release') ? undefined : InlineResponse2006ReleaseFromJSON(json['release']),
     };
 }
 
@@ -177,6 +202,8 @@ export function InlineResponse2007BooksToJSON(value?: InlineResponse2007Books | 
         'language': value.language,
         'timeRequired': value.timeRequired,
         'shared': value.shared,
+        'license': value.license,
+        'licenser': value.licenser,
         'publishedAt': value.publishedAt === undefined ? undefined : (value.publishedAt.toISOString()),
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
         'updatedAt': value.updatedAt === undefined ? undefined : (value.updatedAt.toISOString()),
@@ -186,6 +213,7 @@ export function InlineResponse2007BooksToJSON(value?: InlineResponse2007Books | 
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(InlineResponse2006SectionsToJSON)),
         'ltiResourceLinks': value.ltiResourceLinks === undefined ? undefined : ((value.ltiResourceLinks as Array<any>).map(InlineResponse2005ToJSON)),
         'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2006PublicBooksToJSON)),
+        'release': InlineResponse2006ReleaseToJSON(value.release),
     };
 }
 

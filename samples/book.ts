@@ -10,6 +10,7 @@ const book = {
   timeRequired: null,
   shared: true,
   license: "",
+  licenser: "",
   zoomMeetingId: null,
   authors: [{ ...user, roleName: "作成者" }],
   keywords: [],

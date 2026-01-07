@@ -39,6 +39,12 @@ export interface InlineResponse2005 {
     creatorId: number;
     /**
      * 
+     * @type {Array<number>}
+     * @memberof InlineResponse2005
+     */
+    instructors?: Array<number>;
+    /**
+     * 
      * @type {string}
      * @memberof InlineResponse2005
      */
@@ -82,6 +88,7 @@ export function InlineResponse2005FromJSONTyped(json: any, ignoreDiscriminator: 
         'consumerId': json['consumerId'],
         'id': json['id'],
         'creatorId': json['creatorId'],
+        'instructors': !exists(json, 'instructors') ? undefined : json['instructors'],
         'contextId': json['contextId'],
         'contextTitle': json['contextTitle'],
         'contextLabel': json['contextLabel'],
@@ -102,6 +109,7 @@ export function InlineResponse2005ToJSON(value?: InlineResponse2005 | null): any
         'consumerId': value.consumerId,
         'id': value.id,
         'creatorId': value.creatorId,
+        'instructors': value.instructors,
         'contextId': value.contextId,
         'contextTitle': value.contextTitle,
         'contextLabel': value.contextLabel,
