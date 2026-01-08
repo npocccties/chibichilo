@@ -24,19 +24,13 @@ export interface InlineObject16 {
      * @type {string}
      * @memberof InlineObject16
      */
-    memoContent?: string;
+    language?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject16
      */
-    topicId?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineObject16
-     */
-    bookId?: number;
+    content?: string;
 }
 
 export function InlineObject16FromJSON(json: any): InlineObject16 {
@@ -49,9 +43,8 @@ export function InlineObject16FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
-        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'content': !exists(json, 'content') ? undefined : json['content'],
     };
 }
 
@@ -64,9 +57,8 @@ export function InlineObject16ToJSON(value?: InlineObject16 | null): any {
     }
     return {
         
-        'memoContent': value.memoContent,
-        'topicId': value.topicId,
-        'bookId': value.bookId,
+        'language': value.language,
+        'content': value.content,
     };
 }
 

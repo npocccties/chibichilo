@@ -9,6 +9,7 @@ type Props<TFieldValues extends FieldValues> = {
   topic?: Pick<TopicSchema, "timeRequired">;
   name: FieldPath<TFieldValues>;
   control: Control<TFieldValues>;
+  disabled: boolean;
 };
 
 function TimeRequiredInputControl<TFieldValues extends FieldValues>(
@@ -25,7 +26,8 @@ function TimeRequiredInputControl<TFieldValues extends FieldValues>(
         label="学習時間 (秒)"
         type="number"
         inputProps={{ ...field, min: 1 }}
-        required
+        required={!props.disabled}
+        disabled={props.disabled}
       />
       {modified && !close && (
         <Alert severity="warning" onClose={() => toggleClose()}>

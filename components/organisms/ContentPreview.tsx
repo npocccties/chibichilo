@@ -29,6 +29,7 @@ import useOembed from "$utils/useOembed";
 import { NEXT_PUBLIC_BASE_PATH } from "$utils/env";
 import BookChip from "$atoms/BookChip";
 import type { RelatedBook } from "$server/models/topic";
+import { getReleaseFromRelatedBooks } from "$utils/release";
 
 type HeaderProps = Parameters<typeof Checkbox>[0] & {
   checkable: boolean;
@@ -158,6 +159,10 @@ export default function ContentPreview({
   const handleContentLinkClick = (_: unknown, checked: boolean) => {
     onContentLinkClick?.(content, checked);
   };
+  const release =
+    content.type === "book"
+      ? content.release
+      : getReleaseFromRelatedBooks(content.relatedBooks);
   return (
     <Preview className={clsx({ selected: checked })}>
       <Header
@@ -179,7 +184,7 @@ export default function ContentPreview({
               )}
             />
           ))}
-        {content.shared && <SharedIndicator className="shared" />}
+        {release?.shared && <SharedIndicator className="shared" />}
         {onContentEditClick && (
           <EditButton
             className="edit-button"
@@ -228,7 +233,7 @@ export default function ContentPreview({
             sx={{
               position: "absolute",
               bottom: 0,
-              right: 0,
+              left: 0,
             }}
             license={content.license}
             clickable={false}
@@ -239,10 +244,24 @@ export default function ContentPreview({
         nowrap
         sx={{ mx: 2, mt: 1 }}
         value={[
-          {
-            key: "更新日",
-            value: getLocaleDateString(content.updatedAt, "ja"),
-          },
+          ...(release?.releasedAt
+            ? [
+                {
+                  key: "バージョン",
+                  value: release.version,
+                },
+                {
+                  key: "リリース日",
+                  value: getLocaleDateString(release.releasedAt, "ja"),
+                },
+              ]
+            : [
+                {
+                  key: "更新日",
+                  value: getLocaleDateString(content.updatedAt, "ja"),
+                },
+              ]),
+          ...(content.licenser ? [{ key: "", value: content.licenser }] : []),
           ...authors(content),
         ]}
       />

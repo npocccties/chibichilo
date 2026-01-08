@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -28,34 +21,22 @@ import {
 export interface InlineObject6 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject6
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    language?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject6
      */
-    provider: string;
+    license?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject6
      */
-    wowzaBaseUrl: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject6
-     */
-    json?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject6
-     */
-    file?: string;
+    licenser?: string;
 }
 
 export function InlineObject6FromJSON(json: any): InlineObject6 {
@@ -68,11 +49,9 @@ export function InlineObject6FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
-        'provider': json['provider'],
-        'wowzaBaseUrl': json['wowzaBaseUrl'],
-        'json': !exists(json, 'json') ? undefined : json['json'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
     };
 }
 
@@ -85,11 +64,9 @@ export function InlineObject6ToJSON(value?: InlineObject6 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
-        'provider': value.provider,
-        'wowzaBaseUrl': value.wowzaBaseUrl,
-        'json': value.json,
-        'file': value.file,
+        'language': value.language,
+        'license': value.license,
+        'licenser': value.licenser,
     };
 }
 

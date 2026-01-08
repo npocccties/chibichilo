@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    InlineResponse20021ActivityTimeRangeCounts,
-    InlineResponse20021ActivityTimeRangeCountsFromJSON,
-    InlineResponse20021ActivityTimeRangeCountsFromJSONTyped,
-    InlineResponse20021ActivityTimeRangeCountsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -28,16 +21,16 @@ import {
 export interface InlineResponse20021 {
     /**
      * 
+     * @type {string}
+     * @memberof InlineResponse20021
+     */
+    text: string;
+    /**
+     * 
      * @type {number}
      * @memberof InlineResponse20021
      */
-    activityId?: number;
-    /**
-     * 
-     * @type {Array<InlineResponse20021ActivityTimeRangeCounts>}
-     * @memberof InlineResponse20021
-     */
-    activityTimeRangeCounts: Array<InlineResponse20021ActivityTimeRangeCounts>;
+    value: number;
 }
 
 export function InlineResponse20021FromJSON(json: any): InlineResponse20021 {
@@ -50,8 +43,8 @@ export function InlineResponse20021FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'activityId': !exists(json, 'activityId') ? undefined : json['activityId'],
-        'activityTimeRangeCounts': ((json['activityTimeRangeCounts'] as Array<any>).map(InlineResponse20021ActivityTimeRangeCountsFromJSON)),
+        'text': json['text'],
+        'value': json['value'],
     };
 }
 
@@ -64,8 +57,8 @@ export function InlineResponse20021ToJSON(value?: InlineResponse20021 | null): a
     }
     return {
         
-        'activityId': value.activityId,
-        'activityTimeRangeCounts': ((value.activityTimeRangeCounts as Array<any>).map(InlineResponse20021ActivityTimeRangeCountsToJSON)),
+        'text': value.text,
+        'value': value.value,
     };
 }
 

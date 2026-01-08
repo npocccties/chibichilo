@@ -38,7 +38,7 @@ async function seed() {
   }
 
   const createdBooks = (await Promise.all(
-    books.map((book) => createBook(creatorId, book))
+    books.map((book) => createBook(creatorId, book, [{ userId: creatorId, roleId: 1 }]))
   )) as BookSchema[];
 
   // TODO: upsert時の一意性の問題が解決したら `Promise.all()` 等に修正して。

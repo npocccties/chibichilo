@@ -9,6 +9,7 @@ type Props = {
   onKeywordClick?(keyword: KeywordPropSchema): void;
   sx?: SxProps;
   onDelete?: () => void;
+  disabled?: boolean;
 };
 
 const Chip = styled(MuiChip)({
@@ -21,6 +22,7 @@ export default function KeywordChip({
   onKeywordClick,
   sx,
   onDelete,
+  disabled = false,
 }: Props) {
   const handleClick = () => onKeywordClick?.(keyword);
   return (
@@ -33,6 +35,7 @@ export default function KeywordChip({
         label={keyword.name}
         onClick={onKeywordClick && handleClick}
         onDelete={onDelete}
+        disabled={disabled}
       />
     </Tooltip>
   );
