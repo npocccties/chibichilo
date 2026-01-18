@@ -62,10 +62,15 @@ export default function TagList({
 }: Props) {
   const handlers = useBookmarkHandler();
 
-  const selectedTag = useMemo<TagSchema[]>(() => {
-    return bookmarks
-      .map((bookmark) => bookmark.tag)
-      .filter((tag): tag is TagSchema => tag !== null);
+  const [selectedTag, setSelectedTag] = useState<TagSchema[]>([]);
+
+  useEffect(() => {
+    if (bookmarks.length > 0) {
+      const tags = bookmarks
+        .map((bookmark) => bookmark.tag)
+        .filter((tag): tag is TagSchema => tag !== null);
+      setSelectedTag(tags);
+    }
   }, [bookmarks]);
 
   const bookmarkMemoContent = useMemo(() => {
