@@ -118,7 +118,7 @@ export function toSchema({
       )
     )
     .filter(
-      (item, index, self) => item.bookId === item.book.id || item.bookId === 0
+      (item, _index, _self) => item.bookId === item.book.id || item.bookId === 0
     );
 
   return { courseBooks, bookActivities };

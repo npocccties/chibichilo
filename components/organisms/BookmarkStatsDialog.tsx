@@ -10,7 +10,7 @@ import BookmarkStats from "./BookmarkStats";
 import { useWordCloud } from "../../utils/useWordCloud";
 
 function ListItem(
-  topic: { id: number; name: string },
+  topic: { id: number; name: string, book: Pick<BookSchema, "id" | "name"> },
   book: { id: number; name: string }
 ) {
   const data = useBookmarksByTopicId({
