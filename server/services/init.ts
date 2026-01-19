@@ -1,7 +1,10 @@
 import type { FastifyRequest } from "fastify";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { FRONTEND_ORIGIN, FRONTEND_PATH } from "$server/utils/env";
-import { upsertUser } from "$server/utils/user";
+import {
+  findUserByLtiUserIdAndLtiConsumerId,
+  upsertUser,
+} from "$server/utils/user";
 import {
   findLtiResourceLink,
   upsertLtiResourceLink,
@@ -9,8 +12,27 @@ import {
 import { isInstructor } from "$server/utils/ltiv1p3/roles";
 import { getSystemSettings } from "$server/utils/systemSettings";
 import getValidUrl from "$server/utils/getValidUrl";
+import { getInstructors } from "$server/utils/ltiv1p3/services";
+import type { FastifySessionObject } from "@fastify/session";
 
 const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
+
+async function getInstructorsByNRPS(session: FastifySessionObject) {
+  const instructors = await getInstructors(session);
+  const ret: number[] = [];
+  if (instructors?.members) {
+    for (const member of instructors.members) {
+      const user = await findUserByLtiUserIdAndLtiConsumerId(
+        member.user_id || "",
+        session.oauthClient.id
+      );
+      if (user) {
+        ret.push(user.id);
+      }
+    }
+  }
+  return ret;
+}
 
 /** 起動時の初期化プロセス */
 async function init({ session }: FastifyRequest) {
@@ -51,14 +73,19 @@ async function init({ session }: FastifyRequest) {
       ? ltiTargetLink.href
       : undefined;
   if (
-    isInstructor(session.ltiRoles) &&
     session.ltiMessageType === "LtiResourceLinkRequest" &&
     session.ltiResourceLinkRequest?.id &&
     Boolean(ltiTargetLinkUri)
   ) {
+    const instructors = await getInstructorsByNRPS(session);
+    let creatorId = ltiResourceLink?.creatorId;
+    if (!creatorId) {
+      creatorId = isInstructor(session.ltiRoles) ? user.id : null;
+    }
     ltiResourceLink = {
       bookId: Number(bookId),
-      creatorId: ltiResourceLink?.creatorId ?? user.id, // 直接user.idを使用
+      creatorId,
+      instructors,
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
       id: session.ltiResourceLinkRequest.id,

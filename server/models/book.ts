@@ -7,23 +7,25 @@ import { publicBookSchema } from "./book/public";
 import type { LtiResourceLinkSchema } from "./ltiResourceLink";
 import { ltiResourceLinkSchema } from "./ltiResourceLink";
 import { KeywordPropSchema, KeywordSchema } from "./keyword";
+import type { ReleaseSchema } from "./book/release";
+import { releaseSchema } from "./book/release";
 
 export type BookProps = {
   name: string;
   description?: string;
-  language?: string;
   shared?: boolean;
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
   publicBooks?: PublicBookSchema[];
 };
 
-export type BookSchema = Book & {
+export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid" | "spid" > & {
   authors: AuthorSchema[];
   sections: SectionSchema[];
   ltiResourceLinks: LtiResourceLinkSchema[];
   keywords: KeywordSchema[];
   publicBooks?: PublicBookSchema[];
+  release?: ReleaseSchema;
 };
 
 export const bookPropsSchema = {
@@ -31,7 +33,6 @@ export const bookPropsSchema = {
   properties: {
     name: { type: "string" },
     description: { type: "string" },
-    language: { type: "string", nullable: true },
     shared: { type: "boolean", nullable: true },
     sections: {
       type: "array",
@@ -57,6 +58,8 @@ export const bookSchema = {
     language: { type: "string" },
     timeRequired: { type: "integer", nullable: true },
     shared: { type: "boolean" },
+    license: { type: "string" },
+    licenser: { type: "string" },
     publishedAt: { type: "string", format: "date-time" },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
@@ -74,6 +77,10 @@ export const bookSchema = {
     publicBooks: {
       type: "array",
       items: publicBookSchema,
+    },
+    release: {
+      ...releaseSchema,
+      nullable: true,
     },
   },
 } as const;

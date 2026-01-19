@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ApiV2BookBookIdAuthorsAuthors,
+    ApiV2BookBookIdAuthorsAuthorsFromJSON,
+    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
+    ApiV2BookBookIdAuthorsAuthorsToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -21,22 +28,34 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject14 {
     /**
      * 
-     * @type {number}
+     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
      * @memberof InlineObject14
      */
-    tagId?: number;
+    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject14
      */
-    topicId?: number;
+    provider: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject14
      */
-    bookId?: number;
+    wowzaBaseUrl: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject14
+     */
+    json?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject14
+     */
+    file?: string;
 }
 
 export function InlineObject14FromJSON(json: any): InlineObject14 {
@@ -49,9 +68,11 @@ export function InlineObject14FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
-        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
+        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
+        'provider': json['provider'],
+        'wowzaBaseUrl': json['wowzaBaseUrl'],
+        'json': !exists(json, 'json') ? undefined : json['json'],
+        'file': !exists(json, 'file') ? undefined : json['file'],
     };
 }
 
@@ -64,9 +85,11 @@ export function InlineObject14ToJSON(value?: InlineObject14 | null): any {
     }
     return {
         
-        'tagId': value.tagId,
-        'topicId': value.topicId,
-        'bookId': value.bookId,
+        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
+        'provider': value.provider,
+        'wowzaBaseUrl': value.wowzaBaseUrl,
+        'json': value.json,
+        'file': value.file,
     };
 }
 

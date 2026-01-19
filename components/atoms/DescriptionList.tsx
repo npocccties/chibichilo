@@ -69,7 +69,7 @@ export default function DescriptionList({
     >
       {value.map(({ key, value }, index) => (
         <div key={index} className="item">
-          <dt>{key}</dt>
+          {key && <dt>{key}</dt>}
           <dd>{value}</dd>
         </div>
       ))}

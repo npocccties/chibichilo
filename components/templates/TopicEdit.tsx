@@ -14,10 +14,19 @@ import type {
 import type { AuthorSchema } from "$server/models/author";
 import { useConfirm } from "material-ui-confirm";
 import AddIcon from "@mui/icons-material/Add";
+import { getReleaseFromRelatedBooks } from "$utils/release";
+import useReleaseTopics from "$utils/useReleaseTopics";
+import ReleaseItemList from "$organisms/ReleaseItemList";
+import ReleaseForm from "$organisms/ReleaseForm";
+import MetainfoForm from "$organisms/MetainfoForm";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(1),
+    "& > :not($title):not($content)": {
+      marginBottom: theme.spacing(2),
+    },
   },
   title: {
     marginBottom: theme.spacing(4),
@@ -33,6 +42,16 @@ const useStyles = makeStyles((theme) => ({
   form: {
     marginBottom: theme.spacing(2),
   },
+  subtitle: {
+    "& span": {
+      verticalAlign: "middle",
+    },
+    "& .RequiredDot": {
+      marginRight: theme.spacing(0.5),
+      marginBottom: theme.spacing(0.75),
+      marginLeft: theme.spacing(2),
+    },
+  },
 }));
 
 type Props = {
@@ -46,6 +65,8 @@ type Props = {
   onAuthorsUpdate(authors: AuthorSchema[]): void;
   onAuthorSubmit(author: Pick<AuthorSchema, "email">): void;
   onImportClick(): void;
+  onItemEditClick(id: TopicSchema["id"]): void;
+  onMetainfoUpdate(metainfo: MetainfoProps): void;
 };
 
 export default function TopicEdit(props: Props) {
@@ -60,9 +81,12 @@ export default function TopicEdit(props: Props) {
     onAuthorsUpdate,
     onAuthorSubmit,
     onImportClick,
+    onItemEditClick,
+    onMetainfoUpdate,
   } = props;
   const classes = useStyles();
   const confirm = useConfirm();
+  const { releases, error: _ } = useReleaseTopics(topic.id);
   const handleDeleteButtonClick = async () => {
     await confirm({
       title: `トピック「${topic.name}」を削除します。よろしいですか？`,
@@ -71,20 +95,36 @@ export default function TopicEdit(props: Props) {
     });
     onDelete(topic);
   };
+  const handleItemEditClick = async (index: number) => {
+    const id = releases?.[index]?.id;
+    if (id) onItemEditClick(id);
+  };
+  const release = getReleaseFromRelatedBooks(topic.relatedBooks);
 
   return (
     <Container className={classes.container} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
-        トピックの編集
-        <Button size="small" color="primary" onClick={onImportClick}>
-          <AddIcon sx={{ mr: 0.5 }} />
-          上書きインポート
-        </Button>
-        <Typography variant="caption" component="span" aria-hidden="true">
-          <RequiredDot />
-          は必須項目です
+      {release && (
+        <Typography className={classes.title} variant="h4">
+          トピックの表示
         </Typography>
+      )}
+      {!release && (
+        <Typography className={classes.title} variant="h4">
+          トピックの編集
+          <Button size="small" color="primary" onClick={onImportClick}>
+            <AddIcon sx={{ mr: 0.5 }} />
+            上書きインポート
+          </Button>
+          <Typography variant="caption" component="span" aria-hidden="true">
+            <RequiredDot />
+            は必須項目です
+          </Typography>
+        </Typography>
+      )}
+      {release && <ReleaseForm release={release} />}
+      <Typography className={classes.subtitle} variant="h5">
+        基本情報
       </Typography>
       <TopicForm
         className={classes.form}
@@ -97,10 +137,29 @@ export default function TopicEdit(props: Props) {
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
-      <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
-        <DeleteOutlinedIcon />
-        トピックを削除
-      </Button>
+      <Typography className={classes.subtitle} variant="h5">
+        メタ情報
+      </Typography>
+      <MetainfoForm metainfo={topic} onSubmit={onMetainfoUpdate} />
+      {releases && (
+        <>
+          <Typography className={classes.subtitle} variant="h5">
+            リリース一覧
+          </Typography>
+          <ReleaseItemList
+            id={topic.id}
+            releases={releases}
+            variant="topic"
+            onItemEditClick={handleItemEditClick}
+          />
+        </>
+      )}
+      {!release && (
+        <Button size="small" color="primary" onClick={handleDeleteButtonClick}>
+          <DeleteOutlinedIcon />
+          トピックを削除
+        </Button>
+      )}
     </Container>
   );
 }

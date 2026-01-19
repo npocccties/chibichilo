@@ -43,8 +43,6 @@ import type {
   VideoTrackSchema,
 } from "$server/models/videoTrack";
 import { useSessionAtom } from "$store/session";
-import languages from "$utils/languages";
-import licenses from "$utils/licenses";
 import providers from "$utils/providers";
 import useVideoResourceProps from "$utils/useVideoResourceProps";
 import usePaused from "$utils/video/usePaused";
@@ -54,6 +52,7 @@ import { useAuthorsAtom } from "store/authors";
 import { useVideoAtom } from "$store/video";
 import { useVideoTrackAtom } from "$store/videoTrack";
 import useKeywordsInput from "$utils/useKeywordsInput";
+import { getReleaseFromRelatedBooks } from "$utils/release";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -83,6 +82,9 @@ const useStyles = makeStyles((theme) => ({
   },
   localVideo: {
     width: "100%",
+  },
+  marginLeft: {
+    marginLeft: theme.spacing(0.75),
   },
 }));
 
@@ -207,8 +209,6 @@ export default function TopicForm(props: Props) {
     name: topic?.name,
     description: topic?.description ?? "",
     shared: Boolean(topic?.shared),
-    language: topic?.language ?? Object.getOwnPropertyNames(languages)[0],
-    license: topic?.license ?? "",
     timeRequired: topic?.timeRequired,
     startTime: topic?.startTime,
     stopTime: topic?.stopTime,
@@ -364,6 +364,7 @@ export default function TopicForm(props: Props) {
     setValue("stopTime", Math.floor((await getCurrentTime()) * 1000) / 1000);
     void handleStartTimeStopTimeChange();
   }, [setValue, getCurrentTime, handleStartTimeStopTimeChange]);
+  const released = Boolean(getReleaseFromRelatedBooks(topic?.relatedBooks));
 
   return (
     <>
@@ -381,34 +382,31 @@ export default function TopicForm(props: Props) {
           });
         })}
       >
-        <div>
-          <InputLabel htmlFor="shared">
-            <>
-              トピックをシェアする
-              <Typography
-                className={classes.labelDescription}
-                variant="caption"
-                component="span"
-              >
-                他の教材作成者とトピックを共有します
-              </Typography>
-            </>
-          </InputLabel>
-          <Checkbox
-            id="shared"
-            name="shared"
-            onChange={(_, checked) => setValue("shared", checked)}
-            defaultChecked={defaultValues.shared}
-            color="primary"
-          />
-        </div>
+        {!released && topic?.shared && (
+          <div>
+            トピックのシェア機能は廃止されました。第三者にコンテンツを提供する場合は、コンテンツをリリースして、共有を有効にしてください。
+            <FormControlLabel
+              className={classes.marginLeft}
+              label="上記のメッセージを、表示しないようにする"
+              title={"メッセージを表示しない"}
+              control={
+                <Checkbox
+                  onChange={(_, checked) => setValue("shared", !checked)}
+                  defaultChecked={!defaultValues.shared}
+                  color="primary"
+                />
+              }
+            />
+          </div>
+        )}
         <TextField
           inputProps={register("name")}
           label="タイトル"
-          required
+          required={!released}
           fullWidth
+          disabled={released}
         />
-        {Boolean(Object.entries(uploadProviders).length) && (
+        {!released && Boolean(Object.entries(uploadProviders).length) && (
           <>
             <FormLabel>動画の指定方法</FormLabel>
             <RadioGroup
@@ -425,7 +423,7 @@ export default function TopicForm(props: Props) {
             </RadioGroup>
           </>
         )}
-        {method === "url" && (
+        {(released || method === "url") && (
           <>
             <Autocomplete
               id="resource.url"
@@ -434,6 +432,7 @@ export default function TopicForm(props: Props) {
                 ({ baseUrl }) => baseUrl
               )}
               defaultValue={topic?.resource.url}
+              disabled={released}
               renderInput={({ InputProps, inputProps }) => (
                 <TextField
                   InputProps={{ ref: InputProps.ref }}
@@ -455,9 +454,10 @@ export default function TopicForm(props: Props) {
                     </>
                   }
                   type="url"
-                  required
+                  required={!released}
                   fullWidth
                   onChange={handleResourceUrlChange}
+                  disabled={released}
                 />
               )}
             />
@@ -517,7 +517,7 @@ export default function TopicForm(props: Props) {
             )}
           </>
         )}
-        {(videoResource || dataUrl) && (
+        {!released && (videoResource || dataUrl) && (
           <Accordion>
             <AccordionSummary>
               <Typography>動画を編集する</Typography>
@@ -574,18 +574,21 @@ export default function TopicForm(props: Props) {
           topic={topic}
           name="timeRequired"
           control={control}
+          disabled={released}
         />
         <AuthorsInput
           {...authorsInputProps}
           onAuthorsUpdate={onAuthorsUpdate}
           onAuthorSubmit={onAuthorSubmit}
+          disabled={released}
         />
-        <KeywordsInput {...keywordsInputProps} />
+        <KeywordsInput {...keywordsInputProps} disabled={released} />
         <TextField
           label="解説"
           fullWidth
           multiline
           inputProps={register("description")}
+          disabled={released}
         />
         <Typography
           className={classes.labelDescription}
@@ -602,38 +605,6 @@ export default function TopicForm(props: Props) {
           {` `}
           に一部準拠しています
         </Typography>
-        <Accordion>
-          <AccordionSummary>
-            <Typography>詳細を設定する</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <TextField
-              label="教材の主要な言語"
-              select
-              defaultValue={defaultValues.language}
-              inputProps={register("language")}
-            >
-              {Object.entries(languages).map(([value, label]) => (
-                <MenuItem key={value} value={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="ライセンス"
-              select
-              defaultValue={defaultValues.license}
-              inputProps={{ displayEmpty: true, ...register("license") }}
-            >
-              <MenuItem value="">未設定</MenuItem>
-              {Object.entries(licenses).map(([value, { name }]) => (
-                <MenuItem key={value} value={value}>
-                  {name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </AccordionDetails>
-        </Accordion>
         <Divider className={classes.divider} />
         <Button variant="contained" color="primary" type="submit">
           {label[variant]}

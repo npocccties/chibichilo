@@ -41,6 +41,13 @@ export async function findUserByEmailAndLtiConsumerId(
   return await prisma.user.findFirst({ where: { email, ltiConsumerId } });
 }
 
+export async function findUserByLtiUserIdAndLtiConsumerId(
+  ltiUserId: User["ltiUserId"],
+  ltiConsumerId: User["ltiConsumerId"]
+) {
+  return await prisma.user.findFirst({ where: { ltiUserId, ltiConsumerId } });
+}
+
 export async function updateUserSettings(
   id: User["id"],
   settings: Prisma.JsonObject // NOTE: User["settings"] は null を含みうるがここでは期待しない
