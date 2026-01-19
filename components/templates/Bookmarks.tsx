@@ -3,6 +3,7 @@ import { Box, Card, Container, Typography } from "@mui/material";
 import { css } from "@emotion/css";
 import { gray } from "$theme/colors";
 
+import type { SessionSchema } from "$server/models/session";
 import type { BookmarkTagMenu, TagSchema } from "$server/models/bookmark";
 import { useFilterBookmarks } from "$utils/bookmark/useBookmarks";
 import useDialogProps from "$utils/useDialogProps";
@@ -52,6 +53,7 @@ const empty = css({
 });
 
 type Props = {
+  session: SessionSchema;
   bookmarkTagMenu: BookmarkTagMenu;
 };
 
@@ -62,7 +64,7 @@ function isSelectedTagMenu(targetTagIds: TagIdList, selectedTagIds: TagIdList) {
   return targetTagIds.every((id) => selectedTagIds.includes(id));
 }
 
-export default function Bookmarks({ bookmarkTagMenu }: Props) {
+export default function Bookmarks({ session, bookmarkTagMenu }: Props) {
   const [selectedTagIds, setSelectedTagIds] = useState<TagIdList>(
     bookmarkTagMenu.map((t) => t.id)
   );
@@ -118,16 +120,23 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
             </div>
           ) : (
             <ul className={bookmarkWrap}>
-              {data.bookmarks.map((bookmark) => {
-                return (
-                  <li key={bookmark.id} className={bookmarkList}>
-                    <BookmarkPreview
-                      bookmark={bookmark}
-                      onBookmarkPreviewClick={handlePreviewClick}
-                    />
-                  </li>
-                );
-              })}
+              {data.bookmarks
+                .filter(
+                  (element, index, self) =>
+                    self.findIndex((e) => e.topicId === element.topicId) ===
+                    index
+                )
+                .map((bookmark) => {
+                  return (
+                    <li key={bookmark.id} className={bookmarkList}>
+                      <BookmarkPreview
+                        session={session}
+                        bookmark={bookmark}
+                        onBookmarkPreviewClick={handlePreviewClick}
+                      />
+                    </li>
+                  );
+                })}
             </ul>
           )}
         </Box>

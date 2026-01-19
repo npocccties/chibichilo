@@ -60,6 +60,7 @@ export async function index({
 
   const activityRewatchRate = activities.map((activity) => {
     return {
+      bookId: activity.bookId,
       topicId: activity.topic.id,
       learnerId: activity.learnerId,
       rewatchRate: round(

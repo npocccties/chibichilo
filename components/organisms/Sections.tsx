@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   className?: string;
-  bookId: number;
+  bookId?: number | undefined;
   sections: SectionSchema[];
   index: ItemIndex;
   isContentEditable(topic: ContentAuthors): boolean;
@@ -157,7 +157,7 @@ export default function Sections({
                     {formatInterval(0, topic.timeRequired * 1000)}
                   </Typography>
                   {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && isPrivateBook && (
-                    <TagCount topicId={topic.id} bookId={bookId} />
+                    <TagCount topicId={topic.id} bookId={bookId ?? 0} />
                   )}
                 </Box>
               </ListItemText>

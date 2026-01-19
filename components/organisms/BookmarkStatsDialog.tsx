@@ -10,7 +10,7 @@ import BookmarkStats from "./BookmarkStats";
 import { useWordCloud } from "../../utils/useWordCloud";
 
 function ListItem(
-  topic: { id: number; name: string },
+  topic: { id: number; name: string, book: Pick<BookSchema, "id" | "name"> },
   book: { id: number; name: string }
 ) {
   const data = useBookmarksByTopicId({
@@ -22,6 +22,7 @@ function ListItem(
 
   return (
     <BookmarkStats.ListItem
+      bookId={topic.book.id}
       name={topic.name}
       bookmarks={data.bookmarks}
       bookmarkTagMenu={data.bookmarkTagMenu}
@@ -88,7 +89,7 @@ export default function BookmarkStatsDialog(props: Props) {
                   {sections
                     .flatMap((s) => s.topics)
                     .map((t, i) => (
-                      <ListItem key={i} {...t} />
+                      <ListItem key={i} book={props.book} {...t} />
                     ))}
                 </BookmarkStats.List>
               </BookmarkStats>

@@ -14,6 +14,7 @@ export const Default: Story = {
     <BookmarkStats book={book}>
       <BookmarkStats.List>
         <BookmarkStats.ListItem
+          bookId={book.id}
           name={book.sections[0].topics[0].name}
           bookmarks={[bookmark]}
           bookmarkTagMenu={bookmarkTagMenu}

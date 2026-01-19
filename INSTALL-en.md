@@ -13,7 +13,7 @@ When changing the information of the connection destination of API, .env must be
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `NEXT_PUBLIC_API_BASE_PATH`                   | Base path for API URLs (デフォルト: 同一オリジン "")                                                                      |
 | `NEXT_PUBLIC_BASE_PATH`                       | Base path for static content URLs (デフォルト: "")                                                                        |
-| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY`       | 学習活動の LTI Context ごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
+| `NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY`       | 学習活動の LTI Context およびブックごとでの取得 (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
 | `NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL`          | 学習活動の送信間隔 (秒) (デフォルト: `10`)                                                                                |
 | `NEXT_PUBLIC_VIDEO_MAX_HEIGHT`                | max-height for scroll-following video player (デフォルト: `40vh`)                                                         |
 | `NEXT_PUBLIC_NO_EMBED`                        | Do not allow anyone to embed. Disabled by default.                                                                        |

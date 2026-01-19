@@ -8,7 +8,7 @@ import type {
   BookmarkTagMenu,
   TagSchema,
 } from "$server/models/bookmark";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
@@ -61,21 +61,29 @@ export default function TagList({
   tagMenu,
 }: Props) {
   const handlers = useBookmarkHandler();
-  const [selectedTag, setSelectedTag] = useState<TagSchema[]>(
-    bookmarks
-      .map((bookmark) => bookmark.tag)
-      .filter((tag) => tag !== null) as TagSchema[]
-  );
+
+  const [selectedTag, setSelectedTag] = useState<TagSchema[]>([]);
+
+  useEffect(() => {
+    if (bookmarks.length > 0) {
+      const tags = bookmarks
+        .map((bookmark) => bookmark.tag)
+        .filter((tag): tag is TagSchema => tag !== null);
+      setSelectedTag(tags);
+    }
+  }, [bookmarks]);
+
+  const bookmarkMemoContent = useMemo(() => {
+    return bookmarks.find((bookmark) => bookmark.tag === null);
+  }, [bookmarks]);
+
+  const isBookmarkMemoContent = useMemo<boolean>(() => {
+    return bookmarks.some((bookmark) => bookmark.tag === null);
+  }, [bookmarks]);
+
   const handleTagChange = useCallback((tag: TagSchema) => {
     setSelectedTag((prev) => [...prev, tag]);
   }, []);
-
-  const isBookmarkMemoContent = bookmarks.some(
-    (bookmark) => bookmark.tag === null
-  );
-  const bookmarkMemoContent = bookmarks.find(
-    (bookmark) => bookmark.tag === null
-  );
 
   const confirm = useConfirm();
   const handleBookmarkDeleteClick = async (
@@ -103,8 +111,23 @@ export default function TagList({
     watch,
     formState: { errors },
   } = useForm<BookmarkMemoContentProps>({
-    defaultValues,
+    defaultValues: {
+      memoContent: bookmarkMemoContent?.memoContent ?? "",
+      topicId,
+      bookId,
+    },
   });
+
+  useEffect(() => {
+    if (bookmarkMemoContent) {
+      reset({
+        memoContent: bookmarkMemoContent.memoContent ?? "",
+        topicId,
+        bookId,
+      });
+    }
+  }, [bookmarkMemoContent, reset, topicId, bookId]);
+
   const onClose = () => {
     reset();
     setOpen(false);

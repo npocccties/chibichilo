@@ -55,6 +55,7 @@ function List(props: { children: ReactNode }) {
 }
 
 function ListItem(props: {
+  bookId: number;
   name: string;
   bookmarks: Array<BookmarkSchema>;
   bookmarkTagMenu: BookmarkTagMenu;
@@ -64,7 +65,9 @@ function ListItem(props: {
       <h3 className={titleClass}>{props.name}</h3>
       <ul className={ulClass}>
         {props.bookmarkTagMenu.map((t) => {
-          const count = props.bookmarks.filter((b) => b.tagId === t.id).length;
+          const count = props.bookmarks.filter(
+            (b) => b.tagId === t.id && b.bookId === props.bookId
+          ).length;
 
           return (
             <li key={t.id} className={tagListClass}>
@@ -82,7 +85,7 @@ function ListItem(props: {
 }
 
 function BookmarkStats(props: {
-  book: Pick<BookSchema, "name">;
+  book: Pick<BookSchema, "id" | "name">;
   children: ReactNode;
 }) {
   return <Box>{props.children}</Box>;

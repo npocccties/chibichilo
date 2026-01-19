@@ -69,6 +69,7 @@ export const BookmarkSchema = {
             required: ["id", "updatedAt", "ltiContext"],
             properties: {
               id: { type: "integer" },
+              bookId: { type: "integer" },
               updatedAt: { type: "string" },
               tag: { oneOf: [TagSchema, { type: "null" }] },
               memoContent: { type: "string" },

@@ -58,8 +58,20 @@ type BookmarkProps = {
   topicId: number;
   bookId: number;
   memoContent: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type BookmarkCreateProps = {
+  ltiConsumerId: string;
+  ltiContextId: string;
+  tagId: number | null;
+  userId: number;
+  topicId: number;
+  bookId: number;
+  memoContent: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type ActivityTimeRangeProps = {
@@ -70,8 +82,8 @@ type ActivityTimeRangeProps = {
 type ActivityTimeRangeLogProps = {
   startMs: number;
   endMs: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type ActivityTimeRangeCountProps = {
@@ -91,8 +103,22 @@ type ActivityProps = {
   ltiConsumerId: string;
   ltiContextId: string;
   totalTimeMs: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type ActivityCreateProps = {
+  timeRanges: { create: ActivityTimeRangeProps[] };
+  timeRangeLogs: { create: ActivityTimeRangeLogProps[] };
+  timeRangeCounts: { create: ActivityTimeRangeCountProps[] };
+  bookId: number;
+  topicId: number;
+  learnerId: number;
+  ltiConsumerId: string;
+  ltiContextId: string;
+  totalTimeMs: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 async function findAllBookmarks() {
@@ -105,7 +131,7 @@ async function findAllBookmarks() {
 async function createBookmark({
   bookmark,
 }: {
-  bookmark: BookmarkProps;
+  bookmark: BookmarkCreateProps;
 }): Promise<BookmarkSchema | undefined> {
   try {
     const created = await prisma.bookmark.create({
@@ -116,7 +142,7 @@ async function createBookmark({
     if (!created) {
       return;
     }
-    return created;
+    return created as unknown as BookmarkSchema;
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -134,7 +160,7 @@ async function createBookmark({
 async function createActivity({
   activity,
 }: {
-  activity: ActivityProps;
+  activity: ActivityCreateProps;
 }): Promise<ActivitySchema | undefined> {
   try {
     const created = await prisma.activity.create({
@@ -142,10 +168,7 @@ async function createActivity({
       ...activityInclude,
     });
 
-    if (!created) {
-      return;
-    }
-    return created;
+    return created as unknown as ActivitySchema;
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -153,7 +176,7 @@ async function createActivity({
     ) {
       // 重複データができてしまったらスキップ
       console.warn("Duplicate entry detected. Skipping creation.");
-      return;
+      return undefined;
     } else {
       throw error; // ロールバック
     }
@@ -170,10 +193,7 @@ async function deleteOriginalBookBookmark({
       where: { id: bookmark.id, bookId: 0 },
     });
 
-    if (!deleted) {
-      return;
-    }
-    return deleted;
+    return deleted as unknown as BookmarkSchema;
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -181,6 +201,7 @@ async function deleteOriginalBookBookmark({
     ) {
       // レコードが存在しなかったらスキップ
       console.warn("Deletion skipped: target record not found.");
+      return undefined;
     } else {
       throw error; // ロールバック
     }
@@ -203,7 +224,7 @@ async function deleteOriginalBookActivity({
       await tx.activityTimeRangeCount.deleteMany({
         where: { activityId: activity.id },
       });
-      await tx.activity.delete({
+      return await tx.activity.delete({
         where: {
           bookId_topicId_learnerId_ltiConsumerId_ltiContextId: {
             bookId: 0,
@@ -221,17 +242,14 @@ async function deleteOriginalBookActivity({
       ) {
         // レコードが存在しなかったらスキップ
         console.warn("Deletion skipped: target record not found.");
+	return undefined
       } else {
         throw error; // ロールバック
       }
     }
   });
 
-  if (!deleted) {
-    return;
-  }
-
-  return deleted;
+  return deleted as unknown as ActivitySchema | undefined;
 }
 
 async function findAllActivities() {
@@ -243,7 +261,7 @@ async function findAllActivities() {
   return activities;
 }
 
-async function findActivity(id) {
+async function findActivity(id: number) {
   const activities = await prisma.activity.findUnique({
     where: { id: id },
     ...activityInclude,
@@ -258,7 +276,7 @@ async function bookmarkMigration() {
       `[Copy bookmark] topicId: ${bookmark.topicId}, userId: ${bookmark.userId}, tagId: ${bookmark.tagId}, ltiConsumerId: ${bookmark.ltiConsumerId}, ltiContextId: ${bookmark.ltiContextId}`
     );
     for (const topicSection of bookmark.topic.topicSection) {
-      const created = await createBookmark({
+      await createBookmark({
         bookmark: {
           ltiConsumerId: bookmark.ltiConsumerId,
           ltiContextId: bookmark.ltiContextId,
@@ -283,7 +301,7 @@ async function activityMigration() {
   for (const a of activities) {
     // 1件ずつActivityを取得（このときにtimeRangeLogs等も取得）
     const activity = await findActivity(a.id);
-    if (!activity.ltiConsumerId || !activity.ltiContextId) {
+    if (!activity || !activity.ltiConsumerId || !activity.ltiContextId) {
       continue;
     }
     console.log(
@@ -305,7 +323,7 @@ async function activityMigration() {
       ({ startMs, endMs, count }) => ({ startMs, endMs, count })
     );
     for (const topicSection of activity.topic.topicSection) {
-      const created = await createActivity({
+      await createActivity({
         activity: {
           timeRanges: {
             create: timeRanges,

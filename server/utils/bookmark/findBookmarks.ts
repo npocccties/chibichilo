@@ -17,6 +17,7 @@ type TagIdParam = {
 type FindBookmarksParams = {
   ltiConsumerId: BookmarkSchema["ltiConsumerId"];
   ltiContextId: BookmarkSchema["ltiContext"]["id"];
+  bookId?: BookmarkSchema["bookId"];
   userId?: User["id"];
 } & (TopicIdParam | TagIdParam);
 
@@ -31,6 +32,7 @@ export const bookmarkWithTopicQuery = {
         bookmarks: {
           select: {
             id: true,
+            bookId: true,
             updatedAt: true,
             tag: true,
             ltiContext: true,
@@ -54,6 +56,7 @@ export const createIncludeQueryWithUserContext = (userId?: User["id"]) => {
           bookmarks: {
             select: {
               id: true,
+              bookId: true,
               updatedAt: true,
               tag: true,
               memoContent: true,
@@ -74,6 +77,7 @@ async function findBookmarks({
   ltiContextId,
   ltiConsumerId,
   topicId,
+  bookId,
   tagIds,
   isExistMemoContent = false,
   userId,
@@ -87,6 +91,7 @@ async function findBookmarks({
         ltiContextId: ltiContextId,
         ltiConsumerId: ltiConsumerId,
         topicId: topicId,
+        bookId: bookId,
         userId: userId,
       },
       ...bookmarkWithTopicQuery,
@@ -106,8 +111,9 @@ async function findBookmarks({
           ...(isExistMemoContent ? [{ memoContent: { not: "" } }] : []),
         ],
         userId: userId,
+        bookId: bookId,
       },
-      distinct: ["ltiConsumerId", "ltiContextId", "topicId"],
+      distinct: ["ltiConsumerId", "ltiContextId", "topicId", "bookId"],
       ...createIncludeQueryWithUserContext(userId),
     });
 
