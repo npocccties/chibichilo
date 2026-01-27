@@ -7,7 +7,7 @@ import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectO
 
 export async function cloneTopic(
   topicId: Topic["id"],
-  topic : TopicProps,
+  topic: TopicProps,
   authors?: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<Topic | undefined> {
   if (!authors) {
@@ -36,4 +36,3 @@ export async function cloneTopic(
   if (!found) return;
   return found;
 }
-

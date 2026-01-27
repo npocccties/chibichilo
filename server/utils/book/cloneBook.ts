@@ -5,20 +5,24 @@ import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
 import type { Prisma, Topic } from "@prisma/client";
 import type { SectionSchema } from "$server/models/book/section";
-import { cloneBookUniqueIds, cloneTopicUniqueIds, releaseBookUniqueIds, releaseTopicUniqueIds } from "../uniqueId";
+import {
+  cloneBookUniqueIds,
+  cloneTopicUniqueIds,
+  releaseBookUniqueIds,
+  releaseTopicUniqueIds,
+} from "../uniqueId";
 
 async function cloneBookSections(
   sections: SectionSchema[],
   targetTopics: number[] | null | undefined,
   adjustTopic?: (orig: Topic["id"], target: Topic["id"]) => Promise<void>,
   authors?: Prisma.AuthorshipUncheckedCreateInput[]
-)
-{
+) {
   // トピックを複製する
   const topics = await Promise.all(
     sections
       .flatMap((section) => section.topics)
-      .filter(({id}) => targetTopics?targetTopics.includes(id):true)
+      .filter(({ id }) => (targetTopics ? targetTopics.includes(id) : true))
       .map(
         ({
           id,
@@ -28,7 +32,7 @@ async function cloneBookSections(
           details: _details,
           relatedBooks: _relatedBooks,
           ...topic
-        }) => 
+        }) =>
           cloneTopic(id, topic, authors).then(
             (created) => created && ([id, created] as const)
           )
@@ -63,7 +67,7 @@ async function cloneBookSections(
 
 export async function cloneRelease(
   parentBook: BookSchema,
-  userId: UserSchema["id"],
+  userId: UserSchema["id"]
 ): Promise<BookSchema | undefined> {
   const {
     id: _id,
@@ -76,7 +80,11 @@ export async function cloneRelease(
   } = structuredClone(parentBook);
 
   // トピックを複製する, 作成者も複製する
-  const newSections = await cloneBookSections(book.sections, null, releaseTopicUniqueIds);
+  const newSections = await cloneBookSections(
+    book.sections,
+    null,
+    releaseTopicUniqueIds
+  );
   book.sections = newSections;
 
   // ブックの作成者を複製する
@@ -96,7 +104,7 @@ export async function cloneRelease(
 
 export async function cloneBook(
   parentBook: BookSchema,
-  userId: UserSchema["id"],
+  userId: UserSchema["id"]
 ): Promise<BookSchema | undefined> {
   const {
     id: _id,
@@ -110,7 +118,12 @@ export async function cloneBook(
 
   // ブック、トピックの作成者を自分にする
   const authors = [{ userId, roleId: 1 }];
-  const newSections = await cloneBookSections(book.sections, null, cloneTopicUniqueIds, authors);
+  const newSections = await cloneBookSections(
+    book.sections,
+    null,
+    cloneTopicUniqueIds,
+    authors
+  );
   book.sections = newSections;
 
   const created = await createBook(userId, book, authors);
