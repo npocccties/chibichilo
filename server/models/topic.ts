@@ -38,18 +38,16 @@ export type RelatedBook = FromSchema<
 
 export type TopicProps = Pick<
   Prisma.TopicCreateInput,
-  | "name"
-  | "timeRequired"
-  | "startTime"
-  | "stopTime"
-  | "shared"
-  | "description"
+  "name" | "timeRequired" | "startTime" | "stopTime" | "shared" | "description"
 > & {
   resource: ResourceProps;
   keywords?: KeywordPropSchema[];
 };
 
-export type TopicSchema = Omit<Topic, "poid" | "oid" | "pid" | "vid" | "spid"> & {
+export type TopicSchema = Omit<
+  Topic,
+  "poid" | "oid" | "pid" | "vid" | "spid"
+> & {
   authors: AuthorSchema[];
   keywords: KeywordSchema[];
   relatedBooks?: RelatedBook[];

@@ -34,7 +34,7 @@ export async function destroy({
   session,
   params,
   query,
-}: FastifyRequest<{ Params: BookParams; Querystring: BookDestroyQuery; }>) {
+}: FastifyRequest<{ Params: BookParams; Querystring: BookDestroyQuery }>) {
   const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
