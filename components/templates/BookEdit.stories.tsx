@@ -1,4 +1,3 @@
-import type { Story } from "@storybook/react";
 import BookEdit from "./BookEdit";
 import { book } from "samples";
 
@@ -8,11 +7,27 @@ export default {
   parameters: { layout: "fullscreen" },
 };
 
-const Template: Story<Parameters<typeof BookEdit>[0]> = (args) => {
-  return <BookEdit {...args} isContentEditable={() => true} />;
+const defaultProps = {
+  book: { ...book },
+  onSubmit: console.log,
+  onDelete: console.log,
+  onCancel: console.log,
+  onSectionsUpdate: console.log,
+  onTopicImportClick: console.log,
+  onTopicNewClick: console.log,
+  onTopicEditClick: console.log,
+  onBookImportClick: console.log,
+  onAuthorsUpdate: console.log,
+  onAuthorSubmit: console.log,
+  isContentEditable: () => false,
+  onOverwriteClick: console.log,
+  onReleaseUpdate: console.log,
+  onRelease: console.log,
+  onItemEditClick: console.log,
+  onClone: console.log,
+  onMetainfoUpdate: console.log,
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  book,
+export const Default = () => {
+  return <BookEdit {...defaultProps} />;
 };

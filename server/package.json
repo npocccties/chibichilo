@@ -39,6 +39,7 @@
     "@fastify/multipart": "^7.7.3",
     "@fastify/session": "^10.4.0",
     "@fastify/swagger": "^8.9.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@types/jest": "^29.5.4",
     "@types/jsonwebtoken": "^9.0.2",

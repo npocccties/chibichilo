@@ -29,6 +29,8 @@ import sumPixels from "$utils/sumPixels";
 import type { ActivitySchema } from "$server/models/activity";
 import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
+import type { ReleaseItemSchema } from "$server/models/releaseResult";
+import License from "$atoms/License";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -112,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
 type Props = {
   linked?: boolean;
   book: BookSchema | null;
+  parent?: ReleaseItemSchema;
   bookActivity?: ActivitySchema[];
   index: ItemIndex;
   isPrivateBook?: boolean;
@@ -128,6 +131,7 @@ export default function Book(props: Props) {
   const {
     linked,
     book,
+    parent,
     bookActivity,
     index: [sectionIndex, topicIndex],
     isPrivateBook = false,
@@ -195,7 +199,8 @@ export default function Book(props: Props) {
               (book?.timeRequired ?? 0) * 1000
             )}`}
           />
-          {book?.shared && <SharedIndicator />}
+          {book?.license && <License license={book?.license} />}
+          {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
             book &&
             onBookEditClick &&
@@ -225,6 +230,21 @@ export default function Book(props: Props) {
               inline
               nowrap
               value={[
+                ...(book.release?.releasedAt
+                  ? [
+                      {
+                        key: "バージョン",
+                        value: book.release.version,
+                      },
+                      {
+                        key: "リリース日",
+                        value: getLocaleDateString(
+                          book.release.releasedAt,
+                          "ja"
+                        ),
+                      },
+                    ]
+                  : []),
                 {
                   key: "作成日",
                   value: getLocaleDateString(book.createdAt, "ja"),
@@ -233,7 +253,10 @@ export default function Book(props: Props) {
                   key: "更新日",
                   value: getLocaleDateString(book.updatedAt, "ja"),
                 },
-                ...authors(book),
+                // 著作権者または作成者
+                ...(book.licenser
+                  ? [{ key: "", value: book.licenser }]
+                  : authors(book)),
               ]}
             />
             <Link
@@ -246,7 +269,12 @@ export default function Book(props: Props) {
             </Link>
           </div>
           <CollapsibleContent expanded={expanded}>
-            <BookInfo id="book-info" className={classes.info} book={book} />
+            <BookInfo
+              id="book-info"
+              className={classes.info}
+              book={book}
+              parent={parent}
+            />
           </CollapsibleContent>
         </>
       )}

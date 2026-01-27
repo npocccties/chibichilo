@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ApiV2BookBookIdAuthorsAuthors,
+    ApiV2BookBookIdAuthorsAuthorsFromJSON,
+    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
+    ApiV2BookBookIdAuthorsAuthorsToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -21,16 +28,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject13 {
     /**
      * 
-     * @type {number}
+     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
      * @memberof InlineObject13
      */
-    tagId?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineObject13
-     */
-    topicId?: number;
+    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
 }
 
 export function InlineObject13FromJSON(json: any): InlineObject13 {
@@ -43,8 +44,7 @@ export function InlineObject13FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
+        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
     };
 }
 
@@ -57,8 +57,7 @@ export function InlineObject13ToJSON(value?: InlineObject13 | null): any {
     }
     return {
         
-        'tagId': value.tagId,
-        'topicId': value.topicId,
+        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
     };
 }
 
