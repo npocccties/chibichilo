@@ -34,6 +34,12 @@ export interface InlineResponse20019TopicBookmarks {
     id: number;
     /**
      * 
+     * @type {number}
+     * @memberof InlineResponse20019TopicBookmarks
+     */
+    bookId?: number;
+    /**
+     * 
      * @type {string}
      * @memberof InlineResponse20019TopicBookmarks
      */
@@ -69,6 +75,7 @@ export function InlineResponse20019TopicBookmarksFromJSONTyped(json: any, ignore
     return {
         
         'id': json['id'],
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
         'updatedAt': json['updatedAt'],
         'tag': !exists(json, 'tag') ? undefined : json['tag'],
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
@@ -86,6 +93,7 @@ export function InlineResponse20019TopicBookmarksToJSON(value?: InlineResponse20
     return {
         
         'id': value.id,
+        'bookId': value.bookId,
         'updatedAt': value.updatedAt,
         'tag': value.tag,
         'memoContent': value.memoContent,

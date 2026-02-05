@@ -82,6 +82,17 @@ export default function BookmarkPreview({
             },
           ]}
         />
+        {bookmark.book && (
+          <DescriptionList
+            sx={{ mr: 1 }}
+            value={[
+              {
+                key: "ブック",
+                value: bookmark.book.name,
+              },
+            ]}
+          />
+        )}
         <DescriptionList
           sx={{ mr: 1 }}
           value={[

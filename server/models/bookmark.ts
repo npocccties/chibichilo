@@ -55,6 +55,15 @@ export const BookmarkSchema = {
     ltiConsumerId: { type: "string" },
     tag: { oneOf: [TagSchema, { type: "null" }] },
     memoContent: { type: "string" },
+    book: {
+      type: "object",
+      nullable: true,
+      required: ["id", "name"],
+      properties: {
+        id: { type: "integer" },
+        name: { type: "string" },
+      },
+    },
     topic: {
       type: "object",
       required: ["id", "name", "timeRequired", "bookmarks"],

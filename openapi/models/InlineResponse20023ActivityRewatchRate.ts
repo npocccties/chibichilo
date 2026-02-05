@@ -24,6 +24,12 @@ export interface InlineResponse20023ActivityRewatchRate {
      * @type {number}
      * @memberof InlineResponse20023ActivityRewatchRate
      */
+    bookId?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20023ActivityRewatchRate
+     */
     topicId: number;
     /**
      * 
@@ -49,6 +55,7 @@ export function InlineResponse20023ActivityRewatchRateFromJSONTyped(json: any, i
     }
     return {
         
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
         'topicId': json['topicId'],
         'learnerId': json['learnerId'],
         'rewatchRate': json['rewatchRate'],
@@ -64,6 +71,7 @@ export function InlineResponse20023ActivityRewatchRateToJSON(value?: InlineRespo
     }
     return {
         
+        'bookId': value.bookId,
         'topicId': value.topicId,
         'learnerId': value.learnerId,
         'rewatchRate': value.rewatchRate,

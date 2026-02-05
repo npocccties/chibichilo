@@ -227,6 +227,7 @@ model Book {
   sections         Section[]
   publicBooks      PublicBook[]
   ltiResourceLinks LtiResourceLink[]
+  bookmarks Bookmark[]
   /// 題名
   name             String
   /// 説明 (Markdown)
@@ -469,6 +470,7 @@ model Bookmark {
   topic   Topic @relation(fields: [topicId], references: [id])
 
   bookId  Int  @default(0) @map("book_id")
+  book    Book @relation(fields: [bookId], references: [id])
 
   memoContent String @default("")
 
