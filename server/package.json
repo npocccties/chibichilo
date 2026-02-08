@@ -19,6 +19,9 @@
     "migrate:reset": "prisma migrate reset --skip-seed",
     "seed": "prisma db seed",
     "zoom:import": "node -r esbuild-register utils/zoom/importCli.ts",
+    "activity:download": "node dist/downloadCli.js",
+    "activity:build": "tsup utils/activity/downloadCli.ts",
+    "activity:dev": "run-s activity:build activity:download",
     "start": "NODE_ENV=production node dist/index.js"
   },
   "prisma": {
