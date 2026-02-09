@@ -25,7 +25,7 @@ async function test() {
   session.ltiRoles = [
     "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
     "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
-    "http://purl.imsglobal.org/vocab/lis/v2/system/person#Administrator"
+    "http://purl.imsglobal.org/vocab/lis/v2/system/person#Administrator",
   ];
 
   console.log("session", JSON.stringify(session, null, 2));
@@ -42,14 +42,11 @@ async function test() {
   activity.courseBooks = [];
   console.log("activity", JSON.stringify(activity, null, 2));
 
-  const activityRewatchRate = await getActivityRewatchRate(
-    session,
-    {
-      current_lti_context_only: true,
-      lti_consumer_id: session.oauthClient.id,
-      lti_context_id: session.ltiContext.id
-    }
-  );
+  const activityRewatchRate = await getActivityRewatchRate(session, {
+    current_lti_context_only: true,
+    lti_consumer_id: session.oauthClient.id,
+    lti_context_id: session.ltiContext.id,
+  });
   console.log(
     "activityRewatchRate",
     JSON.stringify(activityRewatchRate, null, 2)
@@ -70,9 +67,9 @@ function download(
 ) {
   if (data.length === 0) return;
 
-//  const rewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-//    ? await fetchRewatchRate({ currentLtiContextOnly })
-//    : undefined;
+  //  const rewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
+  //    ? await fetchRewatchRate({ currentLtiContextOnly })
+  //    : undefined;
 
   const decoratedData = data
     .filter(

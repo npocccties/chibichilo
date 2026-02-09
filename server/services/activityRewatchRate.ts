@@ -47,7 +47,8 @@ const ACTIVITY_REWATCH_THRESHOLD2 = Number(
 
 export async function getActivityRewatchRate(
   session: SessionSchema,
-  query: Query) {
+  query: Query
+) {
   const activities = await findAllActivityWithTimeRangeCount(
     ACTIVITY_REWATCH_THRESHOLD2,
     session,
