@@ -64,7 +64,7 @@ function isSelectedTagMenu(targetTagIds: TagIdList, selectedTagIds: TagIdList) {
   return targetTagIds.every((id) => selectedTagIds.includes(id));
 }
 
-export default function Bookmarks({ session, bookmarkTagMenu }: Props) {
+export default function Bookmarks({ bookmarkTagMenu }: Props) {
   const [selectedTagIds, setSelectedTagIds] = useState<TagIdList>(
     bookmarkTagMenu.map((t) => t.id)
   );
@@ -130,7 +130,6 @@ export default function Bookmarks({ session, bookmarkTagMenu }: Props) {
                   return (
                     <li key={bookmark.id} className={bookmarkList}>
                       <BookmarkPreview
-                        session={session}
                         bookmark={bookmark}
                         onBookmarkPreviewClick={handlePreviewClick}
                       />
