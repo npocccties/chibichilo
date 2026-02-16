@@ -14,6 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    InlineResponse20017Book,
+    InlineResponse20017BookFromJSON,
+    InlineResponse20017BookFromJSONTyped,
+    InlineResponse20017BookToJSON,
     InlineResponse20019Topic,
     InlineResponse20019TopicFromJSON,
     InlineResponse20019TopicFromJSONTyped,
@@ -86,6 +90,12 @@ export interface InlineResponse20019Bookmark {
     memoContent?: string;
     /**
      * 
+     * @type {InlineResponse20017Book}
+     * @memberof InlineResponse20019Bookmark
+     */
+    book?: InlineResponse20017Book;
+    /**
+     * 
      * @type {InlineResponse20019Topic}
      * @memberof InlineResponse20019Bookmark
      */
@@ -117,6 +127,7 @@ export function InlineResponse20019BookmarkFromJSONTyped(json: any, ignoreDiscri
         'ltiConsumerId': !exists(json, 'ltiConsumerId') ? undefined : json['ltiConsumerId'],
         'tag': json['tag'],
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
+        'book': !exists(json, 'book') ? undefined : InlineResponse20017BookFromJSON(json['book']),
         'topic': InlineResponse20019TopicFromJSON(json['topic']),
         'ltiContext': LTIContextFromJSON(json['ltiContext']),
     };
@@ -140,6 +151,7 @@ export function InlineResponse20019BookmarkToJSON(value?: InlineResponse20019Boo
         'ltiConsumerId': value.ltiConsumerId,
         'tag': value.tag,
         'memoContent': value.memoContent,
+        'book': InlineResponse20017BookToJSON(value.book),
         'topic': InlineResponse20019TopicToJSON(value.topic),
         'ltiContext': LTIContextToJSON(value.ltiContext),
     };

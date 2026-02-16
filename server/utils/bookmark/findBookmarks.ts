@@ -24,6 +24,12 @@ type FindBookmarksParams = {
 export const bookmarkWithTopicQuery = {
   include: {
     tag: true,
+    book: {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
     topic: {
       select: {
         id: true,
@@ -48,6 +54,12 @@ export const createIncludeQueryWithUserContext = (userId?: User["id"]) => {
   return {
     include: {
       tag: true,
+      book: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       topic: {
         select: {
           id: true,
