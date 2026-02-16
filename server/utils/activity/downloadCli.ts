@@ -14,6 +14,8 @@ import { getActivityRewatchRate } from "$server/services/activityRewatchRate";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
 import json2csv from "json2csv";
 
+import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+
 async function test() {
   const consumers = await prisma.ltiConsumer.findMany({});
   console.log("consumers", JSON.stringify(consumers, null, 2));
@@ -66,6 +68,8 @@ async function test() {
   const bom = "\uFEFF";
   const file = "sample.csv";
   fs.writeFileSync(file, bom + csv, "utf-8");
+
+  console.log("NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD: ", NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD);
 }
 
 function download(
