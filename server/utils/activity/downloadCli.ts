@@ -69,7 +69,10 @@ async function test() {
   const file = "sample.csv";
   fs.writeFileSync(file, bom + csv, "utf-8");
 
-  console.log("NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD: ", NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD);
+  console.log(
+    "NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD: ",
+    NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
+  );
 }
 
 function download(
