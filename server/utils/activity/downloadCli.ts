@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import fs from "fs";
 
 import format from "date-fns/format";
 import utcToZoneTime from "date-fns-tz/utcToZonedTime";
@@ -11,6 +12,7 @@ import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
 import { getActivityRewatchRate } from "$server/services/activityRewatchRate";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
+import json2csv from "json2csv";
 
 async function test() {
   const consumers = await prisma.ltiConsumer.findMany({});
@@ -58,6 +60,12 @@ async function test() {
     activityRewatchRate
   );
   console.log("decoratedData", JSON.stringify(decoratedData, null, 2));
+
+  if (!decoratedData) return;
+  const csv = json2csv.parse(decoratedData);
+  const bom = "\uFEFF";
+  const file = "sample.csv";
+  fs.writeFileSync(file, bom + csv, "utf-8");
 }
 
 function download(
