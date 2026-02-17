@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 
 import { css } from "@emotion/css";
 
-import type { SessionSchema } from "$server/models/session";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import formatInterval from "$utils/formatInterval";
 import DescriptionList from "$atoms/DescriptionList";
@@ -29,13 +28,11 @@ const bookmarkTitle = css({
 });
 
 type Props = {
-  session: SessionSchema;
   bookmark: BookmarkSchema;
   onBookmarkPreviewClick(content: TopicSchema): void;
 };
 
 export default function BookmarkPreview({
-  session,
   bookmark,
   onBookmarkPreviewClick,
 }: Props) {
@@ -104,18 +101,14 @@ export default function BookmarkPreview({
         />
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {courseBookmark.map((bookmark) => {
-          if (
-            bookmark.bookId === (session.ltiResourceLink?.bookId ?? 0) &&
-            bookmark.tag
-          ) {
-            return <Tag key={bookmark.id} tag={bookmark.tag} />;
-          }
-          if (
-            bookmark.bookId === (session.ltiResourceLink?.bookId ?? 0) &&
-            bookmark.memoContent
-          ) {
-            return <Tag key={bookmark.id} memoContent={bookmark.memoContent} />;
+        {courseBookmark.map((bm) => {
+          if (bm.bookId != null && bm.bookId === bookmark.bookId) {
+            if (bm.tag) {
+              return <Tag key={bm.id} tag={bm.tag} />;
+            }
+            if (bm.memoContent) {
+              return <Tag key={bm.id} memoContent={bm.memoContent} />;
+            }
           }
 
           return null;
