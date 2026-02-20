@@ -205,11 +205,11 @@ export default function BookForm({
     >
       {!released && book?.shared && (
         <div>
-          ブックのシェア機能は廃止されました。第三者にコンテンツを提供する場合は、コンテンツをリリースして、共有を有効にしてください。
+          シェア機能はリリース共有機能に移行しました。現在のシェアはそのまま継続できますが、リリースして共有を有効にすることをお勧めします。
           <FormControlLabel
             className={classes.marginLeft}
-            label="上記のメッセージを、表示しないようにする"
-            title={"メッセージを表示しない"}
+            label="シェアを解除する（解除後、既存の共有先はアクセスできなくなります）"
+            title={"シェアを解除する"}
             control={
               <Checkbox
                 onChange={(_, checked) =>
