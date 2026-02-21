@@ -6,7 +6,6 @@ import utcToZoneTime from "date-fns-tz/utcToZonedTime";
 import prisma from "$server/utils/prisma";
 import { nullSession } from "$server/services/session";
 import findAllActivity from "./findAllActivity";
-import { isAdministrator, isInstructor } from "$utils/session";
 import getLocaleEntries from "$utils/bookLearningActivity/getLocaleEntries";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
@@ -16,75 +15,61 @@ import json2csv from "json2csv";
 
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 
-async function test() {
-  const consumers = await prisma.ltiConsumer.findMany({});
-  console.log("consumers", JSON.stringify(consumers, null, 2));
-
+async function getContexts() {
   const contexts = await prisma.ltiContext.findMany({});
-  console.log("contexts", JSON.stringify(contexts, null, 2));
+  return contexts;
+}
 
-  const session = { ...nullSession };
-  session.oauthClient.id = consumers[1]?.id ?? "";
-  session.ltiContext.id = contexts[1]?.id ?? "";
+async function getDecoratedData(consumerId: string, contextId: string) {
+  const session = JSON.parse(JSON.stringify(nullSession)) as SessionSchema;
+  session.oauthClient.id = consumerId;
+  session.ltiContext.id = contextId;
   session.ltiRoles = [
     "http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator",
     "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
     "http://purl.imsglobal.org/vocab/lis/v2/system/person#Administrator",
   ];
 
-  console.log("session", JSON.stringify(session, null, 2));
-  console.log("isInstructor", isInstructor(session));
-  console.log("isAdministrator", isAdministrator(session));
-
-  const activity = await findAllActivity(
-    session,
-    true,
-    session.oauthClient.id,
-    session.ltiContext.id
-  );
+  const activity = await findAllActivity(session, true, consumerId, contextId);
   activity.learners = [];
   activity.courseBooks = [];
-  console.log("activity", JSON.stringify(activity, null, 2));
 
-  const activityRewatchRate = await getActivityRewatchRate(session, {
-    current_lti_context_only: true,
-    lti_consumer_id: session.oauthClient.id,
-    lti_context_id: session.ltiContext.id,
-  });
-  console.log(
-    "activityRewatchRate",
-    JSON.stringify(activityRewatchRate, null, 2)
-  );
+  const activityRewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
+    ? await getActivityRewatchRate(session, {
+        current_lti_context_only: true,
+        lti_consumer_id: consumerId,
+        lti_context_id: contextId,
+      })
+    : undefined;
 
   const decoratedData = download(
     activity.bookActivities,
     session,
     activityRewatchRate
   );
-  console.log("decoratedData", JSON.stringify(decoratedData, null, 2));
 
+  return decoratedData;
+}
+
+function writeCsv(
+  decoratedData: ReturnType<typeof download>,
+  filename: string
+) {
   if (!decoratedData) return;
   const csv = json2csv.parse(decoratedData);
   const bom = "\uFEFF";
-  const file = "sample.csv";
-  fs.writeFileSync(file, bom + csv, "utf-8");
-
-  console.log(
-    "NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD: ",
-    NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-  );
+  fs.writeFileSync(filename, bom + csv, "utf-8");
 }
 
+//
+// utils/bookLearningActivity/download.ts download 関数を CLI 用に変更
+//
 function download(
   data: BookActivitySchema[],
   session: SessionSchema,
-  activityRewatchRate: ActivityRewatchRateProps[]
+  activityRewatchRate: ActivityRewatchRateProps[] | undefined
 ) {
-  if (data.length === 0) return;
-
-  //  const rewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-  //    ? await fetchRewatchRate({ currentLtiContextOnly })
-  //    : undefined;
+  if (data.length === 0) return [];
 
   const decoratedData = data
     .filter(
@@ -103,9 +88,11 @@ function download(
     .map((a) =>
       getLocaleEntries(
         a,
-        (activityRewatchRate ?? []).find(
-          (r) => r.learnerId === a.learner.id && r.topicId === a.topic.id
-        ) ?? undefined,
+        activityRewatchRate
+          ? activityRewatchRate.find(
+              (r) => r.learnerId === a.learner.id && r.topicId === a.topic.id
+            )
+          : undefined,
         session
       )
     );
@@ -126,9 +113,24 @@ async function main() {
   dotenv.config();
   let exitCode = 1;
 
+  const filename = process.argv[2];
+  if (filename) {
+    logger("INFO", `output file: ${filename}`);
+  } else {
+    logger("ERROR", "output file is required");
+    process.exit(exitCode);
+  }
   try {
     logger("INFO", "begin activity download...");
-    await test();
+    const contexts = (await getContexts()).filter(
+      ({ consumerId, id }) => consumerId && id
+    );
+    const list = await Promise.all(
+      contexts.map(
+        async ({ consumerId, id }) => await getDecoratedData(consumerId, id)
+      )
+    );
+    writeCsv(list.flat(), filename);
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
