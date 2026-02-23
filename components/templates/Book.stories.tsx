@@ -42,6 +42,9 @@ function SlideAppBar() {
 
 export const Default = () => {
   const { itemIndex, updateItemIndex } = useBookAtom(defaultProps.book);
+  useEffect(() => {
+    updateItemIndex([0, 0]);
+  }, [updateItemIndex]);
 
   return (
     <Book
@@ -55,6 +58,9 @@ export const Default = () => {
 
 export const Empty = () => {
   const { itemIndex, updateItemIndex } = useBookAtom();
+  useEffect(() => {
+    updateItemIndex([0, 0]);
+  }, [updateItemIndex]);
 
   return (
     <>
@@ -72,6 +78,9 @@ export const Empty = () => {
 
 export const EmptySection = () => {
   const { itemIndex, updateItemIndex } = useBookAtom();
+  useEffect(() => {
+    updateItemIndex([0, 0]);
+  }, [updateItemIndex]);
 
   return (
     <>
@@ -89,6 +98,9 @@ export const EmptySection = () => {
 
 export const ForInstructor = () => {
   const { itemIndex, updateItemIndex } = useBookAtom(defaultProps.book);
+  useEffect(() => {
+    updateItemIndex([0, 0]);
+  }, [updateItemIndex]);
   const [, updateSession] = useUpdateSessionAtom();
   useEffect(() => {
     updateSession({ session, error: false });
