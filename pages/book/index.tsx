@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import type { BookSchema } from "$server/models/book";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
@@ -14,8 +14,33 @@ import { pagesPath } from "$utils/$path";
 import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
 import useParentBookInfo from "$utils/useParentBookInfo";
+import TopicNotFoundProblem from "$templates/TopicNotFoundProblem";
 
-export type Query = { bookId: BookSchema["id"]; token?: string; zoom?: number };
+export type Query = {
+  bookId: BookSchema["id"];
+  topicId?: TopicSchema["id"];
+  token?: string;
+  zoom?: number;
+};
+
+function getTopicItemIndex(
+  book: BookSchema,
+  topicId: TopicSchema["id"]
+): ItemIndex | undefined {
+  for (
+    let sectionIndex = 0;
+    sectionIndex < book.sections.length;
+    sectionIndex++
+  ) {
+    const topicIndex = book.sections[sectionIndex].topics.findIndex(
+      (t) => t.id === topicId
+    );
+    if (topicIndex !== -1) {
+      return [sectionIndex, topicIndex];
+    }
+  }
+  return;
+}
 
 function Show(query: Query) {
   const [redirectError, setRedirectError] = useState(false);
@@ -44,6 +69,21 @@ function Show(query: Query) {
   const { data: bookActivity } = useBookActivity(book?.id);
   const { itemIndex, nextItemIndex, itemExists, updateItemIndex } =
     useBookAtom(book);
+  const [topicError, setTopicError] = useState(false);
+  useEffect(() => {
+    if (book) {
+      if (query.topicId) {
+        const topicIndex = getTopicItemIndex(book, query.topicId);
+        if (topicIndex) {
+          updateItemIndex(topicIndex);
+        } else {
+          setTopicError(true);
+        }
+      } else {
+        updateItemIndex([0, 0]);
+      }
+    }
+  }, [book, query.topicId, updateItemIndex]);
   useActivityTracking();
   const playerTracker = usePlayerTrackerAtom();
   const handleTopicNext = useCallback(
@@ -91,6 +131,7 @@ function Show(query: Query) {
     !Number.isFinite(query.zoom);
 
   if (error || redirectError || queryError) return <BookNotFoundProblem />;
+  if (topicError) return <TopicNotFoundProblem />;
   if (!book) return <Placeholder />;
 
   return (
@@ -109,12 +150,13 @@ function Show(query: Query) {
 function Router() {
   const router = useRouter();
   const bookId = Number(router.query.bookId);
+  const topicId = Number(router.query.topicId);
   const token = Array.isArray(router.query.token)
     ? router.query.token[0]
     : router.query.token;
   const zoom = Number(router.query.zoom);
 
-  return <Show bookId={bookId} token={token} zoom={zoom} />;
+  return <Show bookId={bookId} topicId={topicId} token={token} zoom={zoom} />;
 }
 
 export default Router;
