@@ -6,6 +6,7 @@ import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";
 import findBook from "$server/utils/book/findBook";
 import { isInstructor } from "$utils/session";
+import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 
 export const showSchema: FastifySchema = {
   summary: "ブックの取得",
@@ -30,7 +31,10 @@ export async function show({
 }: FastifyRequest<{ Params: BookParams }>) {
   const { book_id: bookId } = params;
 
-  if (!isInstructor(session) && session.ltiResourceLink?.bookId !== bookId) {
+  if (
+    !isInstructor(session) &&
+    !(await checkLtiResourceLink(bookId, session, {}))
+  ) {
     return { status: 403 };
   }
 

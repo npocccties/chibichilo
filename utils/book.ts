@@ -11,6 +11,9 @@ import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import type { MetainfoProps } from "$server/models/metainfo";
+import { useAtomValue } from "jotai";
+import { ltiConsumerIdAtom } from "$store/ltiConsumer";
+import { ltiContextIdAtom } from "$store/ltiContext";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -37,28 +40,51 @@ async function fetchBook({
 export function useBook(
   bookId: BookSchema["id"] | undefined,
   isContentEditable?: IsContentEditable,
-  ltiResourceLink?: Pick<LtiResourceLinkSchema, "bookId" | "creatorId"> | null,
+  ltiResourceLink?: Pick<
+    LtiResourceLinkSchema,
+    "bookId" | "creatorId" | "consumerId" | "contextId"
+  > | null,
   token?: string
 ) {
   isContentEditable = useSessionAtom().isContentEditable;
+  const ltiConsumerId = useAtomValue(ltiConsumerIdAtom) ?? undefined;
+  const ltiContextId = useAtomValue(ltiContextIdAtom) ?? undefined;
 
   const { data, error } = useSWRImmutable<BookSchema>(
-    Number.isFinite(bookId) || token ? { key, bookId, token } : null,
+    Number.isFinite(bookId) || token
+      ? { key, bookId, token, ltiConsumerId, ltiContextId }
+      : null,
     fetchBook,
     { revalidateOnMount: true }
   );
+
   const publicBook = data?.publicBooks?.find(
     (publicBook) => publicBook.token === token
   );
+
+  const effectiveLtiResourceLink = useMemo(() => {
+    if (
+      ltiContextId &&
+      bookId !== undefined &&
+      ltiResourceLink?.bookId !== bookId
+    ) {
+      return {
+        bookId: bookId,
+        creatorId: ltiResourceLink?.creatorId ?? 0,
+      };
+    }
+    return ltiResourceLink ?? undefined;
+  }, [ltiContextId, bookId, ltiResourceLink]);
+
   const displayable = useMemo(
     () =>
       getDisplayableBook(
         data,
         isContentEditable,
-        ltiResourceLink ?? undefined,
+        effectiveLtiResourceLink,
         publicBook
       ),
-    [data, isContentEditable, ltiResourceLink, publicBook]
+    [data, isContentEditable, effectiveLtiResourceLink, publicBook]
   );
 
   return {

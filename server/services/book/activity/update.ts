@@ -5,11 +5,13 @@ import { bookParamsSchema } from "$server/validators/bookParams";
 import { ActivitySchema } from "$server/models/activity";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import authUser from "$server/auth/authUser";
+import authBookAccess from "$server/auth/authBookAccess";
 import { show } from "./show";
 import { publishScore } from "$server/utils/ltiv1p3/grade";
 import findClient from "$server/utils/ltiv1p3/findClient";
 import findBook from "$server/utils/book/findBook";
 import { getDisplayableBook } from "$server/utils/displayableBook";
+import { getGradeTargets } from "$server/utils/ltiv1p3/getGradeTargets";
 
 type Params = BookParams;
 type Query = ActivityQuery;
@@ -30,13 +32,15 @@ export const updateSchema = {
       },
       required: ["activity"],
     },
+    400: {},
     401: {},
+    403: {},
     404: {},
   },
 };
 
 export const updateHooks = {
-  auth: [authUser],
+  auth: [authUser, authBookAccess],
 };
 
 export async function update(
@@ -49,25 +53,29 @@ export async function update(
   const activity = res.body?.activity;
   if (
     req.session.ltiVersion !== "1.3.0" ||
-    req.session.ltiAgsEndpoint?.lineitem == null ||
     res.status !== 200 ||
     activity == null
   ) {
     return res;
   }
-
-  const client = await findClient(req.session.oauthClient.id);
-  if (client == null) return { status: 401 };
-
   const book = await findBook(req.params.book_id, req.session.user.id);
   if (book == null) return { status: 404 };
 
+  const currentResourceLink =
+    req.session.ltiResourceLink?.bookId === book.id
+      ? req.session.ltiResourceLink
+      : {
+          bookId: book.id,
+          creatorId: book.authors[0]?.id ?? 0,
+          instructors: [],
+        };
   const topics =
     getDisplayableBook(
       book,
       undefined,
-      req.session.ltiResourceLink ?? undefined
+      currentResourceLink ?? undefined
     )?.sections.flatMap((section) => section.topics.flat()) ?? [];
+
   const completedSet = new Set(
     activity.filter((a) => a.completed).map((a) => a.topic.id)
   );
@@ -82,7 +90,28 @@ export async function update(
     activityProgress: "Completed",
     gradingProgress: "FullyGraded",
   } as const;
-  await publishScore(client, req.session.ltiAgsEndpoint.lineitem, score);
-
+  const targets = await getGradeTargets(
+    book.id,
+    req.session.user.id,
+    req.session,
+    req.query
+  );
+  if (targets.length > 0) {
+    await Promise.allSettled(
+      targets.map(async (target) => {
+        try {
+          const client = await findClient(target.consumerId);
+          if (!client) {
+            throw new Error(
+              `Client not found for consumer: ${target.consumerId}`
+            );
+          }
+          await publishScore(client, target.lineItem, score);
+        } catch (e) {
+          req.log.error(e, `[Failed] Context: ${target.contextId}`);
+        }
+      })
+    );
+  }
   return res;
 }

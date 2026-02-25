@@ -14,6 +14,9 @@ import { pagesPath } from "$utils/$path";
 import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
 import useParentBookInfo from "$utils/useParentBookInfo";
+import { useAtomValue } from "jotai";
+import { ltiConsumerIdAtom } from "$store/ltiConsumer";
+import { ltiContextIdAtom } from "$store/ltiContext";
 
 export type Query = { bookId: BookSchema["id"]; token?: string; zoom?: number };
 
@@ -41,10 +44,17 @@ function Show(query: Query) {
     query.token
   );
   const parent = useParentBookInfo(query.bookId);
-  const { data: bookActivity } = useBookActivity(book?.id);
+  const ltiConsumerId = useAtomValue(ltiConsumerIdAtom);
+  const ltiContextId = useAtomValue(ltiContextIdAtom);
+  const { data: bookActivity } = useBookActivity(
+    book?.id,
+    ltiConsumerId,
+    ltiContextId
+  );
   const { itemIndex, nextItemIndex, itemExists, updateItemIndex } =
     useBookAtom(book);
-  useActivityTracking();
+  useActivityTracking(ltiConsumerId, ltiContextId);
+
   const playerTracker = usePlayerTrackerAtom();
   const handleTopicNext = useCallback(
     (index: ItemIndex = nextItemIndex) => {

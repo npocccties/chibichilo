@@ -19,7 +19,9 @@ const buildUpdateHandler =
   (
     topicId: TopicSchema["id"],
     bookId: BookSchema["id"],
-    playerTracker: PlayerTracker
+    playerTracker: PlayerTracker,
+    ltiConsumerId: string | null,
+    ltiContextId: string | null
   ) =>
   async () => {
     const timeRanges = await playerTracker.getPlayed();
@@ -32,30 +34,51 @@ const buildUpdateHandler =
     await api.apiV2TopicTopicIdActivityPut({
       topicId,
       currentLtiContextOnly: NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY,
+      ltiConsumerId: ltiConsumerId ?? undefined,
+      ltiContextId: ltiContextId ?? undefined,
       bookId,
       body,
     });
   };
 
 /** 学習活動のトラッキングの開始 (要: useBook()) */
-export function useActivityTracking() {
+export function useActivityTracking(
+  ltiConsumerId?: string | null,
+  ltiContextId?: string | null
+) {
   const { session, isInstructor } = useSessionAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const loggedin = Boolean(session?.user?.id);
   const topic = itemExists(itemIndex);
   const playerTracker = usePlayerTrackerAtom();
   const unchanged = playerTracker === usePrevious(playerTracker);
+
   const updateHandler = useMemo(() => {
     if (!loggedin) return;
     if (isInstructor) return;
     if (unchanged) return;
-    return (
-      topic &&
-      book &&
-      playerTracker &&
-      buildUpdateHandler(topic.id, book.id, playerTracker)
+    if (!topic) return;
+    if (!book) return;
+    if (!playerTracker) return;
+    if (ltiConsumerId === undefined) return;
+    if (ltiContextId === undefined) return;
+    return buildUpdateHandler(
+      topic.id,
+      book.id,
+      playerTracker,
+      ltiConsumerId ?? null,
+      ltiContextId ?? null
     );
-  }, [isInstructor, unchanged, topic, book, playerTracker, loggedin]);
+  }, [
+    isInstructor,
+    unchanged,
+    topic,
+    book,
+    playerTracker,
+    ltiConsumerId,
+    ltiContextId,
+    loggedin,
+  ]);
   const throttled = useMemo(
     () =>
       updateHandler &&
@@ -63,6 +86,6 @@ export function useActivityTracking() {
     [updateHandler]
   );
   useEffect(() => {
-    if (throttled) playerTracker?.on("timeupdate", throttled);
+    if (throttled && playerTracker) playerTracker.on("timeupdate", throttled);
   }, [playerTracker, throttled]);
 }

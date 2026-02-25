@@ -1,6 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
 
+import { pagesPath } from "$utils/$path";
+import { useRouter } from "next/router";
 import { css } from "@emotion/css";
 
 import type { BookmarkSchema } from "$server/models/bookmark";
@@ -8,8 +10,9 @@ import formatInterval from "$utils/formatInterval";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import Tag from "$atoms/Tag";
-import { useTopic } from "$utils/topic";
-import type { TopicSchema } from "$server/models/topic";
+import { useSetAtom } from "jotai";
+import { ltiConsumerIdAtom } from "$store/ltiConsumer";
+import { ltiContextIdAtom } from "$store/ltiContext";
 
 const bookmarkButton = css({
   textAlign: "left",
@@ -29,31 +32,41 @@ const bookmarkTitle = css({
 
 type Props = {
   bookmark: BookmarkSchema;
-  onBookmarkPreviewClick(content: TopicSchema): void;
 };
 
-export default function BookmarkPreview({
-  bookmark,
-  onBookmarkPreviewClick,
-}: Props) {
-  const topic = useTopic(bookmark.topic.id);
+export default function BookmarkPreview({ bookmark }: Props) {
+  const router = useRouter();
+  const setLtiConsumerId = useSetAtom(ltiConsumerIdAtom);
+  const setLtiContextId = useSetAtom(ltiContextIdAtom);
+
   // 最新のタグ更新日時を取得
   const latestUpdatedAt = bookmark.topic.bookmarks
     ?.map((bookmark) => bookmark.updatedAt)
     .sort((a, b) => {
       return new Date(b).getTime() - new Date(a).getTime();
     })[0];
-  const handle = (handler: (content: TopicSchema) => void) => () => {
-    if (!topic) return;
-    handler(topic);
-  };
 
   const courseBookmark = bookmark.topic.bookmarks.filter(
-    (item) => item.ltiContext.id === bookmark.ltiContext.id
+    (item) =>
+      item.ltiContext.consumerId === bookmark.ltiConsumerId &&
+      item.ltiContext.id === bookmark.ltiContext.id
   );
 
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLtiConsumerId(bookmark.ltiConsumerId ?? null);
+    setLtiContextId(bookmark.ltiContext.id);
+    const url = pagesPath.book.$url({
+      query: {
+        bookId: bookmark.bookId,
+        // TODO: topicId: bookmark.topicId,
+      },
+    });
+    await router.push(url);
+  };
+
   return (
-    <button className={bookmarkButton} onClick={handle(onBookmarkPreviewClick)}>
+    <button className={bookmarkButton} onClick={handleClick}>
       <h5 className={bookmarkTitle}>{bookmark.topic?.name}</h5>
       <Box
         sx={{

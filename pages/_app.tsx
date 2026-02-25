@@ -26,11 +26,45 @@ import { pagesPath } from "$utils/$path";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
+import { useSetAtom } from "jotai";
+import { ltiConsumerIdAtom } from "$store/ltiConsumer";
+import { ltiContextIdAtom } from "$store/ltiContext";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
   const trigger = useScrollTrigger();
+
+  const setLtiConsumerId = useSetAtom(ltiConsumerIdAtom);
+  const setLtiContextId = useSetAtom(ltiContextIdAtom);
+  const resetBookmarkAuth = () => {
+    setLtiConsumerId(null);
+    setLtiContextId(null);
+  };
+  const handleBooksClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.books.$url());
+  };
+  const handleCoursesClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.courses.$url());
+  };
+  const handleDashboardClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.dashboard.$url());
+  };
+  const handleBookClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.$url());
+  };
+  const handleBookmarksClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.bookmarks.$url());
+  };
+  const handleDownloadClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.download.$url());
+  };
 
   if (session?.user?.id === 0 && router.pathname === "/book") {
     return <>{children}</>;
@@ -48,13 +82,7 @@ function Content({ children }: { children: ReactNode }) {
     return <EmbedProblem />;
   }
 
-  const handleBooksClick = () => router.push(pagesPath.books.$url());
   const handleTopicsClick = () => router.push(pagesPath.topics.$url());
-  const handleCoursesClick = () => router.push(pagesPath.courses.$url());
-  const handleDashboardClick = () => router.push(pagesPath.dashboard.$url());
-  const handleBookClick = () => router.push(pagesPath.$url());
-  const handleBookmarksClick = () => router.push(pagesPath.bookmarks.$url());
-  const handleDownloadClick = () => router.push(pagesPath.download.$url());
 
   return (
     <>
