@@ -1,8 +1,9 @@
 import useSWR from "swr";
 import type { BookSchema } from "$server/models/book";
+import type { LtiContextSchema } from "$server/models/ltiContext";
 import { api } from "./api";
 import type { ActivitySchema } from "$server/models/activity";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { useActivityAtom } from "$store/activity";
 import { isInstructor } from "./session";
 import {
@@ -20,8 +21,8 @@ async function updateBookActivity({
 }: {
   key: typeof key;
   bookId: BookSchema["id"];
-  ltiConsumerId: string | null;
-  ltiContextId: string | null;
+  ltiConsumerId: LtiContextSchema["consumerId"];
+  ltiContextId: LtiContextSchema["id"];
 }) {
   if (!bookId) return;
   const res = await api.apiV2BookBookIdActivityPut({
@@ -33,12 +34,10 @@ async function updateBookActivity({
   return res.activity as Array<ActivitySchema>;
 }
 
-function useBookActivity(
-  bookId: BookSchema["id"] | undefined,
-  ltiConsumerId?: string | null,
-  ltiContextId?: string | null
-) {
+function useBookActivity(bookId: BookSchema["id"] | undefined) {
   const { session } = useSessionAtom();
+  const { ltiConsumerId, ltiContextId, isLtiContextReady } =
+    useLtiContextAtom();
   const isLeaner = session?.user?.id && !isInstructor(session);
 
   // The hook is ready when:
@@ -49,11 +48,7 @@ function useBookActivity(
   // 'undefined' means the state is still pending (e.g., waiting for Jotai hydration
   // or the values were not passed from the parent component).
   // SWR will wait until these values settle into either 'string' or 'null'.
-  const isReady =
-    isLeaner &&
-    Number.isFinite(bookId) &&
-    ltiConsumerId !== undefined &&
-    ltiContextId !== undefined;
+  const isReady = isLeaner && Number.isFinite(bookId) && isLtiContextReady;
 
   const { data = initialActivity } = useSWR(
     isReady ? { key, bookId, ltiConsumerId, ltiContextId } : null,

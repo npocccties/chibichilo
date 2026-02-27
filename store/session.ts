@@ -1,5 +1,7 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
 import type { SessionSchema } from "$server/models/session";
+import type { LtiContextSchema } from "$server/models/ltiContext";
 import type { ContentAuthors, IsContentEditable } from "$server/models/content";
 import {
   isAdministrator as isAdministratorSession,
@@ -53,4 +55,63 @@ export function useUpdateSessionAtom() {
 export function useLmsUrl() {
   const { session } = useSessionAtom();
   return session?.ltiLaunchPresentation?.returnUrl;
+}
+
+type LtiContextState = {
+  ltiConsumerId: LtiContextSchema["consumerId"] | null | undefined;
+  ltiContextId: LtiContextSchema["id"] | null | undefined;
+};
+
+const storage = createJSONStorage<LtiContextState>(() => {
+  if (typeof window !== "undefined") {
+    return sessionStorage;
+  }
+  return {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+  };
+});
+
+const ltiContextAtom = atomWithStorage<LtiContextState>(
+  "ltiContext",
+  {
+    ltiConsumerId: undefined,
+    ltiContextId: undefined,
+  },
+  storage
+);
+
+const updateLtiContextAtom = atom<
+  null,
+  [
+    {
+      ltiConsumerId?: LtiContextSchema["consumerId"] | null;
+      ltiContextId?: LtiContextSchema["id"] | null;
+    },
+  ],
+  void
+>(null, (get, set, update) => {
+  const current = get(ltiContextAtom);
+  set(ltiContextAtom, {
+    ltiConsumerId: current?.ltiConsumerId ?? null,
+    ltiContextId: current?.ltiContextId ?? null,
+    ...update,
+  });
+});
+
+export function useLtiContextAtom() {
+  const context = useAtomValue(ltiContextAtom);
+  return {
+    ...context,
+    isLtiContextReady:
+      context.ltiConsumerId !== undefined && context.ltiContextId !== undefined,
+  };
+}
+
+export function useUpdateLtiContextAtom() {
+  return [
+    useAtomValue(ltiContextAtom),
+    useSetAtom(updateLtiContextAtom),
+  ] as const;
 }

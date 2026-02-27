@@ -3,7 +3,7 @@ import throttle from "lodash.throttle";
 import usePrevious from "@rooks/use-previous";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookSchema } from "$server/models/book";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { useBookAtom } from "$store/book";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
 import type { PlayerTracker } from "./eventLogger/playerTracker";
@@ -20,8 +20,8 @@ const buildUpdateHandler =
     topicId: TopicSchema["id"],
     bookId: BookSchema["id"],
     playerTracker: PlayerTracker,
-    ltiConsumerId: string | null,
-    ltiContextId: string | null
+    ltiConsumerId: string | null | undefined,
+    ltiContextId: string | null | undefined
   ) =>
   async () => {
     const timeRanges = await playerTracker.getPlayed();
@@ -42,11 +42,10 @@ const buildUpdateHandler =
   };
 
 /** 学習活動のトラッキングの開始 (要: useBook()) */
-export function useActivityTracking(
-  ltiConsumerId?: string | null,
-  ltiContextId?: string | null
-) {
+export function useActivityTracking() {
   const { session, isInstructor } = useSessionAtom();
+  const { ltiConsumerId, ltiContextId, isLtiContextReady } =
+    useLtiContextAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const loggedin = Boolean(session?.user?.id);
   const topic = itemExists(itemIndex);
@@ -60,14 +59,13 @@ export function useActivityTracking(
     if (!topic) return;
     if (!book) return;
     if (!playerTracker) return;
-    if (ltiConsumerId === undefined) return;
-    if (ltiContextId === undefined) return;
+    if (!isLtiContextReady) return;
     return buildUpdateHandler(
       topic.id,
       book.id,
       playerTracker,
-      ltiConsumerId ?? null,
-      ltiContextId ?? null
+      ltiConsumerId,
+      ltiContextId
     );
   }, [
     isInstructor,
@@ -77,6 +75,7 @@ export function useActivityTracking(
     playerTracker,
     ltiConsumerId,
     ltiContextId,
+    isLtiContextReady,
     loggedin,
   ]);
   const throttled = useMemo(
@@ -86,6 +85,6 @@ export function useActivityTracking(
     [updateHandler]
   );
   useEffect(() => {
-    if (throttled && playerTracker) playerTracker.on("timeupdate", throttled);
+    if (throttled) playerTracker?.on("timeupdate", throttled);
   }, [playerTracker, throttled]);
 }

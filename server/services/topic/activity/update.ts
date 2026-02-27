@@ -8,7 +8,6 @@ import authBookAccess from "$server/auth/authBookAccess";
 import topicExists from "$server/utils/topic/topicExists";
 import upsertTopicActivity from "$server/utils/activity/upsertTopicActivity";
 import upsertLtiContextActivity from "$server/utils/activity/upsertLtiContextActivity";
-import prisma from "$server/utils/prisma";
 
 export type Params = TopicParams;
 export type Query = TopicActivityQuery;

@@ -10,9 +10,7 @@ import formatInterval from "$utils/formatInterval";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import Tag from "$atoms/Tag";
-import { useSetAtom } from "jotai";
-import { ltiConsumerIdAtom } from "$store/ltiConsumer";
-import { ltiContextIdAtom } from "$store/ltiContext";
+import { useUpdateLtiContextAtom } from "$store/session";
 
 const bookmarkButton = css({
   textAlign: "left",
@@ -36,8 +34,7 @@ type Props = {
 
 export default function BookmarkPreview({ bookmark }: Props) {
   const router = useRouter();
-  const setLtiConsumerId = useSetAtom(ltiConsumerIdAtom);
-  const setLtiContextId = useSetAtom(ltiContextIdAtom);
+  const [, setLtiContext] = useUpdateLtiContextAtom();
 
   // 最新のタグ更新日時を取得
   const latestUpdatedAt = bookmark.topic.bookmarks
@@ -54,8 +51,10 @@ export default function BookmarkPreview({ bookmark }: Props) {
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setLtiConsumerId(bookmark.ltiConsumerId ?? null);
-    setLtiContextId(bookmark.ltiContext.id);
+    setLtiContext({
+      ltiConsumerId: bookmark.ltiConsumerId ?? null,
+      ltiContextId: bookmark.ltiContext.id,
+    });
     const url = pagesPath.book.$url({
       query: {
         bookId: bookmark.bookId,

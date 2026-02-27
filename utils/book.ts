@@ -5,15 +5,12 @@ import { api } from "./api";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { IsContentEditable } from "$server/models/content";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { revalidateSession } from "./session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import type { MetainfoProps } from "$server/models/metainfo";
-import { useAtomValue } from "jotai";
-import { ltiConsumerIdAtom } from "$store/ltiConsumer";
-import { ltiContextIdAtom } from "$store/ltiContext";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -47,9 +44,7 @@ export function useBook(
   token?: string
 ) {
   isContentEditable = useSessionAtom().isContentEditable;
-  const ltiConsumerId = useAtomValue(ltiConsumerIdAtom) ?? undefined;
-  const ltiContextId = useAtomValue(ltiContextIdAtom) ?? undefined;
-
+  const { ltiConsumerId, ltiContextId } = useLtiContextAtom();
   const { data, error } = useSWRImmutable<BookSchema>(
     Number.isFinite(bookId) || token
       ? { key, bookId, token, ltiConsumerId, ltiContextId }
