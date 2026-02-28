@@ -182,6 +182,7 @@ model LtiContext {
   bookmarks     Bookmark[]
   title         String
   label         String
+  contextMembershipsUrl String  @default("") @map("context_memberships_url")
 
   @@id([consumerId, id])
   @@map("lti_context")

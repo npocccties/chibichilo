@@ -9,6 +9,7 @@ import {
 import { isInstructor } from "$server/utils/ltiv1p3/roles";
 import { getSystemSettings } from "$server/utils/systemSettings";
 import getValidUrl from "$server/utils/getValidUrl";
+import { upsertLtiContext } from "$server/utils/ltiContext";
 
 const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 
@@ -72,12 +73,24 @@ async function init({ session }: FastifyRequest) {
   }
 
   if (ltiResourceLink) {
-    await upsertLtiResourceLink({
-      ...ltiResourceLink,
-      title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
-      contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
-      contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
-    });
+    await upsertLtiResourceLink(
+      {
+        ...ltiResourceLink,
+        title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
+        contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
+        contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
+      },
+      session.ltiNrpsParameter?.context_memberships_url
+    );
+  } else if (session.ltiNrpsParameter?.context_memberships_url) {
+    // LTI Resource Link が存在しない場合でも、LTI Context は upsert する
+    await upsertLtiContext(
+      session.oauthClient.id,
+      session.ltiContext.id,
+      session.ltiContext.title,
+      session.ltiContext.label,
+      session.ltiNrpsParameter.context_memberships_url
+    );
   }
 
   Object.assign(session, {
