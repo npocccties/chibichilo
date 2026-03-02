@@ -7,15 +7,14 @@ function extractBookId(req: FastifyRequest): number | null {
   const params = req.params as Record<string, string | undefined>;
   const body = req.body as Record<string, unknown> | undefined;
   const query = req.query as Record<string, string | undefined>;
+  const candidates = [params?.book_id, body?.bookId, query?.book_id];
 
-  // GET /api/v2/book/:book_id
-  if (params?.book_id) return Number(params.book_id);
-  // POST /api/v2/book/:book_id/activity
-  if (body?.bookId) return Number(body.bookId);
-  // PUT /api/v2/topic/:topic_id/activity?book_id
-  if (query?.book_id) return Number(query.book_id);
-
-  return null;
+  const isPresent = (c: unknown): c is string | number => c != null && c !== "";
+  const isValidId = (n: number) => !Number.isNaN(n) && n > 0;
+  return (
+    candidates.map((c) => (isPresent(c) ? Number(c) : NaN)).find(isValidId) ??
+    null
+  );
 }
 
 /**
