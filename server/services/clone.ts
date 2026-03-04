@@ -35,7 +35,8 @@ export async function clone({
   const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
-  if (!isUsersOrAdmin(session, found.authors) && !found.release?.shared) return { status: 403 };
+  if (!isUsersOrAdmin(session, found.authors) && !found.release?.shared)
+    return { status: 403 };
 
   const created = await cloneBook(found, session.user.id);
   if (!created) return { status: 500 };

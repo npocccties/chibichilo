@@ -1,6 +1,6 @@
-import { createId } from '@paralleldrive/cuid2';
-import type { Book, Topic } from '@prisma/client';
-import prisma from './prisma';
+import { createId } from "@paralleldrive/cuid2";
+import type { Book, Topic } from "@prisma/client";
+import prisma from "./prisma";
 
 export type UniqueIds = Pick<Book, "poid" | "oid" | "pid" | "vid" | "spid">;
 
@@ -51,7 +51,7 @@ export async function findBookUniqueIds(
   bookId: Book["id"]
 ): Promise<UniqueIds | undefined> {
   const ret = await prisma.book.findUnique({
-    where: { id: bookId},
+    where: { id: bookId },
     select: selectUniqueIds,
   });
   if (ret == null) return;
@@ -63,8 +63,8 @@ async function updateBookUniqueIds(
   ids: UniqueIds
 ): Promise<void> {
   const _updated = await prisma.book.update({
-    where: { id: bookId},
-    data: ids
+    where: { id: bookId },
+    data: ids,
   });
 }
 
@@ -100,12 +100,10 @@ export async function cloneBookUniqueIds(
   return;
 }
 
-export function updateBookSpid(
-  ids: UniqueIds,
-) {
+export function updateBookSpid(ids: UniqueIds) {
   return prisma.book.updateMany({
-    where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
-    data: { spid: ids.spid ?? ids.pid }
+    where: { OR: [{ pid: ids.vid }, { spid: ids.vid }] },
+    data: { spid: ids.spid ?? ids.pid },
   });
 }
 
@@ -116,7 +114,7 @@ export async function findTopicUniqueIds(
   topicId: Topic["id"]
 ): Promise<UniqueIds | undefined> {
   const ret = await prisma.topic.findUnique({
-    where: { id: topicId},
+    where: { id: topicId },
     select: selectUniqueIds,
   });
   if (ret == null) return;
@@ -128,8 +126,8 @@ async function updateTopicUniqueIds(
   ids: UniqueIds
 ): Promise<void> {
   const _updated = await prisma.topic.update({
-    where: { id: topicId},
-    data: ids
+    where: { id: topicId },
+    data: ids,
   });
 }
 
@@ -165,11 +163,9 @@ export async function cloneTopicUniqueIds(
   return;
 }
 
-export function updateTopicSpid(
-  ids: UniqueIds,
-) {
+export function updateTopicSpid(ids: UniqueIds) {
   return prisma.topic.updateMany({
-    where: { OR: [{ pid: ids.vid },{ spid: ids.vid }] },
-    data: { spid: ids.spid ?? ids.pid }
+    where: { OR: [{ pid: ids.vid }, { spid: ids.vid }] },
+    data: { spid: ids.spid ?? ids.pid },
   });
 }

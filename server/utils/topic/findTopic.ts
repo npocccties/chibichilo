@@ -29,7 +29,7 @@ async function findTopic(
 
   return {
     ...topicToTopicSchema(topic),
-    relatedBooks
+    relatedBooks,
   };
 }
 
