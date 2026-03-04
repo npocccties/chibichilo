@@ -7,7 +7,10 @@ import findTopic from "$server/utils/topic/findTopic";
 import { isUsersOrAdmin } from "$utils/session";
 import authInstructor from "$server/auth/authInstructor";
 import { ReleaseResultSchema } from "$server/models/releaseResult";
-import { findReleasedTopics, topicToReleaseItemSchema } from "$server/utils/topic/release";
+import {
+  findReleasedTopics,
+  topicToReleaseItemSchema,
+} from "$server/utils/topic/release";
 import { findTopicUniqueIds } from "$server/utils/uniqueId";
 
 export const showSchema: FastifySchema = {
@@ -39,8 +42,10 @@ export async function show({
 
   const ids = await findTopicUniqueIds(topic.id);
   const topics = await findReleasedTopics(ids, session.user.id);
-  const releases = topics.map((topic) => topicToReleaseItemSchema(ids, topic)).filter((e) => e);
-  
+  const releases = topics
+    .map((topic) => topicToReleaseItemSchema(ids, topic))
+    .filter((e) => e);
+
   return {
     status: 200,
     body: { releases },

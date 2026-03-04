@@ -38,16 +38,25 @@ export async function update({
   body,
   params,
   query,
-}: FastifyRequest<{ Body: BookProps; Params: BookParams; Querystring: BookUpdateQuery; }>) {
+}: FastifyRequest<{
+  Body: BookProps;
+  Params: BookParams;
+  Querystring: BookUpdateQuery;
+}>) {
   const found = await findBook(params.book_id, session.user.id);
 
   if (!found) return { status: 404 };
   if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
 
-  const created = await updateBook(session.user.id, {
-    ...body,
-    id: params.book_id,
-  }, found, query.noclone);
+  const created = await updateBook(
+    session.user.id,
+    {
+      ...body,
+      id: params.book_id,
+    },
+    found,
+    query.noclone
+  );
 
   return {
     status: created == null ? 400 : 201,

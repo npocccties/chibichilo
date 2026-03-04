@@ -217,7 +217,11 @@ class ImportBooksUtil {
 
   async updateBook(
     id: number,
-    { sections: _sections, publicBooks: _publicBooks, ...book }: BookProps & Pick<Book, "language">
+    {
+      sections: _sections,
+      publicBooks: _publicBooks,
+      ...book
+    }: BookProps & Pick<Book, "language">
   ) {
     const keywordsBeforeUpdate = await prisma.keyword.findMany({
       where: { books: { some: { id } } },

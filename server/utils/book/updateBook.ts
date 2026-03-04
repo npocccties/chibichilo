@@ -23,12 +23,7 @@ export function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
 
 async function updateBook(
   userId: number,
-  {
-    id,
-    sections,
-    publicBooks,
-    ...book
-  }: Pick<Book, "id"> & BookProps,
+  { id, sections, publicBooks, ...book }: Pick<Book, "id"> & BookProps,
   origBook: BookSchema,
   noclone?: boolean
 ): Promise<BookSchema | undefined> {
