@@ -73,7 +73,7 @@ const storage = createJSONStorage<LtiContextState>(() => {
   };
 });
 
-const ltiContextAtom = atomWithStorage<LtiContextState>(
+export const ltiContextAtom = atomWithStorage<LtiContextState>(
   "ltiContext",
   {
     ltiConsumerId: undefined,
@@ -82,7 +82,14 @@ const ltiContextAtom = atomWithStorage<LtiContextState>(
   storage
 );
 
-const updateLtiContextAtom = atom<
+export const isLtiContextReadyAtom = atom((get) => {
+  const context = get(ltiContextAtom);
+  return (
+    context.ltiConsumerId !== undefined && context.ltiContextId !== undefined
+  );
+});
+
+export const updateLtiContextAtom = atom<
   null,
   [
     {
@@ -102,10 +109,10 @@ const updateLtiContextAtom = atom<
 
 export function useLtiContextAtom() {
   const context = useAtomValue(ltiContextAtom);
+  const isLtiContextReady = useAtomValue(isLtiContextReadyAtom);
   return {
     ...context,
-    isLtiContextReady:
-      context.ltiConsumerId !== undefined && context.ltiContextId !== undefined,
+    isLtiContextReady,
   };
 }
 

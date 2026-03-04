@@ -14,6 +14,24 @@ import {
 const key = "/api/v2/book/{book_id}/activity";
 const initialActivity: [] = [];
 
+// The hook is enabled only for learners to track their progress.
+// SWR fetching is deferred until the following conditions are met:
+// 1. The user is identified as a learner (session is loaded and user is not an instructor).
+// 2. A valid numeric book ID is provided.
+// 3. The LTI context identifiers are fully resolved and ready to be used.
+//
+export function checkIsReady(params: {
+  isLearner: boolean | "" | 0 | undefined | null;
+  bookId: number | undefined;
+  isLtiContextReady: boolean;
+}) {
+  return (
+    Boolean(params.isLearner) &&
+    Number.isFinite(params.bookId) &&
+    params.isLtiContextReady
+  );
+}
+
 async function updateBookActivity({
   bookId,
   ltiConsumerId,
@@ -38,25 +56,19 @@ function useBookActivity(bookId: BookSchema["id"] | undefined) {
   const { session } = useSessionAtom();
   const { ltiConsumerId, ltiContextId, isLtiContextReady } =
     useLtiContextAtom();
-  const isLeaner = session?.user?.id && !isInstructor(session);
 
-  // The hook is ready when:
-  // 1. The user is a learner.
-  // 2. The book ID is valid.
-  // 3. LTI identifiers are provided (string or null).
-  //
-  // 'undefined' means the state is still pending (e.g., waiting for Jotai hydration
-  // or the values were not passed from the parent component).
-  // SWR will wait until these values settle into either 'string' or 'null'.
-  const isReady = isLeaner && Number.isFinite(bookId) && isLtiContextReady;
-
+  const isLearner = session?.user?.id && !isInstructor(session);
+  const isReady = checkIsReady({
+    isLearner,
+    bookId,
+    isLtiContextReady,
+  });
   const { data = initialActivity } = useSWR(
     isReady ? { key, bookId, ltiConsumerId, ltiContextId } : null,
     updateBookActivity,
     { refreshInterval: NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL * 1_000 }
   );
   useActivityAtom(data);
-
   return { data };
 }
 
