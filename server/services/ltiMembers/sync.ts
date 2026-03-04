@@ -43,7 +43,7 @@ export async function sync({ session }: FastifyRequest) {
       consumerId && id && contextMembershipsUrl
   );
 
-  contexts.forEach(async (context) => {
+  for (const context of contexts) {
     const membership = await getMemberships(
       client,
       context.contextMembershipsUrl
@@ -57,7 +57,7 @@ export async function sync({ session }: FastifyRequest) {
         membership.members
       );
     }
-  });
+  }
 
   return {
     status: 200,
