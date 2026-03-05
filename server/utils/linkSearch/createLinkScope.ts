@@ -10,7 +10,7 @@ function createLinkScope(
     OR: [
       {
         consumerId: course.oauthClientId,
-//        contextId: course.ltiContextId,
+        //        contextId: course.ltiContextId,
         contextId: "3",
       },
       {

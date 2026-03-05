@@ -58,7 +58,7 @@ export default function BookmarkPreview({ bookmark }: Props) {
     const url = pagesPath.book.$url({
       query: {
         bookId: bookmark.bookId,
-        // TODO: topicId: bookmark.topicId,
+        topicId: bookmark.topicId,
       },
     });
     await router.push(url);

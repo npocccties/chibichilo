@@ -19,11 +19,11 @@ export const ReleaseItemSchema = {
     release: {
       ...releaseSchema,
     },
-  }
+  },
 } as const;
 
 export type ReleaseItemSchema = FromSchema<
-  typeof ReleaseItemSchema, 
+  typeof ReleaseItemSchema,
   {
     deserialize: [
       {
@@ -44,7 +44,7 @@ export const ReleaseResultSchema = {
       type: "array",
       items: ReleaseItemSchema,
     },
-  }
+  },
 } as const;
 
 export type ReleaseResultSchema = {

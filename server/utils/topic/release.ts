@@ -1,5 +1,8 @@
 import type { Prisma } from "@prisma/client";
-import { authorArg, authorToAuthorSchema } from "../author/authorToAuthorSchema";
+import {
+  authorArg,
+  authorToAuthorSchema,
+} from "../author/authorToAuthorSchema";
 import type { AuthorFilter } from "$server/models/authorFilter";
 import { createScopesTopic } from "../search/createScopes";
 import prisma from "../prisma";
@@ -14,18 +17,20 @@ const topicIncludingArg = {
     createdAt: true,
     updatedAt: true,
     authors: authorArg,
-    topicSection: { include: { section: { include: { book: { include: { release: true } } } } } },
+    topicSection: {
+      include: {
+        section: { include: { book: { include: { release: true } } } },
+      },
+    },
     ...selectUniqueIds,
-  }
+  },
 } as const;
 
-export type TopicWithRelease = Prisma.TopicGetPayload<
-  typeof topicIncludingArg
->;
+export type TopicWithRelease = Prisma.TopicGetPayload<typeof topicIncludingArg>;
 
 export async function findReleasedTopics(
   ids: UniqueIds | undefined,
-  userId: number,
+  userId: number
 ): Promise<Array<TopicWithRelease>> {
   const filter: AuthorFilter = {
     type: "all",
@@ -35,15 +40,12 @@ export async function findReleasedTopics(
   if (!ids?.poid) return [];
 
   const where: Prisma.TopicWhereInput = {
-    AND: [
-      ...createScopesTopic(filter),
-      { poid: ids.poid },
-    ],
+    AND: [...createScopesTopic(filter), { poid: ids.poid }],
   };
   const found = await prisma.topic.findMany({
     ...topicIncludingArg,
     where,
-  })
+  });
   return found;
 }
 
@@ -66,7 +68,7 @@ export function topicToReleaseItemSchema(
     return {
       ...topic,
       authors: authors.map(authorToAuthorSchema),
-    }
+    };
   }
   return undefined;
 }

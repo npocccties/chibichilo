@@ -13,7 +13,7 @@ export const releasePropsSchema = {
 
 export type ReleaseProps = FromSchema<typeof releasePropsSchema>;
 
-const {...releaseSchemaProps} = releasePropsSchema.properties;
+const { ...releaseSchemaProps } = releasePropsSchema.properties;
 
 export const releaseSchema = {
   type: "object",

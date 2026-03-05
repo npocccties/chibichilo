@@ -7,6 +7,7 @@ import { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate
 import findAllActivityWithTimeRangeCount from "$server/utils/activity/findAllActivityWithTimeRangeCount";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import { round } from "$server/utils/math";
+import type { SessionSchema } from "$server/models/session";
 
 export type Query = ActivityQuery;
 
@@ -44,14 +45,10 @@ const ACTIVITY_REWATCH_THRESHOLD2 = Number(
   process.env.ACTIVITY_REWATCH_THRESHOLD ?? 2
 );
 
-export async function index({
-  session,
-  query,
-}: FastifyRequest<{ Querystring: Query }>) {
-  if (!isInstructor(session)) {
-    return { status: 403 };
-  }
-
+export async function getActivityRewatchRate(
+  session: SessionSchema,
+  query: Query
+) {
   const activities = await findAllActivityWithTimeRangeCount(
     ACTIVITY_REWATCH_THRESHOLD2,
     session,
@@ -70,6 +67,18 @@ export async function index({
       ),
     };
   });
+  return activityRewatchRate;
+}
+
+export async function index({
+  session,
+  query,
+}: FastifyRequest<{ Querystring: Query }>) {
+  if (!isInstructor(session)) {
+    return { status: 403 };
+  }
+
+  const activityRewatchRate = await getActivityRewatchRate(session, query);
 
   return {
     status: activityRewatchRate == null ? 404 : 200,
