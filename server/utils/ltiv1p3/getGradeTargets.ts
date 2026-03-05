@@ -10,6 +10,22 @@ export async function getGradeTargets(
   session: SessionSchema,
   query: ActivityQuery
 ): Promise<GradeTarget[]> {
+  // If not explicitly specified in the query,
+  // the resource link information in the session takes precedence.
+  if (!query.lti_consumer_id && !query.lti_context_id) {
+    const lineItem = session.ltiAgsEndpoint?.lineitem;
+    if (lineItem) {
+      return [
+        {
+          consumerId: session.oauthClient.id,
+          contextId: session.ltiContext.id,
+          lineItem: lineItem,
+          label: "Session Context",
+        },
+      ];
+    }
+    return [];
+  }
   // Identifying the base context. (the context of the current request)
   const baseContext = {
     consumerId: query.lti_consumer_id ?? session.oauthClient.id,
