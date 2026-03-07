@@ -17,7 +17,8 @@ async function findLtiMembers(
     consumerId,
     contextId,
   }: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">,
-  currentLtiContextOnly?: boolean
+  currentLtiContextOnly?: boolean,
+  administrator?: boolean
 ) {
   // NOTE: 表示可能な範囲
   // 教員・TAの場合…すべて表示
@@ -53,6 +54,14 @@ async function findLtiMembers(
         }
       : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
 
+  const whereClause = administrator
+    ? {
+        ltiMembersAdmin: { some: { consumerId, contextId } },
+      }
+    : {
+        ltiMembers: { some: { consumerId, contextId } },
+      };
+
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
     select: {
@@ -82,7 +91,7 @@ async function findLtiMembers(
       },
     },
     where: {
-      ...{ ltiMembers: { some: { consumerId, contextId } } },
+      ...whereClause,
     },
   });
 
@@ -100,7 +109,8 @@ async function findAllActivity(
   session: SessionSchema,
   currentLtiContextOnly?: boolean | undefined,
   ltiConsumerId?: string | undefined,
-  ltiContextId?: string | undefined
+  ltiContextId?: string | undefined,
+  administrator?: boolean
 ): Promise<{
   learners: Array<LearnerSchema>;
   courseBooks: Array<CourseBookSchema>;
@@ -115,7 +125,8 @@ async function findAllActivity(
   const ltiMembers = await findLtiMembers(
     session,
     { consumerId, contextId },
-    currentLtiContextOnly
+    currentLtiContextOnly,
+    administrator
   );
 
   const ltiResourceLinks = await prisma.ltiResourceLink.findMany({
