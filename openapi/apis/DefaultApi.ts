@@ -2198,6 +2198,34 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * LTI Names and Role Provisioning Serviceを用いて、すべてのコースのLMSメンバーを同期します。 あらかじめ誰かがコースからアクセスして、context_memberships_urlが保存されている必要があります。 管理者でなければなりません。
+     * LTI-NRPS 受講者の同期(全コース)
+     */
+    async apiV2LtiMembersPostRaw(): Promise<runtime.ApiResponse<object>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v2/lti/members`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * LTI Names and Role Provisioning Serviceを用いて、すべてのコースのLMSメンバーを同期します。 あらかじめ誰かがコースからアクセスして、context_memberships_urlが保存されている必要があります。 管理者でなければなりません。
+     * LTI-NRPS 受講者の同期(全コース)
+     */
+    async apiV2LtiMembersPost(): Promise<object> {
+        const response = await this.apiV2LtiMembersPostRaw();
+        return await response.value();
+    }
+
+    /**
      * コースの受講者の反映をします。 教員または管理者でなければなりません。
      * コースの受講者の反映
      */
