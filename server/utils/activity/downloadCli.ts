@@ -19,6 +19,8 @@ import { getMemberships } from "../ltiv1p3/services";
 import type { LtiContextSchema } from "$server/models/ltiContext";
 import { updateLtiMembers } from "../ltiMembers";
 
+let administrator: boolean = true;
+
 async function getContexts(): Promise<LtiContextSchema[]> {
   const contexts = await prisma.ltiContext.findMany({});
   return contexts;
@@ -37,16 +39,26 @@ async function getDecoratedData(consumerId: string, contextId: string) {
     "http://purl.imsglobal.org/vocab/lis/v2/system/person#Administrator",
   ];
 
-  const activity = await findAllActivity(session, true, consumerId, contextId);
+  const activity = await findAllActivity(
+    session,
+    true,
+    consumerId,
+    contextId,
+    administrator
+  );
   activity.learners = [];
   activity.courseBooks = [];
 
   const activityRewatchRate = NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-    ? await getActivityRewatchRate(session, {
-        current_lti_context_only: true,
-        lti_consumer_id: consumerId,
-        lti_context_id: contextId,
-      })
+    ? await getActivityRewatchRate(
+        session,
+        {
+          current_lti_context_only: true,
+          lti_consumer_id: consumerId,
+          lti_context_id: contextId,
+        },
+        administrator
+      )
     : undefined;
 
   const decoratedData = download(
@@ -178,7 +190,8 @@ async function syncContext(context: LtiContextSchema) {
       id,
       context.title,
       context.label,
-      membership.members
+      membership.members,
+      administrator
     );
   }
 }
@@ -216,12 +229,18 @@ async function main() {
     case "-s":
       await do_sync();
       break;
-    case "--output":
-    case "-o": {
-      const filename = process.argv[3];
-      await do_download(filename);
+    case "--sync-no-administrator":
+      administrator = false;
+      await do_sync();
       break;
-    }
+    case "--output":
+    case "-o":
+      await do_download(process.argv[3]);
+      break;
+    case "--output-no-administrator":
+      administrator = false;
+      await do_download(process.argv[3]);
+      break;
     default:
       logger("ERROR", `unknown argument: ${arg}`);
       process.exit(1);
