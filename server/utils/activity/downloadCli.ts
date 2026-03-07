@@ -14,12 +14,19 @@ import type { ActivityRewatchRateProps } from "$server/validators/activityRewatc
 import json2csv from "json2csv";
 
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+import findClient from "../ltiv1p3/findClient";
+import { getMemberships } from "../ltiv1p3/services";
+import type { LtiContextSchema } from "$server/models/ltiContext";
+import { updateLtiMembers } from "../ltiMembers";
 
-async function getContexts() {
+async function getContexts(): Promise<LtiContextSchema[]> {
   const contexts = await prisma.ltiContext.findMany({});
   return contexts;
 }
 
+//
+// download activity data for all courses
+//
 async function getDecoratedData(consumerId: string, contextId: string) {
   const session = JSON.parse(JSON.stringify(nullSession)) as SessionSchema;
   session.oauthClient.id = consumerId;
@@ -109,11 +116,9 @@ function logger(level: string, output: string, error?: Error | unknown) {
   if (error instanceof Error) console.log(error.stack);
 }
 
-async function main() {
-  dotenv.config();
+async function do_download(filename: string) {
   let exitCode = 1;
 
-  const filename = process.argv[2];
   if (filename) {
     logger("INFO", `output file: ${filename}`);
   } else {
@@ -126,8 +131,8 @@ async function main() {
       ({ consumerId, id }) => consumerId && id
     );
     const list = await Promise.all(
-      contexts.map(
-        async ({ consumerId, id }) => await getDecoratedData(consumerId, id)
+      contexts.map(async ({ consumerId, id }) =>
+        consumerId ? await getDecoratedData(consumerId, id) : []
       )
     );
     writeCsv(list.flat(), filename);
@@ -139,6 +144,79 @@ async function main() {
     logger("INFO", "end activity download...");
     await prisma.$disconnect();
     process.exit(exitCode);
+  }
+}
+
+//
+// sync members for all courses
+//
+async function syncContext(context: LtiContextSchema) {
+  const { consumerId, id, contextMembershipsUrl } = context;
+  if (!consumerId || !id || !contextMembershipsUrl) {
+    throw new Error(`Invalid context`);
+  }
+  const session = JSON.parse(JSON.stringify(nullSession)) as SessionSchema;
+  session.oauthClient.id = consumerId;
+  session.ltiContext.id = id;
+
+  const client = await findClient(consumerId);
+  if (!client) {
+    throw new Error(`Client not found for consumerId: ${consumerId}`);
+  }
+  const membership = await getMemberships(client, contextMembershipsUrl);
+  if (membership) {
+    await updateLtiMembers(
+      consumerId,
+      id,
+      context.title,
+      context.label,
+      membership.members
+    );
+  }
+}
+
+async function do_sync() {
+  let exitCode = 1;
+
+  logger("INFO", `sync members...`);
+  try {
+    logger("INFO", "begin sync members...");
+    const contexts = (await getContexts()).filter(
+      ({ consumerId, id, contextMembershipsUrl }) =>
+        consumerId && id && contextMembershipsUrl
+    );
+    for (const context of contexts) {
+      await syncContext(context);
+    }
+    exitCode = 0;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    logger("ERROR", e.toString(), e);
+  } finally {
+    logger("INFO", "end sync members...");
+    await prisma.$disconnect();
+    process.exit(exitCode);
+  }
+}
+
+async function main() {
+  dotenv.config();
+
+  const arg = process.argv[2];
+  switch (arg) {
+    case "--sync":
+    case "-s":
+      await do_sync();
+      break;
+    case "--output":
+    case "-o": {
+      const filename = process.argv[3];
+      await do_download(filename);
+      break;
+    }
+    default:
+      logger("ERROR", `unknown argument: ${arg}`);
+      process.exit(1);
   }
 }
 
