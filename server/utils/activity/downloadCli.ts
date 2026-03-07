@@ -58,12 +58,20 @@ async function getDecoratedData(consumerId: string, contextId: string) {
   return decoratedData;
 }
 
+const deleteList = ["ユーザ名", "メールアドレス"];
+
 function writeCsv(
   decoratedData: ReturnType<typeof download>,
   filename: string
 ) {
   if (!decoratedData) return;
-  const csv = json2csv.parse(decoratedData);
+  const filterd = decoratedData.map((d) => {
+    for (const key of deleteList) {
+      delete d[key];
+    }
+    return d;
+  });
+  const csv = json2csv.parse(filterd);
   const bom = "\uFEFF";
   fs.writeFileSync(filename, bom + csv, "utf-8");
 }
