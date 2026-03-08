@@ -76,7 +76,9 @@ function writeCsv(
   decoratedData: ReturnType<typeof download>,
   filename: string
 ) {
-  if (!decoratedData) return;
+  if (!decoratedData || decoratedData.length === 0) {
+    throw new Error("No data to write to CSV");
+  }
   const filterd = decoratedData.map((d) => {
     for (const key of deleteList) {
       delete d[key];
@@ -159,7 +161,7 @@ async function do_download(filename: string) {
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    logger("ERROR", e.toString(), e);
+    logger("ERROR", e.toString());
   } finally {
     logger("INFO", "end activity download...");
     await prisma.$disconnect();
@@ -207,17 +209,37 @@ async function do_sync() {
         consumerId && id && contextMembershipsUrl
     );
     for (const context of contexts) {
+      logger(
+        "INFO",
+        `processing context ${context.consumerId} ${context.id} ${context.title}...`
+      );
       await syncContext(context);
     }
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    logger("ERROR", e.toString(), e);
+    logger("ERROR", e.toString());
   } finally {
     logger("INFO", "end sync members...");
     await prisma.$disconnect();
     process.exit(exitCode);
   }
+}
+
+async function usage() {
+  console.log("Usage:");
+  console.log(
+    "  node dist/downloadCli.js -s|--sync               # 受講者リストを取得する"
+  );
+  console.log(
+    "  node dist/downloadCli.js -o|--output <filename>  # 活動ログをCSVで出力する"
+  );
+  console.log(
+    "  node dist/downloadCli.js --sync-no-administrator # LtiMembers を使用する"
+  );
+  console.log(
+    "  node dist/downloadCli.js --output-no-administrator <filename>  # LtiMembers を使用する"
+  );
 }
 
 async function main() {
@@ -241,9 +263,11 @@ async function main() {
       administrator = false;
       await do_download(process.argv[3]);
       break;
+    case "--help":
+    case "-h":
     default:
-      logger("ERROR", `unknown argument: ${arg}`);
-      process.exit(1);
+      await usage();
+      process.exit(0);
   }
 }
 
