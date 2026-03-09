@@ -1,7 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-import { pagesPath } from "$utils/$path";
 import { useRouter } from "next/router";
 import { css } from "@emotion/css";
 
@@ -11,6 +10,7 @@ import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import Tag from "$atoms/Tag";
 import { useUpdateLtiContextAtom } from "$store/session";
+import { handleBookmarkClick } from "$utils/bookmark/handleBookmarkClick";
 
 const bookmarkButton = css({
   textAlign: "left",
@@ -51,17 +51,12 @@ export default function BookmarkPreview({ bookmark }: Props) {
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setLtiContext({
-      ltiConsumerId: bookmark.ltiConsumerId ?? null,
-      ltiContextId: bookmark.ltiContext.id,
-    });
-    const url = pagesPath.book.$url({
-      query: {
-        bookId: bookmark.bookId,
-        topicId: bookmark.topicId,
-      },
-    });
-    await router.push(url);
+    await handleBookmarkClick(
+      bookmark,
+      setLtiContext,
+      router.push,
+      router.pathname
+    );
   };
 
   return (

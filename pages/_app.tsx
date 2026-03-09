@@ -43,6 +43,7 @@ function Content({ children }: { children: ReactNode }) {
       setLtiContext({
         ltiConsumerId: null,
         ltiContextId: null,
+        pathname: null,
       });
     }
   }, [session, isLtiContextReady, setLtiContext]);
@@ -50,6 +51,7 @@ function Content({ children }: { children: ReactNode }) {
     setLtiContext({
       ltiConsumerId: null,
       ltiContextId: null,
+      pathname: null,
     });
   };
   const handleBooksClick = () => {
