@@ -9,6 +9,7 @@ export const LtiContextSchema = {
     consumerId: { title: "Consumer ID", type: "string" },
     label: { title: "コースコード", type: "string" },
     title: { title: "コースタイトルまたはコース名", type: "string" },
+    contextMembershipsUrl: { title: "LTI NRPS service url", type: "string" },
   },
   additionalProperties: false,
 } as const;

@@ -11,7 +11,8 @@ async function findLtiMembersWithTimeRangeCount(
     consumerId,
     contextId,
   }: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">,
-  currentLtiContextOnly?: boolean
+  currentLtiContextOnly?: boolean,
+  administrator?: boolean
 ) {
   // NOTE: 表示可能な範囲
   // 教員・TAの場合…すべて表示
@@ -44,6 +45,14 @@ async function findLtiMembersWithTimeRangeCount(
         }
       : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
 
+  const whereClause = administrator
+    ? {
+        ltiMembersAdmin: { some: { consumerId, contextId } },
+      }
+    : {
+        ltiMembers: { some: { consumerId, contextId } },
+      };
+
   const learners = await prisma.user.findMany({
     select: {
       activities: {
@@ -75,7 +84,7 @@ async function findLtiMembersWithTimeRangeCount(
       },
     },
     where: {
-      ...{ ltiMembers: { some: { consumerId, contextId } } },
+      ...whereClause,
     },
   });
 
@@ -85,7 +94,8 @@ async function findLtiMembersWithTimeRangeCount(
 async function findAllActivityWithTimeRangeCount(
   rewatchThreshold: number,
   session: SessionSchema,
-  currentLtiContextOnly: boolean
+  currentLtiContextOnly: boolean,
+  administrator?: boolean
 ) {
   const consumerId = session.oauthClient.id;
   const contextId = session.ltiContext.id;
@@ -94,7 +104,8 @@ async function findAllActivityWithTimeRangeCount(
     rewatchThreshold,
     session,
     { consumerId, contextId },
-    currentLtiContextOnly
+    currentLtiContextOnly,
+    administrator
   );
 
   return ltiMembers.flatMap(({ activities }) => activities);

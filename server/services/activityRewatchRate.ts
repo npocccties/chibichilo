@@ -47,12 +47,14 @@ const ACTIVITY_REWATCH_THRESHOLD2 = Number(
 
 export async function getActivityRewatchRate(
   session: SessionSchema,
-  query: Query
+  query: Query,
+  administrator?: boolean
 ) {
   const activities = await findAllActivityWithTimeRangeCount(
     ACTIVITY_REWATCH_THRESHOLD2,
     session,
-    Boolean(query.current_lti_context_only)
+    Boolean(query.current_lti_context_only),
+    administrator
   );
 
   const activityRewatchRate = activities.map((activity) => {
