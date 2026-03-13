@@ -108,14 +108,12 @@ export default function BookmarkPreview({ bookmark }: Props) {
         />
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {courseBookmark.map((bm) => {
-          if (bm.bookId != null && bm.bookId === bookmark.bookId) {
-            if (bm.tag) {
-              return <Tag key={bm.id} tag={bm.tag} />;
-            }
-            if (bm.memoContent) {
-              return <Tag key={bm.id} memoContent={bm.memoContent} />;
-            }
+        {courseBookmark.map((bookmark) => {
+          if (bookmark.tag) {
+            return <Tag key={bookmark.id} tag={bookmark.tag} />;
+          }
+          if (bookmark.memoContent) {
+            return <Tag key={bookmark.id} memoContent={bookmark.memoContent} />;
           }
 
           return null;
