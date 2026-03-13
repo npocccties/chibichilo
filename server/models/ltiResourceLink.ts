@@ -37,6 +37,10 @@ export class LtiResourceLinkSchema extends LtiResourceLinkProps {
   @IsOptional()
   @IsInt({ each: true })
   instructors?: number[];
+
+  @IsOptional()
+  @IsString()
+  lineItem!: string;
 }
 
 export const {

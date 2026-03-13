@@ -72,10 +72,13 @@ async function init({ session }: FastifyRequest) {
     Number.isInteger(Number(bookId))
       ? ltiTargetLink.href
       : undefined;
+  const lineItem =
+    session?.ltiAgsEndpoint?.lineitem ?? ltiResourceLink?.lineItem ?? "";
   if (
     session.ltiMessageType === "LtiResourceLinkRequest" &&
     session.ltiResourceLinkRequest?.id &&
-    Boolean(ltiTargetLinkUri)
+    (Boolean(ltiTargetLinkUri) ||
+      (ltiResourceLink && lineItem != ltiResourceLink.lineItem))
   ) {
     const instructors = await getInstructorsByNRPS(session);
     let creatorId = ltiResourceLink?.creatorId;
@@ -83,7 +86,7 @@ async function init({ session }: FastifyRequest) {
       creatorId = isInstructor(session.ltiRoles) ? user.id : null;
     }
     ltiResourceLink = {
-      bookId: Number(bookId),
+      bookId: ltiResourceLink?.bookId ?? Number(bookId),
       creatorId,
       instructors,
       consumerId: session.oauthClient.id,
@@ -95,6 +98,7 @@ async function init({ session }: FastifyRequest) {
         session.ltiContext.title ?? ltiResourceLink?.contextTitle ?? "",
       contextLabel:
         session.ltiContext.label ?? ltiResourceLink?.contextLabel ?? "",
+      lineItem,
     };
   }
 
@@ -104,6 +108,7 @@ async function init({ session }: FastifyRequest) {
       title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
       contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
       contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
+      lineItem,
     });
   }
 

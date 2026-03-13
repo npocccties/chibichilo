@@ -43,6 +43,16 @@ async function checkLtiResourceLink(
       },
     });
     if (memberAccess) return true;
+    // 4. Fallback: Check if the user has any existing activity records for this book.
+    // This allows access if the user has previously interacted with the book via LTI,
+    // even if explicit context query parameters are missing.
+    const hasActivity = await prisma.activity.findFirst({
+      where: {
+        learnerId: session.user.id,
+        bookId: bookId,
+      },
+    });
+    if (hasActivity) return true;
   }
   return false;
 }

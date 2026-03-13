@@ -12,6 +12,9 @@ jest.mock("$server/utils/prisma", () => ({
     ltiResourceLink: {
       findFirst: jest.fn(),
     },
+    activity: {
+      findFirst: jest.fn(),
+    },
   },
 }));
 
