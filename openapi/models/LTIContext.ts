@@ -43,6 +43,12 @@ export interface LTIContext {
      * @memberof LTIContext
      */
     title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LTIContext
+     */
+    contextMembershipsUrl?: string;
 }
 
 export function LTIContextFromJSON(json: any): LTIContext {
@@ -59,6 +65,7 @@ export function LTIContextFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'consumerId': !exists(json, 'consumerId') ? undefined : json['consumerId'],
         'label': !exists(json, 'label') ? undefined : json['label'],
         'title': !exists(json, 'title') ? undefined : json['title'],
+        'contextMembershipsUrl': !exists(json, 'contextMembershipsUrl') ? undefined : json['contextMembershipsUrl'],
     };
 }
 
@@ -75,6 +82,7 @@ export function LTIContextToJSON(value?: LTIContext | null): any {
         'consumerId': value.consumerId,
         'label': value.label,
         'title': value.title,
+        'contextMembershipsUrl': value.contextMembershipsUrl,
     };
 }
 

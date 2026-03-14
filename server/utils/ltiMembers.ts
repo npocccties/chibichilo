@@ -5,14 +5,20 @@ import type { LtiContextSchema } from "$server/models/ltiContext";
 
 export async function getLtiMembers(
   consumerId: LtiResourceLinkSchema["consumerId"],
-  contextId: LtiResourceLinkSchema["contextId"]
+  contextId: LtiResourceLinkSchema["contextId"],
+  administrator?: boolean
 ) {
-  return await prisma.ltiMember.findMany({
+  const whereclause = {
     where: {
       consumerId,
       contextId,
     },
-  });
+  };
+  if (administrator) {
+    return await prisma.ltiMemberAdmin.findMany(whereclause);
+  } else {
+    return await prisma.ltiMember.findMany(whereclause);
+  }
 }
 
 export async function updateLtiMembers(
@@ -20,7 +26,8 @@ export async function updateLtiMembers(
   contextId: LtiResourceLinkSchema["contextId"],
   contextTitle: LtiContextSchema["title"],
   contextLabel: LtiContextSchema["label"],
-  members: LtiNrpsContextMemberSchema[]
+  members: LtiNrpsContextMemberSchema[],
+  administrator?: boolean
 ) {
   const contextInput = {
     id: contextId,
@@ -29,7 +36,7 @@ export async function updateLtiMembers(
     consumer: { connect: { id: consumerId } },
   };
 
-  await prisma.$transaction([
+  const members_context = [
     ...members.map((member) =>
       prisma.user.upsert({
         where: {
@@ -57,26 +64,44 @@ export async function updateLtiMembers(
       create: contextInput,
       update: contextInput,
     }),
-    prisma.ltiMember.deleteMany({
-      where: {
-        consumerId,
-        contextId,
-      },
-    }),
-    prisma.ltiMember.createMany({
-      data: members.map((member) => ({
-        consumerId,
-        contextId,
-        userId: member.user_id,
-      })),
-    }),
-  ]);
+  ];
 
-  const ltiMembers = await prisma.ltiMember.findMany({
-    where: {
-      consumerId,
-      contextId,
-    },
-  });
+  if (administrator) {
+    await prisma.$transaction([
+      ...members_context,
+      prisma.ltiMemberAdmin.deleteMany({
+        where: {
+          consumerId,
+          contextId,
+        },
+      }),
+      prisma.ltiMemberAdmin.createMany({
+        data: members.map((member) => ({
+          consumerId,
+          contextId,
+          userId: member.user_id,
+        })),
+      }),
+    ]);
+  } else {
+    await prisma.$transaction([
+      ...members_context,
+      prisma.ltiMember.deleteMany({
+        where: {
+          consumerId,
+          contextId,
+        },
+      }),
+      prisma.ltiMember.createMany({
+        data: members.map((member) => ({
+          consumerId,
+          contextId,
+          userId: member.user_id,
+        })),
+      }),
+    ]);
+  }
+
+  const ltiMembers = await getLtiMembers(consumerId, contextId, administrator);
   return ltiMembers;
 }
