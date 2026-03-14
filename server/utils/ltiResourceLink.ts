@@ -21,7 +21,8 @@ export function ltiResourceLinkToSchema(
 }
 
 export async function upsertLtiResourceLink(
-  props: LtiResourceLinkSchema
+  props: LtiResourceLinkSchema,
+  contextMembershipsUrl?: string
 ): Promise<LtiResourceLinkSchema | null> {
   const {
     consumerId,
@@ -42,6 +43,7 @@ export async function upsertLtiResourceLink(
     title: contextTitle,
     label: contextLabel,
     consumer: { connect: { id: consumerId } },
+    contextMembershipsUrl,
   };
   const linkInput = {
     ...link,
