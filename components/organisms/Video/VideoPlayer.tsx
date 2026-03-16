@@ -32,9 +32,11 @@ export default function VideoPlayer({
   usePlayerState(videoInstance.player);
 
   useEffect(() => {
+    let active = true;
     if (!autoplay) return;
     const player = videoInstance.player;
     const play = async () => {
+      if (!active) return;
       try {
         await player.play();
       } catch {
@@ -49,7 +51,10 @@ export default function VideoPlayer({
         ? player.ready()
         : new Promise((resolve) => player.ready(() => resolve(undefined)));
     void ready.then(play);
-    return () => clearTimeout(timeout);
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+    };
   }, [
     videoInstance,
     autoplay,
