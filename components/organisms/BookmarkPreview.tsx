@@ -36,18 +36,16 @@ export default function BookmarkPreview({ bookmark }: Props) {
   const router = useRouter();
   const [, setLtiContext] = useUpdateLtiContextAtom();
 
-  // 最新のタグ更新日時を取得
-  const latestUpdatedAt = bookmark.topic.bookmarks
-    ?.map((bookmark) => bookmark.updatedAt)
-    .sort((a, b) => {
-      return new Date(b).getTime() - new Date(a).getTime();
-    })[0];
-
   const courseBookmark = bookmark.topic.bookmarks.filter(
     (item) =>
       item.ltiContext.consumerId === bookmark.ltiConsumerId &&
-      item.ltiContext.id === bookmark.ltiContext.id
+      item.ltiContext.id === bookmark.ltiContext.id &&
+      item.bookId === bookmark.bookId
   );
+  // 最新のタグ更新日時を取得
+  const latestUpdatedAt = courseBookmark
+    .map((item) => item.updatedAt)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0];
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -108,14 +106,13 @@ export default function BookmarkPreview({ bookmark }: Props) {
         />
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {courseBookmark.map((bookmark) => {
-          if (bookmark.tag) {
-            return <Tag key={bookmark.id} tag={bookmark.tag} />;
+        {courseBookmark.map((bm) => {
+          if (bm.tag) {
+            return <Tag key={bm.id} tag={bm.tag} />;
           }
-          if (bookmark.memoContent) {
-            return <Tag key={bookmark.id} memoContent={bookmark.memoContent} />;
+          if (bm.memoContent) {
+            return <Tag key={bm.id} memoContent={bm.memoContent} />;
           }
-
           return null;
         })}
       </Box>

@@ -114,8 +114,13 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
               {data.bookmarks
                 .filter(
                   (element, index, self) =>
-                    self.findIndex((e) => e.topicId === element.topicId) ===
-                    index
+                    self.findIndex(
+                      (e) =>
+                        e.topicId === element.topicId &&
+                        e.bookId === element.bookId &&
+                        e.ltiConsumerId === element.ltiConsumerId &&
+                        e.ltiContext.id === element.ltiContext.id
+                    ) === index
                 )
                 .map((bookmark) => {
                   return (
