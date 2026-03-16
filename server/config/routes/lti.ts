@@ -99,7 +99,7 @@ export async function ltiSearch(fastify: FastifyInstance) {
 
 export async function ltiMembers(fastify: FastifyInstance) {
   const path = "/lti/members";
-  const { method, update, show } = ltiMembersService;
+  const { method, update, show, sync } = ltiMembersService;
   const hooks = makeHooks(fastify, ltiMembersService.hooks);
 
   fastify.get(path, { schema: method.get, ...hooks.get }, handler(show));
@@ -107,6 +107,8 @@ export async function ltiMembers(fastify: FastifyInstance) {
   fastify.put<{
     Body: ltiMembersService.Body;
   }>(path, { schema: method.put, ...hooks.put }, handler(update));
+
+  fastify.post(path, { schema: method.post, ...hooks.post }, handler(sync));
 }
 
 export async function ltiDeepLinking(fastify: FastifyInstance) {

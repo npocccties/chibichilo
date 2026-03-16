@@ -182,6 +182,7 @@ model LtiContext {
   bookmarks     Bookmark[]
   title         String
   label         String
+  contextMembershipsUrl String  @default("") @map("context_memberships_url")
 
   @@id([consumerId, id])
   @@map("lti_context")
@@ -197,6 +198,18 @@ model LtiMember {
 
   @@id([consumerId, contextId, userId])
   @@map("lti_members")
+}
+
+/// LTI Member table for administrator
+model LtiMemberAdmin {
+//  context    LtiContext @relation(fields: [consumerId, contextId], references: [consumerId, id])
+  user       User       @relation(fields: [consumerId, userId], references: [ltiConsumerId, ltiUserId])
+  consumerId String     @map("consumer_id")
+  contextId  String     @map("context_id")
+  userId     String     @map("user_id")
+
+  @@id([consumerId, contextId, userId])
+  @@map("lti_members_admin")
 }
 
 /// LTI Resource Link
@@ -330,6 +343,7 @@ model User {
   editableContents Authorship[]
   ltiResourceLinks LtiResourceLink[]
   ltiMembers       LtiMember[]
+  ltiMembersAdmin  LtiMemberAdmin[]
   ltiConsumer      LtiConsumer       @relation(fields: [ltiConsumerId], references: [id])
   ltiConsumerId    String            @map("lti_consumer_id")
   ltiUserId        String            @map("lti_user_id")
