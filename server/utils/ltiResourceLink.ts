@@ -31,6 +31,7 @@ export async function upsertLtiResourceLink(
     contextLabel,
     bookId,
     creatorId,
+    lineItem,
     instructors: _instructors,
     ...link
   } = props;
@@ -51,6 +52,7 @@ export async function upsertLtiResourceLink(
     book: { connect: { id: bookId } },
     consumer: { connect: { id: consumerId } },
     ...(creatorId ? { creator: { connect: { id: creatorId } } } : {}),
+    lineItem,
     updatedAt: new Date(),
   };
 

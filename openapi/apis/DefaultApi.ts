@@ -441,6 +441,8 @@ export interface ApiV2TopicTopicIdActivityPutRequest {
     bookId: number;
     topicId: number;
     currentLtiContextOnly?: boolean;
+    ltiConsumerId?: string;
+    ltiContextId?: string;
     body?: InlineObject12;
 }
 
@@ -2630,6 +2632,14 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.currentLtiContextOnly !== undefined) {
             queryParameters['current_lti_context_only'] = requestParameters.currentLtiContextOnly;
+        }
+
+        if (requestParameters.ltiConsumerId !== undefined) {
+            queryParameters['lti_consumer_id'] = requestParameters.ltiConsumerId;
+        }
+
+        if (requestParameters.ltiContextId !== undefined) {
+            queryParameters['lti_context_id'] = requestParameters.ltiContextId;
         }
 
         if (requestParameters.bookId !== undefined) {

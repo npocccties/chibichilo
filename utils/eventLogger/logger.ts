@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { EventType } from "$server/models/event";
-import { useSessionAtom } from "$store/session";
+import { loadLtiContext, useSessionAtom } from "$store/session";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
 import { api } from "$utils/api";
 import type { PlayerStats, PlayerEvents, PlayerTracker } from "./playerTracker";
@@ -10,12 +10,18 @@ import { load, useLoggerSessionInit } from "./loggerSessionPersister";
 import getFilePath from "./getFilePath";
 
 /** v1のときのトラッキング用コードの移植 */
-function send(eventType: EventType, event: PlayerStats, detail?: string) {
+export function send(
+  eventType: EventType,
+  event: PlayerStats,
+  detail?: string
+) {
   const session = load();
   if (!session) return;
   const idPrefix = session.oauthClient.id;
   const playbackRate = loadPlaybackRate();
   const id = (id: string) => [idPrefix, id].join(":");
+  const ltiContext = loadLtiContext();
+
   const body = {
     event: eventType,
     detail,
@@ -27,7 +33,7 @@ function send(eventType: EventType, event: PlayerStats, detail?: string) {
     cid: id(session.ltiContext.id),
     nonce: session.oauthClient.nonce,
     videoType: getVideoType(event.providerUrl),
-    path: location.pathname,
+    path: ltiContext?.pathname ?? location.pathname,
     topicId: event.topicId.toString(),
     bookId: session.ltiResourceLink?.bookId?.toString(),
     playbackRate: playbackRate.toString(),

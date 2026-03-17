@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 
+import { useRouter } from "next/router";
 import { css } from "@emotion/css";
 
 import type { BookmarkSchema } from "$server/models/bookmark";
@@ -8,8 +9,8 @@ import formatInterval from "$utils/formatInterval";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import Tag from "$atoms/Tag";
-import { useTopic } from "$utils/topic";
-import type { TopicSchema } from "$server/models/topic";
+import { useUpdateLtiContextAtom } from "$store/session";
+import { handleBookmarkClick } from "$utils/bookmark/handleBookmarkClick";
 
 const bookmarkButton = css({
   textAlign: "left",
@@ -29,31 +30,35 @@ const bookmarkTitle = css({
 
 type Props = {
   bookmark: BookmarkSchema;
-  onBookmarkPreviewClick(content: TopicSchema): void;
 };
 
-export default function BookmarkPreview({
-  bookmark,
-  onBookmarkPreviewClick,
-}: Props) {
-  const topic = useTopic(bookmark.topic.id);
-  // 最新のタグ更新日時を取得
-  const latestUpdatedAt = bookmark.topic.bookmarks
-    ?.map((bookmark) => bookmark.updatedAt)
-    .sort((a, b) => {
-      return new Date(b).getTime() - new Date(a).getTime();
-    })[0];
-  const handle = (handler: (content: TopicSchema) => void) => () => {
-    if (!topic) return;
-    handler(topic);
-  };
+export default function BookmarkPreview({ bookmark }: Props) {
+  const router = useRouter();
+  const [, setLtiContext] = useUpdateLtiContextAtom();
 
   const courseBookmark = bookmark.topic.bookmarks.filter(
-    (item) => item.ltiContext.id === bookmark.ltiContext.id
+    (item) =>
+      item.ltiContext.consumerId === bookmark.ltiConsumerId &&
+      item.ltiContext.id === bookmark.ltiContext.id &&
+      item.bookId === bookmark.bookId
   );
+  // 最新のタグ更新日時を取得
+  const latestUpdatedAt = courseBookmark
+    .map((item) => item.updatedAt)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0];
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await handleBookmarkClick(
+      bookmark,
+      setLtiContext,
+      router.push,
+      router.pathname
+    );
+  };
 
   return (
-    <button className={bookmarkButton} onClick={handle(onBookmarkPreviewClick)}>
+    <button className={bookmarkButton} onClick={handleClick}>
       <h5 className={bookmarkTitle}>{bookmark.topic?.name}</h5>
       <Box
         sx={{
@@ -102,15 +107,12 @@ export default function BookmarkPreview({
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {courseBookmark.map((bm) => {
-          if (bm.bookId != null && bm.bookId === bookmark.bookId) {
-            if (bm.tag) {
-              return <Tag key={bm.id} tag={bm.tag} />;
-            }
-            if (bm.memoContent) {
-              return <Tag key={bm.id} memoContent={bm.memoContent} />;
-            }
+          if (bm.tag) {
+            return <Tag key={bm.id} tag={bm.tag} />;
           }
-
+          if (bm.memoContent) {
+            return <Tag key={bm.id} memoContent={bm.memoContent} />;
+          }
           return null;
         })}
       </Box>

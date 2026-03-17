@@ -6,10 +6,7 @@ import { gray } from "$theme/colors";
 import type { SessionSchema } from "$server/models/session";
 import type { BookmarkTagMenu, TagSchema } from "$server/models/bookmark";
 import { useFilterBookmarks } from "$utils/bookmark/useBookmarks";
-import useDialogProps from "$utils/useDialogProps";
-import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import BookmarkPreview from "$organisms/BookmarkPreview";
-import type { TopicSchema } from "$server/models/topic";
 import BookmarkMultiSelect from "$molecules/BookmarkMultiSelect";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
@@ -92,12 +89,6 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
     isExistMemoContent,
   });
 
-  const {
-    data: previewContent,
-    dispatch: handlePreviewClick,
-    ...dialogProps
-  } = useDialogProps<TopicSchema>();
-
   return NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
     <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">
       <Typography variant="h4" className={title}>
@@ -123,16 +114,18 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
               {data.bookmarks
                 .filter(
                   (element, index, self) =>
-                    self.findIndex((e) => e.topicId === element.topicId) ===
-                    index
+                    self.findIndex(
+                      (e) =>
+                        e.topicId === element.topicId &&
+                        e.bookId === element.bookId &&
+                        e.ltiConsumerId === element.ltiConsumerId &&
+                        e.ltiContext.id === element.ltiContext.id
+                    ) === index
                 )
                 .map((bookmark) => {
                   return (
                     <li key={bookmark.id} className={bookmarkList}>
-                      <BookmarkPreview
-                        bookmark={bookmark}
-                        onBookmarkPreviewClick={handlePreviewClick}
-                      />
+                      <BookmarkPreview bookmark={bookmark} />
                     </li>
                   );
                 })}
@@ -140,13 +133,6 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
           )}
         </Box>
       </Card>
-      {previewContent?.id && (
-        <TopicPreviewDialog
-          {...dialogProps}
-          topic={previewContent}
-          isPrivateBook={true}
-        />
-      )}
     </Container>
   ) : (
     <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">

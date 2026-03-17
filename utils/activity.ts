@@ -3,7 +3,7 @@ import throttle from "lodash.throttle";
 import usePrevious from "@rooks/use-previous";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookSchema } from "$server/models/book";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { useBookAtom } from "$store/book";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
 import type { PlayerTracker } from "./eventLogger/playerTracker";
@@ -19,7 +19,9 @@ const buildUpdateHandler =
   (
     topicId: TopicSchema["id"],
     bookId: BookSchema["id"],
-    playerTracker: PlayerTracker
+    playerTracker: PlayerTracker,
+    ltiConsumerId: string | null | undefined,
+    ltiContextId: string | null | undefined
   ) =>
   async () => {
     const timeRanges = await playerTracker.getPlayed();
@@ -32,6 +34,8 @@ const buildUpdateHandler =
     await api.apiV2TopicTopicIdActivityPut({
       topicId,
       currentLtiContextOnly: NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY,
+      ltiConsumerId: ltiConsumerId ?? undefined,
+      ltiContextId: ltiContextId ?? undefined,
       bookId,
       body,
     });
@@ -40,22 +44,40 @@ const buildUpdateHandler =
 /** 学習活動のトラッキングの開始 (要: useBook()) */
 export function useActivityTracking() {
   const { session, isInstructor } = useSessionAtom();
+  const { ltiConsumerId, ltiContextId, isLtiContextReady } =
+    useLtiContextAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const loggedin = Boolean(session?.user?.id);
   const topic = itemExists(itemIndex);
   const playerTracker = usePlayerTrackerAtom();
   const unchanged = playerTracker === usePrevious(playerTracker);
+
   const updateHandler = useMemo(() => {
     if (!loggedin) return;
     if (isInstructor) return;
     if (unchanged) return;
-    return (
-      topic &&
-      book &&
-      playerTracker &&
-      buildUpdateHandler(topic.id, book.id, playerTracker)
+    if (!topic) return;
+    if (!book) return;
+    if (!playerTracker) return;
+    if (!isLtiContextReady) return;
+    return buildUpdateHandler(
+      topic.id,
+      book.id,
+      playerTracker,
+      ltiConsumerId,
+      ltiContextId
     );
-  }, [isInstructor, unchanged, topic, book, playerTracker, loggedin]);
+  }, [
+    isInstructor,
+    unchanged,
+    topic,
+    book,
+    playerTracker,
+    ltiConsumerId,
+    ltiContextId,
+    isLtiContextReady,
+    loggedin,
+  ]);
   const throttled = useMemo(
     () =>
       updateHandler &&

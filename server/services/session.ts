@@ -17,7 +17,7 @@ export const hooks = {
   get: { auth: [] },
 };
 
-export const nullSession: SessionSchema = {
+const nullSession: SessionSchema = {
   oauthClient: {
     id: "",
     nonce: "",

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -26,11 +26,58 @@ import { pagesPath } from "$utils/$path";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
+import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
+  const { isLtiContextReady } = useLtiContextAtom();
+  const [, setLtiContext] = useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
+
+  useEffect(() => {
+    if (session && !isLtiContextReady) {
+      // TODO: In the future, we should consider synchronizing with session.ltiResourceLink
+      // while carefully handling potential conflicts across multiple browser tabs.
+      // Currently, we just set null to mark the LTI context as "Ready" (Settled).
+      setLtiContext({
+        ltiConsumerId: null,
+        ltiContextId: null,
+        pathname: null,
+      });
+    }
+  }, [session, isLtiContextReady, setLtiContext]);
+  const resetBookmarkAuth = () => {
+    setLtiContext({
+      ltiConsumerId: null,
+      ltiContextId: null,
+      pathname: null,
+    });
+  };
+  const handleBooksClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.books.$url());
+  };
+  const handleCoursesClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.courses.$url());
+  };
+  const handleDashboardClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.dashboard.$url());
+  };
+  const handleBookClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.$url());
+  };
+  const handleBookmarksClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.bookmarks.$url());
+  };
+  const handleDownloadClick = () => {
+    resetBookmarkAuth();
+    void router.push(pagesPath.download.$url());
+  };
 
   if (session?.user?.id === 0 && router.pathname === "/book") {
     return <>{children}</>;
@@ -48,13 +95,7 @@ function Content({ children }: { children: ReactNode }) {
     return <EmbedProblem />;
   }
 
-  const handleBooksClick = () => router.push(pagesPath.books.$url());
   const handleTopicsClick = () => router.push(pagesPath.topics.$url());
-  const handleCoursesClick = () => router.push(pagesPath.courses.$url());
-  const handleDashboardClick = () => router.push(pagesPath.dashboard.$url());
-  const handleBookClick = () => router.push(pagesPath.$url());
-  const handleBookmarksClick = () => router.push(pagesPath.bookmarks.$url());
-  const handleDownloadClick = () => router.push(pagesPath.download.$url());
 
   return (
     <>

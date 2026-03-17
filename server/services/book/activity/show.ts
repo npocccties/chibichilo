@@ -43,12 +43,15 @@ export async function show({
   if (!session.user || !session.oauthClient || !session.ltiContext)
     return { status: 401 };
 
+  const ltiConsumerId = query.lti_consumer_id ?? session.oauthClient.id;
+  const ltiContextId = query.lti_context_id ?? session.ltiContext.id;
+
   const activity: Array<ActivitySchema> = await fetchActivity(
     {
       learnerId: session.user.id,
       bookId: params.book_id,
-      ltiConsumerId: session.oauthClient.id,
-      ltiContextId: session.ltiContext.id,
+      ltiConsumerId,
+      ltiContextId,
     },
     Boolean(query.current_lti_context_only)
   );

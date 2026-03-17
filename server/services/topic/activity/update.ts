@@ -4,6 +4,7 @@ import { topicParamsSchema } from "$server/validators/topicParams";
 import { TopicActivityQuery } from "$server/validators/topicActivityQuery";
 import { ActivityProps } from "$server/validators/activityProps";
 import authUser from "$server/auth/authUser";
+import authBookAccess from "$server/auth/authBookAccess";
 import topicExists from "$server/utils/topic/topicExists";
 import upsertTopicActivity from "$server/utils/activity/upsertTopicActivity";
 import upsertLtiContextActivity from "$server/utils/activity/upsertLtiContextActivity";
@@ -21,12 +22,13 @@ export const updateSchema: FastifySchema = {
   response: {
     201: ActivityProps,
     400: {},
+    403: {},
     404: {},
   },
 };
 
 export const updateHooks = {
-  auth: [authUser],
+  auth: [authUser, authBookAccess],
 };
 
 export async function update({
@@ -46,20 +48,31 @@ export async function update({
 
   if (!found) return { status: 404 };
 
-  const ltiContextActivity = await upsertLtiContextActivity({
-    learnerId: session.user.id,
-    bookId: query.book_id,
-    topicId: params.topic_id,
-    ltiConsumerId: session.oauthClient.id,
-    ltiContextId: session.ltiContext.id,
-    activity: body,
-  });
+  const bookId = query.book_id;
+  const isCurrentSessionBook = session.ltiResourceLink?.bookId === bookId;
+  let ltiConsumerId = query.lti_consumer_id;
+  let ltiContextId = query.lti_context_id;
+  if (!ltiContextId && isCurrentSessionBook) {
+    ltiConsumerId = session.oauthClient.id;
+    ltiContextId = session.ltiContext.id;
+  }
+  let ltiContextActivity = null;
+  if (ltiContextId && ltiConsumerId) {
+    ltiContextActivity = await upsertLtiContextActivity({
+      learnerId: session.user.id,
+      bookId,
+      topicId: params.topic_id,
+      ltiConsumerId,
+      ltiContextId,
+      activity: body,
+    });
+  }
 
   if (ltiContextActivity == null) return { status: 400 };
 
   const topicActivity = await upsertTopicActivity({
     learnerId: session.user.id,
-    bookId: query.book_id,
+    bookId,
     topicId: params.topic_id,
     activity: body,
   });
