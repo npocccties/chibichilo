@@ -22,7 +22,7 @@ export type BookActivitySchema = Pick<ActivitySchema, "learner" | "topic"> &
   Partial<
     Pick<
       ActivitySchema,
-      "id" | "ltiContext" | "totalTimeMs" | "createdAt" | "updatedAt"
+      "id" | "bookId" | "ltiContext" | "totalTimeMs" | "createdAt" | "updatedAt"
     >
   > &
   Pick<FromSchema<typeof BookActivitySchema>, "book" | "status">;

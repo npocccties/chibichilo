@@ -222,8 +222,10 @@ model LtiResourceLink {
   title      String
   book       Book        @relation(fields: [bookId], references: [id])
   bookId     Int         @map("book_id")
-  creator    User        @relation(fields: [creatorId], references: [id])
-  creatorId  Int         @map("creator_id")
+  creator    User?       @relation(fields: [creatorId], references: [id])
+  creatorId  Int?        @map("creator_id")
+  /// 成績送信先URL(AGS LineItem URL)
+  lineItem  String   @default("") @map("line_item")
   /// 作成日
   createdAt  DateTime    @default(now()) @map("created_at")
   /// 更新日
@@ -240,6 +242,7 @@ model Book {
   sections         Section[]
   publicBooks      PublicBook[]
   ltiResourceLinks LtiResourceLink[]
+  bookmarks Bookmark[]
   /// 題名
   name             String
   /// 説明 (Markdown)
@@ -365,6 +368,7 @@ model Activity {
   timeRanges    ActivityTimeRange[]
   timeRangeLogs    ActivityTimeRangeLog[]
   timeRangeCounts    ActivityTimeRangeCount[]
+  bookId        Int                 @default(0) @map("book_id")
   topic         Topic               @relation(fields: [topicId], references: [id])
   topicId       Int                 @map("topic_id")
   learner       User                @relation(fields: [learnerId], references: [id])
@@ -379,7 +383,7 @@ model Activity {
   /// 更新日
   updatedAt     DateTime            @default(now()) @map("updated_at")
 
-  @@unique([topicId, learnerId, ltiConsumerId, ltiContextId])
+  @@unique([bookId, topicId, learnerId, ltiConsumerId, ltiContextId])
   @@map("activities")
 }
 
@@ -481,12 +485,15 @@ model Bookmark {
   topicId Int   @map("topic_id")
   topic   Topic @relation(fields: [topicId], references: [id])
 
+  bookId  Int  @default(0) @map("book_id")
+  book    Book @relation(fields: [bookId], references: [id])
+
   memoContent String @default("")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId])
+  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId, bookId])
 }
 
 // Etc.

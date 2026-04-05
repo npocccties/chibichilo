@@ -13,6 +13,7 @@ export const Default: Story = {
   render: () => (
     <TagWithDeleteButton
       topicId={1}
+      bookId={2}
       bookmark={bookmark}
       onDeleteBookmark={async () => {}}
     />

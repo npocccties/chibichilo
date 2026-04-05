@@ -68,6 +68,12 @@ export interface InlineResponse20017BookActivities {
     topic: InlineResponse2009Topic;
     /**
      * 
+     * @type {number}
+     * @memberof InlineResponse20017BookActivities
+     */
+    bookId?: number;
+    /**
+     * 
      * @type {boolean}
      * @memberof InlineResponse20017BookActivities
      */
@@ -124,6 +130,7 @@ export function InlineResponse20017BookActivitiesFromJSONTyped(json: any, ignore
         'learner': InlineResponse2009LearnerFromJSON(json['learner']),
         'ltiContext': !exists(json, 'ltiContext') ? undefined : LTIContextFromJSON(json['ltiContext']),
         'topic': InlineResponse2009TopicFromJSON(json['topic']),
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
         'completed': !exists(json, 'completed') ? undefined : json['completed'],
         'totalTimeMs': !exists(json, 'totalTimeMs') ? undefined : json['totalTimeMs'],
         'timeRanges': !exists(json, 'timeRanges') ? undefined : ((json['timeRanges'] as Array<any>).map(InlineResponse2009TimeRangesFromJSON)),
@@ -147,6 +154,7 @@ export function InlineResponse20017BookActivitiesToJSON(value?: InlineResponse20
         'learner': InlineResponse2009LearnerToJSON(value.learner),
         'ltiContext': LTIContextToJSON(value.ltiContext),
         'topic': InlineResponse2009TopicToJSON(value.topic),
+        'bookId': value.bookId,
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,
         'timeRanges': value.timeRanges === undefined ? undefined : ((value.timeRanges as Array<any>).map(InlineResponse2009TimeRangesToJSON)),

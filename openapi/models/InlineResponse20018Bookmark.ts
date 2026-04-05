@@ -47,6 +47,12 @@ export interface InlineResponse20018Bookmark {
      * @type {number}
      * @memberof InlineResponse20018Bookmark
      */
+    bookId: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20018Bookmark
+     */
     tagId: number;
     /**
      * 
@@ -104,6 +110,7 @@ export function InlineResponse20018BookmarkFromJSONTyped(json: any, ignoreDiscri
         
         'id': json['id'],
         'topicId': json['topicId'],
+        'bookId': json['bookId'],
         'tagId': json['tagId'],
         'userId': json['userId'],
         'ltiContextId': !exists(json, 'ltiContextId') ? undefined : json['ltiContextId'],
@@ -126,6 +133,7 @@ export function InlineResponse20018BookmarkToJSON(value?: InlineResponse20018Boo
         
         'id': value.id,
         'topicId': value.topicId,
+        'bookId': value.bookId,
         'tagId': value.tagId,
         'userId': value.userId,
         'ltiContextId': value.ltiContextId,

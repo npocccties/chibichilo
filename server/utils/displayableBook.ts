@@ -25,7 +25,10 @@ export function getDisplayableBook<
 >(
   book: Book | undefined,
   isContentEditable: IsContentEditable | undefined,
-  ltiResourceLink?: Pick<LtiResourceLinkSchema, "bookId" | "creatorId">,
+  ltiResourceLink?: Pick<
+    LtiResourceLinkSchema,
+    "bookId" | "creatorId" | "instructors"
+  >,
   publicBook?: PublicBookSchema,
   isInstructor?: boolean | false
 ): Book | undefined {

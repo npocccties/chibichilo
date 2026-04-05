@@ -68,6 +68,7 @@ async function findWordCloud(
       ltiContextId,
       ltiConsumerId,
       topicId: topicSection.topic.id,
+      bookId: ltiContextId && ltiConsumerId ? bookId : 0,
     });
     for (const bookmark of bookmarks.bookmark) {
       if (!bookmark.memoContent) {

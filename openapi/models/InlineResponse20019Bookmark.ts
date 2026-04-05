@@ -14,6 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    InlineResponse20017Book,
+    InlineResponse20017BookFromJSON,
+    InlineResponse20017BookFromJSONTyped,
+    InlineResponse20017BookToJSON,
     InlineResponse20019Topic,
     InlineResponse20019TopicFromJSON,
     InlineResponse20019TopicFromJSONTyped,
@@ -42,6 +46,12 @@ export interface InlineResponse20019Bookmark {
      * @memberof InlineResponse20019Bookmark
      */
     topicId: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse20019Bookmark
+     */
+    bookId: number;
     /**
      * 
      * @type {number}
@@ -80,6 +90,12 @@ export interface InlineResponse20019Bookmark {
     memoContent?: string;
     /**
      * 
+     * @type {InlineResponse20017Book}
+     * @memberof InlineResponse20019Bookmark
+     */
+    book?: InlineResponse20017Book;
+    /**
+     * 
      * @type {InlineResponse20019Topic}
      * @memberof InlineResponse20019Bookmark
      */
@@ -104,12 +120,14 @@ export function InlineResponse20019BookmarkFromJSONTyped(json: any, ignoreDiscri
         
         'id': json['id'],
         'topicId': json['topicId'],
+        'bookId': json['bookId'],
         'tagId': json['tagId'],
         'userId': json['userId'],
         'ltiContextId': !exists(json, 'ltiContextId') ? undefined : json['ltiContextId'],
         'ltiConsumerId': !exists(json, 'ltiConsumerId') ? undefined : json['ltiConsumerId'],
         'tag': json['tag'],
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
+        'book': !exists(json, 'book') ? undefined : InlineResponse20017BookFromJSON(json['book']),
         'topic': InlineResponse20019TopicFromJSON(json['topic']),
         'ltiContext': LTIContextFromJSON(json['ltiContext']),
     };
@@ -126,12 +144,14 @@ export function InlineResponse20019BookmarkToJSON(value?: InlineResponse20019Boo
         
         'id': value.id,
         'topicId': value.topicId,
+        'bookId': value.bookId,
         'tagId': value.tagId,
         'userId': value.userId,
         'ltiContextId': value.ltiContextId,
         'ltiConsumerId': value.ltiConsumerId,
         'tag': value.tag,
         'memoContent': value.memoContent,
+        'book': InlineResponse20017BookToJSON(value.book),
         'topic': InlineResponse20019TopicToJSON(value.topic),
         'ltiContext': LTIContextToJSON(value.ltiContext),
     };

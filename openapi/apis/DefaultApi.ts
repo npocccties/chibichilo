@@ -304,6 +304,7 @@ export interface ApiV2BookmarkStatsGetRequest {
 export interface ApiV2BookmarksGetRequest {
     isAllUsers: boolean;
     topicId?: number;
+    bookId?: number;
     tagIds?: string;
     isExistMemoContent?: boolean;
 }
@@ -437,6 +438,7 @@ export interface ApiV2TopicPostRequest {
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
+    bookId: number;
     topicId: number;
     currentLtiContextOnly?: boolean;
     ltiConsumerId?: string;
@@ -1435,6 +1437,10 @@ export class DefaultApi extends runtime.BaseAPI {
             queryParameters['topicId'] = requestParameters.topicId;
         }
 
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['bookId'] = requestParameters.bookId;
+        }
+
         if (requestParameters.tagIds !== undefined) {
             queryParameters['tagIds'] = requestParameters.tagIds;
         }
@@ -1570,7 +1576,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 / にリダイレクトします。
      * LTI v1.3 リダイレクトURI
      */
     async apiV2LtiCallbackPostRaw(requestParameters: ApiV2LtiCallbackPostRequest): Promise<runtime.ApiResponse<void>> {
@@ -1620,7 +1626,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 / にリダイレクトします。
      * LTI v1.3 リダイレクトURI
      */
     async apiV2LtiCallbackPost(requestParameters: ApiV2LtiCallbackPostRequest): Promise<void> {
@@ -1748,7 +1754,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 / にリダイレクトします。
      * LTI v1.1 起動エンドポイント (非推奨)
      */
     async apiV2LtiLaunchPostRaw(requestParameters: ApiV2LtiLaunchPostRequest): Promise<runtime.ApiResponse<void>> {
@@ -1902,7 +1908,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
+     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 / にリダイレクトします。
      * LTI v1.1 起動エンドポイント (非推奨)
      */
     async apiV2LtiLaunchPost(requestParameters: ApiV2LtiLaunchPostRequest): Promise<void> {
@@ -2614,6 +2620,10 @@ export class DefaultApi extends runtime.BaseAPI {
      * 学習活動の更新
      */
     async apiV2TopicTopicIdActivityPutRaw(requestParameters: ApiV2TopicTopicIdActivityPutRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+        if (requestParameters.bookId === null || requestParameters.bookId === undefined) {
+            throw new runtime.RequiredError('bookId','Required parameter requestParameters.bookId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
+        }
+
         if (requestParameters.topicId === null || requestParameters.topicId === undefined) {
             throw new runtime.RequiredError('topicId','Required parameter requestParameters.topicId was null or undefined when calling apiV2TopicTopicIdActivityPut.');
         }
@@ -2630,6 +2640,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.ltiContextId !== undefined) {
             queryParameters['lti_context_id'] = requestParameters.ltiContextId;
+        }
+
+        if (requestParameters.bookId !== undefined) {
+            queryParameters['book_id'] = requestParameters.bookId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

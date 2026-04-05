@@ -143,6 +143,7 @@ export default function Book(props: Props) {
     onItemClick,
     considerAppBar = true,
   } = props;
+
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
   const { isInstructor, isContentEditable } = useSessionAtom();
   const [expanded, setExpanded] = useState(false);
@@ -288,6 +289,7 @@ export default function Book(props: Props) {
           {topic && (
             <TopicViewer
               topic={topic}
+              book={book}
               bookActivity={bookActivity}
               onEnded={onTopicEnded}
               offset={offset}
@@ -305,6 +307,7 @@ export default function Book(props: Props) {
         >
           <Sections
             index={[sectionIndex, topicIndex]}
+            bookId={book?.id ?? -1}
             sections={book?.sections ?? []}
             onItemClick={handleItemClick}
             onItemEditClick={handleItemEditClick}

@@ -64,6 +64,12 @@ export interface InlineResponse2009Activity {
     topic: InlineResponse2009Topic;
     /**
      * 
+     * @type {number}
+     * @memberof InlineResponse2009Activity
+     */
+    bookId: number;
+    /**
+     * 
      * @type {boolean}
      * @memberof InlineResponse2009Activity
      */
@@ -108,6 +114,7 @@ export function InlineResponse2009ActivityFromJSONTyped(json: any, ignoreDiscrim
         'learner': InlineResponse2009LearnerFromJSON(json['learner']),
         'ltiContext': !exists(json, 'ltiContext') ? undefined : LTIContextFromJSON(json['ltiContext']),
         'topic': InlineResponse2009TopicFromJSON(json['topic']),
+        'bookId': json['bookId'],
         'completed': json['completed'],
         'totalTimeMs': json['totalTimeMs'],
         'timeRanges': ((json['timeRanges'] as Array<any>).map(InlineResponse2009TimeRangesFromJSON)),
@@ -129,6 +136,7 @@ export function InlineResponse2009ActivityToJSON(value?: InlineResponse2009Activ
         'learner': InlineResponse2009LearnerToJSON(value.learner),
         'ltiContext': LTIContextToJSON(value.ltiContext),
         'topic': InlineResponse2009TopicToJSON(value.topic),
+        'bookId': value.bookId,
         'completed': value.completed,
         'totalTimeMs': value.totalTimeMs,
         'timeRanges': ((value.timeRanges as Array<any>).map(InlineResponse2009TimeRangesToJSON)),

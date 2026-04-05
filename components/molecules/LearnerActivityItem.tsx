@@ -67,8 +67,10 @@ export default function LearnerActivityItem(props: Props) {
               session={session}
               rewatchRate={rewatchRates.find(
                 (r) =>
-                  r.learnerId === activity.learner.id &&
-                  r.topicId === activity.topic.id
+                  (r.learnerId === activity.learner.id &&
+                    r.topicId === activity.topic.id &&
+                    r.bookId === activity.bookId) ??
+                  0
               )}
             />
             {activities[index + 1] &&

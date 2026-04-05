@@ -42,8 +42,14 @@ async function findLtiMembersWithTimeRangeCount(
           ltiConsumerId: consumerId,
           ltiContextId: contextId,
           ...topicActivityScope,
+          ...{ bookId: { not: 0 } },
         }
-      : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
+      : {
+          ltiConsumerId: "",
+          ltiContextId: "",
+          ...topicActivityScope,
+          ...{ bookId: 0 },
+        };
 
   const whereClause = administrator
     ? {
@@ -53,11 +59,14 @@ async function findLtiMembersWithTimeRangeCount(
         ltiMembers: { some: { consumerId, contextId } },
       };
 
+  // Step 1: activities を先に絞り込む（_count サブクエリなし）
+  // _count に where 句を持つ Prisma クエリは activities_time_range_counts 全件スキャンになるため分離
   const learners = await prisma.user.findMany({
     select: {
       activities: {
         select: {
           id: true,
+          bookId: true,
           totalTimeMs: true,
           topic: {
             select: {
@@ -66,17 +75,6 @@ async function findLtiMembersWithTimeRangeCount(
             },
           },
           learnerId: true,
-          _count: {
-            select: {
-              timeRangeCounts: {
-                where: {
-                  count: {
-                    gte: rewatchThreshold,
-                  },
-                },
-              },
-            },
-          },
         },
         where: {
           ...activityScope,
@@ -88,7 +86,33 @@ async function findLtiMembersWithTimeRangeCount(
     },
   });
 
-  return learners;
+  const activities = learners.flatMap(({ activities }) => activities);
+
+  // Step 2: 絞り込んだ activity_id に対してのみ count を取得（相関クエリ化）
+  // activities が空でも Prisma は `in: []` を正しく処理する（0件返却）
+  const activityIds = activities.map((a) => a.id);
+  const countRows = await prisma.activityTimeRangeCount.groupBy({
+    by: ["activityId"],
+    where: {
+      activityId: { in: activityIds },
+      count: { gte: rewatchThreshold },
+    },
+    _count: { activityId: true },
+  });
+  const countMap = new Map(
+    countRows.map((r) => [r.activityId, r._count.activityId])
+  );
+
+  // Step 3: マージして元の形式に戻す
+  return learners.map((learner) => ({
+    ...learner,
+    activities: learner.activities.map((activity) => ({
+      ...activity,
+      _count: {
+        timeRangeCounts: countMap.get(activity.id) ?? 0,
+      },
+    })),
+  }));
 }
 
 async function findAllActivityWithTimeRangeCount(

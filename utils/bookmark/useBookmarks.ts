@@ -38,10 +38,12 @@ export function useFilterBookmarks({
 
 export function useBookmarksByTopicId({
   topicId,
+  bookId,
   isAllUsers = false,
 }: {
   topicId: number;
+  bookId: number | undefined;
   isAllUsers?: BookmarkQuery["isAllUsers"];
 }) {
-  return useBookmarks({ topicId, isAllUsers });
+  return useBookmarks({ topicId, bookId, isAllUsers });
 }

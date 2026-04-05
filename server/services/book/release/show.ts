@@ -16,6 +16,7 @@ import {
   findReleasedBooks,
   findParentBook,
 } from "$server/utils/book/release";
+import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 
 export const showSchema: FastifySchema = {
   summary: "ブックのリリース一覧取得",
@@ -56,7 +57,7 @@ export async function show({
       session.user.id,
       isAdministrator(session)
     );
-  } else if (session.ltiResourceLink?.bookId === params.book_id) {
+  } else if (await checkLtiResourceLink(params.book_id, session, {})) {
     books = await findParentBook(book);
   } else {
     return { status: 403 };

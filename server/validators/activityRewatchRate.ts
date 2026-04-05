@@ -4,6 +4,7 @@ export const ActivityRewatchRateProps = {
   type: "object",
   required: ["topicId", "learnerId", "rewatchRate"],
   properties: {
+    bookId: { type: "integer" },
     topicId: { type: "integer" },
     learnerId: { type: "integer" },
     rewatchRate: { type: "number" },

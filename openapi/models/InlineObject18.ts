@@ -31,6 +31,12 @@ export interface InlineObject18 {
      * @memberof InlineObject18
      */
     topicId?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject18
+     */
+    bookId?: number;
 }
 
 export function InlineObject18FromJSON(json: any): InlineObject18 {
@@ -45,6 +51,7 @@ export function InlineObject18FromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
+        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
     };
 }
 
@@ -59,6 +66,7 @@ export function InlineObject18ToJSON(value?: InlineObject18 | null): any {
         
         'tagId': value.tagId,
         'topicId': value.topicId,
+        'bookId': value.bookId,
     };
 }
 
