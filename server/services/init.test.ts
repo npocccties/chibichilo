@@ -55,7 +55,8 @@ describe("init()", () => {
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         lineItem: "https://example.com/lineitem",
-      })
+      }),
+      undefined
     );
   });
 });
