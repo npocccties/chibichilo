@@ -40,7 +40,7 @@ export class LtiResourceLinkSchema extends LtiResourceLinkProps {
 
   @IsOptional()
   @IsString()
-  lineItem!: string;
+  lineItem?: string;
 }
 
 export const {
