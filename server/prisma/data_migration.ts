@@ -242,7 +242,7 @@ async function deleteOriginalBookActivity({
       ) {
         // レコードが存在しなかったらスキップ
         console.warn("Deletion skipped: target record not found.");
-	return undefined
+        return undefined;
       } else {
         throw error; // ロールバック
       }

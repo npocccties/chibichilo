@@ -315,7 +315,6 @@ function upsert({
         ltiConsumerId,
         ltiContextId,
       },
-
     },
     create: {
       ...input,

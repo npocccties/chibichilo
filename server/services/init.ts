@@ -110,7 +110,7 @@ async function init({ session }: FastifyRequest) {
         title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
         contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
         contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
-	lineItem,
+        lineItem,
       },
       session.ltiNrpsParameter?.context_memberships_url
     );
