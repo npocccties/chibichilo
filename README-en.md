@@ -1,14 +1,14 @@
-# ViLOG
+# CHiBi-CHiLO
 
 [English](README-en.md) |[Japanese](README-ja.md)
 
 ## What kind of program is it?
 
-ViLOG is an open-source program for analyzing video viewing logs. This program allows you to compile video contents already existing on Wowza, YouTube, and Vimeo into easy-to-use contents for learners and to collect and visualize video viewing logs. This system is an LTI tool provider and can be used in conjunction with LMS such as Moodle and BlackBoard.
+CHiBi-CHiLO is an open-source program for analyzing video viewing logs. This program allows you to compile video contents already existing on Wowza, YouTube, and Vimeo into easy-to-use contents for learners and to collect and visualize video viewing logs. This system is an LTI tool provider and can be used in conjunction with LMS such as Moodle and BlackBoard.
 
 <!--- わかりやすい動画例を添付する。 --- LTI リンクを起点とする操作例 Gif か mp4 へのリンク-->
 
-## How to Use ViLOG
+## How to Use CHiBi-CHiLO
 
 Please read the installation guide (INSTALL-ja.md).
 
