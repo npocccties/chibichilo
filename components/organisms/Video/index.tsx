@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import usePrevious from "@rooks/use-previous";
 import { css } from "@emotion/css";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import type { TopicSchema } from "$server/models/topic";
 import type { VideoResourceSchema } from "$server/models/videoResource";
@@ -64,9 +66,14 @@ const skipButton = css({
   lineHeight: 1,
 });
 
+const markdownContainerStyle = css({
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
+});
+
 function SkipButton(props: ButtonProps) {
   return (
-    <Button {...props} className={skipButton} size="small" color="secondary">
+    <Button {...props} className={skipButton} size="small" color="primary">
       未視聴箇所へ
     </Button>
   );
@@ -168,6 +175,8 @@ export default function Video({
   isPrivateBook = false,
   isBookPage = false,
 }: Props) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { video, preloadVideo } = useVideoAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const { session } = useSessionAtom();
@@ -187,6 +196,7 @@ export default function Video({
   const oembed = useOembed(topic.resource.id);
   const prevItemIndex = usePrevious(itemIndex);
   useEffect(() => {
+    if (!book) return;
     const topic = itemExists(itemIndex);
     const startTime = topic?.startTime;
     const stopTime = topic?.stopTime;
@@ -266,7 +276,7 @@ export default function Video({
       videoInstance.player.off("play", handleFirstPlay);
     };
     // TODO: videoの内容の変更検知は機能しないので修正したい。Mapオブジェクトでの管理をやめるかMap.prototype.set()を使用しないようにするなど必要かもしれない。
-  }, [video, itemExists, prevItemIndex, itemIndex, onEnded]);
+  }, [book, video, itemExists, prevItemIndex, itemIndex, onEnded]);
 
   const handleSkipWatch = useCallback(async () => {
     const videoInstance = video.get(String(topic?.id));
@@ -296,6 +306,7 @@ export default function Video({
 
   const bookmarksByTopicId = useBookmarksByTopicId({
     topicId: topic.id,
+    bookId: book?.id ?? -1,
   });
 
   const { bookmarks, bookmarkTagMenu, isLoading } =
@@ -309,7 +320,15 @@ export default function Video({
         Array.from(video.entries()).map(([id, videoInstance]) => (
           <VideoPlayer
             key={id}
-            sx={{ ...videoStyle, ...sx }}
+            sx={{
+              ...videoStyle,
+              ...sx,
+              position: String(topic.id) === id ? "sticky" : "static",
+              top: String(topic.id) === id ? (isMobile ? 0 : 56) : "auto",
+              zIndex: String(topic.id) === id ? 10 : "auto",
+              backgroundColor:
+                String(topic.id) === id ? "#ffffff" : "transparent",
+            }}
             videoInstance={videoInstance}
             autoplay={String(topic.id) === id}
             hidden={String(topic.id) !== id}
@@ -334,6 +353,7 @@ export default function Video({
           <TagList
             key={topic.id}
             topicId={topic.id}
+            bookId={book?.id ?? -1}
             bookmarks={bookmarks}
             tagMenu={bookmarkTagMenu}
           />
@@ -386,7 +406,7 @@ export default function Video({
         )}
       </Box>
       <TabPanel value={tabIndex} index={0}>
-        <article>
+        <article className={markdownContainerStyle}>
           <Markdown>{topic.description}</Markdown>
         </article>
       </TabPanel>
@@ -447,7 +467,10 @@ export default function Video({
               key: "更新日",
               value: getLocaleDateString(topic.updatedAt, "ja"),
             },
-            ...authors(topic),
+            // 著作権者または作成者
+            ...(topic.licenser
+              ? [{ key: "", value: topic.licenser }]
+              : authors(topic)),
           ]}
         />
         {topic.keywords && (

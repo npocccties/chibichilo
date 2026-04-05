@@ -5,10 +5,12 @@ import { api } from "./api";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { IsContentEditable } from "$server/models/content";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { revalidateSession } from "./session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
+import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 const key = "/api/v2/book/{book_id}";
 
@@ -35,28 +37,49 @@ async function fetchBook({
 export function useBook(
   bookId: BookSchema["id"] | undefined,
   isContentEditable?: IsContentEditable,
-  ltiResourceLink?: Pick<LtiResourceLinkSchema, "bookId" | "creatorId"> | null,
+  ltiResourceLink?: Pick<
+    LtiResourceLinkSchema,
+    "bookId" | "creatorId" | "consumerId" | "contextId"
+  > | null,
   token?: string
 ) {
   isContentEditable = useSessionAtom().isContentEditable;
-
+  const { ltiConsumerId, ltiContextId } = useLtiContextAtom();
   const { data, error } = useSWRImmutable<BookSchema>(
-    Number.isFinite(bookId) || token ? { key, bookId, token } : null,
+    Number.isFinite(bookId) || token
+      ? { key, bookId, token, ltiConsumerId, ltiContextId }
+      : null,
     fetchBook,
     { revalidateOnMount: true }
   );
+
   const publicBook = data?.publicBooks?.find(
     (publicBook) => publicBook.token === token
   );
+
+  const effectiveLtiResourceLink = useMemo(() => {
+    if (
+      ltiContextId &&
+      bookId !== undefined &&
+      ltiResourceLink?.bookId !== bookId
+    ) {
+      return {
+        bookId: bookId,
+        creatorId: ltiResourceLink?.creatorId ?? 0,
+      };
+    }
+    return ltiResourceLink ?? undefined;
+  }, [ltiContextId, bookId, ltiResourceLink]);
+
   const displayable = useMemo(
     () =>
       getDisplayableBook(
         data,
         isContentEditable,
-        ltiResourceLink ?? undefined,
+        effectiveLtiResourceLink,
         publicBook
       ),
-    [data, isContentEditable, ltiResourceLink, publicBook]
+    [data, isContentEditable, effectiveLtiResourceLink, publicBook]
   );
 
   return {
@@ -74,10 +97,13 @@ export async function createBook(body: BookProps): Promise<BookSchema> {
 
 export async function updateBook({
   id,
+  noclone,
   ...body
-}: BookProps & { id: BookSchema["id"] }): Promise<BookSchema> {
+}: BookProps & { id: BookSchema["id"] } & {
+  noclone?: boolean;
+}): Promise<BookSchema> {
   // @ts-expect-error NOTE: body.sections[].topics[].name のUnion型に null 含むか否か異なる
-  const res = await api.apiV2BookBookIdPut({ bookId: id, body });
+  const res = await api.apiV2BookBookIdPut({ bookId: id, body, noclone });
   await mutate({ key, bookId: res.id }, res);
   return res as BookSchema;
 }
@@ -90,7 +116,7 @@ export async function addTopicToBook(
     ...book.sections,
     { name: null, topics: [{ id: topic.id }] },
   ];
-  return updateBook({ ...book, sections });
+  return updateBook({ ...book, sections, noclone: true });
 }
 
 export async function replaceTopicInBook(
@@ -108,8 +134,8 @@ export async function replaceTopicInBook(
   return updateBook({ ...book, sections });
 }
 
-export async function destroyBook(id: BookSchema["id"]) {
-  await api.apiV2BookBookIdDelete({ bookId: id });
+export async function destroyBook(id: BookSchema["id"], withtopic: boolean) {
+  await api.apiV2BookBookIdDelete({ bookId: id, withtopic });
   await revalidateSession();
 }
 
@@ -122,4 +148,33 @@ export function revalidateBook(
 
 export async function getBookIdByZoom(meetingId: number) {
   return await api.apiV2BookZoomMeetingIdGet({ meetingId });
+}
+
+export async function updateReleaseBook({
+  id,
+  ...body
+}: ReleaseProps & { id: BookSchema["id"] }): Promise<ReleaseSchema> {
+  const res = await api.apiV2BookBookIdReleasePut({ bookId: id, body });
+  return res as ReleaseSchema;
+}
+
+export async function createReleaseBook({
+  id,
+  ...body
+}: ReleaseProps & { id: BookSchema["id"] }): Promise<BookSchema> {
+  const res = await api.apiV2BookBookIdReleasePost({ bookId: id, body });
+  return res as BookSchema;
+}
+
+export async function cloneBook(id: BookSchema["id"]): Promise<BookSchema> {
+  const res = await api.apiV2BookBookIdClonePost({ bookId: id });
+  return res as BookSchema;
+}
+
+export async function updateMetainfoBook(
+  id: BookSchema["id"],
+  body: MetainfoProps
+): Promise<MetainfoProps> {
+  const res = await api.apiV2BookBookIdMetainfoPut({ bookId: id, body });
+  return res as MetainfoProps;
 }

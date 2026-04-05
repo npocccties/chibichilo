@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    InlineResponse20022ActivityRewatchRate,
-    InlineResponse20022ActivityRewatchRateFromJSON,
-    InlineResponse20022ActivityRewatchRateFromJSONTyped,
-    InlineResponse20022ActivityRewatchRateToJSON,
+    InlineResponse20022ActivityTimeRangeCounts,
+    InlineResponse20022ActivityTimeRangeCountsFromJSON,
+    InlineResponse20022ActivityTimeRangeCountsFromJSONTyped,
+    InlineResponse20022ActivityTimeRangeCountsToJSON,
 } from './';
 
 /**
@@ -28,10 +28,16 @@ import {
 export interface InlineResponse20022 {
     /**
      * 
-     * @type {Array<InlineResponse20022ActivityRewatchRate>}
+     * @type {number}
      * @memberof InlineResponse20022
      */
-    activityRewatchRate: Array<InlineResponse20022ActivityRewatchRate>;
+    activityId?: number;
+    /**
+     * 
+     * @type {Array<InlineResponse20022ActivityTimeRangeCounts>}
+     * @memberof InlineResponse20022
+     */
+    activityTimeRangeCounts: Array<InlineResponse20022ActivityTimeRangeCounts>;
 }
 
 export function InlineResponse20022FromJSON(json: any): InlineResponse20022 {
@@ -44,7 +50,8 @@ export function InlineResponse20022FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'activityRewatchRate': ((json['activityRewatchRate'] as Array<any>).map(InlineResponse20022ActivityRewatchRateFromJSON)),
+        'activityId': !exists(json, 'activityId') ? undefined : json['activityId'],
+        'activityTimeRangeCounts': ((json['activityTimeRangeCounts'] as Array<any>).map(InlineResponse20022ActivityTimeRangeCountsFromJSON)),
     };
 }
 
@@ -57,7 +64,8 @@ export function InlineResponse20022ToJSON(value?: InlineResponse20022 | null): a
     }
     return {
         
-        'activityRewatchRate': ((value.activityRewatchRate as Array<any>).map(InlineResponse20022ActivityRewatchRateToJSON)),
+        'activityId': value.activityId,
+        'activityTimeRangeCounts': ((value.activityTimeRangeCounts as Array<any>).map(InlineResponse20022ActivityTimeRangeCountsToJSON)),
     };
 }
 

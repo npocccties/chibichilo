@@ -2,16 +2,26 @@ import type { ActivityTimeRangeCountProps } from "$server/validators/activityTim
 import useActivityTimeRangeCountByTopic from "$utils/useActivityTimeRangeCountByTopic";
 import React, { useRef, useEffect } from "react";
 import type { FromSchema } from "json-schema-to-ts";
+import makeStyles from "@mui/styles/makeStyles";
 
 import * as d3 from "d3";
 
 import { NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD } from "$utils/env";
-import { NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE } from "$utils/env";
+import {
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE,
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR,
+  NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY,
+} from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
+import { NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL } from "$utils/env";
 
-const ACTIVITY_COUNT_INTERVAL2 = Number(
-  process.env.ACTIVITY_COUNT_INTERVAL ?? 1
-);
+const useStyles = makeStyles(() => ({
+  outilerDescriptionArea: {
+    textAlign: "right",
+    fontSize: "75%",
+    marginBottom: "0.5em",
+  },
+}));
 
 type Props = {
   scope: boolean;
@@ -143,6 +153,50 @@ export function PlotAndLineChart({
       .attr("transform", "rotate(-90)")
       .text("count");
 
+    // 凡例
+    const legend = svg
+      .selectAll(".legends")
+      .data(["平均視聴回数", "視聴回数"])
+      .enter()
+      .append("g")
+      .attr("transform", function (d, i) {
+        {
+          return (
+            "translate(" + (width - marginRight) + "," + (i + 1) * 20 + ")"
+          );
+        }
+      });
+
+    legend
+      .append("rect") // 平均視聴回数の記号
+      .data(["平均視聴回数"])
+      .attr("x", 0)
+      .attr("y", 5)
+      .attr("width", 10)
+      .attr("height", 1)
+      .attr("opacity", 0.8)
+      .style("fill", "red");
+
+    legend
+      .append("circle") // 視聴回数の記号
+      .data(["視聴回数"])
+      .attr("cx", 0 + NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
+      .attr("cy", 25)
+      .attr("r", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
+      .attr("fill", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR)
+      .attr("opacity", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY);
+
+    legend
+      .append("text") // 凡例の文言
+      .attr("x", 20)
+      .attr("y", 10)
+      .text(function (d) {
+        return d;
+      })
+      .attr("class", "textselected")
+      .style("text-anchor", "start")
+      .style("font-size", 15);
+
     svg
       .selectAll("circle")
       .data(plot)
@@ -151,8 +205,8 @@ export function PlotAndLineChart({
       .attr("cx", (d) => x(d.startMs / 1000))
       .attr("cy", (d) => y(d.count))
       .attr("r", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE)
-      .attr("fill", "gray")
-      .attr("opacity", 0.3)
+      .attr("fill", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR)
+      .attr("opacity", NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
@@ -205,13 +259,17 @@ function padZeroTimeRangeCount(
   const activityIds = [...new Set(counts.map((c) => c.activityId))];
 
   activityIds.forEach((activityId) => {
-    for (let t = startTime; t < stopTime; t += ACTIVITY_COUNT_INTERVAL2) {
+    for (
+      let t = startTime;
+      t < stopTime;
+      t += NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL
+    ) {
       if (
         counts.find((c) => {
           return (
             c.activityId === activityId &&
             c.startMs === t * 1000 &&
-            c.endMs === (t + ACTIVITY_COUNT_INTERVAL2) * 1000
+            c.endMs === (t + NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL) * 1000
           );
         })
       )
@@ -220,7 +278,7 @@ function padZeroTimeRangeCount(
       counts.push({
         activityId: activityId,
         startMs: t * 1000,
-        endMs: (t + ACTIVITY_COUNT_INTERVAL2) * 1000,
+        endMs: (t + NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL) * 1000,
         count: 0,
       });
     }
@@ -232,6 +290,7 @@ export default function ActivityRewatchGraph(props: Props) {
   const { scope, topicId, topicTimeRequired, topicStartTime, topicStopTime } =
     props;
   const { data: counts } = useActivityTimeRangeCountByTopic(topicId, scope);
+  const classes = useStyles();
   if (!NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) {
     return <></>;
   }
@@ -266,7 +325,15 @@ export default function ActivityRewatchGraph(props: Props) {
     <>
       <div style={{ position: "relative" }}>
         <div id="tooltip"></div>
-        <PlotAndLineChart plot={plot} average={average} />
+        <div>
+          <PlotAndLineChart plot={plot} average={average} />
+        </div>
+        <div className={classes.outilerDescriptionArea}>
+          <p>
+            ※ 視聴回数が {NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD}{" "}
+            回を超えるものは、外れ値として除去しています。
+          </p>
+        </div>
       </div>
     </>
   );

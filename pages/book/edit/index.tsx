@@ -6,12 +6,24 @@ import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
 import { useSessionAtom } from "$store/session";
 import BookEdit from "$templates/BookEdit";
+import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
-import { destroyBook, updateBook, useBook } from "$utils/book";
+import {
+  cloneBook,
+  destroyBook,
+  revalidateBook,
+  updateBook,
+  updateMetainfoBook,
+  updateReleaseBook,
+  useBook,
+} from "$utils/book";
 import { pagesPath } from "$utils/$path";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
+import type { ReleaseProps } from "$server/models/book/release";
+import { mutateReleasebooks } from "$utils/useReleaseBooks";
+import type { MetainfoProps } from "$server/models/metainfo";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -46,8 +58,11 @@ function Edit({ bookId, context }: Query) {
     if (submitWithLink) await onBookLinking?.({ id: bookId });
     return back();
   }
-  async function handleDelete({ id }: Pick<BookSchema, "id">) {
-    await destroyBook(id);
+  async function handleDelete(
+    { id }: Pick<BookSchema, "id">,
+    withtopic: boolean
+  ) {
+    await destroyBook(id, withtopic);
     switch (context) {
       case "books":
       case "topics":
@@ -86,6 +101,42 @@ function Edit({ bookId, context }: Query) {
   const handleOverwriteClick = () => {
     return router.push(pagesPath.book.overwrite.$url({ query: { bookId } }));
   };
+  async function handleReleaseUpdate(release: ReleaseProps) {
+    if (!book) return;
+    await updateReleaseBook({
+      id: book.id,
+      ...release,
+    });
+    await mutateReleasebooks(book.id);
+  }
+  async function handleRelease({ id }: Pick<BookSchema, "id">) {
+    return router.push(
+      pagesPath.book.release.$url({
+        query: { bookId: id, ...(context && { context }) },
+      })
+    );
+  }
+  async function handleItemEditClick(bookId: BookSchema["id"]) {
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { bookId, ...(context && { context }) },
+      })
+    );
+  }
+  async function handleClone({ id }: Pick<BookSchema, "id">) {
+    const created = await cloneBook(id);
+    return router.push(
+      pagesPath.book.edit.$url({
+        query: { bookId: created.id, ...(context && { context }) },
+      })
+    );
+  }
+  async function handleMetainfoUpdate(metainfo: MetainfoProps) {
+    if (book) {
+      const _res = await updateMetainfoBook(book.id, metainfo);
+      await revalidateBook(book.id);
+    }
+  }
   const handlers = {
     linked: bookId === session?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -100,12 +151,19 @@ function Edit({ bookId, context }: Query) {
     onAuthorSubmit: handleAuthorSubmit,
     isContentEditable,
     onOverwriteClick: handleOverwriteClick,
+    onReleaseUpdate: handleReleaseUpdate,
+    onRelease: handleRelease,
+    onItemEditClick: handleItemEditClick,
+    onClone: handleClone,
+    onMetainfoUpdate: handleMetainfoUpdate,
   };
 
   if (error) return <BookNotFoundProblem />;
   if (!book) return <Placeholder />;
 
-  return <BookEdit book={book} {...handlers} />;
+  const Template = book.release ? BookEditReleased : BookEdit;
+
+  return <Template book={book} {...handlers} />;
 }
 
 function Router() {

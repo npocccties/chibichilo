@@ -74,7 +74,7 @@ export function useSearchAtom() {
       updateQuery({
         type,
         q: "",
-        filter: "self",
+        filter: "edit",
         sort: "updated",
         perPage: 30,
         page: 0,

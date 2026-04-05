@@ -13,7 +13,7 @@ type BookState = {
 
 const bookAtom = atomWithReset<BookState>({
   book: undefined,
-  itemIndex: [0, 0],
+  itemIndex: [-1, -1],
   itemExists: () => undefined,
 });
 
@@ -34,7 +34,7 @@ const updateBookAtom = atom<undefined, [BookSchema], void>(
   (_, set, book) => {
     set(bookAtom, {
       book,
-      itemIndex: [0, 0],
+      itemIndex: [-1, -1],
       itemExists: ([sectionIndex, topicIndex]) =>
         book.sections[sectionIndex]?.topics[topicIndex],
     });

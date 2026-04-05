@@ -7,6 +7,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Version Management
+
+/// リリース
+model Release {
+  bookId     Int      @id @map("book_id")
+  book       Book     @relation(fields: [bookId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  releasedAt DateTime @default(now()) @map("released_at")
+  version    String   @default("0.0.0")
+  comment    String   @default("")
+  /// 共有可否 (true: シェアする, それ以外: シェアしない)
+  shared       Boolean      @default(false)
+
+  @@map("release")
+}
+
 // Resource Objects
 
 /// Zoomインポート履歴
@@ -84,17 +99,30 @@ model Topic {
   /// 再生終了時間 (秒, 0 は無効)
   stopTime     Float?       @map("stop_time")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared       Boolean      @default(true)
+  shared       Boolean      @default(false)
   /// 著作者
   authors      Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license      String       @default("")
+  /// 著作権者
+  licenser     String       @default("")
   /// 作成日
   createdAt    DateTime     @default(now()) @map("created_at")
   /// 更新日
   updatedAt    DateTime     @default(now()) @map("updated_at")
   /// 詳細
   details      Json
+
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@map("topics")
 }
@@ -154,6 +182,7 @@ model LtiContext {
   bookmarks     Bookmark[]
   title         String
   label         String
+  contextMembershipsUrl String  @default("") @map("context_memberships_url")
 
   @@id([consumerId, id])
   @@map("lti_context")
@@ -171,6 +200,18 @@ model LtiMember {
   @@map("lti_members")
 }
 
+/// LTI Member table for administrator
+model LtiMemberAdmin {
+//  context    LtiContext @relation(fields: [consumerId, contextId], references: [consumerId, id])
+  user       User       @relation(fields: [consumerId, userId], references: [ltiConsumerId, ltiUserId])
+  consumerId String     @map("consumer_id")
+  contextId  String     @map("context_id")
+  userId     String     @map("user_id")
+
+  @@id([consumerId, contextId, userId])
+  @@map("lti_members_admin")
+}
+
 /// LTI Resource Link
 model LtiResourceLink {
   consumer   LtiConsumer @relation(fields: [consumerId], references: [id])
@@ -181,8 +222,10 @@ model LtiResourceLink {
   title      String
   book       Book        @relation(fields: [bookId], references: [id])
   bookId     Int         @map("book_id")
-  creator    User        @relation(fields: [creatorId], references: [id])
-  creatorId  Int         @map("creator_id")
+  creator    User?       @relation(fields: [creatorId], references: [id])
+  creatorId  Int?        @map("creator_id")
+  /// 成績送信先URL(AGS LineItem URL)
+  lineItem  String   @default("") @map("line_item")
   /// 作成日
   createdAt  DateTime    @default(now()) @map("created_at")
   /// 更新日
@@ -199,6 +242,7 @@ model Book {
   sections         Section[]
   publicBooks      PublicBook[]
   ltiResourceLinks LtiResourceLink[]
+  bookmarks Bookmark[]
   /// 題名
   name             String
   /// 説明 (Markdown)
@@ -208,11 +252,13 @@ model Book {
   /// 学習所要時間 (秒)
   timeRequired     Int?              @map("time_required")
   /// 共有可否 (true: シェアする, それ以外: シェアしない)
-  shared           Boolean           @default(true)
+  shared           Boolean           @default(false)
   /// 著作者
   authors          Authorship[]
   /// ライセンス (https://spdx.org/licenses/ に準拠するもの, "" は無効)
   license          String            @default("")
+  /// 著作権者
+  licenser         String            @default("")
   /// zoomミーティングid
   zoomMeetingId    BigInt?           @map("zoom_meeting_id")
   /// 公開日
@@ -223,6 +269,19 @@ model Book {
   updatedAt        DateTime          @default(now()) @map("updated_at")
   /// 詳細
   details          Json
+  /// 版管理 リリース (未リリースの場合は null)
+  release Release?
+
+  // 原系統ID (cuid2, 新規作成時は系統IDと同じ, 複製前のoidを保存)
+  poid     String   @default("")
+  // 系統ID (cuid2, 新規作成時に採番)
+  oid      String   @default("")
+  // 親ID (cuid2, 新規作成時に採番, リリース時にvidを保存する)
+  pid      String   @default("")
+  // 版番号ID (cuid2, 編集中は "", リリース時に採番)
+  vid      String   @default("")
+  // 保存親ID (cuid2, 親削除時に、そのspidを保存する)
+  spid     String   @default("")
 
   @@index([zoomMeetingId])
   @@map("books")
@@ -284,6 +343,7 @@ model User {
   editableContents Authorship[]
   ltiResourceLinks LtiResourceLink[]
   ltiMembers       LtiMember[]
+  ltiMembersAdmin  LtiMemberAdmin[]
   ltiConsumer      LtiConsumer       @relation(fields: [ltiConsumerId], references: [id])
   ltiConsumerId    String            @map("lti_consumer_id")
   ltiUserId        String            @map("lti_user_id")
@@ -308,6 +368,7 @@ model Activity {
   timeRanges    ActivityTimeRange[]
   timeRangeLogs    ActivityTimeRangeLog[]
   timeRangeCounts    ActivityTimeRangeCount[]
+  bookId        Int                 @default(0) @map("book_id")
   topic         Topic               @relation(fields: [topicId], references: [id])
   topicId       Int                 @map("topic_id")
   learner       User                @relation(fields: [learnerId], references: [id])
@@ -322,7 +383,7 @@ model Activity {
   /// 更新日
   updatedAt     DateTime            @default(now()) @map("updated_at")
 
-  @@unique([topicId, learnerId, ltiConsumerId, ltiContextId])
+  @@unique([bookId, topicId, learnerId, ltiConsumerId, ltiContextId])
   @@map("activities")
 }
 
@@ -353,6 +414,7 @@ model ActivityTimeRangeLog {
   /// 視聴活動更新日
   updatedAt     DateTime            @default(now()) @map("updated_at")
 
+  @@index([activityId, updatedAt])
   @@map("activities_time_range_logs")
 }
 
@@ -423,12 +485,15 @@ model Bookmark {
   topicId Int   @map("topic_id")
   topic   Topic @relation(fields: [topicId], references: [id])
 
+  bookId  Int  @default(0) @map("book_id")
+  book    Book @relation(fields: [bookId], references: [id])
+
   memoContent String @default("")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId])
+  @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId, bookId])
 }
 
 // Etc.

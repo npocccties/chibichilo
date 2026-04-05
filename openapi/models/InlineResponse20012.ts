@@ -13,37 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    InlineResponse2007Books,
-    InlineResponse2007BooksFromJSON,
-    InlineResponse2007BooksFromJSONTyped,
-    InlineResponse2007BooksToJSON,
-} from './';
-
 /**
- * 成功時
+ * 
  * @export
  * @interface InlineResponse20012
  */
 export interface InlineResponse20012 {
     /**
      * 
-     * @type {Array<InlineResponse2007Books>}
+     * @type {Array<string>}
      * @memberof InlineResponse20012
      */
-    books?: Array<InlineResponse2007Books>;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20012
-     */
-    page?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof InlineResponse20012
-     */
-    perPage?: number;
+    bookIds?: Array<string>;
 }
 
 export function InlineResponse20012FromJSON(json: any): InlineResponse20012 {
@@ -56,9 +37,7 @@ export function InlineResponse20012FromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'books': !exists(json, 'books') ? undefined : ((json['books'] as Array<any>).map(InlineResponse2007BooksFromJSON)),
-        'page': !exists(json, 'page') ? undefined : json['page'],
-        'perPage': !exists(json, 'perPage') ? undefined : json['perPage'],
+        'bookIds': !exists(json, 'bookIds') ? undefined : json['bookIds'],
     };
 }
 
@@ -71,9 +50,7 @@ export function InlineResponse20012ToJSON(value?: InlineResponse20012 | null): a
     }
     return {
         
-        'books': value.books === undefined ? undefined : ((value.books as Array<any>).map(InlineResponse2007BooksToJSON)),
-        'page': value.page,
-        'perPage': value.perPage,
+        'bookIds': value.bookIds,
     };
 }
 

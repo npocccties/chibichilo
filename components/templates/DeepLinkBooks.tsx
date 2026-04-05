@@ -11,8 +11,6 @@ import type { ContentSchema } from "$server/models/content";
 import type { LinkedBook } from "$types/linkedBook";
 import { useSearchAtom } from "$store/search";
 import AuthorFilter from "$atoms/AuthorFilter";
-import SharedFilter from "$atoms/SharedFilter";
-import type { SharedFilterType } from "$types/sharedFilter";
 import type { AccordionProps } from "@mui/material/Accordion";
 import MuiAccordion from "@mui/material/Accordion";
 import type { AccordionSummaryProps } from "@mui/material/AccordionSummary";
@@ -69,17 +67,6 @@ export default function DeepLinkBooks(props: Props) {
             value={searchProps.query.filter}
             sx={{ display: "flex", flexDirection: "row", mb: 2 }}
             onFilterChange={searchProps.onAuthorFilterChange}
-            row={true}
-          />
-          <SharedFilter
-            value={
-              String(
-                searchProps.searchQuery?.shared?.[0] ?? "all"
-              ) as SharedFilterType
-            }
-            sx={{ display: "flex", mb: 2 }}
-            disabled={searchProps.query.filter === "other"}
-            onFilterChange={searchProps.onSharedFilterChange}
             row={true}
           />
         </AccordionDetails>

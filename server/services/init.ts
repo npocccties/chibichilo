@@ -1,7 +1,10 @@
 import type { FastifyRequest } from "fastify";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { FRONTEND_ORIGIN, FRONTEND_PATH } from "$server/utils/env";
-import { upsertUser } from "$server/utils/user";
+import {
+  findUserByLtiUserIdAndLtiConsumerId,
+  upsertUser,
+} from "$server/utils/user";
 import {
   findLtiResourceLink,
   upsertLtiResourceLink,
@@ -9,12 +12,40 @@ import {
 import { isInstructor } from "$server/utils/ltiv1p3/roles";
 import { getSystemSettings } from "$server/utils/systemSettings";
 import getValidUrl from "$server/utils/getValidUrl";
+import { getInstructors } from "$server/utils/ltiv1p3/services";
+import type { FastifySessionObject } from "@fastify/session";
+import { upsertLtiContext } from "$server/utils/ltiContext";
 
 const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
+
+async function getInstructorsByNRPS(session: FastifySessionObject) {
+  const instructors = await getInstructors(session);
+  const ret: number[] = [];
+  if (instructors?.members) {
+    for (const member of instructors.members) {
+      const user = await findUserByLtiUserIdAndLtiConsumerId(
+        member.user_id || "",
+        session.oauthClient.id
+      );
+      if (user) {
+        ret.push(user.id);
+      }
+    }
+  }
+  return ret;
+}
 
 /** 起動時の初期化プロセス */
 async function init({ session }: FastifyRequest) {
   const systemSettings = getSystemSettings();
+
+  // 最初にユーザー情報を取得
+  const user = await upsertUser({
+    ltiConsumerId: session.oauthClient.id,
+    ltiUserId: session.ltiUser.id,
+    name: session.ltiUser.name ?? "",
+    email: session.ltiUser.email ?? "",
+  });
 
   let ltiResourceLink: LtiResourceLinkSchema | null = null;
 
@@ -42,15 +73,23 @@ async function init({ session }: FastifyRequest) {
     Number.isInteger(Number(bookId))
       ? ltiTargetLink.href
       : undefined;
+  const lineItem =
+    session?.ltiAgsEndpoint?.lineitem ?? ltiResourceLink?.lineItem ?? "";
   if (
-    isInstructor(session.ltiRoles) &&
     session.ltiMessageType === "LtiResourceLinkRequest" &&
     session.ltiResourceLinkRequest?.id &&
-    Boolean(ltiTargetLinkUri)
+    (Boolean(ltiTargetLinkUri) ||
+      (ltiResourceLink && lineItem != ltiResourceLink.lineItem))
   ) {
+    const instructors = await getInstructorsByNRPS(session);
+    let creatorId = ltiResourceLink?.creatorId;
+    if (!creatorId) {
+      creatorId = isInstructor(session.ltiRoles) ? user.id : null;
+    }
     ltiResourceLink = {
-      bookId: Number(bookId),
-      creatorId: ltiResourceLink?.creatorId ?? session.user.id,
+      bookId: ltiResourceLink?.bookId ?? Number(bookId),
+      creatorId,
+      instructors,
       consumerId: session.oauthClient.id,
       contextId: session.ltiContext.id,
       id: session.ltiResourceLinkRequest.id,
@@ -60,24 +99,31 @@ async function init({ session }: FastifyRequest) {
         session.ltiContext.title ?? ltiResourceLink?.contextTitle ?? "",
       contextLabel:
         session.ltiContext.label ?? ltiResourceLink?.contextLabel ?? "",
+      lineItem,
     };
   }
 
   if (ltiResourceLink) {
-    await upsertLtiResourceLink({
-      ...ltiResourceLink,
-      title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
-      contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
-      contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
-    });
+    await upsertLtiResourceLink(
+      {
+        ...ltiResourceLink,
+        title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
+        contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
+        contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
+        lineItem,
+      },
+      session.ltiNrpsParameter?.context_memberships_url
+    );
+  } else if (session.ltiNrpsParameter?.context_memberships_url) {
+    // LTI Resource Link が存在しない場合でも、LTI Context は upsert する
+    await upsertLtiContext(
+      session.oauthClient.id,
+      session.ltiContext.id,
+      session.ltiContext.title,
+      session.ltiContext.label,
+      session.ltiNrpsParameter.context_memberships_url
+    );
   }
-
-  const user = await upsertUser({
-    ltiConsumerId: session.oauthClient.id,
-    ltiUserId: session.ltiUser.id,
-    name: session.ltiUser.name ?? "",
-    email: session.ltiUser.email ?? "",
-  });
 
   Object.assign(session, {
     ltiTargetLinkUri,

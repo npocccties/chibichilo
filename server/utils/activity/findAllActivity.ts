@@ -17,15 +17,19 @@ async function findLtiMembers(
     consumerId,
     contextId,
   }: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">,
-  currentLtiContextOnly?: boolean
+  bookIds: Array<number>,
+  currentLtiContextOnly?: boolean,
+  administrator?: boolean
 ) {
   // NOTE: 表示可能な範囲
   // 教員・TAの場合…すべて表示
   // それ以外… 共有されている範囲または著者に含まれる範
-  const displayable = isInstructor(session) ? undefined : [
-      { shared: true },
-      { authors: { some: { userId: session.user.id } } },
-  ];
+  const displayable = isInstructor(session)
+    ? undefined
+    : [
+        { release: { shared: true } },
+        { authors: { some: { userId: session.user.id } } },
+      ];
   const topicActivityScope = {
     topic: {
       topicSection: {
@@ -42,14 +46,29 @@ async function findLtiMembers(
     },
   };
 
+  const bookActivityScope = { bookId: { in: bookIds } };
   const activityScope =
     currentLtiContextOnly ?? true
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,
           ...topicActivityScope,
+          ...bookActivityScope,
         }
-      : { ltiConsumerId: "", ltiContextId: "", ...topicActivityScope };
+      : {
+          ltiConsumerId: "",
+          ltiContextId: "",
+          ...topicActivityScope,
+          ...{ bookId: 0 },
+        };
+
+  const whereClause = administrator
+    ? {
+        ltiMembersAdmin: { some: { consumerId, contextId } },
+      }
+    : {
+        ltiMembers: { some: { consumerId, contextId } },
+      };
 
   const learners = await prisma.user.findMany({
     orderBy: { name: "asc" },
@@ -80,7 +99,7 @@ async function findLtiMembers(
       },
     },
     where: {
-      ...{ ltiMembers: { some: { consumerId, contextId } } },
+      ...whereClause,
     },
   });
 
@@ -98,7 +117,8 @@ async function findAllActivity(
   session: SessionSchema,
   currentLtiContextOnly?: boolean | undefined,
   ltiConsumerId?: string | undefined,
-  ltiContextId?: string | undefined
+  ltiContextId?: string | undefined,
+  administrator?: boolean
 ): Promise<{
   learners: Array<LearnerSchema>;
   courseBooks: Array<CourseBookSchema>;
@@ -110,11 +130,6 @@ async function findAllActivity(
     ? ltiConsumerId ?? ""
     : session.oauthClient.id;
   const contextId = isDownloadPage ? ltiContextId ?? "" : session.ltiContext.id;
-  const ltiMembers = await findLtiMembers(
-    session,
-    { consumerId, contextId },
-    currentLtiContextOnly
-  );
 
   const ltiResourceLinks = await prisma.ltiResourceLink.findMany({
     where: { consumerId, contextId },
@@ -122,6 +137,13 @@ async function findAllActivity(
     select: { book: bookIncludingTopicsArg },
   });
   const books = ltiResourceLinks.map(({ book }) => book);
+  const ltiMembers = await findLtiMembers(
+    session,
+    { consumerId, contextId },
+    books.map(({ id }) => id),
+    currentLtiContextOnly,
+    administrator
+  );
 
   const activities = ltiMembers.flatMap(({ activities }) => activities);
 

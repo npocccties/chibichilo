@@ -39,13 +39,14 @@ export async function index({
   query,
   session,
 }: FastifyRequest<{ Querystring: Query }>) {
-  const { topicId, tagIds, isExistMemoContent, isAllUsers } = query;
+  const { topicId, bookId, tagIds, isExistMemoContent, isAllUsers } = query;
 
   if (topicId !== undefined) {
     const bookmarks = await findBookmarks({
       ltiContextId: session.ltiContext.id,
       ltiConsumerId: session.oauthClient.id,
       topicId,
+      bookId,
       userId: isAllUsers ? undefined : session.user.id,
     });
 
@@ -62,6 +63,7 @@ export async function index({
       ltiConsumerId: session.oauthClient.id,
       tagIds: ids,
       isExistMemoContent,
+      bookId,
       userId: isAllUsers ? undefined : session.user.id,
     });
 

@@ -1,6 +1,7 @@
 import type { FromSchema, JSONSchema } from "json-schema-to-ts";
 import type { Tag } from "@prisma/client";
 import { type TopicSchema } from "./topic";
+import { type BookSchema } from "./book";
 import { LtiContextSchema } from "./ltiContext";
 
 export const TagSchema = {
@@ -19,6 +20,7 @@ export type TagSchema = Tag;
 export type BookmarkProps = {
   tagId: Tag["id"];
   topicId: TopicSchema["id"];
+  bookId: BookSchema["id"];
 };
 
 export const bookmarkPropsSchema = {
@@ -26,22 +28,42 @@ export const bookmarkPropsSchema = {
   properties: {
     tagId: { type: "integer" },
     topicId: { type: "integer" },
+    bookId: { type: "integer" },
   },
   additionalProperties: false,
 } as const satisfies JSONSchema;
 
 export const BookmarkSchema = {
   type: "object",
-  required: ["id", "topicId", "tagId", "userId", "topic", "tag", "ltiContext"],
+  required: [
+    "id",
+    "topicId",
+    "bookId",
+    "tagId",
+    "userId",
+    "topic",
+    "tag",
+    "ltiContext",
+  ],
   properties: {
     id: { type: "integer" },
     topicId: { type: "integer" },
+    bookId: { type: "integer" },
     tagId: { type: "integer", nullable: true },
     userId: { type: "integer" },
     ltiContextId: { type: "string" },
     ltiConsumerId: { type: "string" },
     tag: { oneOf: [TagSchema, { type: "null" }] },
     memoContent: { type: "string" },
+    book: {
+      type: "object",
+      nullable: true,
+      required: ["id", "name"],
+      properties: {
+        id: { type: "integer" },
+        name: { type: "string" },
+      },
+    },
     topic: {
       type: "object",
       required: ["id", "name", "timeRequired", "bookmarks"],
@@ -56,6 +78,7 @@ export const BookmarkSchema = {
             required: ["id", "updatedAt", "ltiContext"],
             properties: {
               id: { type: "integer" },
+              bookId: { type: "integer" },
               updatedAt: { type: "string" },
               tag: { oneOf: [TagSchema, { type: "null" }] },
               memoContent: { type: "string" },

@@ -7,6 +7,7 @@ import { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate
 import findAllActivityWithTimeRangeCount from "$server/utils/activity/findAllActivityWithTimeRangeCount";
 import { ActivityQuery } from "$server/validators/activityQuery";
 import { round } from "$server/utils/math";
+import type { SessionSchema } from "$server/models/session";
 
 export type Query = ActivityQuery;
 
@@ -44,6 +45,33 @@ const ACTIVITY_REWATCH_THRESHOLD2 = Number(
   process.env.ACTIVITY_REWATCH_THRESHOLD ?? 2
 );
 
+export async function getActivityRewatchRate(
+  session: SessionSchema,
+  query: Query,
+  administrator?: boolean
+) {
+  const activities = await findAllActivityWithTimeRangeCount(
+    ACTIVITY_REWATCH_THRESHOLD2,
+    session,
+    Boolean(query.current_lti_context_only),
+    administrator
+  );
+
+  const activityRewatchRate = activities.map((activity) => {
+    return {
+      bookId: activity.bookId,
+      topicId: activity.topic.id,
+      learnerId: activity.learnerId,
+      rewatchRate: round(
+        activity._count.timeRangeCounts /
+          (activity.topic.timeRequired / ACTIVITY_COUNT_INTERVAL2),
+        -3
+      ),
+    };
+  });
+  return activityRewatchRate;
+}
+
 export async function index({
   session,
   query,
@@ -52,25 +80,7 @@ export async function index({
     return { status: 403 };
   }
 
-  const activities = await findAllActivityWithTimeRangeCount(
-    session,
-    Boolean(query.current_lti_context_only)
-  );
-
-  const activityRewatchRate = activities.map((activity) => {
-    const rewatchRanges = activity.timeRangeCounts.filter((t) => {
-      return t.count >= ACTIVITY_REWATCH_THRESHOLD2;
-    });
-    return {
-      topicId: activity.topic.id,
-      learnerId: activity.learner.id,
-      rewatchRate: round(
-        rewatchRanges.length /
-          (activity.topic.timeRequired / ACTIVITY_COUNT_INTERVAL2),
-        -3
-      ),
-    };
-  });
+  const activityRewatchRate = await getActivityRewatchRate(session, query);
 
   return {
     status: activityRewatchRate == null ? 404 : 200,

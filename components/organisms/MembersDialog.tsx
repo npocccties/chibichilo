@@ -26,21 +26,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  members: LtiNrpsContextMemberSchema[];
+  members: LtiNrpsContextMemberSchema[] | undefined;
   newLtiMembers: LtiNrpsContextMemberSchema[];
   open: boolean;
-  onClose: React.MouseEventHandler;
+  onClose: () => void;
   handleUpdateLtiMembers: (
-    members: LtiNrpsContextMemberSchema[]
+    members: LtiNrpsContextMemberSchema[] | undefined
   ) => Promise<void>;
+  firstTime: boolean;
 };
 
 // TODO：storybook対応
 export default function MembersDialog(props: Props) {
-  const { members, newLtiMembers, open, onClose, handleUpdateLtiMembers } =
-    props;
+  const {
+    members,
+    newLtiMembers,
+    open,
+    onClose,
+    handleUpdateLtiMembers,
+    firstTime,
+  } = props;
   const classes = useStyles();
-
+  if (firstTime && members && newLtiMembers.length === 0) {
+    onClose();
+    return null;
+  }
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <IconButton className={classes.closeButton} onClick={onClose}>
@@ -55,11 +65,17 @@ export default function MembersDialog(props: Props) {
         </Typography>
       </DialogTitle>
       <DialogContent>
-        {newLtiMembers.length === 0 ? (
+        {!members && (
+          <Typography variant="body1" component="p">
+            新規の受講者を確認しています。
+          </Typography>
+        )}
+        {members && newLtiMembers.length === 0 && (
           <Typography variant="body1" component="p">
             新規の受講者は存在しません。
           </Typography>
-        ) : (
+        )}
+        {members && newLtiMembers.length > 0 && (
           <List disablePadding={false}>
             {newLtiMembers.map((member) => {
               return (
@@ -94,6 +110,7 @@ export default function MembersDialog(props: Props) {
           onClick={async () => await handleUpdateLtiMembers(members)}
           color="primary"
           size="small"
+          disabled={!members || newLtiMembers.length === 0}
         >
           同期
         </Button>

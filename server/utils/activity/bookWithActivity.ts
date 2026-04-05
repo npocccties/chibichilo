@@ -62,60 +62,64 @@ export function toSchema({
     return courseBook ? [courseBook] : [];
   });
 
-  const bookActivities = courseBooks.flatMap((book) =>
-    book.sections.flatMap(({ topics }) =>
-      topics.flatMap((topic) => {
-        const watchedActivities = activities.flatMap((activity) => {
-          if (activity.topic.id !== topic.id) return [];
+  const bookActivities = courseBooks
+    .flatMap((book) =>
+      book.sections.flatMap(({ topics }) =>
+        topics.flatMap((topic) => {
+          const watchedActivities = activities.flatMap((activity) => {
+            if (activity.topic.id !== topic.id) return [];
 
-          return [
-            {
-              ...activity,
-              book: { id: book.id, name: book.name },
-              status: isCompleted(topic, activity)
-                ? ("completed" as const)
-                : ("incompleted" as const),
-            },
-          ];
-        }) as Array<BookActivitySchema>;
+            return [
+              {
+                ...activity,
+                book: { id: book.id, name: book.name },
+                status: isCompleted(topic, activity)
+                  ? ("completed" as const)
+                  : ("incompleted" as const),
+              },
+            ];
+          }) as Array<BookActivitySchema>;
 
-        const watchedLearnerIds = watchedActivities.flatMap(
-          (activity) => activity.learner.id
-        );
-        const unwatchedLearners = learners.filter(
-          (learner) => !watchedLearnerIds.find((id) => id === learner.id)
-        );
-        const unwatchedActivities = unwatchedLearners.flatMap((learner) => {
-          return {
-            id: 0,
-            topicId: topic.id,
-            learnerId: learner.id,
-            ltiConsumerId: ltiConsumerId,
-            ltiContextId: ltiContext?.id ?? "",
-            totalTimeMs: 0,
-            createdAt: undefined,
-            updatedAt: undefined,
-            ltiContext: ltiContext,
-            learner: {
-              id: learner.id,
-              name: learner.name,
-              email: learner.email,
-              ltiUserId: learner.ltiUserId,
+          const watchedLearnerIds = watchedActivities.flatMap(
+            (activity) => activity.learner.id
+          );
+          const unwatchedLearners = learners.filter(
+            (learner) => !watchedLearnerIds.find((id) => id === learner.id)
+          );
+          const unwatchedActivities = unwatchedLearners.flatMap((learner) => {
+            return {
+              id: 0,
+              topicId: topic.id,
+              learnerId: learner.id,
               ltiConsumerId: ltiConsumerId,
-            },
-            topic: {
-              id: topic.id,
-              name: topic.name,
-              timeRequired: topic.timeRequired,
-            },
-            book: { id: book.id, name: book.name },
-            status: "unopened",
-          };
-        }) as Array<BookActivitySchema>;
-        return watchedActivities.concat(unwatchedActivities);
-      })
+              ltiContextId: ltiContext?.id ?? "",
+              totalTimeMs: 0,
+              createdAt: undefined,
+              updatedAt: undefined,
+              ltiContext: ltiContext,
+              learner: {
+                id: learner.id,
+                name: learner.name,
+                email: learner.email,
+                ltiUserId: learner.ltiUserId,
+                ltiConsumerId: ltiConsumerId,
+              },
+              topic: {
+                id: topic.id,
+                name: topic.name,
+                timeRequired: topic.timeRequired,
+              },
+              book: { id: book.id, name: book.name },
+              status: "unopened",
+            };
+          }) as Array<BookActivitySchema>;
+          return watchedActivities.concat(unwatchedActivities);
+        })
+      )
     )
-  );
+    .filter(
+      (item, _index, _self) => item.bookId === item.book.id || item.bookId === 0
+    );
 
   return { courseBooks, bookActivities };
 }

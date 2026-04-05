@@ -11,6 +11,11 @@ type Story = StoryObj<typeof TagList>;
 
 export const Default: Story = {
   render: () => (
-    <TagList topicId={1} bookmarks={[bookmark]} tagMenu={bookmarkTagMenu} />
+    <TagList
+      topicId={1}
+      bookId={2}
+      bookmarks={[bookmark]}
+      tagMenu={bookmarkTagMenu}
+    />
   ),
 };

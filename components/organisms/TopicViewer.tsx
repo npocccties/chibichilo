@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { TopicSchema } from "$server/models/topic";
+import type { BookSchema } from "$server/models/book";
 import Card from "@mui/material/Card";
 import makeStyles from "@mui/styles/makeStyles";
 import TopicViewerContent from "$organisms/TopicViewerContent";
@@ -15,6 +16,7 @@ const useStyles = makeStyles({
 type Props = {
   className?: string;
   topic: TopicSchema;
+  book: BookSchema;
   bookActivity?: ActivitySchema[];
   onEnded?: () => void;
   offset?: string;
@@ -25,6 +27,7 @@ type Props = {
 export default function TopicViewer({
   className,
   topic,
+  book,
   bookActivity,
   onEnded,
   offset,
@@ -37,6 +40,7 @@ export default function TopicViewer({
     <Card classes={cardClasses} className={clsx(classes.root, className)}>
       <TopicViewerContent
         topic={topic}
+        book={book}
         bookActivity={bookActivity}
         onEnded={onEnded}
         offset={offset}

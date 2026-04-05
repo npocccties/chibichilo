@@ -217,7 +217,11 @@ class ImportBooksUtil {
 
   async updateBook(
     id: number,
-    { sections: _sections, publicBooks: _publicBooks, ...book }: BookProps
+    {
+      sections: _sections,
+      publicBooks: _publicBooks,
+      ...book
+    }: BookProps & Pick<Book, "language">
   ) {
     const keywordsBeforeUpdate = await prisma.keyword.findMany({
       where: { books: { some: { id } } },
@@ -231,6 +235,7 @@ class ImportBooksUtil {
           ...keywordsDisconnectInput(keywordsBeforeUpdate, book.keywords ?? []),
         },
         updatedAt: new Date(),
+        release: undefined,
       },
     };
   }
@@ -512,8 +517,12 @@ class ImportBooksUtil {
       };
       yauzl.open(file, options, (err, zipfile) => {
         if (err) {
-          this.errors.push(`zipファイルのopenでエラーが発生しました。\n${err}`);
-          resolve({});
+          try {
+            resolve(JSON.parse(fs.readFileSync(file).toString()));
+          } catch (e) {
+            this.errors.push(`ファイルがzipではありません。\n${err}`);
+            resolve({});
+          }
           return;
         }
         zipfile.readEntry();
