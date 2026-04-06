@@ -152,11 +152,11 @@ async function do_download(filename: string) {
     const contexts = (await getContexts()).filter(
       ({ consumerId, id }) => consumerId && id
     );
-    const list = await Promise.all(
-      contexts.map(async ({ consumerId, id }) =>
-        consumerId ? await getDecoratedData(consumerId, id) : []
-      )
-    );
+    const list: ReturnType<typeof download>[] = [];
+    for (const { consumerId, id, title } of contexts) {
+      logger("INFO", `processing context ${consumerId} ${id} ${title}...`);
+      list.push(consumerId ? await getDecoratedData(consumerId, id) : []);
+    }
     writeCsv(list.flat(), filename);
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
