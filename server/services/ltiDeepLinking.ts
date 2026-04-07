@@ -20,6 +20,9 @@ const Query = {
     book_id: {
       type: "integer",
     },
+    topic_id: {
+      type: "integer",
+    },
   },
 } as const satisfies JSONSchema;
 
@@ -76,11 +79,13 @@ export async function index(req: FastifyRequest<{ Querystring: Query }>) {
       { bookId: book.id, creatorId: req.session.user.id }
     )?.sections.flatMap((section) => section.topics.flat()) ?? [];
 
+  const topic = req.query.topic_id ? `&topicId=${req.query.topic_id}` : "";
+
   const contentItems = [
     createLtiResourceLinkContentItem({
       url: `${
         FRONTEND_ORIGIN || `${req.protocol}://${req.hostname}`
-      }/book?bookId=${book.id}`,
+      }/book?bookId=${book.id}` + topic,
       scoreMaximum: topics.length,
       title: req.session.ltiDlSettings?.title,
       text: req.session.ltiDlSettings?.text,
