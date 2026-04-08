@@ -33,6 +33,7 @@ export async function upsertLtiResourceLink(
     creatorId,
     lineItem,
     instructors: _instructors,
+    topicId: _topicId,
     ...link
   } = props;
 

@@ -23,7 +23,10 @@ function Router() {
   return (
     <Replace
       href={pagesPath.book.$url({
-        query: { bookId: ltiResourceLink.bookId },
+        query: {
+          bookId: ltiResourceLink.bookId,
+          topicId: ltiResourceLink.topicId,
+        },
       })}
     />
   );
