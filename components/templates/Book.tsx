@@ -31,6 +31,7 @@ import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import License from "$atoms/License";
+import type { ContentSchema } from "$server/models/content";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -125,6 +126,11 @@ type Props = {
   onTopicEnded(): void;
   onItemClick(index: ItemIndex): void;
   considerAppBar?: boolean;
+  onContentLinkClick?(
+    content: Pick<BookSchema, "id"> | ContentSchema,
+    checked: boolean,
+    topicId?: TopicSchema["id"]
+  ): void;
 };
 
 export default function Book(props: Props) {
@@ -142,6 +148,7 @@ export default function Book(props: Props) {
     onTopicEnded,
     onItemClick,
     considerAppBar = true,
+    onContentLinkClick,
   } = props;
 
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
@@ -313,6 +320,7 @@ export default function Book(props: Props) {
             onItemEditClick={handleItemEditClick}
             isContentEditable={isContentEditable}
             isPrivateBook={isPrivateBook}
+            onContentLinkClick={onContentLinkClick}
           />
         </div>
       </div>

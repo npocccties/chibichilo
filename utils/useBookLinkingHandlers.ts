@@ -79,7 +79,7 @@ function useBookLinkingHandlers() {
     async (
       content: Pick<BookSchema, "id"> | ContentSchema,
       linking = true,
-      topicId?: Pick<TopicSchema, "id">
+      topicId?: TopicSchema["id"]
     ) => {
       if ("type" in content && content.type !== "book") return;
 

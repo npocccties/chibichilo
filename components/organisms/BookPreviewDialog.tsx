@@ -47,6 +47,7 @@ type Props = {
       | "onTopicEnded"
       | "onItemClick"
       | "considerAppBar"
+      | "onContentLinkClick"
     >
   ): React.ReactNode;
 };
