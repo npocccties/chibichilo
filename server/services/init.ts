@@ -90,7 +90,7 @@ async function init({ session }: FastifyRequest) {
       creatorId = isInstructor(session.ltiRoles) ? user.id : null;
     }
     const topicId =
-      ltiResourceLink?.bookId && ltiResourceLink.bookId === Number(bookId)
+      !ltiResourceLink?.bookId || ltiResourceLink.bookId === Number(bookId)
         ? paramTopicId
         : undefined;
     ltiResourceLink = {
