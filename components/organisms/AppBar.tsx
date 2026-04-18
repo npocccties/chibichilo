@@ -139,7 +139,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   );
 
   let showDashboard = false;
-  switch(session?.systemSettings?.dashboardDisplayLevel) {
+  switch (session?.systemSettings?.dashboardDisplayLevel) {
     case "administrator":
       showDashboard = isAdministrator(session);
       break;
