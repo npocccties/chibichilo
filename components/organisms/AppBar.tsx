@@ -138,6 +138,16 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
       userSettings?.zoomImportEnabled == undefined
   );
 
+  let showDashboard = false;
+  switch(session?.systemSettings?.dashboardDisplayLevel) {
+    case "administrator":
+      showDashboard = isAdministrator(session);
+      break;
+    case "instructor":
+      showDashboard = isInstructor;
+      break;
+  }
+
   if (
     !NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK &&
     !isAdministrator(session) &&
@@ -217,7 +227,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     onClick={handleOpenUserSettings}
                   />
                 )}
-              {onDashboardClick && isInstructor && (
+              {onDashboardClick && showDashboard && (
                 <AppBarNavButton
                   color="inherit"
                   icon={<AssessmentOutlinedIcon />}
