@@ -48,6 +48,18 @@ export interface InlineResponse2005 {
      * @type {string}
      * @memberof InlineResponse2005
      */
+    lineItem?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2005
+     */
+    topicId?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005
+     */
     contextId: string;
     /**
      * 
@@ -89,6 +101,8 @@ export function InlineResponse2005FromJSONTyped(json: any, ignoreDiscriminator: 
         'id': json['id'],
         'creatorId': json['creatorId'],
         'instructors': !exists(json, 'instructors') ? undefined : json['instructors'],
+        'lineItem': !exists(json, 'lineItem') ? undefined : json['lineItem'],
+        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
         'contextId': json['contextId'],
         'contextTitle': json['contextTitle'],
         'contextLabel': json['contextLabel'],
@@ -110,6 +124,8 @@ export function InlineResponse2005ToJSON(value?: InlineResponse2005 | null): any
         'id': value.id,
         'creatorId': value.creatorId,
         'instructors': value.instructors,
+        'lineItem': value.lineItem,
+        'topicId': value.topicId,
         'contextId': value.contextId,
         'contextTitle': value.contextTitle,
         'contextLabel': value.contextLabel,

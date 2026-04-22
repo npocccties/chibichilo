@@ -165,7 +165,7 @@ export function usePlayerState(player: Player) {
   }, [player, setPlaybackRate]);
 
   useEffect(() => {
-    if (ready) setPlayerPlaybackRate(player, playbackRate);
+    setPlayerPlaybackRate(player, playbackRate);
   }, [player, ready, playbackRate]);
 
   useEffect(() => {
@@ -182,7 +182,7 @@ export function usePlayerState(player: Player) {
   const onVolumeChange = useDebouncedCallback(updateVolume, wait);
 
   useEffect(() => {
-    if (ready) setPlayerVolume(player, { volume, muted });
+    setPlayerVolume(player, { volume, muted });
   }, [player, ready, volume, muted]);
 
   useEffect(() => {

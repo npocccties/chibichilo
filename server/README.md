@@ -106,6 +106,7 @@ docker compose down
 | `VTT_ACCESS_TOKEN_EXPIRES_IN`        | 字幕を取得する際のアクセストークンの有効期限 (秒) (デフォルト: `5400`)                                                                                             |
 | `ACTIVITY_COUNT_INTERVAL`            | 実視聴回数を記録する際の区間の長さ (秒) (デフォルト:`1`) フロントエンド側の `NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL` と同一の値を設定すること                         |
 | `ACTIVITY_REWATCH_THRESHOLD`         | 繰り返し視聴したと判定する閾値 (回) (デフォルト:`2`)                                                                                                               |
+| `DASHBOARD_DISPLAY_LEVEL`            | 学習分析ページの表示レベル (表示しない:"none"、管理者のみ:"administrator"、教師:"instructor"(デフォルト))                                                          |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
