@@ -4,14 +4,14 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           ref: ${{ github.head_ref }}
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: 11.1.2
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: package.json
           cache: pnpm
@@ -25,7 +25,7 @@ jobs:
           if git -c "user.name=bot" -c "user.email=bot@example" commit -am "bot: lint:fix"; then
             git push origin HEAD
           fi
-      - uses: ataylorme/eslint-annotate-action@v2
+      - uses: ataylorme/eslint-annotate-action@5f4dc2e3af8d3c21b727edb597e5503510b1dc9c # v2.2.0
         with:
           repo-token: "${{ github.token }}"
           only-pr-files: false
