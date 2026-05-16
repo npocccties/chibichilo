@@ -29,7 +29,11 @@
   "dependencies": {
     "@fastify/swagger-ui": "^1.9.3",
     "@prisma/client": "^5.2.0",
+    "dotenv": "^16.3.1",
     "hexoid": "^1.0.0",
+    "http-errors": "^2.0.0",
+    "jose": "^4.14.6",
+    "json2csv": "^5.0.7",
     "node-ssh": "^13.1.0"
   },
   "devDependencies": {

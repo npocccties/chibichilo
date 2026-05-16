@@ -8,5 +8,6 @@
 /out/
 /utils/$path.ts
 node_modules/
+.pnpm-store/
 .env*
 .*.swp
