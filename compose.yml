@@ -38,7 +38,7 @@ services:
       OAUTH_CONSUMER_SECRET: test
       DATABASE_URL: postgresql://postgres:password@db/postgres
     user: ${UID:-1000}:${GID:-1000}
-    command: "sh -c 'cd /app && yarn && yarn dev'"
+    command: "sh -c 'cd /app && corepack enable && pnpm install && pnpm dev'"
     volumes: ["./:/app"]
     ports:
       - "3000:3000"

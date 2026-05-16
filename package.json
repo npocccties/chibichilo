@@ -8,9 +8,7 @@
     "type": "git",
     "url": "https://github.com/npocccties/chibichilo"
   },
-  "workspaces": [
-    "server"
-  ],
+  "packageManager": "pnpm@11.1.2",
   "devDependencies": {
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
@@ -98,30 +96,30 @@
     "dev": "run-p dev:*",
     "dev:app": "next",
     "dev:path": "pathpida --watch",
-    "dev:server": "yarn --cwd server dev",
+    "dev:server": "pnpm --dir server dev",
     "compile": "run-p compile:*",
-    "compile:prisma": "yarn --cwd server build:prisma",
+    "compile:prisma": "pnpm --dir server build:prisma",
     "compile:pathpida": "pathpida",
     "build": "run-s compile build:static build:export build:server",
     "build:static": "run-p build:{license,storybook,next}",
-    "build:license": "NODE_ENV=development yarn licenses generate-disclaimer > public/LICENSE",
+    "build:license": "NODE_ENV=development pnpm licenses list -r --long > public/LICENSE",
     "build:storybook": "storybook build -o public/storybook",
     "build:next": "next build",
     "build:export": "next export -o server/dist/public",
-    "build:server": "yarn --cwd server build:app",
+    "build:server": "pnpm --dir server build:app",
     "build:openapi": "openapi-generator-cli generate",
-    "zoom:import": "yarn --cwd server zoom:import",
-    "start": "yarn --cwd server start",
+    "zoom:import": "pnpm --dir server zoom:import",
+    "start": "pnpm --dir server start",
     "vercel-build": "run-s compile build:static build:server && rm -rf public/api/v2/swagger && mkdir -p public/api/v2/swagger && cp -a server/dist/static public/api/v2/swagger/static",
     "format": "prettier --write .",
     "lint": "run-s compile 'lint:eslint {@}' --",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "yarn lint --fix",
-    "lint:fix:report": "yarn lint:fix --output-file eslint_report.json --format json",
+    "lint:fix": "pnpm run lint -- --fix",
+    "lint:fix:report": "pnpm run lint:fix -- --output-file eslint_report.json --format json",
     "storybook": "storybook dev -s ./public"
   },
   "engines": {
-    "node": "^18.12.0 || ^20.0.0 || ^22.13.1"
+    "node": ">=22.13.1"
   },
   "dependencies": {
     "@twemoji/api": "^15.0.3",

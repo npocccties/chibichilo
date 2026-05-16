@@ -11,7 +11,9 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: ["/node_modules/(?!(yn))"], // NOTE: "yn" is Pure ESM package
+  transformIgnorePatterns: [
+    "/node_modules/(?!\\.pnpm/[^/]+/node_modules/yn)(?!yn/)",
+  ], // NOTE: "yn" is Pure ESM package
   testEnvironment: "node",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: require("path").resolve(`${__dirname}/..`),

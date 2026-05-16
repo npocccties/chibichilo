@@ -4,7 +4,7 @@ English | [日本語](INSTALL-ja.md)
 
 ## Environment variable
 
-Static contents around the front end are created by executing the `yarn build` command after giving environment variables.
+Static contents around the front end are created by executing the `pnpm build` command after giving environment variables.
 When changing the information of the connection destination of API, .env must be rewritten appropriately.
 
 .env:
@@ -33,23 +33,23 @@ When changing the information of the connection destination of API, .env must be
 
 As of 2023-03-29, confirm the build in the following environment.
 
-- Node.js LTS
+- Node.js 22.13 or newer (required by pnpm 11)
 
 ### Build
 
 Execute the following command.
 
 ```sh
-corepack enable yarn
-yarn && yarn build
+corepack enable
+pnpm install && pnpm build
 ```
 
 ### Storybook
 
-To confirm some UI on the browser, execute the following command after executing `yarn`.
+To confirm some UI on the browser, execute the following command after executing `pnpm install`.
 
 ```sh
-yarn storybook
+pnpm storybook
 ```
 
 ## Customization
