@@ -5,11 +5,11 @@ packages:
 minimumReleaseAge: 10080
 
 allowBuilds:
-  '@nestjs/core': true
-  '@openapitools/openapi-generator-cli': true
-  '@prisma/client': true
-  '@prisma/engines': true
-  '@swc/core': true
+  "@nestjs/core": true
+  "@openapitools/openapi-generator-cli": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  "@swc/core": true
   core-js-pure: true
   cpu-features: true
   esbuild: true
