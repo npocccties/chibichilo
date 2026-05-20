@@ -318,6 +318,9 @@ importers:
       "@quixo3/prisma-session-store":
         specifier: ^3.1.13
         version: 3.1.13(@prisma/client@5.4.2(prisma@5.2.0))(express-session@1.17.3)
+      "@types/http-errors":
+        specifier: ^2.0.1
+        version: 2.0.1
       "@types/jest":
         specifier: ^29.5.4
         version: 29.5.4
