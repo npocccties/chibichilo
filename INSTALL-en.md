@@ -31,7 +31,7 @@ When changing the information of the connection destination of API, .env must be
 
 ### Prerequisites
 
-As of 2023-03-29, confirm the build in the following environment.
+As of 2026-05-21, confirm the build in the following environment.
 
 - Node.js 22.13 or newer (required by pnpm 11)
 
