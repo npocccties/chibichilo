@@ -90,15 +90,22 @@ async function findLtiMembersWithTimeRangeCount(
 
   // Step 2: 絞り込んだ activity_id に対してのみ count を取得（相関クエリ化）
   // activities が空でも Prisma は `in: []` を正しく処理する（0件返却）
+  // activityIds が 32,767 件を超えると PostgreSQL のバインド変数上限を超過するためチャンク分割して処理する
   const activityIds = activities.map((a) => a.id);
-  const countRows = await prisma.activityTimeRangeCount.groupBy({
-    by: ["activityId"],
-    where: {
-      activityId: { in: activityIds },
-      count: { gte: rewatchThreshold },
-    },
-    _count: { activityId: true },
-  });
+  const chunkSize = 10000;
+  const countRows: { activityId: number; _count: { activityId: number } }[] =
+    [];
+  for (let i = 0; i < activityIds.length; i += chunkSize) {
+    const rows = await prisma.activityTimeRangeCount.groupBy({
+      by: ["activityId"],
+      where: {
+        activityId: { in: activityIds.slice(i, i + chunkSize) },
+        count: { gte: rewatchThreshold },
+      },
+      _count: { activityId: true },
+    });
+    countRows.push(...rows);
+  }
   const countMap = new Map(
     countRows.map((r) => [r.activityId, r._count.activityId])
   );
