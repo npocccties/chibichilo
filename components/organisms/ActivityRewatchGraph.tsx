@@ -313,10 +313,12 @@ export default function ActivityRewatchGraph(props: Props) {
   for (const key of Object.keys(plotEachStartMs)) {
     const startMs = key;
     const count =
+      // @ts-expect-error: インデックスシグネチャがany型になっているので修正
       plotEachStartMs[key]
         .map((p: PlotSchema) => p.count)
         .reduce((a: number, b: number) => {
           return a + b;
+          // @ts-expect-error: keyがundefinedの可能性があるので、ガードを追加
         }, 0) / plotEachStartMs[key].length || 0;
     average.push({ startMs: Number(startMs), count: count });
   }
