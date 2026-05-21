@@ -1,7 +1,7 @@
 import { show } from "./show";
 import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 import { isInstructor } from "$utils/session";
-import type { FastifyRequest } from "$node_modules/fastify/fastify";
+import type { FastifyRequest } from "fastify";
 import type { FastifySessionObject } from "@fastify/session";
 import type { BookParams } from "$server/validators/bookParams";
 import type { SessionSchema } from "$server/models/session";
