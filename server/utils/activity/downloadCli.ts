@@ -6,7 +6,10 @@ import utcToZoneTime from "date-fns-tz/utcToZonedTime";
 import prisma from "$server/utils/prisma";
 import { nullSession } from "$server/services/session";
 import findAllActivity from "./findAllActivity";
-import getLocaleEntries, { label, keyOrder } from "$utils/bookLearningActivity/getLocaleEntries";
+import getLocaleEntries, {
+  label,
+  keyOrder,
+} from "$utils/bookLearningActivity/getLocaleEntries";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
 import { getActivityRewatchRate } from "$server/services/activityRewatchRate";
@@ -80,7 +83,9 @@ function appendCsv(
   const fields = keyOrder
     .map((key) => label[key])
     .filter((l) => !deleteList.includes(l))
-    .filter((l) => NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD || l !== label["rewatchRate"]);
+    .filter(
+      (l) => NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD || l !== label["rewatchRate"]
+    );
   const filterd = decoratedData.map((d) => {
     for (const key of deleteList) {
       delete d[key];
