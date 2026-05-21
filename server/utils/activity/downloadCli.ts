@@ -6,7 +6,7 @@ import utcToZoneTime from "date-fns-tz/utcToZonedTime";
 import prisma from "$server/utils/prisma";
 import { nullSession } from "$server/services/session";
 import findAllActivity from "./findAllActivity";
-import getLocaleEntries from "$utils/bookLearningActivity/getLocaleEntries";
+import getLocaleEntries, { label, keyOrder } from "$utils/bookLearningActivity/getLocaleEntries";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
 import { getActivityRewatchRate } from "$server/services/activityRewatchRate";
@@ -72,22 +72,29 @@ async function getDecoratedData(consumerId: string, contextId: string) {
 
 const deleteList = ["ユーザ名", "メールアドレス"];
 
-function writeCsv(
+function appendCsv(
   decoratedData: ReturnType<typeof download>,
   filename: string
 ) {
-  if (!decoratedData || decoratedData.length === 0) {
-    throw new Error("No data to write to CSV");
-  }
+  if (!decoratedData || decoratedData.length === 0) return;
+  const fields = keyOrder
+    .map((key) => label[key])
+    .filter((l) => !deleteList.includes(l))
+    .filter((l) => NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD || l !== label["rewatchRate"]);
   const filterd = decoratedData.map((d) => {
     for (const key of deleteList) {
       delete d[key];
     }
     return d;
   });
-  const csv = json2csv.parse(filterd);
-  const bom = "\uFEFF";
-  fs.writeFileSync(filename, bom + csv, "utf-8");
+  const fileExists = fs.existsSync(filename);
+  if (!fileExists) {
+    const csv = json2csv.parse(filterd, { fields });
+    fs.writeFileSync(filename, "\uFEFF" + csv, "utf-8");
+  } else {
+    const csv = json2csv.parse(filterd, { fields, header: false });
+    fs.appendFileSync(filename, "\n" + csv, "utf-8");
+  }
 }
 
 //
@@ -149,15 +156,15 @@ async function do_download(filename: string) {
   }
   try {
     logger("INFO", "begin activity download...");
+    if (fs.existsSync(filename)) fs.unlinkSync(filename);
     const contexts = (await getContexts()).filter(
       ({ consumerId, id }) => consumerId && id
     );
-    const list: ReturnType<typeof download>[] = [];
     for (const { consumerId, id, title } of contexts) {
       logger("INFO", `processing context ${consumerId} ${id} ${title}...`);
-      list.push(consumerId ? await getDecoratedData(consumerId, id) : []);
+      const data = consumerId ? await getDecoratedData(consumerId, id) : [];
+      if (data.length > 0) appendCsv(data, filename);
     }
-    writeCsv(list.flat(), filename);
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
