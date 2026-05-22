@@ -33,15 +33,27 @@ When changing the information of the connection destination of API, .env must be
 
 As of 2026-05-21, confirm the build in the following environment.
 
-- Node.js 22.13 or newer (required by pnpm 11)
+- Node.js 26.2 or newer (required by pnpm 11)
+- pnpm 11.1.2 (match [package.json](package.json) `packageManager`)
+
+## Install pnpm
+
+https://pnpm.io/installation
+
+```sh
+# global install via npm
+npm install -g pnpm@11.1.2
+```
 
 ### Build
 
-Execute the following command.
+Execute the following commands to generate and place static front-end files.
 
 ```sh
-corepack enable
-pnpm install && pnpm build
+git clone https://github.com/npocccties/chibichilo.git
+cd chibichilo
+pnpm install
+pnpm build
 ```
 
 ### Storybook
