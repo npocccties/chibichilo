@@ -8,8 +8,8 @@
 
 - Docker v24
 - Docker Compose v2
-- Node.js ^26.2.0 (pnpm 11 の実行要件に合わせています)
-- pnpm 11.1.2（Node.js 26 では corepack 非同梱のため、`npm install -g pnpm@11.1.2` で [package.json の packageManager](https://nodejs.org/api/packages.html#packagemanager) に合わせて利用）
+- Node.js >=26.2.0、^24.16.0、または ^22.22.3（[package.json](../package.json) の `engines` に合わせています）
+- pnpm 11.1.2（Node.js 26 では corepack が同梱されていないため、その場合は `npm install -g pnpm@11.1.2` で [package.json の packageManager](https://nodejs.org/api/packages.html#packagemanager) に合わせて利用）
 
 ### 手順
 

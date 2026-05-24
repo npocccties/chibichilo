@@ -33,7 +33,7 @@ When changing the information of the connection destination of API, .env must be
 
 As of 2026-05-21, confirm the build in the following environment.
 
-- Node.js 26.2 or newer (required by pnpm 11)
+- Node.js 26.2+, 24.x LTS (24.16.0+), or 22.x LTS (22.22.3+) (match [package.json](package.json) `engines`)
 - pnpm 11.1.2 (match [package.json](package.json) `packageManager`)
 
 ## Install pnpm
