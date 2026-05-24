@@ -124,7 +124,7 @@
     "storybook": "storybook dev -s ./public"
   },
   "engines": {
-    "node": ">=26.2.0"
+    "node": ">=26.2.0 || ^24.16.0 || ^22.22.3"
   },
   "dependencies": {
     "@twemoji/api": "^15.0.3",

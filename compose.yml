@@ -43,9 +43,8 @@ services:
       - sh
       - -c
       - |
-        wget -qO- https://get.pnpm.io/install.sh | env PNPM_VERSION=11.1.2 ENV="$$HOME/.shrc" SHELL=/bin/sh sh -
-        export PNPM_HOME="$$HOME/.local/share/pnpm"
-        export PATH="$$PNPM_HOME/bin:$$PATH"
+        npm install -g pnpm@11.1.2 --prefix "$$HOME/.local"
+        export PATH="$$HOME/.local/bin:$$PATH"
         cd /app && pnpm install && pnpm dev
     volumes: ["./:/app"]
     ports:
