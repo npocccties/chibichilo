@@ -485,6 +485,7 @@ class ImportBooksUtil {
   async cleanUp() {
     if (this.tmpdir) {
       await fs.promises.rm(this.tmpdir, { recursive: true });
+      this.tmpdir = "";
     }
   }
 
@@ -525,12 +526,12 @@ class ImportBooksUtil {
           }
           return;
         }
-        zipfile.readEntry();
         zipfile
           .on("entry", (entry) => {
+            const readNextEntry = () => zipfile.readEntry();
             // ディレクトリは fileName が '/' で終わっている
             if (/\/$/.test(entry.fileName)) {
-              zipfile.readEntry();
+              readNextEntry();
             } else {
               const filename = path.join(this.tmpdir, entry.fileName);
               const dirname = path.dirname(filename);
@@ -539,29 +540,40 @@ class ImportBooksUtil {
                   this.errors.push(
                     `openReadStreamでエラーが発生しました。\n${err}`
                   );
-                  zipfile.readEntry();
+                  readNextEntry();
                   return;
                 }
                 try {
                   if (!fs.existsSync(dirname)) {
                     fs.mkdirSync(dirname, { recursive: true });
                   }
-                  readStream.on("end", () => {
-                    zipfile.readEntry();
-                  });
                   const ws = fs.createWriteStream(filename);
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  readStream.pipe(ws).on("error", (err: any) => {
+                  let proceeded = false;
+                  const proceed = () => {
+                    if (proceeded) return;
+                    proceeded = true;
+                    readNextEntry();
+                  };
+                  ws.on("finish", proceed);
+                  ws.on("error", (wsErr) => {
                     this.errors.push(
-                      `zip解凍中にファイルの書き込みに失敗しました。\n${err}`
+                      `zip解凍中にファイルの書き込みに失敗しました。\n${wsErr}`
                     );
                     readStream.destroy();
-                    zipfile.readEntry();
+                    proceed();
                   });
+                  readStream.on("error", (rsErr) => {
+                    this.errors.push(
+                      `zip解凍中にファイルの読み込みに失敗しました。\n${rsErr}`
+                    );
+                    ws.destroy();
+                    proceed();
+                  });
+                  readStream.pipe(ws);
                 } catch (err) {
                   this.errors.push(`zip解凍中に例外が発生しました。\n${err}`);
                   readStream.destroy();
-                  zipfile.readEntry();
+                  readNextEntry();
                 }
               });
             }
@@ -601,6 +613,7 @@ class ImportBooksUtil {
               resolve({});
             }
           });
+        zipfile.readEntry();
       });
     });
   }
