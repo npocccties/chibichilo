@@ -133,7 +133,9 @@ class ImportBooksUtil {
         forbidNonWhitelisted: true,
       });
       this.parseError(results);
-      importLog("importBooks:validate:done", { errorCount: this.errors.length });
+      importLog("importBooks:validate:done", {
+        errorCount: this.errors.length,
+      });
       if (this.errors.length) return;
 
       if (this.tmpdir) {
