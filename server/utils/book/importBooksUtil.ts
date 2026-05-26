@@ -1,10 +1,12 @@
 import fs from "fs";
 import path from "path";
+import { Buffer } from "buffer";
+import { buffer } from "node:stream/consumers";
+import type { Readable } from "node:stream";
 import yauzl from "yauzl";
+import type { Entry } from "yauzl";
 // @ts-expect-error Could not find a declaration file for module 'recursive-readdir-synchronous'
 import recursive from "recursive-readdir-synchronous";
-import { Buffer } from "buffer";
-
 import type { ValidationError } from "class-validator";
 import { validate } from "class-validator";
 import type { UserSchema } from "$server/models/user";
@@ -38,6 +40,77 @@ import type { SessionSchema } from "$server/models/session";
 import topicExists from "../topic/topicExists";
 import { isUsersOrAdmin } from "../session";
 import { importLog } from "./importLog";
+
+const ZIP_ENTRY_EXTRACT_TIMEOUT_MS = 10 * 60 * 1000;
+
+function readZipEntryStream(
+  readStream: Readable,
+  uncompressedSize: number
+): Promise<Buffer> {
+  if (uncompressedSize <= 0) {
+    readStream.resume();
+    return buffer(readStream);
+  }
+
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let received = 0;
+    let settled = false;
+
+    const removeListeners = () => {
+      readStream.off("data", onData);
+      readStream.off("error", onError);
+      readStream.off("end", onEnd);
+    };
+
+    const stopStream = () => {
+      removeListeners();
+      readStream.on("error", () => {});
+      readStream.destroy();
+    };
+
+    const finish = (buf: Buffer) => {
+      if (settled) return;
+      settled = true;
+      stopStream();
+      resolve(buf);
+    };
+
+    const fail = (err: Error) => {
+      if (settled) return;
+      settled = true;
+      stopStream();
+      reject(err);
+    };
+
+    const onData = (chunk: Buffer) => {
+      chunks.push(chunk);
+      received += chunk.length;
+      if (received >= uncompressedSize) {
+        finish(Buffer.concat(chunks).subarray(0, uncompressedSize));
+      }
+    };
+
+    const onError = (err: Error) => {
+      fail(err);
+    };
+
+    const onEnd = () => {
+      if (received >= uncompressedSize) {
+        finish(Buffer.concat(chunks).subarray(0, uncompressedSize));
+        return;
+      }
+      fail(
+        new Error(`zip解凍が不完全です (${received}/${uncompressedSize} bytes)`)
+      );
+    };
+
+    readStream.on("data", onData);
+    readStream.on("error", onError);
+    readStream.on("end", onEnd);
+    readStream.resume();
+  });
+}
 
 async function importBooksUtil(
   user: UserSchema,
@@ -593,6 +666,48 @@ class ImportBooksUtil {
     }
   }
 
+  async extractZipEntry(
+    entry: Entry,
+    readStream: Readable,
+    filename: string,
+    dirname: string,
+    readNextEntry: () => void
+  ) {
+    try {
+      if (!fs.existsSync(dirname)) {
+        fs.mkdirSync(dirname, { recursive: true });
+      }
+      importLog("parseJsonFromFile:entryExtract:start", {
+        fileName: entry.fileName,
+        uncompressedSize: entry.uncompressedSize,
+      });
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+      const data = await Promise.race([
+        readZipEntryStream(readStream, entry.uncompressedSize),
+        new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            readStream.destroy();
+            reject(
+              new Error(`zip解凍がタイムアウトしました: ${entry.fileName}`)
+            );
+          }, ZIP_ENTRY_EXTRACT_TIMEOUT_MS);
+        }),
+      ]).finally(() => {
+        if (timeoutId !== undefined) clearTimeout(timeoutId);
+      });
+      await fs.promises.writeFile(filename, data);
+      importLog("parseJsonFromFile:entryExtract:done", {
+        fileName: entry.fileName,
+        bytesWritten: data.length,
+      });
+    } catch (err) {
+      this.errors.push(`zip解凍中に例外が発生しました。\n${err}`);
+      readStream.destroy();
+    } finally {
+      readNextEntry();
+    }
+  }
+
   parseJsonFromFile() {
     if (!this.params.file) {
       this.errors.push(`ファイルをアップロードしてください。`);
@@ -653,7 +768,7 @@ class ImportBooksUtil {
             } else {
               const filename = path.join(this.tmpdir, entry.fileName);
               const dirname = path.dirname(filename);
-              zipfile.openReadStream(entry, (err, readStream) => {
+              zipfile.openReadStream(entry, async (err, readStream) => {
                 if (err) {
                   this.errors.push(
                     `openReadStreamでエラーが発生しました。\n${err}`
@@ -661,38 +776,13 @@ class ImportBooksUtil {
                   readNextEntry();
                   return;
                 }
-                try {
-                  if (!fs.existsSync(dirname)) {
-                    fs.mkdirSync(dirname, { recursive: true });
-                  }
-                  const ws = fs.createWriteStream(filename);
-                  let proceeded = false;
-                  const proceed = () => {
-                    if (proceeded) return;
-                    proceeded = true;
-                    readNextEntry();
-                  };
-                  ws.on("finish", proceed);
-                  ws.on("error", (wsErr) => {
-                    this.errors.push(
-                      `zip解凍中にファイルの書き込みに失敗しました。\n${wsErr}`
-                    );
-                    readStream.destroy();
-                    proceed();
-                  });
-                  readStream.on("error", (rsErr) => {
-                    this.errors.push(
-                      `zip解凍中にファイルの読み込みに失敗しました。\n${rsErr}`
-                    );
-                    ws.destroy();
-                    proceed();
-                  });
-                  readStream.pipe(ws);
-                } catch (err) {
-                  this.errors.push(`zip解凍中に例外が発生しました。\n${err}`);
-                  readStream.destroy();
-                  readNextEntry();
-                }
+                await this.extractZipEntry(
+                  entry,
+                  readStream,
+                  filename,
+                  dirname,
+                  readNextEntry
+                );
               });
             }
           })
