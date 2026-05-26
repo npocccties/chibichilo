@@ -37,14 +37,24 @@ import updateBookTimeRequired from "../topic/updateBookTimeRequired";
 import type { SessionSchema } from "$server/models/session";
 import topicExists from "../topic/topicExists";
 import { isUsersOrAdmin } from "../session";
+import { importLog } from "./importLog";
 
 async function importBooksUtil(
   user: UserSchema,
   params: BooksImportParams
 ): Promise<BooksImportResult> {
+  importLog("importBooksUtil:start", {
+    userId: user.id,
+    hasFile: Boolean(params.file),
+  });
   const util = new ImportBooksUtil(user, params);
   await util.importBooks();
-  return util.result();
+  const result = util.result();
+  importLog("importBooksUtil:done", {
+    errorCount: result.errors.length,
+    bookCount: result.books.length,
+  });
+  return result;
 }
 
 export async function importTopicUtil(
@@ -52,9 +62,19 @@ export async function importTopicUtil(
   params: BooksImportParams,
   topicId: Topic["id"]
 ): Promise<BooksImportResult> {
+  importLog("importTopicUtil:start", {
+    topicId,
+    userId: user.id,
+    hasFile: Boolean(params.file),
+  });
   const util = new ImportBooksUtil(user, params);
   await util.importTopic(topicId);
-  return util.result();
+  const result = util.result();
+  importLog("importTopicUtil:done", {
+    topicId,
+    errorCount: result.errors.length,
+  });
+  return result;
 }
 
 export async function importBookUtil(
@@ -62,9 +82,19 @@ export async function importBookUtil(
   params: BooksImportParams,
   bookId: Book["id"]
 ): Promise<BooksImportResult> {
+  importLog("importBookUtil:start", {
+    bookId,
+    userId: session.user.id,
+    hasFile: Boolean(params.file),
+  });
   const util = new ImportBooksUtil(session.user, params);
   await util.importBook(session, bookId);
-  return util.result();
+  const result = util.result();
+  importLog("importBookUtil:done", {
+    bookId,
+    errorCount: result.errors.length,
+  });
+  return result;
 }
 
 class ImportBooksUtil {
@@ -87,22 +117,37 @@ class ImportBooksUtil {
   }
 
   async importBooks() {
+    importLog("importBooks:start", { userId: this.user.id });
     try {
+      importLog("importBooks:parseJsonFromFile");
       const importBooks = ImportBooks.init(await this.parseJsonFromFile());
+      importLog("importBooks:parseJsonFromFile:done", {
+        errorCount: this.errors.length,
+        bookCount: importBooks.books?.length ?? 0,
+      });
       if (this.errors.length) return;
 
+      importLog("importBooks:validate");
       const results = await validate(importBooks, {
         whitelist: true,
         forbidNonWhitelisted: true,
       });
       this.parseError(results);
+      importLog("importBooks:validate:done", { errorCount: this.errors.length });
       if (this.errors.length) return;
 
       if (this.tmpdir) {
+        importLog("importBooks:uploadFiles:start");
         await this.uploadFiles(importBooks);
+        importLog("importBooks:uploadFiles:done", {
+          errorCount: this.errors.length,
+        });
       }
       if (this.errors.length) return;
 
+      importLog("importBooks:dbTransaction:start", {
+        bookCount: importBooks.books.length,
+      });
       const transactions = [];
       for (const importBook of importBooks.books) {
         transactions.push(
@@ -138,11 +183,16 @@ class ImportBooksUtil {
         const res = await findBook(book.id, this.user.id);
         if (res) this.books.push(res as BookSchema);
       }
+      importLog("importBooks:success", { bookCount: this.books.length });
     } catch (e) {
       console.error(e);
+      importLog("importBooks:error", {
+        message: e instanceof Error ? e.message : String(e),
+      });
       this.errors.push(...(Array.isArray(e) ? e : [String(e)]));
     } finally {
       await this.cleanUp();
+      importLog("importBooks:end", { errorCount: this.errors.length });
     }
   }
 
@@ -241,8 +291,13 @@ class ImportBooksUtil {
   }
 
   async importTopic(topicId: Topic["id"]) {
+    importLog("importTopic:start", { topicId, userId: this.user.id });
     try {
+      importLog("importTopic:parseJsonFromFile");
       const importBooks = ImportBooks.init(await this.parseJsonFromFile());
+      importLog("importTopic:parseJsonFromFile:done", {
+        errorCount: this.errors.length,
+      });
       if (this.errors.length) return;
 
       const results = await validate(importBooks, {
@@ -283,17 +338,23 @@ class ImportBooksUtil {
         },
       ];
       if (this.tmpdir) {
+        importLog("importTopic:uploadFiles:start");
         await this.uploadFiles(importBooks);
+        importLog("importTopic:uploadFiles:done", {
+          errorCount: this.errors.length,
+        });
       }
       if (this.errors.length) return;
 
       // トピックを上書きする
+      importLog("importTopic:dbUpdate:start");
       const updateInput = await this.updateTopic(
         topicId,
         importTopics[0],
         orig
       );
       const created = await prisma.topic.update(updateInput);
+      importLog("importTopic:dbUpdate:done", { created: Boolean(created) });
       if (!created) {
         this.errors.push("トピックの上書きに失敗しました。\n");
         return;
@@ -303,17 +364,28 @@ class ImportBooksUtil {
       if (importTopics[0].timeRequired > 0) {
         await updateBookTimeRequired(topicId);
       }
+      importLog("importTopic:success", { topicId });
     } catch (e) {
       console.error(e);
+      importLog("importTopic:error", {
+        message: e instanceof Error ? e.message : String(e),
+      });
       this.errors.push(...(Array.isArray(e) ? e : [String(e)]));
     } finally {
       await this.cleanUp();
+      importLog("importTopic:end", { topicId, errorCount: this.errors.length });
     }
   }
 
   async importBook(session: SessionSchema, bookId: Book["id"]) {
+    importLog("importBook:start", { bookId, userId: this.user.id });
     try {
+      importLog("importBook:parseJsonFromFile");
       const importBooks = ImportBooks.init(await this.parseJsonFromFile());
+      importLog("importBook:parseJsonFromFile:done", {
+        errorCount: this.errors.length,
+        bookCount: importBooks.books?.length ?? 0,
+      });
       if (this.errors.length) return;
 
       const results = await validate(importBooks, {
@@ -398,7 +470,11 @@ class ImportBooksUtil {
         },
       ];
       if (this.tmpdir) {
+        importLog("importBook:uploadFiles:start", { topicCount: jobs.length });
         await this.uploadFiles(importBooks);
+        importLog("importBook:uploadFiles:done", {
+          errorCount: this.errors.length,
+        });
       }
       if (this.errors.length) return;
 
@@ -427,10 +503,16 @@ class ImportBooksUtil {
       });
 
       // DB更新
+      importLog("importBook:dbTransaction:start", {
+        topicUpdateCount: topicInputArray.length,
+      });
       const created = await prisma.$transaction([
         ...topicInputArray.map((topicInput) => prisma.topic.update(topicInput)),
         prisma.book.update(bookInput),
       ]);
+      importLog("importBook:dbTransaction:done", {
+        createdCount: Array.isArray(created) ? created.length : 0,
+      });
       if (!created) {
         this.errors.push("ブックの上書きに失敗しました。\n");
         return;
@@ -440,11 +522,16 @@ class ImportBooksUtil {
       if (timeRequiredTopicIds.length > 0) {
         await updateBookTimeRequired(timeRequiredTopicIds);
       }
+      importLog("importBook:success", { bookId });
     } catch (e) {
       console.error(e);
+      importLog("importBook:error", {
+        message: e instanceof Error ? e.message : String(e),
+      });
       this.errors.push(...(Array.isArray(e) ? e : [String(e)]));
     } finally {
       await this.cleanUp();
+      importLog("importBook:end", { bookId, errorCount: this.errors.length });
     }
   }
 
@@ -484,8 +571,10 @@ class ImportBooksUtil {
 
   async cleanUp() {
     if (this.tmpdir) {
+      importLog("cleanUp:start", { tmpdir: this.tmpdir });
       await fs.promises.rm(this.tmpdir, { recursive: true });
       this.tmpdir = "";
+      importLog("cleanUp:done");
     }
   }
 
@@ -510,24 +599,51 @@ class ImportBooksUtil {
 
     this.tmpdir = fs.mkdtempSync("/tmp/chibichilo-import-");
     const file = `${this.tmpdir}/file`;
-    fs.writeFileSync(file, Buffer.from(this.params.file as string, "base64"));
+    const fileBuffer = Buffer.from(this.params.file as string, "base64");
+    fs.writeFileSync(file, fileBuffer);
+    importLog("parseJsonFromFile:start", {
+      tmpdir: this.tmpdir,
+      fileBytes: fileBuffer.length,
+    });
 
     return new Promise((resolve) => {
+      let entryCount = 0;
+      let resolved = false;
+      const finish = (step: string, value: unknown) => {
+        if (resolved) {
+          importLog("parseJsonFromFile:resolve:duplicate", { step });
+          return;
+        }
+        resolved = true;
+        importLog("parseJsonFromFile:resolve", {
+          step,
+          entryCount,
+          errorCount: this.errors.length,
+        });
+        resolve(value);
+      };
+
       const options = {
         lazyEntries: true,
       };
       yauzl.open(file, options, (err, zipfile) => {
         if (err) {
+          importLog("parseJsonFromFile:yauzlOpen:error", {
+            message: String(err),
+          });
           try {
-            resolve(JSON.parse(fs.readFileSync(file).toString()));
+            finish("notZip", JSON.parse(fs.readFileSync(file).toString()));
           } catch (e) {
             this.errors.push(`ファイルがzipではありません。\n${err}`);
-            resolve({});
+            finish("notZipFailed", {});
           }
           return;
         }
+        importLog("parseJsonFromFile:yauzlOpen:ok");
         zipfile
           .on("entry", (entry) => {
+            entryCount += 1;
+            importLog("parseJsonFromFile:entry", { fileName: entry.fileName });
             const readNextEntry = () => zipfile.readEntry();
             // ディレクトリは fileName が '/' で終わっている
             if (/\/$/.test(entry.fileName)) {
@@ -579,10 +695,15 @@ class ImportBooksUtil {
             }
           })
           .on("close", () => {
+            importLog("parseJsonFromFile:zipClose", { entryCount });
             this.unzippedFiles = recursive(this.tmpdir);
             const jsonfiles: string[] = this.unzippedFiles.filter((filename) =>
               filename.toLowerCase().endsWith(".json")
             );
+            importLog("parseJsonFromFile:unzipped", {
+              fileCount: this.unzippedFiles.length,
+              jsonFileCount: jsonfiles.length,
+            });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const jsons: any[] = [];
             if (jsonfiles.length) {
@@ -600,17 +721,23 @@ class ImportBooksUtil {
               this.errors.push("jsonファイルがありません。");
             }
             if (this.errors.length) {
-              resolve({});
+              finish("zipCloseWithErrors", {});
             } else {
-              resolve(jsons);
+              finish("zipClose", jsons);
             }
           })
           .on("error", (error) => {
+            importLog("parseJsonFromFile:zipError", {
+              message: String(error),
+            });
             try {
-              resolve(JSON.parse(fs.readFileSync(file).toString()));
+              finish(
+                "zipErrorFallback",
+                JSON.parse(fs.readFileSync(file).toString())
+              );
             } catch (e) {
               this.errors.push(`ファイルがzipではありません。\n${error}`);
-              resolve({});
+              finish("zipErrorFailed", {});
             }
           });
         zipfile.readEntry();
@@ -622,15 +749,18 @@ class ImportBooksUtil {
     const uploadEnabled =
       this.params.provider == "https://www.wowza.com/" &&
       validateWowzaSettings(false);
+    importLog("uploadFiles:start", { uploadEnabled });
     const now = new Date();
     const filenames = [];
     let wowzaUpload;
 
     try {
+      importLog("uploadFiles:startWowzaUpload");
       wowzaUpload = await startWowzaUpload(
         this.user.ltiConsumerId,
         this.user.id
       );
+      importLog("uploadFiles:startWowzaUpload:done");
       for (const importBook of importBooks.books) {
         for (const bookSection of importBook.sections) {
           for (const sectionTopic of bookSection.topics) {
@@ -681,12 +811,28 @@ class ImportBooksUtil {
       }
 
       if (this.errors.length) return;
-      if (!filenames.length) return;
+      if (!filenames.length) {
+        importLog("uploadFiles:skipped", { reason: "no video files" });
+        return;
+      }
+      importLog("uploadFiles:wowzaUpload", {
+        fileCount: filenames.length,
+        filenames,
+      });
       await wowzaUpload.upload();
+      importLog("uploadFiles:wowzaUpload:done");
     } catch (e) {
+      importLog("uploadFiles:error", {
+        message: e instanceof Error ? e.message : String(e),
+      });
       this.errors.push(`サーバーにアップロードできませんでした。\n${e}`);
     } finally {
-      if (wowzaUpload) await wowzaUpload.cleanUp();
+      if (wowzaUpload) {
+        importLog("uploadFiles:wowzaCleanUp");
+        await wowzaUpload.cleanUp();
+        importLog("uploadFiles:wowzaCleanUp:done");
+      }
+      importLog("uploadFiles:end", { errorCount: this.errors.length });
     }
   }
 

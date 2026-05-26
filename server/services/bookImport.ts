@@ -12,6 +12,7 @@ import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import bookExists from "$server/utils/book/bookExists";
 import { isUsersOrAdmin } from "$server/utils/session";
+import { importLog } from "$server/utils/book/importLog";
 
 export type Params = BooksImportParams;
 
@@ -44,14 +45,31 @@ export async function importBook({
   params: BookParams;
   body: BooksImportParams;
 }) {
-  const found = await bookExists(params.book_id);
+  importLog("importBook:handler:start", {
+    bookId: params.book_id,
+    userId: session.user.id,
+    hasFile: Boolean(body.file),
+  });
 
-  if (!found) return { status: 404 };
-  if (!isUsersOrAdmin(session, found.authors)) return { status: 403 };
+  const found = await bookExists(params.book_id);
+  if (!found) {
+    importLog("importBook:handler:notFound", { bookId: params.book_id });
+    return { status: 404 };
+  }
+  if (!isUsersOrAdmin(session, found.authors)) {
+    importLog("importBook:handler:forbidden", { bookId: params.book_id });
+    return { status: 403 };
+  }
 
   const result = await importBookUtil(session, body, params.book_id);
+  const status = result.errors && result.errors.length ? 400 : 201;
+  importLog("importBook:handler:return", {
+    bookId: params.book_id,
+    status,
+    errorCount: result.errors.length,
+  });
   return {
-    status: result.errors && result.errors.length ? 400 : 201,
+    status,
     body: result,
   };
 }
