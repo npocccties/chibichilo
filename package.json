@@ -35,7 +35,7 @@
     "@types/json2csv": "^5.0.3",
     "@types/lodash.groupby": "^4.6.7",
     "@types/lodash.throttle": "^4.1.7",
-    "@types/node": "^20.5.9",
+    "@types/node": "^25.8.0",
     "@types/react": "^18.2.21",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/vimeo__player": "^2.18.0",
@@ -124,7 +124,7 @@
     "storybook": "storybook dev -s ./public"
   },
   "engines": {
-    "node": ">=22.13.1"
+    "node": ">=26.2.0 || ^24.16.0 || ^22.22.3"
   },
   "dependencies": {
     "@twemoji/api": "^15.0.3",

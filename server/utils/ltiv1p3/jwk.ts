@@ -20,7 +20,9 @@ export async function createPrivateKey(): Promise<jose.JWK | null> {
   const key = await readKey();
   if (!key) return null;
 
-  const jwk = crypto.createPrivateKey(key).export({ format: "jwk" });
+  const jwk = crypto.createPrivateKey(key).export({
+    format: "jwk",
+  }) as jose.JWK;
   const kid = await calculateJwkThumbprint(jwk);
   return { ...jwk, kid };
 }
@@ -30,7 +32,9 @@ export async function createPublicKey(): Promise<jose.JWK | null> {
   const key = await readKey();
   if (!key) return null;
 
-  const jwk = crypto.createPublicKey(key).export({ format: "jwk" });
+  const jwk = crypto.createPublicKey(key).export({
+    format: "jwk",
+  }) as jose.JWK;
   const kid = await calculateJwkThumbprint(jwk);
   return { ...jwk, kid };
 }

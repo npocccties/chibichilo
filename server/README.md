@@ -4,12 +4,12 @@
 
 ### 前提条件
 
-2025-01-19 現在、以下の環境で動作確認済み
+2026-05-22 現在、以下の環境で動作確認済み
 
 - Docker v24
 - Docker Compose v2
-- Node.js ^22.13.1 (pnpm 11 の実行要件に合わせています)
-- pnpm 11.x (`corepack enable` で [package.json の packageManager](https://nodejs.org/api/packages.html#packagemanager) に沿って利用)
+- Node.js >=26.2.0、^24.16.0、または ^22.22.3（[package.json](../package.json) の `engines` に合わせています）
+- pnpm 11.1.2（Node.js 26 では corepack が同梱されていないため、その場合は `npm install -g pnpm@11.1.2` で [package.json の packageManager](https://nodejs.org/api/packages.html#packagemanager) に合わせて利用）
 
 ### 手順
 

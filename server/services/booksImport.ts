@@ -8,6 +8,7 @@ import type { SessionSchema } from "$server/models/session";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import importBooksUtil from "$server/utils/book/importBooksUtil";
+import { importLog } from "$server/utils/book/importLog";
 
 export type Params = BooksImportParams;
 
@@ -35,9 +36,19 @@ export async function importBooks({
   session: SessionSchema;
   body: BooksImportParams;
 }) {
+  importLog("importBooks:handler:start", {
+    userId: session.user.id,
+    hasFile: Boolean(body.file),
+  });
   const result = await importBooksUtil(session.user, body);
+  const status = result.errors && result.errors.length ? 400 : 201;
+  importLog("importBooks:handler:return", {
+    status,
+    errorCount: result.errors.length,
+    bookCount: result.books?.length ?? 0,
+  });
   return {
-    status: result.errors && result.errors.length ? 400 : 201,
+    status,
     body: result,
   };
 }

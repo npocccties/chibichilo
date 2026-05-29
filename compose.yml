@@ -30,15 +30,22 @@ services:
     volumes:
       - postgres_data_v17:/var/lib/postgresql/data
   app:
-    image: "node:22.13.1-alpine3.21"
+    image: "node:26.2.0"
     environment:
+      HOME: /tmp
       FRONTEND_ORIGIN: "http://localhost:3000"
       SESSION_SECRET: super_secret_characters_for_session
       OAUTH_CONSUMER_KEY: test
       OAUTH_CONSUMER_SECRET: test
       DATABASE_URL: postgresql://postgres:password@db/postgres
     user: ${UID:-1000}:${GID:-1000}
-    command: "sh -c 'cd /app && corepack enable && pnpm install && pnpm dev'"
+    command:
+      - sh
+      - -c
+      - |
+        npm install -g pnpm@11.1.2 --prefix "$$HOME/.local"
+        export PATH="$$HOME/.local/bin:$$PATH"
+        cd /app && pnpm install && pnpm dev
     volumes: ["./:/app"]
     ports:
       - "3000:3000"
