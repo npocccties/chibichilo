@@ -203,12 +203,12 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               />
               {session?.systemSettings?.zoomImportEnabled &&
                 isInstructor && ( // TODO: zoomインポート以外の設定値が実装されたら常時表示する
-                  (<AppBarNavButton
+                  <AppBarNavButton
                     color="inherit"
                     icon={<SettingsIcon />}
                     label="設定"
                     onClick={handleOpenUserSettings}
-                  />)
+                  />
                 )}
               {onDashboardClick && showDashboard(session) && (
                 <AppBarNavButton

@@ -24,7 +24,7 @@ const TextField = styled(
           </span>
         }
         slotProps={{
-          inputLabel: { ...InputLabelProps, shrink: true }
+          inputLabel: { ...InputLabelProps, shrink: true },
         }}
       />
     );

@@ -84,11 +84,7 @@ export default function BooksImportForm(props: Props) {
         type="file"
         inputProps={register("file")}
       />
-      <Typography
-        sx={labelDescriptionSx}
-        variant="caption"
-        component="span"
-      >
+      <Typography sx={labelDescriptionSx} variant="caption" component="span">
         <Link
           href="https://github.com/npocccties/chilospeech/blob/main/docs/spec/import.md"
           target="_blank"

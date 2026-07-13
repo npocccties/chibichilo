@@ -114,7 +114,9 @@ export default function SectionsEdit(props: Props) {
               トピックの作成
             </Button>
             <FormControlLabel
-              sx={{ [`&.${formControlLabelClasses.labelPlacementStart}`]: { ml: 0 } }}
+              sx={{
+                [`&.${formControlLabelClasses.labelPlacementStart}`]: { ml: 0 },
+              }}
               control={
                 <Switch
                   size="small"

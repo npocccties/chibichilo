@@ -36,7 +36,7 @@ export const Default = () => {
         open={open}
         onClose={handleClose}
         slots={{
-          transition: Transition
+          transition: Transition,
         }}
       >
         <DialogContent>

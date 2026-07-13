@@ -63,9 +63,7 @@ function Index() {
       dialogProps.dispatch(book.id);
     },
     onBookEditClick(book: Pick<BookSchema, "id" | "authors">) {
-      return router.push(
-        bookEditUrl({ context: "courses", bookId: book.id })
-      );
+      return router.push(bookEditUrl({ context: "courses", bookId: book.id }));
     },
   };
 

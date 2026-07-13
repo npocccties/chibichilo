@@ -6,9 +6,7 @@ import { bookUrl } from "$utils/routes";
 function Router() {
   const router = useAppRouter();
   useEffect(() => {
-    void router.replace(
-      bookUrl({ bookId: Number(router.query.bookId) })
-    );
+    void router.replace(bookUrl({ bookId: Number(router.query.bookId) }));
   }, [router]);
   return <Placeholder />;
 }

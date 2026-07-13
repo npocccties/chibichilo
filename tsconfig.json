@@ -28,6 +28,13 @@
       "$*": ["*"]
     }
   },
-  "exclude": ["node_modules", "api/v2.ts", "out", "openapi", "**/*.stories.tsx", "vitest.config.ts"],
+  "exclude": [
+    "node_modules",
+    "api/v2.ts",
+    "out",
+    "openapi",
+    "**/*.stories.tsx",
+    "vitest.config.ts"
+  ],
   "include": ["**/*.ts", "**/*.tsx"]
 }

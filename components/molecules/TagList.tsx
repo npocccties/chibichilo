@@ -253,7 +253,9 @@ export default function TagList({
               sx={{ borderRadius: "8px" }}
               aria-invalid={errors.memoContent ? "true" : "false"}
               slotProps={{
-                htmlInput: register("memoContent", { required: "必須項目です" })
+                htmlInput: register("memoContent", {
+                  required: "必須項目です",
+                }),
               }}
             />
             {errors.memoContent && (

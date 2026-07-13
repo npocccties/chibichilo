@@ -66,11 +66,7 @@ export default function DomainsInput({
       <InputLabel htmlFor={id} sx={{ mb: 1 }}>
         公開範囲
         <br />
-        <Typography
-          sx={labelDescriptionSx}
-          variant="caption"
-          component="span"
-        >
+        <Typography sx={labelDescriptionSx} variant="caption" component="span">
           * 指定しない場合は制限なしになります
         </Typography>
       </InputLabel>

@@ -11,10 +11,7 @@ import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { Query as BookEditQuery } from "../edit";
-import {
-  bookEditUrl,
-  bookImportTopicEditUrl,
-} from "$utils/routes";
+import { bookEditUrl, bookImportTopicEditUrl } from "$utils/routes";
 import useDialogProps from "$utils/useDialogProps";
 import type { ContentAuthors } from "$server/models/content";
 

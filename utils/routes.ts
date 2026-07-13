@@ -80,7 +80,9 @@ export function bookTopicImportUrl(query: BookEditQuery): string {
   return withQuery(paths.bookTopicImport, query);
 }
 
-export function bookEditTopicEditUrl(query: BookEditQuery & { topicId: number }): string {
+export function bookEditTopicEditUrl(
+  query: BookEditQuery & { topicId: number }
+): string {
   return withQuery(paths.bookEditTopicEdit, query);
 }
 
@@ -103,7 +105,9 @@ export function bookLinkingUrl(query: {
   return withQuery(paths.bookLinking, query);
 }
 
-export function bookTopicEditUrl(query: BookEditQuery & { topicId: number }): string {
+export function bookTopicEditUrl(
+  query: BookEditQuery & { topicId: number }
+): string {
   return withQuery(paths.bookTopicEdit, query);
 }
 

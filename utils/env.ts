@@ -1,7 +1,10 @@
 import yn from "yn";
 
 function readEnv(key: string): string | undefined {
-  if (typeof import.meta !== "undefined" && import.meta.env?.[key] !== undefined) {
+  if (
+    typeof import.meta !== "undefined" &&
+    import.meta.env?.[key] !== undefined
+  ) {
     return String(import.meta.env[key]);
   }
   return process.env[key];

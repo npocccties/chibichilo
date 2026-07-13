@@ -17,12 +17,7 @@ function SearchPagination({ className = "", sx, totalCount }: Props) {
 
   const page = searchProps.query.page + 1;
   return (
-    <Box
-      className={className}
-      sx={sx}
-      display="flex"
-      justifyContent="center"
-    >
+    <Box className={className} sx={sx} display="flex" justifyContent="center">
       <Pagination
         color="primary"
         page={page}

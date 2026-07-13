@@ -72,7 +72,11 @@ export function toPath(url: AppRouterUrl): string {
     "query" in url && url.query
       ? (url.query as Record<string, QueryValue>)
       : undefined;
-  const hash = url.hash ? (url.hash.startsWith("#") ? url.hash : `#${url.hash}`) : "";
+  const hash = url.hash
+    ? url.hash.startsWith("#")
+      ? url.hash
+      : `#${url.hash}`
+    : "";
 
   return `${withQuery(pathname, query)}${hash}`;
 }

@@ -42,9 +42,7 @@ function Index() {
     ...dialogProps
   } = useDialogProps<ContentSchema>();
   const onContentEditClick = (book: Pick<ContentSchema, "id" | "authors">) => {
-    return router.push(
-      bookEditUrl({ context: "books", bookId: book.id })
-    );
+    return router.push(bookEditUrl({ context: "books", bookId: book.id }));
   };
   const handleBookNewClick = () => {
     return router.push(bookNewUrl({ context: "books" }));

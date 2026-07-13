@@ -57,11 +57,7 @@ export default function BookmarkPreview({ bookmark }: Props) {
   };
 
   return (
-    <Box
-      component="button"
-      sx={bookmarkButtonSx}
-      onClick={handleClick}
-    >
+    <Box component="button" sx={bookmarkButtonSx} onClick={handleClick}>
       <Box component="h5" sx={bookmarkTitleSx}>
         {bookmark.topic?.name}
       </Box>

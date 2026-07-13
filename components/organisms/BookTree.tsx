@@ -69,9 +69,7 @@ export default function BookTree(props: Props) {
           />
           )*/}
           {book.name}
-          {book.release?.shared && (
-            <SharedIndicator sx={{ mx: 0.5 }} />
-          )}
+          {book.release?.shared && <SharedIndicator sx={{ mx: 0.5 }} />}
           <PreviewButton variant="book" onClick={handle(onBookPreviewClick)} />
           {onBookEditClick && (
             <EditButton variant="book" onClick={handle(onBookEditClick)} />

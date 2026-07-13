@@ -15,8 +15,7 @@ function Router() {
   const { session, isInstructor } = useSessionAtom();
   const ltiResourceLink = session?.ltiResourceLink;
 
-  if (!ltiResourceLink && isInstructor)
-    return <Replace href={paths.books} />;
+  if (!ltiResourceLink && isInstructor) return <Replace href={paths.books} />;
 
   if (!ltiResourceLink) return <UnlinkedProblem />;
 

@@ -96,11 +96,7 @@ export default function LearningActivityItem(props: Props) {
 
   return (
     <Box component="div" sx={rootSx}>
-      <Box
-        component="div"
-        className={lineClamp.placeholder}
-        sx={nameSx}
-      >
+      <Box component="div" className={lineClamp.placeholder} sx={nameSx}>
         <span className={lineClamp.clamp}>{book.name}</span>
       </Box>
       <Box component="div" sx={graphSx}>

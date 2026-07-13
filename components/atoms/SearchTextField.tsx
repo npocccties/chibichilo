@@ -65,8 +65,9 @@ const SearchTextField = styled(
               </InputAdornment>
             ),
             ...InputProps,
-          }
-        }} />
+          },
+        }}
+      />
     );
   }
 )(({ theme }) => ({

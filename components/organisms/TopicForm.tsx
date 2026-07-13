@@ -583,11 +583,7 @@ export default function TopicForm(props: Props) {
           inputProps={register("description")}
           disabled={released}
         />
-        <Typography
-          sx={labelDescriptionSx}
-          variant="caption"
-          component="span"
-        >
+        <Typography sx={labelDescriptionSx} variant="caption" component="span">
           <Link
             href="https://github.github.com/gfm/"
             target="_blank"

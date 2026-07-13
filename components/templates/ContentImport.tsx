@@ -52,7 +52,11 @@ export default function ContentImport({
       </Box>
       {showResult && (
         <>
-          <Typography className="content-import-title" sx={titleSx} variant="h4">
+          <Typography
+            className="content-import-title"
+            sx={titleSx}
+            variant="h4"
+          >
             インポート結果
           </Typography>
           {showSuccess && <ul>成功</ul>}

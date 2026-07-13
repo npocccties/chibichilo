@@ -70,7 +70,7 @@ function setPlayerPlaybackRate(player: Player, data: PlaybackRate): void {
 async function getPlayerPlaybackRate(player: Player): Promise<PlaybackRate> {
   const data = await (player instanceof VimeoPlayer
     ? player.getPlaybackRate()
-    : player.playbackRate() ?? 1);
+    : (player.playbackRate() ?? 1));
   return data;
 }
 
@@ -94,8 +94,12 @@ async function getPlayerVolume(player: Player): Promise<{
   muted: Muted;
 }> {
   const [volume, muted] = await Promise.all([
-    player instanceof VimeoPlayer ? player.getVolume() : player.volume() ?? NaN,
-    player instanceof VimeoPlayer ? player.getMuted() : player.muted() ?? false,
+    player instanceof VimeoPlayer
+      ? player.getVolume()
+      : (player.volume() ?? NaN),
+    player instanceof VimeoPlayer
+      ? player.getMuted()
+      : (player.muted() ?? false),
   ]);
   return { volume, muted };
 }

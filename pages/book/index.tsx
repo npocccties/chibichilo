@@ -10,12 +10,7 @@ import { useBook, getBookIdByZoom } from "$utils/book";
 import { useBookAtom } from "$store/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
-import {
-  bookEditUrl,
-  bookTopicEditUrl,
-  bookUrl,
-  paths,
-} from "$utils/routes";
+import { bookEditUrl, bookTopicEditUrl, bookUrl, paths } from "$utils/routes";
 import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
 import useParentBookInfo from "$utils/useParentBookInfo";

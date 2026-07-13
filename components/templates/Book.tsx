@@ -185,10 +185,7 @@ export default function Book(props: Props) {
   return (
     <Container maxWidth={matches ? "lg" : false} disableGutters={!matches}>
       <ActionHeader sx={{ pb: 0 }} considerAppBar={considerAppBar}>
-        <Box
-          component="header"
-          sx={[headerSx, trigger && headerHiddenSx]}
-        >
+        <Box component="header" sx={[headerSx, trigger && headerHiddenSx]}>
           <Typography sx={titleSx} variant="h4">
             {book?.name}
           </Typography>
@@ -270,11 +267,7 @@ export default function Book(props: Props) {
           </Box>
           <CollapsibleContent expanded={expanded}>
             <Box sx={infoSx}>
-              <BookInfo
-                id="book-info"
-                book={book}
-                parent={parent}
-              />
+              <BookInfo id="book-info" book={book} parent={parent} />
             </Box>
           </CollapsibleContent>
         </>
@@ -293,10 +286,7 @@ export default function Book(props: Props) {
             />
           )}
         </Box>
-        <Box
-          sx={getSideSx(matches, scrollOffset)}
-          className={sticky}
-        >
+        <Box sx={getSideSx(matches, scrollOffset)} className={sticky}>
           <Sections
             index={[sectionIndex, topicIndex]}
             bookId={book?.id ?? -1}

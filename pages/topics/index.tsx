@@ -2,11 +2,7 @@ import type { TopicSchema } from "$server/models/topic";
 import { useAppRouter } from "$utils/useAppRouter";
 import TopicsTemplate from "$templates/Topics";
 import { useSessionAtom } from "$store/session";
-import {
-  bookNewUrl,
-  paths,
-  topicsEditUrl,
-} from "$utils/routes";
+import { bookNewUrl, paths, topicsEditUrl } from "$utils/routes";
 import useTopics from "$utils/useTopics";
 import { destroyTopic, updateTopic } from "$utils/topic";
 import { useSearchAtom } from "$store/search";
@@ -28,9 +24,7 @@ function Index() {
     const ids = topics.map(({ id }) => id);
     if (!ids || !ids.length) return;
 
-    return router.push(
-      bookNewUrl({ context: "topics", topics: ids })
-    );
+    return router.push(bookNewUrl({ context: "topics", topics: ids }));
   }
   async function handleTopicsShareClick(
     topics: TopicSchema[],
