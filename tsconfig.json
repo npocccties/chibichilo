@@ -15,7 +15,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
@@ -27,6 +28,13 @@
       "$*": ["*"]
     }
   },
-  "exclude": ["node_modules", "api/v2.ts", "out", "openapi"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "api/v2.ts",
+    "out",
+    "openapi",
+    "**/*.stories.tsx",
+    "vitest.config.ts"
+  ],
+  "include": ["**/*.ts", "**/*.tsx"]
 }

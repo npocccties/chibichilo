@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
 import { useSessionAtom } from "$store/session";
@@ -8,7 +8,12 @@ import Book from "$templates/Book";
 import BookPreviewDialog from "$organisms/BookPreviewDialog";
 import useBooks from "$utils/useBooks";
 import useLinkedBook from "$utils/useLinkedBook";
-import { pagesPath } from "$utils/$path";
+import {
+  bookEditUrl,
+  bookNewUrl,
+  bookUrl,
+  booksImportUrl,
+} from "$utils/routes";
 import useDialogProps from "$utils/useDialogProps";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import { NEXT_PUBLIC_NO_DEEP_LINK_UI } from "$utils/env";
@@ -28,7 +33,7 @@ const DeepLinkBooks = (
 ) => <DeepLinkBooksTemplate {...props} {...useBooks()} />;
 
 function Index() {
-  const router = useRouter();
+  const router = useAppRouter();
   const { session } = useSessionAtom();
   const { linkedBook } = useLinkedBook();
   const {
@@ -37,25 +42,17 @@ function Index() {
     ...dialogProps
   } = useDialogProps<ContentSchema>();
   const onContentEditClick = (book: Pick<ContentSchema, "id" | "authors">) => {
-    return router.push(
-      pagesPath.book.edit.$url({
-        query: { context: "books", bookId: book.id },
-      })
-    );
+    return router.push(bookEditUrl({ context: "books", bookId: book.id }));
   };
   const handleBookNewClick = () => {
-    return router.push(
-      pagesPath.book.new.$url({ query: { context: "books" } })
-    );
+    return router.push(bookNewUrl({ context: "books" }));
   };
   const handleBooksImportClick = () => {
-    return router.push(
-      pagesPath.books.import.$url({ query: { context: "books" } })
-    );
+    return router.push(booksImportUrl({ context: "books" }));
   };
   const { onBookLinking: onContentLinkClick } = useBookLinkingHandlers();
   const handleLinkedBookClick = (book: Pick<BookSchema, "id">) =>
-    router.push(pagesPath.book.$url({ query: { bookId: book.id } }));
+    router.push(bookUrl({ bookId: book.id }));
   const handlers = {
     onContentPreviewClick,
     onContentEditClick,

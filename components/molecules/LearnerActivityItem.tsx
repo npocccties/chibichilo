@@ -1,5 +1,6 @@
 import { Fragment } from "react";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { common } from "@mui/material/colors";
 import LearnerActivityDot from "$atoms/LearnerActivityDot";
 import { gray } from "$theme/colors";
@@ -8,40 +9,41 @@ import type { LearnerSchema } from "$server/models/learner";
 import type { SessionSchema } from "$server/models/session";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    alignItems: "center",
+const rootSx: SxProps<Theme> = {
+  display: "flex",
+  alignItems: "center",
+};
+
+const nameSx: SxProps<Theme> = {
+  flexShrink: 0,
+  color: gray[700],
+  fontSize: "1rem",
+  width: "10rem",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  marginRight: "1rem",
+  position: "sticky",
+  left: 0,
+  backgroundColor: common.white,
+  borderRight: `1px solid ${gray[200]}`,
+};
+
+const dotsSx: SxProps<Theme> = {
+  display: "flex",
+  alignItems: "center",
+  whiteSpace: "nowrap",
+  "& > *": {
+    mx: 0.5,
   },
-  name: {
-    flexShrink: 0,
-    color: gray[700],
-    fontSize: "1rem",
-    width: "10rem",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-    marginRight: "1rem",
-    position: "sticky",
-    left: 0,
-    backgroundColor: common.white,
-    borderRight: `1px solid ${gray[200]}`,
-  },
-  dots: {
-    display: "flex",
-    alignItems: "center",
-    whiteSpace: "nowrap",
-    "& > *": {
-      margin: theme.spacing(0, 0.5),
-    },
-  },
-  separator: {
-    borderRight: "1px solid",
-    color: gray[200],
-    height: 16,
-    padding: 0,
-  },
-}));
+};
+
+const separatorSx: SxProps<Theme> = {
+  borderRight: "1px solid",
+  color: gray[200],
+  height: 16,
+  padding: 0,
+};
 
 type Props = {
   learner: LearnerSchema;
@@ -53,12 +55,13 @@ type Props = {
 
 export default function LearnerActivityItem(props: Props) {
   const { learner, activities, onActivityClick, session, rewatchRates } = props;
-  const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <span className={classes.name}>{learner.name || "名前未公開"}</span>
-      <div className={classes.dots}>
+    <Box component="div" sx={rootSx}>
+      <Box component="span" sx={nameSx}>
+        {learner.name || "名前未公開"}
+      </Box>
+      <Box component="div" sx={dotsSx}>
         {activities.map((activity, index) => (
           <Fragment key={index}>
             <LearnerActivityDot
@@ -75,11 +78,11 @@ export default function LearnerActivityItem(props: Props) {
             />
             {activities[index + 1] &&
               activities[index + 1].book.id !== activity.book.id && (
-                <div role="separator" className={classes.separator} />
+                <Box component="div" role="separator" sx={separatorSx} />
               )}
           </Fragment>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

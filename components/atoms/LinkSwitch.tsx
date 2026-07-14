@@ -36,7 +36,7 @@ const LinkSwitch = styled((props: Parameters<typeof Switch>[0]) => (
     },
   },
   [`.${switchClasses.track}`]: {
-    borderRadius: 11,
+    borderRadius: "11px",
   },
   [`.${switchClasses.checked}`]: {
     [`.${switchClasses.thumb}`]: {

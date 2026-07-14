@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import TopicNew from "$templates/TopicNew";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
@@ -27,7 +27,7 @@ function NewWithBook({ bookId, context }: BookEditQuery) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const { context }: Pick<BookEditQuery, "context"> = router.query;
 

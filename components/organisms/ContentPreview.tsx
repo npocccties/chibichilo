@@ -98,7 +98,7 @@ const Description = styled("p")({
 
 const Preview = styled(Card)(({ theme }) => ({
   border: `1px solid ${grey[300]}`,
-  borderRadius: 12,
+  borderRadius: "12px",
   boxShadow: "none",
   ".shared": {
     verticalAlign: "middle",

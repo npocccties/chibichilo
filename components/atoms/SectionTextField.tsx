@@ -1,61 +1,50 @@
 import type { ComponentProps } from "react";
 import TextField from "@mui/material/TextField";
-import makeStyles from "@mui/styles/makeStyles";
+import { outlinedInputClasses } from "@mui/material/OutlinedInput";
+import { inputLabelClasses } from "@mui/material/InputLabel";
+import type { SxProps, Theme } from "@mui/material/styles";
 import gray from "$theme/colors/gray";
 
-const useOutlinedInputStyles = makeStyles((theme) => ({
-  root: {
+const textFieldSx: SxProps<Theme> = {
+  [`& .${outlinedInputClasses.root}`]: {
     backgroundColor: "#fff",
-    "&:hover $notchedOutline": {
+    [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
       borderColor: gray[200],
       borderWidth: "1px",
     },
     "@media (hover: none)": {
-      "&:hover $notchedOutline": {
+      [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
         borderColor: gray[200],
       },
     },
-    "&$focused $notchedOutline": {
-      borderColor: theme.palette.primary.main,
-      borderWidth: "1px",
-    },
+    [`&.${outlinedInputClasses.focused} .${outlinedInputClasses.notchedOutline}`]:
+      {
+        borderColor: (theme) => theme.palette.primary.main,
+        borderWidth: "1px",
+      },
   },
-  input: {
+  [`& .${outlinedInputClasses.input}`]: {
     height: "1.25rem",
-    padding: theme.spacing(1),
+    padding: (theme) => theme.spacing(1),
   },
-  focused: {},
-  notchedOutline: {
+  [`& .${outlinedInputClasses.notchedOutline}`]: {
     borderColor: gray[200],
-    transition: theme.transitions.create(["border-color"]),
+    transition: (theme) => theme.transitions.create(["border-color"]),
   },
-}));
-
-const useInputLabelStyles = makeStyles((theme) => ({
-  outlined: {
-    transform: `translate(${theme.spacing(1)}, 6px)`,
-    "&$shrink": {
+  [`& .${inputLabelClasses.outlined}`]: {
+    transform: (theme) => `translate(${theme.spacing(1)}, 6px)`,
+    [`&.${inputLabelClasses.shrink}`]: {
       transform: "translate(14px, -9px) scale(0.75)",
     },
   },
-  shrink: {},
-}));
+};
 
 export default function SectionTextField(
   props: ComponentProps<typeof TextField>
 ) {
-  const outlinedInputClasses = useOutlinedInputStyles();
-  const inputLabelClasses = useInputLabelStyles();
   return (
     <div>
-      <TextField
-        variant="outlined"
-        InputProps={{
-          classes: outlinedInputClasses,
-        }}
-        InputLabelProps={{ classes: inputLabelClasses }}
-        {...props}
-      />
+      <TextField variant="outlined" sx={textFieldSx} {...props} />
     </div>
   );
 }

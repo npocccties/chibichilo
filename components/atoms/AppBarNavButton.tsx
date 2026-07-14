@@ -1,19 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
 import Button from "@mui/material/Button";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useButtonStyles = makeStyles({
-  root: {
-    flexDirection: "column",
-    lineHeight: 1.5,
-  },
-});
-
-const useStyles = makeStyles({
-  label: {
-    fontSize: "0.75rem",
-  },
-});
 
 type Props = ComponentProps<typeof Button> & {
   icon: ReactNode;
@@ -21,13 +7,11 @@ type Props = ComponentProps<typeof Button> & {
 };
 
 export default function AppBarNavButton(props: Props) {
-  const buttonClasses = useButtonStyles();
-  const classes = useStyles();
   const { icon, label, ...others } = props;
   return (
-    <Button classes={buttonClasses} {...others}>
+    <Button sx={{ flexDirection: "column", lineHeight: 1.5 }} {...others}>
       {icon}
-      <span className={classes.label}>{label}</span>
+      <span style={{ fontSize: "0.75rem" }}>{label}</span>
     </Button>
   );
 }

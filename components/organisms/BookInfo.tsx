@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Markdown from "$atoms/Markdown";
 import type { BookSchema } from "$server/models/book";
 import KeywordChip from "$atoms/KeywordChip";
-import useCardStyle from "$styles/card";
+import card from "$styles/card";
 import { Box } from "@mui/material";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import DescriptionList from "$atoms/DescriptionList";
@@ -16,10 +16,8 @@ type Props = {
 };
 
 export default function BookInfo({ className, id, book, parent }: Props) {
-  const cardClasses = useCardStyle();
-
   return (
-    <Card className={className} classes={cardClasses} id={id}>
+    <Card className={className} sx={card} id={id}>
       {book.keywords && (
         <Box sx={{ mb: 1 }}>
           {book.keywords.map((keyword) => {

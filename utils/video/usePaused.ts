@@ -49,8 +49,8 @@ function usePaused(
       player instanceof HTMLVideoElement
         ? player.paused
         : player instanceof VimeoPlayer
-        ? await player.getPaused()
-        : player.paused();
+          ? await player.getPaused()
+          : player.paused();
 
     if (isPaused) {
       void player.play();

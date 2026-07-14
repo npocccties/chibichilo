@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { BookSchema } from "$server/models/book";
 import Placeholder from "$templates/Placeholder";
 import { useSessionAtom } from "$store/session";
@@ -9,7 +9,7 @@ import type { TopicSchema } from "$server/models/topic";
 export type Query = { bookId: BookSchema["id"]; topicId?: TopicSchema["id"] };
 
 function Linking() {
-  const { query } = useRouter();
+  const { query } = useAppRouter();
   const [bookId] = [query.bookId].flat();
   const { session } = useSessionAtom();
   const jwt = useDlResponseJwt(

@@ -1,17 +1,6 @@
-import clsx from "clsx";
 import Button from "@mui/material/Button";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Collapse from "@mui/material/Collapse";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    transition: theme.transitions.create("transform"),
-  },
-  expanded: {
-    transform: "rotate(90deg)",
-  },
-}));
 
 type Props = {
   expanded: boolean;
@@ -28,7 +17,6 @@ export default function CollapsibleContent({
   "aria-controls": ariaControls,
   onCollapsibleContentClick,
 }: Props) {
-  const classes = useStyles();
   return (
     <>
       {label && (
@@ -39,7 +27,10 @@ export default function CollapsibleContent({
           onClick={onCollapsibleContentClick}
         >
           <ChevronRightIcon
-            className={clsx(classes.icon, { [classes.expanded]: expanded })}
+            sx={(theme) => ({
+              transition: theme.transitions.create("transform"),
+              ...(expanded ? { transform: "rotate(90deg)" } : {}),
+            })}
           />
           {label}
         </Button>

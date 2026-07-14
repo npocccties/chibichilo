@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import BookImport from "$templates/BookImport";
 import Placeholder from "$templates/Placeholder";
 import Book from "$templates/Book";
@@ -11,7 +11,7 @@ import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { Query as BookEditQuery } from "../edit";
-import { pagesPath } from "$utils/$path";
+import { bookEditUrl, bookImportTopicEditUrl } from "$utils/routes";
 import useDialogProps from "$utils/useDialogProps";
 import type { ContentAuthors } from "$server/models/content";
 
@@ -21,7 +21,7 @@ function Import({ bookId, context }: Query) {
   const { isContentEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const booksProps = useBooks();
-  const router = useRouter();
+  const router = useAppRouter();
   const bookEditQuery = { bookId, ...(context && { context }) };
   const {
     data: dialog,
@@ -29,8 +29,7 @@ function Import({ bookId, context }: Query) {
     onClose,
     dispatch,
   } = useDialogProps<BookSchema>();
-  const back = () =>
-    router.push(pagesPath.book.edit.$url({ query: bookEditQuery }));
+  const back = () => router.push(bookEditUrl(bookEditQuery));
   async function handleSubmit({
     topics,
   }: {
@@ -56,17 +55,15 @@ function Import({ bookId, context }: Query) {
   }
   function handleBookEditClick(book: Pick<BookSchema, "id"> & ContentAuthors) {
     return router.push(
-      pagesPath.book.edit.$url({
-        // NOTE: ブック編集画面は元のブックインポート画面に戻る手段が無いのでブック一覧画面に戻る
-        query: { bookId: book.id, context: "books" },
+      bookEditUrl({
+        bookId: book.id,
+        context: "books",
       })
     );
   }
   function handleTopicEditClick(topic: Pick<TopicSchema, "id">) {
     return router.push(
-      pagesPath.book.import.topic.edit.$url({
-        query: { ...bookEditQuery, topicId: topic.id },
-      })
+      bookImportTopicEditUrl({ ...bookEditQuery, topicId: topic.id })
     );
   }
   const handlers = {
@@ -94,7 +91,7 @@ function Import({ bookId, context }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const { context }: Pick<Query, "context"> = router.query;
 

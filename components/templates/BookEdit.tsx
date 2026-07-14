@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
 import SectionsEdit from "$organisms/SectionsEdit";
 import BookForm from "$organisms/BookForm";
 import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
@@ -25,30 +25,31 @@ import ReleaseItemList from "$organisms/ReleaseItemList";
 import type { MetainfoProps } from "$server/models/metainfo";
 import MetainfoForm from "$organisms/MetainfoForm";
 
-export const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: theme.spacing(1),
-    "& > :not($title):not($content)": {
-      marginBottom: theme.spacing(2),
-    },
+export const containerSx = {
+  mt: 1,
+  "& > :not(.book-edit-title):not(.book-edit-content)": {
+    mb: 2,
   },
-  title: {
-    marginBottom: theme.spacing(4),
+};
+
+export const titleSx = {
+  mb: 4,
+};
+
+export const contentSx = {
+  mb: 4,
+};
+
+export const subtitleSx = {
+  "& span": {
+    verticalAlign: "middle",
   },
-  content: {
-    marginBottom: theme.spacing(4),
+  "& .RequiredDot": {
+    mr: 0.5,
+    mb: 0.75,
+    ml: 2,
   },
-  subtitle: {
-    "& span": {
-      verticalAlign: "middle",
-    },
-    "& .RequiredDot": {
-      marginRight: theme.spacing(0.5),
-      marginBottom: theme.spacing(0.75),
-      marginLeft: theme.spacing(2),
-    },
-  },
-}));
+};
 
 export type Props = {
   book: BookSchema;
@@ -92,7 +93,6 @@ export default function BookEdit({
   onMetainfoUpdate,
 }: Props) {
   const { session } = useSessionAtom();
-  const classes = useStyles();
   const confirm = useConfirm();
   const {
     data: previewTopic,
@@ -149,53 +149,55 @@ export default function BookEdit({
   };
 
   return (
-    <Container className={classes.container} maxWidth="md">
+    <Container sx={containerSx} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
+      <Typography className="book-edit-title" sx={titleSx} variant="h4">
         ブック「{book.name}」の編集
         <Button size="small" color="primary" onClick={onOverwriteClick}>
           <AddIcon sx={{ mr: 0.5 }} />
           上書きインポート
         </Button>
       </Typography>
-      <Typography className={classes.subtitle} variant="h5">
+      <Typography sx={subtitleSx} variant="h5">
         トピック
       </Typography>
-      <SectionsEdit
-        className={classes.content}
-        sections={book.sections}
-        onTopicPreviewClick={handleTopicPreviewClick}
-        onTopicEditClick={onTopicEditClick}
-        onTopicImportClick={onTopicImportClick}
-        onTopicNewClick={onTopicNewClick}
-        onBookImportClick={onBookImportClick}
-        onSectionsUpdate={onSectionsUpdate}
-        isContentEditable={isContentEditable}
-      />
-      <Typography className={classes.subtitle} variant="h5">
+      <Box className="book-edit-content" sx={contentSx}>
+        <SectionsEdit
+          sections={book.sections}
+          onTopicPreviewClick={handleTopicPreviewClick}
+          onTopicEditClick={onTopicEditClick}
+          onTopicImportClick={onTopicImportClick}
+          onTopicNewClick={onTopicNewClick}
+          onBookImportClick={onBookImportClick}
+          onSectionsUpdate={onSectionsUpdate}
+          isContentEditable={isContentEditable}
+        />
+      </Box>
+      <Typography sx={subtitleSx} variant="h5">
         基本情報
         <Typography variant="caption" component="span" aria-hidden="true">
           <RequiredDot />
           は必須項目です
         </Typography>
       </Typography>
-      <BookForm
-        className={classes.content}
-        book={book}
-        linked={linked}
-        hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
-        variant="update"
-        onSubmit={onSubmit}
-        onAuthorsUpdate={onAuthorsUpdate}
-        onAuthorSubmit={onAuthorSubmit}
-      />
-      <Typography className={classes.subtitle} variant="h5">
+      <Box className="book-edit-content" sx={contentSx}>
+        <BookForm
+          book={book}
+          linked={linked}
+          hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+          variant="update"
+          onSubmit={onSubmit}
+          onAuthorsUpdate={onAuthorsUpdate}
+          onAuthorSubmit={onAuthorSubmit}
+        />
+      </Box>
+      <Typography sx={subtitleSx} variant="h5">
         メタ情報
       </Typography>
       <MetainfoForm metainfo={book} onSubmit={onMetainfoUpdate} />
       {releases && (
         <>
-          <Typography className={classes.subtitle} variant="h5">
+          <Typography sx={subtitleSx} variant="h5">
             リリース一覧
           </Typography>
           <ReleaseItemList

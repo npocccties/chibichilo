@@ -13,8 +13,9 @@ import Link from "@mui/material/Link";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import makeStyles from "@mui/styles/makeStyles";
+import type { Theme } from "@mui/material/styles";
 import type { AccordionProps } from "@mui/material/Accordion";
 import MuiAccordion from "@mui/material/Accordion";
 import type { AccordionSummaryProps } from "@mui/material/AccordionSummary";
@@ -25,7 +26,6 @@ import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import Autocomplete from "$atoms/Autocomplete";
 import { useForm } from "react-hook-form";
 import useDebouncedCallback from "$utils/useDebouncedCallback";
-import clsx from "clsx";
 import InputLabel from "$atoms/InputLabel";
 import TextField from "$atoms/TextField";
 import VideoEditor from "$molecules/VideoEditor";
@@ -35,7 +35,7 @@ import TimeRequiredInputControl from "$organisms/TopicForm/TimeRequiredInputCont
 import SubtitleChip from "$atoms/SubtitleChip";
 import SubtitleUploadDialog from "$organisms/SubtitleUploadDialog";
 import VideoResource from "$organisms/Video/VideoResource";
-import useCardStyles from "styles/card";
+import card from "styles/card";
 import gray from "theme/colors/gray";
 import type { TopicProps, TopicSchema } from "$server/models/topic";
 import type {
@@ -54,39 +54,34 @@ import { useVideoTrackAtom } from "$store/videoTrack";
 import useKeywordsInput from "$utils/useKeywordsInput";
 import { getReleaseFromRelatedBooks } from "$utils/release";
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:first-child)": {
-      marginTop: theme.spacing(2.5),
-    },
+const marginSx = {
+  "& > :not(:first-of-type)": {
+    mt: 2.5,
   },
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
+};
+const labelDescriptionSx = {
+  ml: 0.75,
+  color: gray[600],
+};
+const dividerSx = {
+  m: (theme: Theme) => theme.spacing(0, -3, 0),
+};
+const subtitlesSx = {
+  mt: 2,
+  mb: 1,
+  "& > *": {
+    mr: 1.75,
+    mb: 1,
   },
-  divider: {
-    margin: theme.spacing(0, -3, 0),
-  },
-  subtitles: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-    "& > *": {
-      marginRight: theme.spacing(1.75),
-      marginBottom: theme.spacing(1),
-    },
-  },
-  videoBox: {
-    display: "flex",
-    justifyContent: "center",
-    "& > *": { width: "50%" },
-  },
-  localVideo: {
-    width: "100%",
-  },
-  marginLeft: {
-    marginLeft: theme.spacing(0.75),
-  },
-}));
+};
+const videoBoxSx = {
+  display: "flex",
+  justifyContent: "center",
+  "& > *": { width: "50%" },
+};
+const marginLeftSx = {
+  ml: 0.75,
+};
 
 const label = {
   create: "作成",
@@ -150,8 +145,6 @@ export default function TopicForm(props: Props) {
     onAuthorsUpdate,
     onAuthorSubmit,
   } = props;
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
   const { session } = useSessionAtom();
   const { videoResource, setUrl } = useVideoResourceProps(topic?.resource);
   const handleResourceUrlChange = useDebouncedCallback(
@@ -369,8 +362,8 @@ export default function TopicForm(props: Props) {
   return (
     <>
       <Card
-        classes={cardClasses}
-        className={clsx(classes.margin, className)}
+        sx={[card, marginSx]}
+        className={className}
         component="form"
         onSubmit={handleSubmit((values) => {
           onSubmit({
@@ -386,7 +379,7 @@ export default function TopicForm(props: Props) {
           <div>
             シェア機能はリリース共有機能に移行しました。現在のシェアはそのまま継続できますが、リリースして共有を有効にすることをお勧めします。
             <FormControlLabel
-              className={classes.marginLeft}
+              sx={marginLeftSx}
               label="シェアを解除する（解除後、既存の共有先はアクセスできなくなります）"
               title={"シェアを解除する"}
               control={
@@ -442,7 +435,7 @@ export default function TopicForm(props: Props) {
                     <>
                       動画のURL
                       <Typography
-                        className={classes.labelDescription}
+                        sx={labelDescriptionSx}
                         variant="caption"
                         component="span"
                       >
@@ -462,7 +455,7 @@ export default function TopicForm(props: Props) {
               )}
             />
             {videoResource && (
-              <div className={classes.videoBox}>
+              <Box sx={videoBoxSx}>
                 <VideoResource
                   {...videoResource}
                   identifier={videoResource.url}
@@ -470,7 +463,7 @@ export default function TopicForm(props: Props) {
                   onDurationChange={handleDurationChange}
                   onTimeUpdate={handleTimeUpdate}
                 />
-              </div>
+              </Box>
             )}
           </>
         )}
@@ -497,10 +490,10 @@ export default function TopicForm(props: Props) {
               ))}
             </TextField>
             {dataUrl && (
-              <div className={classes.videoBox}>
+              <Box sx={videoBoxSx}>
                 <video
                   ref={localVideo}
-                  className={classes.localVideo}
+                  style={{ width: "100%" }}
                   src={dataUrl}
                   controls
                   autoPlay
@@ -513,7 +506,7 @@ export default function TopicForm(props: Props) {
                     void handleTimeUpdate(video.currentTime);
                   }}
                 />
-              </div>
+              </Box>
             )}
           </>
         )}
@@ -543,9 +536,9 @@ export default function TopicForm(props: Props) {
                 stopTimeError={stopTimeError}
                 paused={paused}
               />
-              <div className={classes.subtitles}>
+              <Box sx={subtitlesSx}>
                 <InputLabel>字幕</InputLabel>
-                <div className={classes.subtitles}>
+                <Box sx={subtitlesSx}>
                   {videoTracks.map((track) => (
                     <SubtitleChip
                       key={track.id}
@@ -553,7 +546,7 @@ export default function TopicForm(props: Props) {
                       onDelete={handleSubtitleDelete}
                     />
                   ))}
-                </div>
+                </Box>
                 <Button
                   variant="outlined"
                   color="primary"
@@ -561,7 +554,7 @@ export default function TopicForm(props: Props) {
                 >
                   字幕を追加
                 </Button>
-              </div>
+              </Box>
             </AccordionDetails>
           </Accordion>
         )}
@@ -590,11 +583,7 @@ export default function TopicForm(props: Props) {
           inputProps={register("description")}
           disabled={released}
         />
-        <Typography
-          className={classes.labelDescription}
-          variant="caption"
-          component="span"
-        >
+        <Typography sx={labelDescriptionSx} variant="caption" component="span">
           <Link
             href="https://github.github.com/gfm/"
             target="_blank"
@@ -605,7 +594,7 @@ export default function TopicForm(props: Props) {
           {` `}
           に一部準拠しています
         </Typography>
-        <Divider className={classes.divider} />
+        <Divider sx={dividerSx} />
         <Button variant="contained" color="primary" type="submit">
           {label[variant]}
         </Button>

@@ -1,45 +1,55 @@
 import yn from "yn";
 
-const NEXT_PUBLIC_API_BASE_PATH = process.env.NEXT_PUBLIC_API_BASE_PATH ?? "";
-const NEXT_PUBLIC_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+function readEnv(key: string): string | undefined {
+  if (
+    typeof import.meta !== "undefined" &&
+    import.meta.env?.[key] !== undefined
+  ) {
+    return String(import.meta.env[key]);
+  }
+  return process.env[key];
+}
+
+const NEXT_PUBLIC_API_BASE_PATH = readEnv("NEXT_PUBLIC_API_BASE_PATH") ?? "";
+const NEXT_PUBLIC_BASE_PATH = readEnv("NEXT_PUBLIC_BASE_PATH") ?? "";
 const NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY =
-  yn(process.env.NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY) ?? false;
+  yn(readEnv("NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY")) ?? false;
 const NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL = Number(
-  process.env.NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL ?? 10
+  readEnv("NEXT_PUBLIC_ACTIVITY_SEND_INTERVAL") ?? 10
 );
 const NEXT_PUBLIC_VIDEO_MAX_HEIGHT =
-  process.env.NEXT_PUBLIC_VIDEO_MAX_HEIGHT ?? "60vh";
-const NEXT_PUBLIC_NO_EMBED = yn(process.env.NEXT_PUBLIC_NO_EMBED) ?? false;
+  readEnv("NEXT_PUBLIC_VIDEO_MAX_HEIGHT") ?? "60vh";
+const NEXT_PUBLIC_NO_EMBED = yn(readEnv("NEXT_PUBLIC_NO_EMBED")) ?? false;
 
 const NEXT_PUBLIC_ACTIVITY_REWATCH_RATE_THRESHOLD = Number(
-  process.env.NEXT_PUBLIC_ACTIVITY_REWATCH_RATE_THRESHOLD ?? 0.1
+  readEnv("NEXT_PUBLIC_ACTIVITY_REWATCH_RATE_THRESHOLD") ?? 0.1
 );
 const NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD = Number(
-  process.env.NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD ?? 20
+  readEnv("NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD") ?? 20
 );
 const NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE = Number(
-  process.env.NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE ?? 5.0
+  readEnv("NEXT_PUBLIC_REWATCH_GRAPH_PLOT_SIZE") ?? 5.0
 );
 const NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR =
-  process.env.NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR ?? "#00BFFF";
+  readEnv("NEXT_PUBLIC_REWATCH_GRAPH_PLOT_COLOR") ?? "#00BFFF";
 
 const NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY = Number(
-  process.env.NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY ?? 0.2
+  readEnv("NEXT_PUBLIC_REWATCH_GRAPH_PLOT_OPACITY") ?? 0.2
 );
 const NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD =
-  yn(process.env.NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) ?? true;
+  yn(readEnv("NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD")) ?? true;
 
 const NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK =
-  yn(process.env.NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) ?? true;
+  yn(readEnv("NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK")) ?? true;
 
 const NEXT_PUBLIC_NO_DEEP_LINK_UI =
-  yn(process.env.NEXT_PUBLIC_NO_DEEP_LINK_UI) ?? false;
+  yn(readEnv("NEXT_PUBLIC_NO_DEEP_LINK_UI")) ?? false;
 const NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL = Number(
-  process.env.NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL ?? 1
+  readEnv("NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL") ?? 1
 );
 
 const NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE = Number(
-  process.env.NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE ?? 0 // 0: 分割しない
+  readEnv("NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE") ?? 0
 );
 
 export {

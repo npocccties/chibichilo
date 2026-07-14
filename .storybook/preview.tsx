@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Story } from "@storybook/react";
+import type { Preview } from "@storybook/react";
 import { Provider } from "jotai";
 import {
   ThemeProvider as MuiThemeProvider,
@@ -23,18 +23,22 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const decorators = [
-  (Story: Story) => (
-    <Provider>
-      <ThemeProvider>
-        <ConfirmProvider>
-          <Story />
-        </ConfirmProvider>
-      </ThemeProvider>
-    </Provider>
-  ),
-];
-
-export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
+const preview: Preview = {
+  tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <Provider>
+        <ThemeProvider>
+          <ConfirmProvider>
+            <Story />
+          </ConfirmProvider>
+        </ThemeProvider>
+      </Provider>
+    ),
+  ],
+  parameters: {
+    actions: { argTypesRegex: "^on[A-Z].*" },
+  },
 };
+
+export default preview;

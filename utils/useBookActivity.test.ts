@@ -1,33 +1,15 @@
 import useBookActivity, { checkIsReady } from "./useBookActivity";
 import useSWR, { type SWRResponse } from "swr";
 import type { ActivitySchema } from "$server/models/activity";
-import type { SessionSchema } from "$server/models/session";
 import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { useActivityAtom } from "$store/activity";
 import { isInstructor } from "./session";
 import { api } from "$utils/api";
-import { type Mock, vi } from "vitest";
+import { vi } from "vitest";
 
-type MockSession = {
-  session: {
-    user?: Partial<SessionSchema["user"]>;
-  };
-};
-const mockUseSessionAtom = useSessionAtom as unknown as Mock<MockSession>;
-
-type MockLtiContext = Pick<
-  ReturnType<typeof useLtiContextAtom>,
-  "isLtiContextReady" | "ltiConsumerId" | "ltiContextId"
->;
-const mockUseLtiContextAtom =
-  useLtiContextAtom as unknown as Mock<MockLtiContext>;
-
-type MockSWR = Pick<
-  SWRResponse<ActivitySchema[], Error>,
-  "data" | "error" | "mutate" | "isValidating" | "isLoading"
->;
-
-const mockUseSWR = useSWR as unknown as Mock<MockSWR>;
+const mockUseSessionAtom = vi.mocked(useSessionAtom);
+const mockUseLtiContextAtom = vi.mocked(useLtiContextAtom);
+const mockUseSWR = vi.mocked(useSWR);
 
 vi.mock("swr");
 vi.mock("$store/session");
@@ -114,7 +96,7 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
     it("isReady が true のとき、正しいキーで useSWR が呼び出されること", () => {
       mockUseSessionAtom.mockReturnValue({
         session: { user: { id: 1 } },
-      });
+      } as ReturnType<typeof useSessionAtom>);
       mockUseLtiContextAtom.mockReturnValue({
         ltiConsumerId: "cons-1",
         ltiContextId: "ctx-1",

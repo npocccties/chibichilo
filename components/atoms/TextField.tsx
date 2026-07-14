@@ -16,7 +16,6 @@ const TextField = styled(
     return (
       <MuiTextField
         {...other}
-        InputLabelProps={{ ...InputLabelProps, shrink: true }}
         variant="outlined"
         label={
           <span>
@@ -24,6 +23,9 @@ const TextField = styled(
             <RequiredDot />
           </span>
         }
+        slotProps={{
+          inputLabel: { ...InputLabelProps, shrink: true },
+        }}
       />
     );
   }

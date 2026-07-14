@@ -5,7 +5,7 @@ function getDomainFromInput(newDomain: string) {
   try {
     const host = new URL(trimmed).host;
     return host ? host : trimmed;
-  } catch (e) {
+  } catch {
     return trimmed;
   }
 }

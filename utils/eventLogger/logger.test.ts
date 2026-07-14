@@ -3,6 +3,7 @@ import { load } from "./loggerSessionPersister";
 import { send } from "./logger";
 import { loadLtiContext } from "$store/session";
 import type { SessionSchema } from "$server/models/session";
+import type * as SessionStore from "$store/session";
 import { vi } from "vitest";
 
 vi.mock("@vimeo/player", () => ({
@@ -13,7 +14,7 @@ vi.mock("@vimeo/player", () => ({
 }));
 vi.mock("./loggerSessionPersister");
 vi.mock("$store/session", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$store/session")>();
+  const actual = await importOriginal<typeof SessionStore>();
   return {
     ...actual,
     loadLtiContext: vi.fn(),

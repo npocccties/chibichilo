@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import TreeItem from "@mui/lab/TreeItem";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import Checkbox from "@mui/material/Checkbox";
 import PreviewButton from "$atoms/PreviewButton";
 import EditButton from "$atoms/EditButton";
@@ -13,7 +13,7 @@ import { useSessionAtom } from "$store/session";
 import { isDisplayableBook } from "$utils/displayableBook";
 import getLocaleDateTimeString from "$utils/getLocaleDateTimeString";
 import Accordion from "./Accordion";
-import TreeView from "@mui/lab/TreeView";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Box } from "@mui/material";
@@ -69,14 +69,16 @@ function LinksTree({
           .join(":");
 
         return (
-          <TreeView
+          <SimpleTreeView
             key={nodeId}
-            defaultExpanded={[nodeId]}
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
+            defaultExpandedItems={[nodeId]}
+            slots={{
+              collapseIcon: ExpandMoreIcon,
+              expandIcon: ChevronRightIcon,
+            }}
           >
             <TreeItem
-              nodeId={nodeId}
+              itemId={nodeId}
               onClick={(event) => {
                 event.stopPropagation();
                 (
@@ -169,7 +171,7 @@ function LinksTree({
                 </>
               }
             />
-          </TreeView>
+          </SimpleTreeView>
         );
       })}
     </>

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import usePrevious from "$utils/usePrevious";
-import { css } from "@emotion/css";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -48,33 +47,33 @@ const videoStyle = {
   },
 } as const;
 
-const tabsStyle = css({
+const tabsStyleSx = {
   marginBottom: "12px",
   borderBottom: `1px solid ${gray[300]}`,
-});
+};
 
-const timeLineDetail = css({
+const timeLineDetailSx = {
   display: "flex",
   justifyContent: "center",
   marginTop: "12px",
-});
+};
 
-const skipButton = css({
+const skipButtonSx = {
   whiteSpace: "nowrap",
   fontSize: "8px",
   marginRight: "8px",
   lineHeight: 1,
-});
+};
 
-const markdownContainerStyle = css({
+const markdownContainerStyleSx = {
   minWidth: 0,
   maxWidth: "100%",
   overflowWrap: "anywhere",
-});
+};
 
 function SkipButton(props: ButtonProps) {
   return (
-    <Button {...props} className={skipButton} size="small" color="primary">
+    <Button {...props} sx={skipButtonSx} size="small" color="primary">
       未視聴箇所へ
     </Button>
   );
@@ -325,7 +324,7 @@ export default function Video({
               ...videoStyle,
               ...sx,
               position: String(topic.id) === id ? "sticky" : "static",
-              top: String(topic.id) === id ? (isMobile ? 0 : 56) : "auto",
+              top: String(topic.id) === id ? (isMobile ? 0 : "56px") : "auto",
               zIndex: String(topic.id) === id ? 10 : "auto",
               backgroundColor:
                 String(topic.id) === id ? "#ffffff" : "transparent",
@@ -368,11 +367,11 @@ export default function Video({
       >
         <Tabs
           aria-label="トピックビデオの詳細情報"
-          className={tabsStyle}
           indicatorColor="primary"
           value={tabIndex}
           onChange={handleTabIndexChange}
           sx={{
+            ...tabsStyleSx,
             width: "80%",
           }}
         >
@@ -407,38 +406,44 @@ export default function Video({
         )}
       </Box>
       <TabPanel value={tabIndex} index={0}>
-        <article className={markdownContainerStyle}>
+        <Box component="article" sx={markdownContainerStyleSx}>
           <Markdown>{topic.description}</Markdown>
-        </article>
+        </Box>
       </TabPanel>
       {isStudent && isBookPage && (
-        <TabPanel value={tabIndex} index={1} className={timeLineDetail}>
-          <SkipButton onClick={handleSkipWatch} />
-          <svg height={20} width={BAR_SIZE} xmlns="http://www.w3.org/2000/svg">
-            <rect
-              x={0}
-              y={0}
+        <TabPanel value={tabIndex} index={1}>
+          <Box sx={timeLineDetailSx}>
+            <SkipButton onClick={handleSkipWatch} />
+            <svg
               height={20}
               width={BAR_SIZE}
-              stroke="black"
-              fill="transparent"
-            />
-            {generateTimeRangeBarValue({
-              timeRange,
-              timeRequired: topic.timeRequired,
-            }).map((value) => {
-              return (
-                <React.Fragment key={value.id}>
-                  <rect
-                    x={value.positionX}
-                    width={value.width}
-                    height={20}
-                    fill={learningStatus.completed}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </svg>
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x={0}
+                y={0}
+                height={20}
+                width={BAR_SIZE}
+                stroke="black"
+                fill="transparent"
+              />
+              {generateTimeRangeBarValue({
+                timeRange,
+                timeRequired: topic.timeRequired,
+              }).map((value) => {
+                return (
+                  <React.Fragment key={value.id}>
+                    <rect
+                      x={value.positionX}
+                      width={value.width}
+                      height={20}
+                      fill={learningStatus.completed}
+                    />
+                  </React.Fragment>
+                );
+              })}
+            </svg>
+          </Box>
         </TabPanel>
       )}
       <TabPanel value={tabIndex} index={isStudent ? 2 : 1}>

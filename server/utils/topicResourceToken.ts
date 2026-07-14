@@ -84,7 +84,7 @@ export function checkWowzaAccessToken(accessToken: string, path: string) {
       new Date(value.expired).getTime() > new Date().getTime() &&
       new URL(value.url).pathname == `${API_BASE_PATH}/wowza/${path}`
     );
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -114,7 +114,7 @@ export function checkVttAccessToken(
       value.resourceId == resourceId &&
       value.videoTrackId == videoTrackId
     );
-  } catch (e) {
+  } catch {
     return false;
   }
 }
