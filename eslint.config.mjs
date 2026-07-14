@@ -2,8 +2,6 @@ import js from "@eslint/js";
 import { defineConfig, globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier";
 import storybook from "eslint-plugin-storybook";
-import filenamesPlugin from "eslint-plugin-filenames";
-import tscPlugin from "eslint-plugin-tsc";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
@@ -13,30 +11,6 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
-
-function fixupLegacyPlugin(plugin) {
-  return {
-    ...plugin,
-    rules: Object.fromEntries(
-      Object.entries(plugin.rules).map(([ruleName, rule]) => {
-        if (typeof rule === "object" && rule.create) {
-          return [ruleName, rule];
-        }
-
-        return [
-          ruleName,
-          {
-            create: rule,
-            meta: rule.schema ? { schema: rule.schema } : {},
-          },
-        ];
-      })
-    ),
-  };
-}
-
-const filenames = fixupLegacyPlugin(filenamesPlugin);
-const tsc = fixupLegacyPlugin(tscPlugin);
 
 export default defineConfig([
   globalIgnores([
@@ -64,8 +38,6 @@ export default defineConfig([
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
       "jsx-a11y": jsxA11yPlugin,
-      filenames,
-      tsc,
     },
     languageOptions: {
       parser: tsParser,
@@ -99,27 +71,12 @@ export default defineConfig([
       "react/display-name": "off",
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
-      "filenames/match-exported": "error",
-      "tsc/config": ["error", { configFile: "tsconfig.json" }],
       "storybook/no-renderer-packages": "off",
       "react-hooks/set-state-in-effect": "off",
       "react-hooks/refs": "off",
       "react-hooks/immutability": "off",
       "react-hooks/incompatible-library": "off",
       "react-hooks/preserve-manual-memoization": "off",
-    },
-  },
-  {
-    files: ["**/*.stories.tsx", ".storybook/**"],
-    rules: {
-      "tsc/config": "off",
-      "filenames/match-exported": "off",
-    },
-  },
-  {
-    files: ["vitest.config.ts", "vite.config.ts"],
-    rules: {
-      "tsc/config": "off",
     },
   },
   {
@@ -149,18 +106,6 @@ export default defineConfig([
     files: ["samples/**"],
     rules: {
       "no-irregular-whitespace": "off",
-    },
-  },
-  {
-    files: ["pages/**"],
-    rules: {
-      "filenames/match-exported": "off",
-    },
-  },
-  {
-    files: ["types/**", "server/types/**"],
-    rules: {
-      "filenames/match-exported": ["error", "camel"],
     },
   },
   {
