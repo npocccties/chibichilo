@@ -1,3 +1,4 @@
+import type { Resource, Track } from "@prisma/client";
 import type {
   VideoTrackProps,
   VideoTrackSchema,
@@ -5,7 +6,7 @@ import type {
 import { api } from "./api";
 
 export async function uploadVideoTrack(
-  resourceId: number,
+  resourceId: Resource["id"],
   { content, ...props }: VideoTrackProps
 ) {
   const contentText =
@@ -23,8 +24,8 @@ export async function uploadVideoTrack(
 }
 
 export async function destroyVideoTrack(
-  resourceId: number,
-  videoTrackId: number
+  resourceId: Resource["id"],
+  videoTrackId: Track["id"]
 ) {
   await api.apiV2ResourceResourceIdVideoTrackVideoTrackIdDelete({
     resourceId,

@@ -7,7 +7,6 @@ export const SystemSettingsSchema = {
   properties: {
     zoomImportEnabled: { type: "boolean" },
     wowzaUploadEnabled: { type: "boolean" },
-    dashboardDisplayLevel: { type: "string" },
   },
   additionalProperties: false,
 } as const;

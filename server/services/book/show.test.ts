@@ -1,19 +1,18 @@
 import { show } from "./show";
 import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 import { isInstructor } from "$utils/session";
-import type { FastifyRequest } from "fastify";
+import type { FastifyRequest } from "$node_modules/fastify/fastify";
 import type { FastifySessionObject } from "@fastify/session";
 import type { BookParams } from "$server/validators/bookParams";
 import type { SessionSchema } from "$server/models/session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import findBook from "$server/utils/book/findBook";
 import type { BookSchema } from "$server/models/book";
-import { vi } from "vitest";
 
-vi.mock("$server/utils/book/checkLtiResourceLink");
-vi.mock("$utils/session");
-vi.mock("$server/utils/book/findBook");
-vi.mock("$server/utils/prisma", () => ({}));
+jest.mock("$server/utils/book/checkLtiResourceLink");
+jest.mock("$utils/session");
+jest.mock("$server/utils/book/findBook");
+jest.mock("$server/utils/prisma", () => ({ __esModule: true }));
 
 type SessionData = {
   oauthClient: Pick<SessionSchema["oauthClient"], "id">;
@@ -30,7 +29,7 @@ describe("show()", () => {
   } as unknown as BookSchema;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   const createMockSession = (
@@ -56,8 +55,8 @@ describe("show()", () => {
   };
 
   it("教員ではなく、かつリソースリンクも不一致な場合は 403 を返すこと", async () => {
-    vi.mocked(isInstructor).mockReturnValue(false);
-    vi.mocked(checkLtiResourceLink).mockResolvedValue(false);
+    jest.mocked(isInstructor).mockReturnValue(false);
+    jest.mocked(checkLtiResourceLink).mockResolvedValue(false);
     const req = createMockRequest(
       { ltiResourceLink: { bookId: DIFFERENT_BOOK_ID } },
       { book_id: 123 }
@@ -67,8 +66,8 @@ describe("show()", () => {
   });
 
   it("教員であれば、リソースリンクに関係なくブックを取得でき、200 を返すこと", async () => {
-    vi.mocked(isInstructor).mockReturnValue(true);
-    vi.mocked(findBook).mockResolvedValue(MOCK_BOOK);
+    jest.mocked(isInstructor).mockReturnValue(true);
+    jest.mocked(findBook).mockResolvedValue(MOCK_BOOK);
     const req = createMockRequest();
     const response = await show(req);
     expect(response.status).toBe(200);
@@ -77,8 +76,8 @@ describe("show()", () => {
   });
 
   it("権限はあるが、指定された ID のブックが DB に存在しない場合は 404 を返すこと", async () => {
-    vi.mocked(isInstructor).mockReturnValue(true);
-    vi.mocked(findBook).mockResolvedValue(undefined);
+    jest.mocked(isInstructor).mockReturnValue(true);
+    jest.mocked(findBook).mockResolvedValue(undefined);
     const req = createMockRequest();
     const response = await show(req);
     expect(response.status).toBe(404);

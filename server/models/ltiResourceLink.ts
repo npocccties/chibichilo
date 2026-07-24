@@ -41,10 +41,6 @@ export class LtiResourceLinkSchema extends LtiResourceLinkProps {
   @IsOptional()
   @IsString()
   lineItem?: string;
-
-  @IsOptional()
-  @IsInt()
-  topicId?: number;
 }
 
 export const {

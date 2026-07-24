@@ -1,4 +1,4 @@
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
 import { createPublicKey } from "$server/utils/ltiv1p3/jwk";
 
 export const method = {

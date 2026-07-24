@@ -1,16 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import stream from "node:stream/promises";
-import { TZDate } from "@date-fns/tz";
-import { format } from "date-fns";
+import format from "date-fns/format";
+import utcToZoneTime from "date-fns-tz/utcToZonedTime";
 
 import prisma from "$server/utils/prisma";
-import type {
-  Prisma,
-  User,
-  Book,
-  ZoomMeeting,
-} from "$server/generated/prisma/client";
+import type { Prisma, User, Book, ZoomMeeting } from "@prisma/client";
 import type { UserSettingsProps } from "$server/models/userSettings";
 import { findUserByEmailAndLtiConsumerId } from "$server/utils/user";
 import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectOrCreateInput";
@@ -245,7 +240,7 @@ class ZoomImport {
 
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const datetimeForTitle = format(
-        new TZDate(startTime, timezone),
+        utcToZoneTime(startTime, timezone),
         "yyyy/MM/dd HH:mm"
       );
       const meetingDetail = await this.getMeetingDetail(meeting);

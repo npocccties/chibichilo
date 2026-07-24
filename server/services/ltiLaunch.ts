@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
 import authLtiLaunch from "$server/auth/authLtiLaunch";
 import type { LtiLaunchBody } from "$server/validators/ltiLaunchBody";
 import { ltiLaunchBodySchema } from "$server/validators/ltiLaunchBody";
@@ -15,6 +15,7 @@ export const method = {
       LTI v1.1 ツールとして起動するためのエンドポイントです。
       このエンドポイントをLMSのLTIツールのURLに指定して利用します。
       成功時 ${init.frontendUrl} にリダイレクトします。`,
+    consumes: ["application/x-www-form-urlencoded"],
     body: ltiLaunchBodySchema,
     response: init.response,
   },

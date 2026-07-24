@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import useLockBodyScroll from "$utils/useLockBodyScroll";
-import useToggle from "$utils/useToggle";
+import { useLockBodyScroll, useToggle } from "react-use";
 import { css } from "@emotion/css";
 import { Dropdown } from "@mui/base/Dropdown";
 import { Menu as BaseMenu, menuClasses } from "@mui/base/Menu";

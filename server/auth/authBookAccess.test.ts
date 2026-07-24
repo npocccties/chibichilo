@@ -2,17 +2,17 @@ import authBookAccess from "./authBookAccess";
 import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 import { isInstructor } from "$utils/session";
 import type { FastifyRequest } from "fastify";
-import { vi } from "vitest";
 
-vi.mock("$server/utils/prisma", () => ({
+jest.mock("$server/utils/prisma", () => ({
+  __esModule: true,
   default: {
-    $disconnect: vi.fn().mockResolvedValue(undefined),
+    $disconnect: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
-vi.mock("$server/utils/book/checkLtiResourceLink");
-vi.mock("$utils/session", () => ({
-  isInstructor: vi.fn(),
+jest.mock("$server/utils/book/checkLtiResourceLink");
+jest.mock("$utils/session", () => ({
+  isInstructor: jest.fn(),
 }));
 
 const VALID_BOOK_ID = 123;
@@ -60,11 +60,11 @@ describe("authBookAccess()", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("管理者や教員の場合はエラーを投げずに終了すること", async () => {
-    vi.mocked(isInstructor).mockReturnValue(true);
+    jest.mocked(isInstructor).mockReturnValue(true);
     const req = createMockReq({ session: { user: { role: "instructor" } } });
 
     await expect(authBookAccess(req)).resolves.not.toThrow();
@@ -72,11 +72,11 @@ describe("authBookAccess()", () => {
 
   describe("学習者 (learner) の場合", () => {
     beforeEach(() => {
-      vi.mocked(isInstructor).mockReturnValue(false);
+      jest.mocked(isInstructor).mockReturnValue(false);
     });
 
     it("LTIリソースリンクのチェックが通れば正常終了すること", async () => {
-      vi.mocked(checkLtiResourceLink).mockResolvedValue(true);
+      jest.mocked(checkLtiResourceLink).mockResolvedValue(true);
       const req = createMockReq({ query: { lti_context_id: "ctx-1" } });
 
       await expect(authBookAccess(req)).resolves.not.toThrow();
@@ -88,7 +88,7 @@ describe("authBookAccess()", () => {
     });
 
     it("LTIリソースリンクのチェックが失敗すれば 403 エラーを投げること", async () => {
-      vi.mocked(checkLtiResourceLink).mockResolvedValue(false);
+      jest.mocked(checkLtiResourceLink).mockResolvedValue(false);
       const req = createMockReq();
 
       await expect(authBookAccess(req)).rejects.toMatchObject({
@@ -109,7 +109,7 @@ describe("authBookAccess()", () => {
   });
 
   describe("パラメータ抽出のチェック", () => {
-    beforeEach(() => vi.mocked(isInstructor).mockReturnValue(true));
+    beforeEach(() => jest.mocked(isInstructor).mockReturnValue(true));
 
     it("body.bookId から bookId を抽出できること", async () => {
       const req = createMockReq({
@@ -152,8 +152,8 @@ describe("authBookAccess()", () => {
         body: {},
         query: { book_id: "123" },
       } as unknown as FastifyRequest;
-      vi.mocked(isInstructor).mockReturnValue(false);
-      vi.mocked(checkLtiResourceLink).mockReturnValue(Promise.resolve(true));
+      jest.mocked(isInstructor).mockReturnValue(false);
+      jest.mocked(checkLtiResourceLink).mockReturnValue(Promise.resolve(true));
 
       await expect(authBookAccess(req)).resolves.not.toThrow();
       expect(checkLtiResourceLink).toHaveBeenCalledWith(
@@ -169,7 +169,7 @@ describe("authBookAccess()", () => {
         params: { book_id: "123" },
         query: {},
       } as unknown as FastifyRequest;
-      vi.mocked(isInstructor).mockReturnValue(true);
+      jest.mocked(isInstructor).mockReturnValue(true);
 
       await authBookAccess(req);
       expect(checkLtiResourceLink).not.toHaveBeenCalled();

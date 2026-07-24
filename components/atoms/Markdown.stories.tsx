@@ -1,7 +1,7 @@
 export default { title: "atoms/Markdown" };
 
 import Markdown from "./Markdown";
-import outdent from "$utils/outdent";
+import outdent from "outdent";
 
 export const Default = () => (
   <Markdown>

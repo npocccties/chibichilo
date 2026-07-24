@@ -1,4 +1,4 @@
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
 
 const resource = {
   id: 1,

@@ -74,9 +74,7 @@ function Index() {
         <DeepLinkBooks linkedBook={linkedBook} {...handlers} />
         {previewContent?.type === "book" && (
           <BookPreviewDialog {...dialogProps} book={previewContent}>
-            {(props) => (
-              <Book {...props} onContentLinkClick={onContentLinkClick} />
-            )}
+            {(props) => <Book {...props} />}
           </BookPreviewDialog>
         )}
       </>

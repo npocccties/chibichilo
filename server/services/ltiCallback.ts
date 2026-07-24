@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
 import { validateOrReject } from "class-validator";
 import type { SessionSchema } from "$server/models/session";
 import type { LtiLaunchPresentationSchema } from "$server/models/ltiLaunchPresentation";
@@ -7,8 +7,6 @@ import type { LtiAgsEndpointSchema } from "$server/models/ltiAgsEndpoint";
 import type { LtiNrpsParameterSchema } from "$server/models/ltiNrpsParameter";
 import { LtiDlSettingsSchema } from "$server/models/ltiDlSettings";
 import findClient from "$server/utils/ltiv1p3/findClient";
-import { ltiCallbackUrl } from "$server/utils/ltiv1p3/callbackUrl";
-import { implicitAuthentication } from "openid-client";
 import init from "./init";
 import { LtiCallbackBody } from "$server/validators/ltiCallbackBody";
 import { LtiClaims } from "$server/validators/ltiClaims";
@@ -22,6 +20,7 @@ export const method = {
       LTIツールとして起動するためのエンドポイントです。
       このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。
       成功時 ${init.frontendUrl} にリダイレクトします。`,
+    consumes: ["application/x-www-form-urlencoded"],
     body: LtiCallbackBody,
     response: {
       ...init.response,
@@ -31,7 +30,7 @@ export const method = {
 };
 
 export async function post(req: FastifyRequest<{ Body: Props }>) {
-  const callbackUrl = ltiCallbackUrl(req);
+  const callbackUrl = `${req.protocol}://${req.hostname}/api/v2/lti/callback`;
   const client = await findClient(req.session.oauthClient.id);
 
   if (!client) {
@@ -41,16 +40,11 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
   }
 
   try {
-    const url = new URL(callbackUrl);
-    url.hash = new URLSearchParams(
-      req.body as Record<string, string>
-    ).toString();
-    const claims = await implicitAuthentication(
-      client,
-      url,
-      req.session.oauthClient.nonce,
-      { expectedState: req.session.state }
-    );
+    const token = await client.callback(callbackUrl, req.body, {
+      state: req.session.state,
+      nonce: req.session.oauthClient.nonce,
+    });
+    const claims = token.claims();
     const ltiClaims = new LtiClaims(claims as Partial<LtiClaims>);
     await validateOrReject(ltiClaims);
     const session = {
@@ -64,8 +58,8 @@ export async function post(req: FastifyRequest<{ Body: Props }>) {
         ltiClaims["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"],
       ltiUser: {
         id: claims.sub,
-        name: claims.name as string | undefined,
-        email: claims.email as string | undefined,
+        name: claims.name,
+        email: claims.email,
       },
       ltiRoles: ltiClaims["https://purl.imsglobal.org/spec/lti/claim/roles"],
       ltiResourceLinkRequest:

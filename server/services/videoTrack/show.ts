@@ -10,14 +10,9 @@ export const showSchema: FastifySchema = {
   description: "字幕を取得します。",
   params: VideoTrackParams,
   querystring: topicResourcePropsSchema,
+  produces: ["text/vtt"],
   response: {
-    200: {
-      content: {
-        "text/vtt": {
-          schema: { type: "string" },
-        },
-      },
-    },
+    200: {},
     403: {},
     404: {},
   },

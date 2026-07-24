@@ -13,9 +13,7 @@ async function fetchWordCloud({ bookId }: WordCloudParams) {
 }
 
 export function useWordCloud({ bookId }: WordCloudParams) {
-  const { data, isLoading } = useSWR({ key, bookId }, fetchWordCloud, {
-    revalidateOnFocus: false,
-  });
+  const { data, isLoading } = useSWR({ key, bookId }, fetchWordCloud);
   const wordCloud: WordCloudSchema = data || [];
   return { wordCloud, isLoading };
 }

@@ -1,5 +1,5 @@
-import flattenObject from "$utils/flattenObject";
-import { formatMsToHms, formatSecondsToHms } from "$utils/formatHms";
+import { flatten } from "flat";
+import { fromS, fromMs } from "hh-mm-ss";
 import learningStatusLabel from "$utils/learningStatusLabel";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
@@ -60,10 +60,13 @@ export function getLocaleEntries(
   rewatchRate: ActivityRewatchRateProps | undefined,
   session: SessionSchema
 ): Record<string, string | number | undefined> {
-  const flattenActivity = flattenObject({
+  const flattenActivity: Record<
+    (typeof keyOrder)[number],
+    string | number | Date | undefined
+  > = flatten({
     ...activity,
     session,
-  }) as Record<(typeof keyOrder)[number], string | number | Date | undefined>;
+  });
 
   if (!NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) {
     rewatchRate = undefined;
@@ -71,8 +74,11 @@ export function getLocaleEntries(
 
   const a = {
     ...flattenActivity,
-    "topic.timeRequired": formatSecondsToHms(activity.topic.timeRequired ?? 0),
-    totalTimeMs: formatMsToHms(activity.totalTimeMs ?? 0),
+    "topic.timeRequired": fromS(
+      activity.topic.timeRequired ?? 0,
+      "hh:mm:ss.sss"
+    ),
+    totalTimeMs: fromMs(activity.totalTimeMs ?? 0, "hh:mm:ss.sss"),
     completionRate: round(
       (activity.totalTimeMs ?? 0) / (activity.topic.timeRequired * 1000),
       -3 // 小数点第4位で四捨五入

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import usePrevious from "$utils/usePrevious";
+import usePrevious from "@rooks/use-previous";
 import { css } from "@emotion/css";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -67,9 +67,8 @@ const skipButton = css({
 });
 
 const markdownContainerStyle = css({
-  minWidth: 0,
-  maxWidth: "100%",
-  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
 });
 
 function SkipButton(props: ButtonProps) {
@@ -316,7 +315,7 @@ export default function Video({
       : { bookmarks: [], bookmarkTagMenu: [], isLoading: false };
 
   return (
-    <Box sx={{ minWidth: 0, maxWidth: "100%" }}>
+    <>
       {isLoadedVideoInstancePool ? (
         Array.from(video.entries()).map(([id, videoInstance]) => (
           <VideoPlayer
@@ -488,6 +487,6 @@ export default function Video({
           </Box>
         )}
       </TabPanel>
-    </Box>
+    </>
   );
 }

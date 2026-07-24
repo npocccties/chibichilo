@@ -31,7 +31,6 @@ import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import License from "$atoms/License";
-import type { ContentSchema } from "$server/models/content";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -78,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateAreas: `
         "side main"
       `,
-      gridTemplateColumns: "30% minmax(0, 1fr)",
+      gridTemplateColumns: "30% 1fr",
       gridAutoRows: "min-content",
     },
     "&$mobile": {
@@ -93,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
   },
   main: {
     gridArea: "main",
-    minWidth: 0,
     "&$desktop": {
       marginBottom: theme.spacing(2),
     },
@@ -127,11 +125,6 @@ type Props = {
   onTopicEnded(): void;
   onItemClick(index: ItemIndex): void;
   considerAppBar?: boolean;
-  onContentLinkClick?(
-    content: Pick<BookSchema, "id"> | ContentSchema,
-    checked: boolean,
-    topicId?: TopicSchema["id"]
-  ): void;
 };
 
 export default function Book(props: Props) {
@@ -149,7 +142,6 @@ export default function Book(props: Props) {
     onTopicEnded,
     onItemClick,
     considerAppBar = true,
-    onContentLinkClick,
   } = props;
 
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
@@ -321,7 +313,6 @@ export default function Book(props: Props) {
             onItemEditClick={handleItemEditClick}
             isContentEditable={isContentEditable}
             isPrivateBook={isPrivateBook}
-            onContentLinkClick={onContentLinkClick}
           />
         </div>
       </div>

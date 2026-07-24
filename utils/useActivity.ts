@@ -25,11 +25,7 @@ async function fetchActivity({
  * @param currentLtiContextOnly 学習活動の LTI Context ごとでの取得
  */
 function useActivity(currentLtiContextOnly: boolean) {
-  const { data, error } = useSWR(
-    { key, currentLtiContextOnly },
-    fetchActivity,
-    { revalidateOnFocus: false }
-  );
+  const { data, error } = useSWR({ key, currentLtiContextOnly }, fetchActivity);
   return { data, error };
 }
 

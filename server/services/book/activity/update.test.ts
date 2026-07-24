@@ -10,22 +10,21 @@ import type { ActivityQuery } from "$server/validators/activityQuery";
 import type { ActivitySchema } from "$server/models/activity";
 import type { BookSchema } from "$server/models/book";
 import { getDisplayableBook } from "$server/utils/displayableBook";
-import { vi } from "vitest";
 
 type ClientType = NonNullable<Awaited<ReturnType<typeof findClient>>>;
 type ShowResponse = Awaited<ReturnType<typeof show>>;
 
-vi.mock("./show");
-vi.mock("$server/utils/ltiv1p3/getGradeTargets");
-vi.mock("$server/utils/ltiv1p3/grade");
-vi.mock("$server/utils/book/findBook");
-vi.mock("$server/utils/ltiv1p3/findClient");
-vi.mock("$server/utils/displayableBook", () => ({
-  getDisplayableBook: vi.fn(() => ({
+jest.mock("./show");
+jest.mock("$server/utils/ltiv1p3/getGradeTargets");
+jest.mock("$server/utils/ltiv1p3/grade");
+jest.mock("$server/utils/book/findBook");
+jest.mock("$server/utils/ltiv1p3/findClient");
+jest.mock("$server/utils/displayableBook", () => ({
+  getDisplayableBook: jest.fn(() => ({
     sections: [{ topics: [{ id: 101 }, { id: 102 }] }],
   })),
 }));
-vi.mock("$server/utils/prisma", () => ({}));
+jest.mock("$server/utils/prisma", () => ({ __esModule: true }));
 
 const createMockTopic = (
   overrides: Partial<ActivitySchema["topic"]>
@@ -98,25 +97,25 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       oauthClient: { id: "consumer-session" },
       ltiContext: { id: "context-session" },
     },
-    log: { error: vi.fn() },
+    log: { error: jest.fn() },
   } as unknown as UpdateRequest;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(findBook).mockResolvedValue(createMockBook({ id: 1 }));
-    vi.mocked(findClient).mockResolvedValue({
-      id: "client-id",
-    } as unknown as ClientType);
+    jest.clearAllMocks();
+    jest.mocked(findBook).mockResolvedValue(createMockBook({ id: 1 }));
+    jest
+      .mocked(findClient)
+      .mockResolvedValue({ id: "client-id" } as unknown as ClientType);
   });
 
   it("クエリで指定されたコンテキストの活動内容に基づいて成績を算出し、正しい宛先に送信すること", async () => {
-    vi.mocked(show).mockResolvedValue({
+    jest.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
       },
     } as ShowResponse);
-    vi.mocked(getGradeTargets).mockResolvedValue([
+    jest.mocked(getGradeTargets).mockResolvedValue([
       {
         consumerId: "consumer-A",
         contextId: "context-A",
@@ -135,7 +134,7 @@ describe("update() - LTI成績送信ロジックの検証", () => {
   });
 
   it("リソースリンク由来とブックマーク由来のターゲットが共存する場合、その両方に送信すること", async () => {
-    vi.mocked(show).mockResolvedValue({
+    jest.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
@@ -146,7 +145,7 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       { consumerId: "LMS-A", contextId: "ctx-A", lineItem: "url-A", label: "" },
       { consumerId: "LMS-B", contextId: "ctx-B", lineItem: "url-B", label: "" },
     ];
-    vi.mocked(getGradeTargets).mockResolvedValue(mockTargets);
+    jest.mocked(getGradeTargets).mockResolvedValue(mockTargets);
 
     await update(mockReq);
 
@@ -173,8 +172,9 @@ describe("update() - LTI成績送信ロジックの検証", () => {
         label: "",
       },
     ];
-    vi.mocked(getGradeTargets).mockResolvedValue(mockTargets);
-    vi.mocked(publishScore)
+    jest.mocked(getGradeTargets).mockResolvedValue(mockTargets);
+    jest
+      .mocked(publishScore)
       .mockResolvedValueOnce(undefined)
       .mockRejectedValueOnce(new Error("LTI Error"));
 
@@ -188,11 +188,11 @@ describe("update() - LTI成績送信ロジックの検証", () => {
   });
 
   it("コンテキストごとのトピック構成に応じた満点を算出すること", async () => {
-    vi.mocked(getDisplayableBook).mockReturnValue({
+    jest.mocked(getDisplayableBook).mockReturnValue({
       sections: [{ topics: [{ id: 101 }, { id: 102 }, { id: 103 }] }],
     } as ReturnType<typeof getDisplayableBook>);
 
-    vi.mocked(show).mockResolvedValue({
+    jest.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],

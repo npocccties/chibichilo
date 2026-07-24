@@ -1,5 +1,5 @@
-import { buildAuthorizationUrl, randomNonce, randomState } from "openid-client";
-import { getUnixTime } from "date-fns";
+import { generators } from "openid-client";
+import getUnixTime from "date-fns/getUnixTime";
 import prisma from "$server/utils/prisma";
 import findClient from "./findClient";
 
@@ -21,25 +21,23 @@ async function createAccount(
 ) {
   const client = await findClient(client_id, [callbackUrl]);
 
-  if (client?.serverMetadata().issuer !== iss) {
+  if (client?.issuer.metadata.issuer !== iss) {
     throw new Error("このプラットフォームは許可されていません");
   }
 
-  const state = randomState();
-  const nonce = randomNonce();
+  const state = generators.state();
+  const nonce = generators.nonce();
   const timestamp = getUnixTime(new Date());
   await prisma.account.create({ data: { nonce, timestamp } });
 
-  const authorizationUrl = buildAuthorizationUrl(client, {
-    redirect_uri: callbackUrl,
-    scope: "openid",
+  const authorizationUrl = client.authorizationUrl({
     state,
     nonce,
     login_hint,
     response_mode: "form_post",
     prompt: "none",
-    ...(lti_message_hint ? { lti_message_hint } : {}),
-  }).href;
+    ...{ lti_message_hint },
+  });
 
   return { state, nonce, authorizationUrl };
 }

@@ -1,6 +1,6 @@
 import type { FastifyRequest } from "fastify";
-import outdent from "$utils/outdent";
-import { getUnixTime } from "date-fns";
+import { outdent } from "outdent";
+import getUnixTime from "date-fns/getUnixTime";
 import { topicResourcePropsSchema } from "$server/validators/topicResourceProps";
 import {
   WOWZA_BASE_URL,

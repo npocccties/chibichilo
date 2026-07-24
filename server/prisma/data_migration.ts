@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Prisma } from "$server/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "$server/utils/prisma";
 import type { ActivitySchema } from "$server/models/activity";
 import type { BookmarkSchema } from "$server/models/bookmark";
@@ -242,7 +242,7 @@ async function deleteOriginalBookActivity({
       ) {
         // レコードが存在しなかったらスキップ
         console.warn("Deletion skipped: target record not found.");
-        return undefined;
+	return undefined
       } else {
         throw error; // ロールバック
       }

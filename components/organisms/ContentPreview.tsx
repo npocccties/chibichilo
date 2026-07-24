@@ -28,9 +28,8 @@ import { authors } from "$utils/descriptionList";
 import useOembed from "$utils/useOembed";
 import { NEXT_PUBLIC_BASE_PATH } from "$utils/env";
 import BookChip from "$atoms/BookChip";
-import type { RelatedBook, TopicSchema } from "$server/models/topic";
+import type { RelatedBook } from "$server/models/topic";
 import { getReleaseFromRelatedBooks } from "$utils/release";
-import type { BookSchema } from "$server/models/book";
 
 type HeaderProps = Parameters<typeof Checkbox>[0] & {
   checkable: boolean;
@@ -122,11 +121,7 @@ export type ContentPreviewProps = Omit<
   content: ContentSchema;
   onContentPreviewClick(content: ContentSchema): void;
   onContentEditClick?(content: ContentSchema): void;
-  onContentLinkClick?(
-    content: Pick<BookSchema, "id"> | ContentSchema,
-    checked: boolean,
-    topicId?: TopicSchema["id"]
-  ): void;
+  onContentLinkClick?(content: ContentSchema, checked: boolean): void;
   onLtiContextClick?(
     ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
   ): void;

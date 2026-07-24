@@ -66,9 +66,6 @@ async function init({ session }: FastifyRequest) {
     ltiTargetLink &&
     ltiTargetLink.pathname === "/book" &&
     ltiTargetLink.searchParams.get("bookId");
-  const paramTopicId = Number(
-    ltiTargetLink && ltiTargetLink.searchParams.get("topicId")
-  );
   // ただし `/book?bookId` 形式以外の場合は Target Link URI を無効値とする
   const ltiTargetLinkUri =
     ltiTargetLink &&
@@ -89,13 +86,8 @@ async function init({ session }: FastifyRequest) {
     if (!creatorId) {
       creatorId = isInstructor(session.ltiRoles) ? user.id : null;
     }
-    const topicId =
-      !ltiResourceLink?.bookId || ltiResourceLink.bookId === Number(bookId)
-        ? paramTopicId
-        : undefined;
     ltiResourceLink = {
       bookId: ltiResourceLink?.bookId ?? Number(bookId),
-      topicId,
       creatorId,
       instructors,
       consumerId: session.oauthClient.id,
@@ -118,7 +110,7 @@ async function init({ session }: FastifyRequest) {
         title: session.ltiResourceLinkRequest?.title ?? ltiResourceLink.title,
         contextTitle: session.ltiContext.title ?? ltiResourceLink.contextTitle,
         contextLabel: session.ltiContext.label ?? ltiResourceLink.contextLabel,
-        lineItem,
+	lineItem,
       },
       session.ltiNrpsParameter?.context_memberships_url
     );

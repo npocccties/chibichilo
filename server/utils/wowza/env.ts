@@ -1,5 +1,5 @@
-import { TZDate } from "@date-fns/tz";
-import { format } from "date-fns";
+import format from "date-fns/format";
+import utcToZoneTime from "date-fns-tz/utcToZonedTime";
 
 import {
   WOWZA_SCP_HOST,
@@ -30,7 +30,7 @@ export function validateWowzaSettings(logging = true) {
 
 export function logger(level: string, output: string, error?: Error | unknown) {
   console.log(
-    format(new TZDate(new Date(), "Asia/Tokyo"), "yyyy-MM-dd HH:mm:ss"),
+    format(utcToZoneTime(new Date(), "Asia/Tokyo"), "yyyy-MM-dd HH:mm:ss"),
     level,
     output,
     "WowzaUploadLog"

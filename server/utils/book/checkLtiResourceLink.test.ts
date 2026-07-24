@@ -2,18 +2,18 @@ import checkLtiResourceLink from "$server/utils/book/checkLtiResourceLink";
 import type { FastifySessionObject } from "@fastify/session";
 import prisma from "$server/utils/prisma";
 import type { SessionSchema } from "$server/models/session";
-import type { LtiResourceLink } from "$server/generated/prisma/client";
+import type { LtiResourceLink } from "@prisma/client";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
-import { vi } from "vitest";
 
-vi.mock("$server/utils/prisma", () => ({
+jest.mock("$server/utils/prisma", () => ({
+  __esModule: true,
   default: {
-    $disconnect: vi.fn().mockResolvedValue(undefined),
+    $disconnect: jest.fn().mockResolvedValue(undefined),
     ltiResourceLink: {
-      findFirst: vi.fn(),
+      findFirst: jest.fn(),
     },
     activity: {
-      findFirst: vi.fn(),
+      findFirst: jest.fn(),
     },
   },
 }));
@@ -52,12 +52,12 @@ describe("checkLtiResourceLink()検証", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("クエリパラメータ(lti_context_id)", () => {
     it("クエリに情報がある場合、セッションの bookId が一致していても DB 検証を優先し、不一致なら false を返すこと", async () => {
-      vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
+      jest.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
       const session = createMockSession({
         ltiResourceLink: { bookId: VALID_BOOK_ID },
       });
@@ -73,9 +73,9 @@ describe("checkLtiResourceLink()検証", () => {
     });
 
     it("lti_consumer_id がクエリにある場合、セッションの値ではなくクエリの値を優先して検索すること", async () => {
-      vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(
-        createMockResourceLink({ id: "1" })
-      );
+      jest
+        .mocked(prisma.ltiResourceLink.findFirst)
+        .mockResolvedValue(createMockResourceLink({ id: "1" }));
       const query = {
         lti_context_id: VALID_CONTEXT_ID,
         lti_consumer_id: OTHER_CONSUMER_ID,
@@ -95,7 +95,7 @@ describe("checkLtiResourceLink()検証", () => {
     });
 
     it("lti_consumer_id が未指定の場合、session.oauthClient.id を使用して検索すること", async () => {
-      vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
+      jest.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
       const query = { lti_context_id: VALID_CONTEXT_ID };
 
       await checkLtiResourceLink(VALID_BOOK_ID, createMockSession(), query);
@@ -121,9 +121,9 @@ describe("checkLtiResourceLink()検証", () => {
 
   describe("リソースリンク(ltiMembers)", () => {
     it("セッション情報が不一致でも、DBに有効なリソースリンクがあれば承認すること", async () => {
-      vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(
-        createMockResourceLink({ id: "888" })
-      );
+      jest
+        .mocked(prisma.ltiResourceLink.findFirst)
+        .mockResolvedValue(createMockResourceLink({ id: "888" }));
 
       const result = await checkLtiResourceLink(
         VALID_BOOK_ID,
@@ -139,7 +139,7 @@ describe("checkLtiResourceLink()検証", () => {
     });
 
     it("セッション不一致かつ DB にもリソースリンクがない場合は拒否すること", async () => {
-      vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
+      jest.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
 
       const result = await checkLtiResourceLink(
         VALID_BOOK_ID,

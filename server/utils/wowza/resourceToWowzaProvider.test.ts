@@ -1,7 +1,5 @@
-vi.mock("$server/utils/env", () => ({
-  WOWZA_THUMBNAIL_BASE_URL: "https://wz.cccties.org/tmb/",
-  WOWZA_THUMBNAIL_EXTENSION: "jpg",
-}));
+process.env.WOWZA_THUMBNAIL_BASE_URL = "https://wz.cccties.org/tmb/";
+process.env.WOWZA_THUMBNAIL_EXTENSION = "jpg";
 
 import resourceToWowzaProvider from "./resourceToWowzaProvider";
 

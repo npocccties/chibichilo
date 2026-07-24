@@ -89,7 +89,6 @@ export function toSchema({
           const unwatchedActivities = unwatchedLearners.flatMap((learner) => {
             return {
               id: 0,
-              bookId: book.id,
               topicId: topic.id,
               learnerId: learner.id,
               ltiConsumerId: ltiConsumerId,

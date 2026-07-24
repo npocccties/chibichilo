@@ -1,7 +1,6 @@
-import { fetchProtectedResource } from "openid-client";
+import type { Client } from "openid-client";
 import prisma from "$server/utils/prisma";
 import { createAccessToken } from "./accessToken";
-import type { OidcClient } from "./findClient";
 
 type Score = {
   userId: string;
@@ -35,27 +34,24 @@ const authFailureCode = [401];
  * @param retry リトライを行うか否か (デフォルト: true 行う)
  */
 export async function publishScore(
-  client: OidcClient,
+  client: Client,
   lineItemUrl: string,
   score: Score,
   retry = true
 ) {
-  const clientId = client.clientMetadata().client_id;
+  const clientId = client.metadata.client_id;
 
   const { accessToken } = await createAccessToken(client);
 
   const url = new URL(lineItemUrl);
   url.pathname = `${url.pathname}/scores`;
-  const res = await fetchProtectedResource(
-    client,
-    accessToken,
-    url,
-    "POST",
-    JSON.stringify(score),
-    new Headers({ "Content-Type": "application/vnd.ims.lis.v1.score+json" })
-  );
+  const res = await client.requestResource(url, accessToken, {
+    method: "POST",
+    headers: { "Content-Type": "application/vnd.ims.lis.v1.score+json" },
+    body: JSON.stringify(score),
+  });
 
-  const statusCode = res.status;
+  const statusCode = Number(res.statusCode);
 
   if (authFailureCode.includes(statusCode)) {
     await prisma.ltiConsumer.update({
@@ -70,6 +66,6 @@ export async function publishScore(
   }
 
   if (!successCode.includes(statusCode)) {
-    throw new Error(`${statusCode} ${res.statusText}`);
+    throw new Error(`${res.statusCode} ${res.statusMessage}`);
   }
 }

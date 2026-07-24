@@ -7,7 +7,7 @@ import type {
   ContentRole,
   User,
   Release,
-} from "$server/generated/prisma/client";
+} from "@prisma/client";
 import type { LinkSearchResultSchema } from "$server/models/link/search";
 import type { LinkSearchQuery } from "$server/models/link/searchQuery";
 import type { LinkSchema } from "$server/models/link/content";

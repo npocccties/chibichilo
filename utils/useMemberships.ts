@@ -13,9 +13,7 @@ async function fetchMemberships(_: typeof key) {
  *LTI Names and Role Provisioning Service ParameterでLMSメンバーを取得する
  */
 function useMemberships() {
-  const { data, error } = useSWR(key, fetchMemberships, {
-    revalidateOnFocus: false,
-  });
+  const { data, error } = useSWR(key, fetchMemberships);
   return { data, error };
 }
 

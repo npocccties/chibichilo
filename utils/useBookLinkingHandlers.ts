@@ -12,7 +12,6 @@ import {
 } from "$utils/ltiResourceLink";
 import { revalidateContents } from "./useContents";
 import { pagesPath } from "./$path";
-import type { TopicSchema } from "$server/models/topic";
 
 /**
  * セッションのltiResourceLinkRequestからltiResourceLinkを作成
@@ -46,13 +45,10 @@ function useBookLinkingHandlers() {
   const update = useCallback(
     async (
       bookId: BookSchema["id"],
-      ltiResourceLink?: Omit<LtiResourceLinkSchema, "creatorId" | "bookId">,
-      topicId?: TopicSchema["id"]
+      ltiResourceLink?: Omit<LtiResourceLinkSchema, "creatorId" | "bookId">
     ) => {
       if (session?.ltiMessageType === "LtiDeepLinkingRequest") {
-        await router.push(
-          pagesPath.book.linking.$url({ query: { bookId, topicId } })
-        );
+        await router.push(pagesPath.book.linking.$url({ query: { bookId } }));
         return;
       }
 
@@ -76,19 +72,11 @@ function useBookLinkingHandlers() {
   );
 
   const onBookLinking = useCallback(
-    async (
-      content: Pick<BookSchema, "id"> | ContentSchema,
-      linking = true,
-      topicId?: TopicSchema["id"]
-    ) => {
+    async (content: Pick<BookSchema, "id"> | ContentSchema, linking = true) => {
       if ("type" in content && content.type !== "book") return;
 
       if (linking) {
-        await update(
-          content.id,
-          ltiResourceLink,
-          topicId ? Number(topicId) : undefined
-        );
+        await update(content.id, ltiResourceLink);
       } else {
         await destroy(ltiResourceLink);
       }

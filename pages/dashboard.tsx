@@ -6,21 +6,6 @@ import Problem from "$organisms/Problem";
 import { useSessionAtom } from "$store/session";
 import useActivity from "$utils/useActivity";
 import { NEXT_PUBLIC_ACTIVITY_LTI_CONTEXT_ONLY } from "$utils/env";
-import type { SessionSchema } from "$server/models/session";
-import { isAdministrator, isInstructor } from "$utils/session";
-
-export function showDashboard(session: SessionSchema): boolean {
-  let showDashboard = false;
-  switch (session?.systemSettings?.dashboardDisplayLevel) {
-    case "administrator":
-      showDashboard = isAdministrator(session);
-      break;
-    case "instructor":
-      showDashboard = isInstructor(session);
-      break;
-  }
-  return showDashboard;
-}
 
 function Index() {
   const { session } = useSessionAtom();
@@ -43,12 +28,4 @@ function Index() {
   );
 }
 
-function CheckSession() {
-  const { session } = useSessionAtom();
-
-  if (!session || !showDashboard(session))
-    return <Problem title="ページを表示できません" />;
-
-  return <Index />;
-}
-export default CheckSession;
+export default Index;

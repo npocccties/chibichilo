@@ -28,7 +28,6 @@ import { pagesPath } from "$utils/$path";
 import MoveDownloadPageDialog from "$organisms/MoveDownloadPageDialog";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
-import { showDashboard } from "$pages/dashboard";
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -218,7 +217,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     onClick={handleOpenUserSettings}
                   />
                 )}
-              {onDashboardClick && showDashboard(session) && (
+              {onDashboardClick && isInstructor && (
                 <AppBarNavButton
                   color="inherit"
                   icon={<AssessmentOutlinedIcon />}

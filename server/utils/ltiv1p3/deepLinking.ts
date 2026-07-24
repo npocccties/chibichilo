@@ -1,6 +1,6 @@
-import type { OidcClient } from "./findClient";
+import type { Client } from "openid-client";
 import { SignJWT, importJWK, type JWK } from "jose";
-import { randomNonce } from "openid-client";
+import { generators } from "openid-client";
 
 type LineItem = {
   label?: string;
@@ -186,7 +186,7 @@ export function createLtiResourceLinkContentItem({
  * @param options.alg Algorithm identifier
  */
 export async function getDlResponseJwt(
-  client: OidcClient,
+  client: Client,
   options: {
     privateKey: JWK;
     deploymentId: string;
@@ -214,12 +214,12 @@ export async function getDlResponseJwt(
 
   try {
     const jwt = await new SignJWT({
-      nonce: randomNonce(),
+      nonce: generators.nonce(),
       ...claim,
     })
       .setProtectedHeader({ alg, kid: privateKey?.kid })
-      .setIssuer(client.clientMetadata().client_id ?? "")
-      .setAudience(client.serverMetadata().issuer)
+      .setIssuer(client.metadata.client_id)
+      .setAudience(client.issuer.metadata.issuer)
       .setIssuedAt()
       .setExpirationTime("60s")
       .sign(await importJWK({ alg, ...privateKey }));

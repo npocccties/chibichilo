@@ -20,10 +20,13 @@ function Router() {
 
   if (!ltiResourceLink) return <UnlinkedProblem />;
 
-  const query = ltiResourceLink.topicId
-    ? { bookId: ltiResourceLink.bookId, topicId: ltiResourceLink.topicId }
-    : { bookId: ltiResourceLink.bookId };
-  return <Replace href={pagesPath.book.$url({ query })} />;
+  return (
+    <Replace
+      href={pagesPath.book.$url({
+        query: { bookId: ltiResourceLink.bookId },
+      })}
+    />
+  );
 }
 
 export default Router;

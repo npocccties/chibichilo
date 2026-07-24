@@ -1,33 +1,29 @@
 import { api } from "$utils/api";
 import { load } from "./loggerSessionPersister";
 import { send } from "./logger";
-import { loadLtiContext } from "$store/session";
+import { loadLtiContext } from "$store/session"; // 追加
 import type { SessionSchema } from "$server/models/session";
-import { vi } from "vitest";
 
-vi.mock("@vimeo/player", () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    ready: vi.fn().mockResolvedValue(undefined),
-  })),
+jest.mock("@vimeo/player", () =>
+  jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+    ready: jest.fn().mockResolvedValue(undefined),
+  }))
+);
+jest.mock("./loggerSessionPersister");
+jest.mock("$store/session", () => ({
+  ...jest.requireActual("$store/session"),
+  loadLtiContext: jest.fn(),
 }));
-vi.mock("./loggerSessionPersister");
-vi.mock("$store/session", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$store/session")>();
-  return {
-    ...actual,
-    loadLtiContext: vi.fn(),
-  };
-});
-vi.mock("$utils/api");
-vi.mock("$store/player/storage", () => ({
-  loadPlaybackRate: vi.fn().mockReturnValue(1),
-  savePlaybackRate: vi.fn(),
+jest.mock("$utils/api");
+jest.mock("$store/player/storage", () => ({
+  loadPlaybackRate: jest.fn().mockReturnValue(1),
+  savePlaybackRate: jest.fn(),
 }));
 
 describe("logger.ts / send() の検証", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     // window.location simulation.
     global.location = {
       ...global.location,
@@ -57,8 +53,9 @@ describe("logger.ts / send() の検証", () => {
       ltiResourceLink: { bookId: 1 },
     } as unknown as SessionSchema;
 
-    vi.mocked(load).mockReturnValue(mockSession);
-    vi.mocked(loadLtiContext).mockReturnValue({
+    jest.mocked(load).mockReturnValue(mockSession);
+    // loadLtiContext が値を返すように設定 (sessionStorage の代わり)
+    jest.mocked(loadLtiContext).mockReturnValue({
       ltiConsumerId: "cons-id",
       ltiContextId: "ctx-id",
       pathname: mockPathname,
@@ -81,8 +78,8 @@ describe("logger.ts / send() の検証", () => {
       ltiResourceLink: { bookId: 1 },
     } as unknown as SessionSchema;
 
-    vi.mocked(load).mockReturnValue(mockSession);
-    vi.mocked(loadLtiContext).mockReturnValue({
+    jest.mocked(load).mockReturnValue(mockSession);
+    jest.mocked(loadLtiContext).mockReturnValue({
       ltiConsumerId: "cons-id",
       ltiContextId: "ctx-id",
       pathname: undefined,

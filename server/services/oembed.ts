@@ -1,4 +1,5 @@
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
+import fetch from "node-fetch";
 import { OembedParams } from "$server/validators/oembedParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";

@@ -1,5 +1,5 @@
 import type { FastifySchema } from "fastify";
-import outdent from "$utils/outdent";
+import { outdent } from "outdent";
 import {
   BooksImportParams,
   booksImportResultSchema,
@@ -36,9 +36,8 @@ export async function importBooks({
   body: BooksImportParams;
 }) {
   const result = await importBooksUtil(session.user, body);
-  const status = result.errors && result.errors.length ? 400 : 201;
   return {
-    status,
+    status: result.errors && result.errors.length ? 400 : 201,
     body: result,
   };
 }

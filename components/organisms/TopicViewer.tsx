@@ -9,8 +9,6 @@ import type { ActivitySchema } from "$server/models/activity";
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 0,
-    maxWidth: "100%",
     overflow: "visible",
   },
 });

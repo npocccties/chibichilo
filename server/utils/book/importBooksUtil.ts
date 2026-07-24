@@ -1,14 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-import { Buffer } from "buffer";
-import { buffer } from "node:stream/consumers";
-import { Transform } from "node:stream";
-import type { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
 import yauzl from "yauzl";
-import type { Entry } from "yauzl";
+// @ts-expect-error Could not find a declaration file for module 'recursive-readdir-synchronous'
+import recursive from "recursive-readdir-synchronous";
+import { Buffer } from "buffer";
+
 import type { ValidationError } from "class-validator";
 import { validate } from "class-validator";
 import type { UserSchema } from "$server/models/user";
@@ -28,7 +24,7 @@ import { startWowzaUpload } from "$server/utils/wowza/upload";
 import { validateWowzaSettings } from "$server/utils/wowza/env";
 import findRoles from "$server/utils/author/findRoles";
 import insertAuthors from "$server/utils/author/insertAuthors";
-import type { Book, Topic } from "$server/generated/prisma/client";
+import type { Book, Topic } from "@prisma/client";
 import findTopic from "$server/utils/topic/findTopic";
 import type { TopicProps, TopicSchema } from "$server/models/topic";
 import keywordsConnectOrCreateInput from "../keyword/keywordsConnectOrCreateInput";
@@ -41,245 +37,6 @@ import updateBookTimeRequired from "../topic/updateBookTimeRequired";
 import type { SessionSchema } from "$server/models/session";
 import topicExists from "../topic/topicExists";
 import { isUsersOrAdmin } from "../session";
-
-const ZIP_ENTRY_EXTRACT_TIMEOUT_MS = 10 * 60 * 1000;
-
-const execFileAsync = promisify(execFile);
-
-type ZipEntryByteLimitState = {
-  written: number;
-  draining: boolean;
-};
-
-function createZipEntryByteLimitTransform(maxBytes: number): {
-  stream: Transform;
-  state: ZipEntryByteLimitState;
-} {
-  const state: ZipEntryByteLimitState = { written: 0, draining: false };
-
-  const stream = new Transform({
-    transform(chunk: Buffer, _encoding, callback) {
-      if (state.draining) {
-        callback();
-        return;
-      }
-      const remaining = maxBytes - state.written;
-      if (chunk.length <= remaining) {
-        state.written += chunk.length;
-        callback(null, chunk);
-        if (state.written >= maxBytes) {
-          state.draining = true;
-        }
-        return;
-      }
-      state.written = maxBytes;
-      state.draining = true;
-      callback(null, chunk.subarray(0, remaining));
-    },
-  });
-
-  return { stream, state };
-}
-
-type ImportFileParseContext = {
-  errors: string[];
-  tmpdir: string;
-  unzippedFiles: string[];
-  params: BooksImportParams;
-};
-
-async function tryExtractZipWithSystemUnzip(
-  zipPath: string,
-  destDir: string
-): Promise<boolean> {
-  try {
-    await execFileAsync("unzip", ["-qq", "-o", zipPath, "-d", destDir]);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function writeZipEntryStream(
-  readStream: Readable,
-  filename: string,
-  uncompressedSize: number
-): Promise<void> {
-  if (uncompressedSize <= 0) {
-    readStream.resume();
-    const data = await buffer(readStream);
-    await fs.promises.writeFile(filename, data);
-    return;
-  }
-
-  const { stream: limiter, state: limiterState } =
-    createZipEntryByteLimitTransform(uncompressedSize);
-  const writeStream = fs.createWriteStream(filename);
-
-  await pipeline(readStream, limiter, writeStream);
-  if (limiterState.written < uncompressedSize) {
-    throw new Error(
-      `zip解凍が不完全です (${limiterState.written}/${uncompressedSize} bytes)`
-    );
-  }
-}
-
-function listFilesRecursively(dir: string): string[] {
-  return fs
-    .globSync("**/*", { cwd: dir })
-    .filter((relativePath) =>
-      fs.statSync(path.join(dir, relativePath)).isFile()
-    )
-    .map((relativePath) => path.join(dir, relativePath));
-}
-
-function collectJsonFromUnzippedDir(ctx: ImportFileParseContext) {
-  ctx.unzippedFiles = listFilesRecursively(ctx.tmpdir);
-  const jsonfiles: string[] = ctx.unzippedFiles.filter((filename) =>
-    filename.toLowerCase().endsWith(".json")
-  );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const jsons: any[] = [];
-  if (jsonfiles.length) {
-    for (const jsonfile of jsonfiles) {
-      try {
-        const json = JSON.parse(fs.readFileSync(jsonfile).toString());
-        jsons.push(...(Array.isArray(json) ? json : [json]));
-      } catch (e) {
-        ctx.errors.push(`入力されたjsonテキストを解釈できません。\n${e}`);
-      }
-    }
-  } else {
-    ctx.errors.push("jsonファイルがありません。");
-  }
-  if (ctx.errors.length) return {};
-  return jsons;
-}
-
-async function extractZipEntry(
-  ctx: ImportFileParseContext,
-  entry: Entry,
-  readStream: Readable,
-  filename: string,
-  dirname: string,
-  readNextEntry: () => void
-) {
-  try {
-    if (!fs.existsSync(dirname)) {
-      fs.mkdirSync(dirname, { recursive: true });
-    }
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    await Promise.race([
-      writeZipEntryStream(readStream, filename, entry.uncompressedSize),
-      new Promise<never>((_, reject) => {
-        timeoutId = setTimeout(() => {
-          readStream.destroy();
-          reject(new Error(`zip解凍がタイムアウトしました: ${entry.fileName}`));
-        }, ZIP_ENTRY_EXTRACT_TIMEOUT_MS);
-      }),
-    ]).finally(() => {
-      if (timeoutId !== undefined) clearTimeout(timeoutId);
-    });
-  } catch (err) {
-    ctx.errors.push(`zip解凍中に例外が発生しました。\n${err}`);
-    readStream.destroy();
-  } finally {
-    readNextEntry();
-  }
-}
-
-function parseJsonFromZipWithYauzl(ctx: ImportFileParseContext, file: string) {
-  return new Promise((resolve) => {
-    let resolved = false;
-    const finish = (value: unknown) => {
-      if (resolved) return;
-      resolved = true;
-      resolve(value);
-    };
-
-    const options = {
-      lazyEntries: true,
-    };
-    yauzl.open(file, options, (err, zipfile) => {
-      if (err) {
-        try {
-          finish(JSON.parse(fs.readFileSync(file).toString()));
-        } catch (e) {
-          ctx.errors.push(`ファイルがzipではありません。\n${err}`);
-          finish({});
-        }
-        return;
-      }
-      zipfile
-        .on("entry", (entry) => {
-          const readNextEntry = () => {
-            zipfile.readEntry();
-          };
-          // ディレクトリは fileName が '/' で終わっている
-          if (/\/$/.test(entry.fileName)) {
-            readNextEntry();
-          } else {
-            const filename = path.join(ctx.tmpdir, entry.fileName);
-            const dirname = path.dirname(filename);
-            zipfile.openReadStream(entry, async (err, readStream) => {
-              if (err) {
-                ctx.errors.push(
-                  `openReadStreamでエラーが発生しました。\n${err}`
-                );
-                readNextEntry();
-                return;
-              }
-              await extractZipEntry(
-                ctx,
-                entry,
-                readStream,
-                filename,
-                dirname,
-                readNextEntry
-              );
-            });
-          }
-        })
-        .on("close", () => {
-          const jsons = collectJsonFromUnzippedDir(ctx);
-          if (ctx.errors.length) {
-            finish({});
-          } else {
-            finish(jsons);
-          }
-        })
-        .on("error", (error) => {
-          try {
-            finish(JSON.parse(fs.readFileSync(file).toString()));
-          } catch (e) {
-            ctx.errors.push(`ファイルがzipではありません。\n${error}`);
-            finish({});
-          }
-        });
-      zipfile.readEntry();
-    });
-  });
-}
-
-async function parseImportJsonFromFile(ctx: ImportFileParseContext) {
-  if (!ctx.params.file) {
-    ctx.errors.push(`ファイルをアップロードしてください。`);
-    return {};
-  }
-
-  ctx.tmpdir = fs.mkdtempSync("/tmp/chibichilo-import-");
-  const file = `${ctx.tmpdir}/file`;
-  const base64 = ctx.params.file as string;
-  const fileBuffer = Buffer.from(base64, "base64");
-  fs.writeFileSync(file, fileBuffer);
-  ctx.params.file = undefined;
-
-  if (await tryExtractZipWithSystemUnzip(file, ctx.tmpdir)) {
-    return collectJsonFromUnzippedDir(ctx);
-  }
-
-  return parseJsonFromZipWithYauzl(ctx, file);
-}
 
 async function importBooksUtil(
   user: UserSchema,
@@ -333,6 +90,7 @@ class ImportBooksUtil {
     try {
       const importBooks = ImportBooks.init(await this.parseJsonFromFile());
       if (this.errors.length) return;
+
       const results = await validate(importBooks, {
         whitelist: true,
         forbidNonWhitelisted: true,
@@ -344,6 +102,7 @@ class ImportBooksUtil {
         await this.uploadFiles(importBooks);
       }
       if (this.errors.length) return;
+
       const transactions = [];
       for (const importBook of importBooks.books) {
         transactions.push(
@@ -726,7 +485,6 @@ class ImportBooksUtil {
   async cleanUp() {
     if (this.tmpdir) {
       await fs.promises.rm(this.tmpdir, { recursive: true });
-      this.tmpdir = "";
     }
   }
 
@@ -743,8 +501,108 @@ class ImportBooksUtil {
     }
   }
 
-  async parseJsonFromFile() {
-    return parseImportJsonFromFile(this);
+  parseJsonFromFile() {
+    if (!this.params.file) {
+      this.errors.push(`ファイルをアップロードしてください。`);
+      return {};
+    }
+
+    this.tmpdir = fs.mkdtempSync("/tmp/chibichilo-import-");
+    const file = `${this.tmpdir}/file`;
+    fs.writeFileSync(file, Buffer.from(this.params.file as string, "base64"));
+
+    return new Promise((resolve) => {
+      const options = {
+        lazyEntries: true,
+      };
+      yauzl.open(file, options, (err, zipfile) => {
+        if (err) {
+          try {
+            resolve(JSON.parse(fs.readFileSync(file).toString()));
+          } catch (e) {
+            this.errors.push(`ファイルがzipではありません。\n${err}`);
+            resolve({});
+          }
+          return;
+        }
+        zipfile.readEntry();
+        zipfile
+          .on("entry", (entry) => {
+            // ディレクトリは fileName が '/' で終わっている
+            if (/\/$/.test(entry.fileName)) {
+              zipfile.readEntry();
+            } else {
+              const filename = path.join(this.tmpdir, entry.fileName);
+              const dirname = path.dirname(filename);
+              zipfile.openReadStream(entry, (err, readStream) => {
+                if (err) {
+                  this.errors.push(
+                    `openReadStreamでエラーが発生しました。\n${err}`
+                  );
+                  zipfile.readEntry();
+                  return;
+                }
+                try {
+                  if (!fs.existsSync(dirname)) {
+                    fs.mkdirSync(dirname, { recursive: true });
+                  }
+                  readStream.on("end", () => {
+                    zipfile.readEntry();
+                  });
+                  const ws = fs.createWriteStream(filename);
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  readStream.pipe(ws).on("error", (err: any) => {
+                    this.errors.push(
+                      `zip解凍中にファイルの書き込みに失敗しました。\n${err}`
+                    );
+                    readStream.destroy();
+                    zipfile.readEntry();
+                  });
+                } catch (err) {
+                  this.errors.push(`zip解凍中に例外が発生しました。\n${err}`);
+                  readStream.destroy();
+                  zipfile.readEntry();
+                }
+              });
+            }
+          })
+          .on("close", () => {
+            this.unzippedFiles = recursive(this.tmpdir);
+            const jsonfiles: string[] = this.unzippedFiles.filter((filename) =>
+              filename.toLowerCase().endsWith(".json")
+            );
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const jsons: any[] = [];
+            if (jsonfiles.length) {
+              for (const jsonfile of jsonfiles) {
+                try {
+                  const json = JSON.parse(fs.readFileSync(jsonfile).toString());
+                  jsons.push(...(Array.isArray(json) ? json : [json]));
+                } catch (e) {
+                  this.errors.push(
+                    `入力されたjsonテキストを解釈できません。\n${e}`
+                  );
+                }
+              }
+            } else {
+              this.errors.push("jsonファイルがありません。");
+            }
+            if (this.errors.length) {
+              resolve({});
+            } else {
+              resolve(jsons);
+            }
+          })
+          .on("error", (error) => {
+            try {
+              resolve(JSON.parse(fs.readFileSync(file).toString()));
+            } catch (e) {
+              this.errors.push(`ファイルがzipではありません。\n${error}`);
+              resolve({});
+            }
+          });
+      });
+    });
   }
 
   async uploadFiles(importBooks: ImportBooks) {
@@ -810,16 +668,12 @@ class ImportBooksUtil {
       }
 
       if (this.errors.length) return;
-      if (!filenames.length) {
-        return;
-      }
+      if (!filenames.length) return;
       await wowzaUpload.upload();
     } catch (e) {
       this.errors.push(`サーバーにアップロードできませんでした。\n${e}`);
     } finally {
-      if (wowzaUpload) {
-        await wowzaUpload.cleanUp();
-      }
+      if (wowzaUpload) await wowzaUpload.cleanUp();
     }
   }
 

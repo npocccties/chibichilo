@@ -3,30 +3,15 @@ import type {
   BooksImportResult,
 } from "$server/models/booksImportParams";
 import { api } from "./api";
-import {
-  clearBookCaches,
-  clearBookCachesFromBook,
-  clearBookIdsCache,
-  clearSearchCaches,
-} from "./invalidateBookCache";
+import { revalidateBook } from "./book";
 
 async function importBook(
   bookId: number,
   body: BooksImportParams
 ): Promise<BooksImportResult> {
-  const res = (await api.apiV2BookBookIdImportPost({
-    bookId,
-    body,
-  })) as BooksImportResult;
-  await clearSearchCaches();
-  await clearBookIdsCache();
-  const importedBook = res.books?.[0];
-  if (importedBook) {
-    await clearBookCachesFromBook(importedBook);
-  } else {
-    await clearBookCaches(bookId);
-  }
-  return res;
+  const res = await api.apiV2BookBookIdImportPost({ bookId, body });
+  await revalidateBook(bookId);
+  return res as BooksImportResult;
 }
 
 export default importBook;
