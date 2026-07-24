@@ -58,11 +58,8 @@ function Edit({ bookId, context }: Query) {
     if (submitWithLink) await onBookLinking?.({ id: bookId });
     return back();
   }
-  async function handleDelete(
-    { id }: Pick<BookSchema, "id">,
-    withtopic: boolean
-  ) {
-    await destroyBook(id, withtopic);
+  async function handleDelete(book: BookSchema, withtopic?: boolean) {
+    await destroyBook(book.id, withtopic ?? false, book);
     switch (context) {
       case "books":
       case "topics":

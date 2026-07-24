@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useUnmount } from "react-use";
+import useUnmount from "$utils/useUnmount";
 import { atom, useAtom } from "jotai";
 import { RESET, atomWithReset } from "jotai/utils";
 import yn from "yn";

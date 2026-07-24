@@ -330,6 +330,7 @@ export interface ApiV2LtiCallbackPostRequest {
 
 export interface ApiV2LtiDeepLinkingGetRequest {
     bookId: number;
+    topicId?: number;
 }
 
 export interface ApiV2LtiLaunchPostRequest {
@@ -1702,6 +1703,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.bookId !== undefined) {
             queryParameters['book_id'] = requestParameters.bookId;
+        }
+
+        if (requestParameters.topicId !== undefined) {
+            queryParameters['topic_id'] = requestParameters.topicId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

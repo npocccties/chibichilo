@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useUnmount } from "react-use";
+import useUnmount from "$utils/useUnmount";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useResetAtom } from "jotai/utils";
 import type { BookSchema } from "$server/models/book";

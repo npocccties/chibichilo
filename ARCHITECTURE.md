@@ -54,7 +54,7 @@ REST API のルーティング構成。
 
 ### server/config/seeds ([code](https://github.com/npocccties/chibichilo/tree/master/server/config/seeds))
 
-シーディング (`yarn --cwd server seed` コマンド) 用のデータ。
+シーディング (`pnpm --dir server seed` コマンド) 用のデータ。
 
 ### server/config/video ([code](https://github.com/npocccties/chibichilo/tree/master/server/config/video))
 
@@ -118,7 +118,7 @@ React Component。
 
 ### openapi ([code](https://github.com/npocccties/chibichilo/tree/master/openapi))
 
-OpenAPI Generator (`yarn build:openapi` コマンド) によって生成するクライアントのコード。
+OpenAPI Generator (`pnpm build:openapi` コマンド) によって生成するクライアントのコード。
 
 ### public ([code](https://github.com/npocccties/chibichilo/tree/master/public))
 

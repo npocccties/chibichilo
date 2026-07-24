@@ -2,6 +2,7 @@ import { handleBookmarkClick } from "./handleBookmarkClick";
 import { pagesPath } from "$utils/$path";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import type { LtiContextState } from "$store/session";
+import { vi } from "vitest";
 
 describe("handleBookmarkClick()", () => {
   const mockBookmark = {
@@ -14,8 +15,8 @@ describe("handleBookmarkClick()", () => {
   } as BookmarkSchema;
 
   it("setLtiContext に遷移先ではなく、引数で渡された現在の pathname をセットすること", async () => {
-    const mockSetLtiContext = jest.fn((_value: LtiContextState) => {});
-    const mockPush = jest.fn().mockResolvedValue(true);
+    const mockSetLtiContext = vi.fn((_value: LtiContextState) => {});
+    const mockPush = vi.fn().mockResolvedValue(true);
     const currentPath = "/bookmarks";
 
     await handleBookmarkClick(

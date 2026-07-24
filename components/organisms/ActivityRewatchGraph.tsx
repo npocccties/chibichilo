@@ -14,7 +14,6 @@ import {
 } from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 import { NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL } from "$utils/env";
-
 const useStyles = makeStyles(() => ({
   outilerDescriptionArea: {
     textAlign: "right",
@@ -306,18 +305,16 @@ export default function ActivityRewatchGraph(props: Props) {
       .filter((c) => c.count <= NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD) ||
     [];
 
-  // ES2024: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
-  // eslint-disable-next-line
-  const plotEachStartMs = Object.groupBy(plot, (p: PlotSchema) => p.startMs);
+  const plotEachStartMs = Object.groupBy(plot, (p: PlotSchema) =>
+    String(p.startMs)
+  );
   const average: PlotSchema[] = [];
-  for (const key of Object.keys(plotEachStartMs)) {
-    const startMs = key;
+  for (const [startMs, group] of Object.entries(plotEachStartMs)) {
+    if (!group) continue;
     const count =
-      plotEachStartMs[key]
+      group
         .map((p: PlotSchema) => p.count)
-        .reduce((a: number, b: number) => {
-          return a + b;
-        }, 0) / plotEachStartMs[key].length || 0;
+        .reduce((a: number, b: number) => a + b, 0) / group.length || 0;
     average.push({ startMs: Number(startMs), count: count });
   }
 

@@ -1,4 +1,4 @@
-import type { Topic } from "@prisma/client";
+import type { Topic } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 import { findTopicUniqueIds, updateTopicSpid } from "../uniqueId";
 

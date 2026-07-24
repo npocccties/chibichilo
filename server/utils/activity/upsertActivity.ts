@@ -6,7 +6,7 @@ import type {
   Activity,
   LtiConsumer,
   LtiContext,
-} from "@prisma/client";
+} from "$server/generated/prisma/client";
 import type { ActivityProps } from "$server/validators/activityProps";
 import type { ActivityTimeRangeProps } from "$server/validators/activityTimeRange";
 import type { ActivityTimeRangeLogProps } from "$server/validators/activityTimeRangeLog";
@@ -315,7 +315,6 @@ function upsert({
         ltiConsumerId,
         ltiContextId,
       },
-
     },
     create: {
       ...input,

@@ -1,4 +1,4 @@
-import type { Book } from "@prisma/client";
+import type { Book } from "$server/generated/prisma/client";
 import { AuthorSchema } from "./author";
 import type { SectionProps, SectionSchema } from "./book/section";
 import { sectionPropsSchema, sectionSchema } from "./book/section";

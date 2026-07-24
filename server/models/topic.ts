@@ -1,5 +1,5 @@
 import type { FromSchema } from "json-schema-to-ts";
-import type { Topic, Prisma } from "@prisma/client";
+import type { Topic, Prisma } from "$server/generated/prisma/client";
 import type { ResourceProps, ResourceSchema } from "./resource";
 import { resourcePropsSchema, resourceSchema } from "./resource";
 import { AuthorSchema } from "./author";

@@ -27,6 +27,6 @@
       "$*": ["*"]
     }
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "api/v2.ts", "out", "openapi"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

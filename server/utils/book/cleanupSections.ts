@@ -1,4 +1,4 @@
-import type { Book } from "@prisma/client";
+import type { Book } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 
 function cleanupSections(bookId: Book["id"]) {

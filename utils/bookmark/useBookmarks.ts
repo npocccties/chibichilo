@@ -20,7 +20,9 @@ async function fetchBookmarks({
 }
 
 function useBookmarks(query: BookmarkQuery) {
-  const { data, isLoading } = useSWR({ key, ...query }, fetchBookmarks);
+  const { data, isLoading } = useSWR({ key, ...query }, fetchBookmarks, {
+    revalidateOnFocus: false,
+  });
   const bookmarks: BookmarkSchema[] = data?.bookmark ?? [];
   const bookmarkTagMenu: BookmarkTagMenu = data?.bookmarkTagMenu ?? [];
   return { bookmarks, bookmarkTagMenu, isLoading };

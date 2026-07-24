@@ -49,19 +49,21 @@ export default function BookEditReleased({
   const handleTopicPreviewClick = (topic: TopicSchema) =>
     setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: `ブック「${book.name}」と、ブックに含まれるトピックを削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onDelete(book, true);
   };
   const handleCloneButtonClick = async () => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: `ブック「${book.name}」を複製します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onClone(book);
   };
   if (!book.release) return <Placeholder />;

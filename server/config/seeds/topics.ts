@@ -1,4 +1,4 @@
-import outdent from "outdent";
+import outdent from "$utils/outdent";
 
 const topics = [
   // © 2015 NPO CCC-TIES, 行木孝夫 / CC-BY https://dev.chilos.jp/book/uncompress/cb00301/OEBPS/vol-1/text/vol-001-011.xhtml

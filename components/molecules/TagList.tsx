@@ -91,11 +91,12 @@ export default function TagList({
     topicId: BookmarkProps["topicId"],
     bookId: BookmarkProps["bookId"]
   ) => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: "コメントを削除します。よろしいですか？",
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     await handlers.onDeleteBookmark(id, topicId, bookId);
   };
   const [open, setOpen] = useState(false);

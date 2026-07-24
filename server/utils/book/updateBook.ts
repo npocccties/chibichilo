@@ -1,4 +1,4 @@
-import type { Book, PrismaPromise } from "@prisma/client";
+import type { Book, Prisma } from "$server/generated/prisma/client";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { SectionProps } from "$server/models/book/section";
 import type { PublicBookSchema } from "$server/models/book/public";
@@ -27,7 +27,7 @@ async function updateBook(
   origBook: BookSchema,
   noclone?: boolean
 ): Promise<BookSchema | undefined> {
-  const ops: Array<PrismaPromise<unknown>> = [];
+  const ops: Array<Prisma.PrismaPromise<unknown>> = [];
 
   if (sections != null) {
     if (!noclone) {

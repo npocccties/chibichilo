@@ -1,4 +1,4 @@
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { BookmarkTagMenu } from "$server/models/bookmark";
 import type { BookmarkQuery } from "$server/validators/bookmarkQuery";
 import authUser from "$server/auth/authUser";

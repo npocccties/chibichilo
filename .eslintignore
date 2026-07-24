@@ -1,4 +1,6 @@
 node_modules/
+/out/
+/api/v2.ts
 /.next/
 /.vercel/
 /server/dist/
@@ -8,5 +10,4 @@ node_modules/
 /public/storybook/
 /public/LICENSE
 /utils/$path.ts
-jest.config.js
 next.config.js

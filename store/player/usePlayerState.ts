@@ -1,7 +1,6 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import useSWRImmutable from "swr/immutable";
-import { useDebouncedCallback } from "use-debounce";
+import useDebouncedCallback from "$utils/useDebouncedCallback";
 import type { VideoJsPlayer } from "$types/videoJsPlayer";
 import VimeoPlayer from "@vimeo/player";
 import type { Muted, PlaybackRate, TextTrack, Volume } from "./storage";
@@ -30,11 +29,32 @@ function getReady(player: Player): boolean {
 
 /** 動画プレイヤー準備状況へのアクセス */
 function useReady(player: Player): boolean {
-  const { data: ready } = useSWRImmutable(player, getReady, {
-    refreshInterval: interval,
-  });
+  const [ready, setReady] = useState(false);
 
-  return Boolean(ready);
+  useEffect(() => {
+    let id: ReturnType<typeof setInterval> | undefined;
+
+    const update = () => {
+      if (!getReady(player)) return false;
+      setReady(true);
+      if (id !== undefined) {
+        clearInterval(id);
+        id = undefined;
+      }
+      return true;
+    };
+
+    if (update()) return;
+
+    setReady(false);
+    id = setInterval(update, interval);
+
+    return () => {
+      if (id !== undefined) clearInterval(id);
+    };
+  }, [player]);
+
+  return ready;
 }
 
 /** 動画プレイヤーへの再生速度の設定処理 */
@@ -165,7 +185,7 @@ export function usePlayerState(player: Player) {
   }, [player, setPlaybackRate]);
 
   useEffect(() => {
-    if (ready) setPlayerPlaybackRate(player, playbackRate);
+    setPlayerPlaybackRate(player, playbackRate);
   }, [player, ready, playbackRate]);
 
   useEffect(() => {
@@ -182,7 +202,7 @@ export function usePlayerState(player: Player) {
   const onVolumeChange = useDebouncedCallback(updateVolume, wait);
 
   useEffect(() => {
-    if (ready) setPlayerVolume(player, { volume, muted });
+    setPlayerVolume(player, { volume, muted });
   }, [player, ready, volume, muted]);
 
   useEffect(() => {

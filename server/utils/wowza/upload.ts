@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import format from "date-fns/format";
-import utcToZoneTime from "date-fns-tz/utcToZonedTime";
+import { TZDate } from "@date-fns/tz";
+import { format } from "date-fns";
 import { NodeSSH } from "node-ssh";
 
 import {
@@ -57,7 +57,7 @@ export class WowzaUpload {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const uploadpath = path.join(
       this.uploaddir,
-      format(utcToZoneTime(date, timezone), "yyyyMMdd-HHmm-")
+      format(new TZDate(date, timezone), "yyyyMMdd-HHmm-")
     );
     if (!(uploadpath in this.pathcache)) {
       this.pathcache[uploadpath] = await fs.promises.mkdtemp(uploadpath);

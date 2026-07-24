@@ -1,4 +1,4 @@
-import type { Topic, Book } from "@prisma/client";
+import type { Topic, Book } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 
 async function bookTimeRequired(book: Pick<Book, "id">): Promise<number> {

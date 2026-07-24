@@ -6,35 +6,36 @@ import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { useActivityAtom } from "$store/activity";
 import { isInstructor } from "./session";
 import { api } from "$utils/api";
+import { type Mock, vi } from "vitest";
 
 type MockSession = {
   session: {
     user?: Partial<SessionSchema["user"]>;
   };
 };
-const mockUseSessionAtom = useSessionAtom as unknown as jest.Mock<MockSession>;
+const mockUseSessionAtom = useSessionAtom as unknown as Mock<MockSession>;
 
 type MockLtiContext = Pick<
   ReturnType<typeof useLtiContextAtom>,
   "isLtiContextReady" | "ltiConsumerId" | "ltiContextId"
 >;
 const mockUseLtiContextAtom =
-  useLtiContextAtom as unknown as jest.Mock<MockLtiContext>;
+  useLtiContextAtom as unknown as Mock<MockLtiContext>;
 
 type MockSWR = Pick<
   SWRResponse<ActivitySchema[], Error>,
   "data" | "error" | "mutate" | "isValidating" | "isLoading"
 >;
 
-const mockUseSWR = useSWR as unknown as jest.Mock<MockSWR>;
+const mockUseSWR = useSWR as unknown as Mock<MockSWR>;
 
-jest.mock("swr");
-jest.mock("$store/session");
-jest.mock("$store/activity");
-jest.mock("./session", () => ({
-  isInstructor: jest.fn(),
+vi.mock("swr");
+vi.mock("$store/session");
+vi.mock("$store/activity");
+vi.mock("./session", () => ({
+  isInstructor: vi.fn(),
 }));
-jest.mock("$utils/api");
+vi.mock("$utils/api");
 
 describe("useBookActivity の準備状態（isReady）ロジックの検証", () => {
   it("全ての条件が揃っている場合、Ready（true）になること", () => {
@@ -88,7 +89,6 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
     ["null", null],
   ])("学習者判定が %s の場合は、Ready（false）にならないこと", (_, value) => {
     const result = checkIsReady({
-      // 型定義 boolean | "" | 0 | undefined | null に適合
       isLearner: value as "" | 0 | null,
       bookId: 100,
       isLtiContextReady: true,
@@ -100,13 +100,13 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
     const mockBookId = 123;
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       const mockResponse = {
         data: undefined,
         error: undefined,
         isValidating: false,
         isLoading: false,
-        mutate: jest.fn(),
+        mutate: vi.fn(),
       } as SWRResponse;
       mockUseSWR.mockReturnValue(mockResponse);
     });
@@ -120,7 +120,7 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
         ltiContextId: "ctx-1",
         isLtiContextReady: true,
       });
-      jest.mocked(isInstructor).mockReturnValue(false);
+      vi.mocked(isInstructor).mockReturnValue(false);
 
       useBookActivity(mockBookId);
       expect(useSWR).toHaveBeenCalledWith(
@@ -129,8 +129,8 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
           ltiConsumerId: "cons-1",
           ltiContextId: "ctx-1",
         }),
-        expect.any(Function), // fetcher: updateBookActivity
-        expect.any(Object) // options
+        expect.any(Function),
+        expect.any(Object)
       );
     });
 
@@ -157,7 +157,7 @@ describe("useBookActivity の準備状態（isReady）ロジックの検証", ()
         error: undefined,
         isLoading: false,
         isValidating: false,
-        mutate: jest.fn(),
+        mutate: vi.fn(),
       });
       useBookActivity(mockBookId);
       expect(useActivityAtom).toHaveBeenCalledWith(mockData);
@@ -172,13 +172,13 @@ describe("updateBookActivity (fetcher logic) の検証", () => {
     useBookActivity(mockBookId);
     const call = 0;
     const arg = 1;
-    return jest.mocked(useSWR).mock.calls[call][arg] as (
+    return vi.mocked(useSWR).mock.calls[call][arg] as (
       args: Record<string, unknown>
     ) => Promise<{ activity: unknown[] } | undefined>;
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("LTI ID が null の場合、API クライアントには undefined として渡されること", async () => {
@@ -188,7 +188,7 @@ describe("updateBookActivity (fetcher logic) の検証", () => {
     > = {
       activity: [],
     };
-    const spy = jest
+    const spy = vi
       .spyOn(api, "apiV2BookBookIdActivityPut")
       .mockResolvedValue(mockResponse);
 
@@ -213,7 +213,7 @@ describe("updateBookActivity (fetcher logic) の検証", () => {
     > = {
       activity: [],
     };
-    const spy = jest
+    const spy = vi
       .spyOn(api, "apiV2BookBookIdActivityPut")
       .mockResolvedValue(mockResponse);
 
@@ -233,7 +233,7 @@ describe("updateBookActivity (fetcher logic) の検証", () => {
 
   it("bookId が undefined の場合、API を呼び出さずに終了すること", async () => {
     const updateBookActivity = useGetUpdateBookActivity();
-    const spy = jest.spyOn(api, "apiV2BookBookIdActivityPut");
+    const spy = vi.spyOn(api, "apiV2BookBookIdActivityPut");
 
     const result = await updateBookActivity({
       bookId: undefined,

@@ -1,5 +1,5 @@
 import type { FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type { TopicParams } from "$server/validators/topicParams";
 import { topicParamsSchema } from "$server/validators/topicParams";
 import type { SessionSchema } from "$server/models/session";

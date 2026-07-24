@@ -1,10 +1,10 @@
-import type { Client } from "openid-client";
+import type { OidcClient } from "./findClient";
+import { clientCredentialsGrant } from "openid-client";
 import prisma from "$server/utils/prisma";
 
-async function grant(client: Client): Promise<string> {
+async function grant(client: OidcClient): Promise<string> {
   try {
-    const tokens = await client.grant({
-      grant_type: "client_credentials",
+    const tokens = await clientCredentialsGrant(client, {
       scope: [
         "https://purl.imsglobal.org/spec/lti-ags/scope/score",
         "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
@@ -22,8 +22,8 @@ async function grant(client: Client): Promise<string> {
  * accessTokenの作成
  * @param client OpenID Connect Client
  */
-export const createAccessToken = async (client: Client) => {
-  const clientId = client.metadata.client_id;
+export const createAccessToken = async (client: OidcClient) => {
+  const clientId = client.clientMetadata().client_id;
 
   let { accessToken } = await prisma.ltiConsumer.findUniqueOrThrow({
     where: { id: clientId },

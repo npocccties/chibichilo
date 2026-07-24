@@ -6,7 +6,7 @@ import findBook from "./findBook";
 import sectionCreateInput from "./sectionCreateInput";
 import keywordsConnectOrCreateInput from "$server/utils/keyword/keywordsConnectOrCreateInput";
 import upsertPublicBooks from "$server/utils/publicBook/upsertPublicBooks";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 
 async function createBook(
   userId: UserSchema["id"],

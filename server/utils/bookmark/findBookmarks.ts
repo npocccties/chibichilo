@@ -1,7 +1,7 @@
 import type { BookmarkSchema, BookmarkTagMenu } from "$server/models/bookmark";
 import prisma from "$server/utils/prisma";
 import type { BookmarkQuery } from "$server/validators/bookmarkQuery";
-import type { User } from "@prisma/client";
+import type { User } from "$server/generated/prisma/client";
 
 type TopicIdParam = {
   topicId: BookmarkSchema["topicId"];

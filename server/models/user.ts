@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "$server/generated/prisma/client";
 import type { FromSchema } from "json-schema-to-ts";
 import { UserSettingsProps } from "$server/models/userSettings";
 
