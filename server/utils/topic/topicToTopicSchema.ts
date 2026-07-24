@@ -1,4 +1,4 @@
-import type { Book, Prisma } from "@prisma/client";
+import type { Book, Prisma } from "$server/generated/prisma/client";
 import type { TopicSchema } from "$server/models/topic";
 import {
   authorArg,

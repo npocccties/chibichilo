@@ -1,4 +1,4 @@
-import { flatten } from "flat";
+import flattenObject from "$utils/flattenObject";
 import type { BookmarkStats } from "$server/models/bookmarkStats";
 
 export const keyOrder = ["topicId", "tagLabel", "totalCount"] as const;
@@ -16,10 +16,10 @@ export const label = {
 export function getLocaleEntries(
   bookmarkStats: BookmarkStats[number]
 ): Record<string, string | number | undefined> {
-  const bs: Record<
+  const bs = flattenObject(bookmarkStats) as Record<
     (typeof keyOrder)[number],
     string | number | Date | undefined
-  > = flatten(bookmarkStats);
+  >;
 
   const data = keyOrder
     .map((key) => [label[key], bs[key] as string | number | undefined])

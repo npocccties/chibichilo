@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useRef } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
@@ -108,6 +109,7 @@ export default function SectionsEdit(props: Props) {
     handleSectionsSave,
     handleSectionCreate,
   } = useSortableSectionsProps(sections, onSectionsUpdate);
+  const dragBoundaryRef = useRef<HTMLDivElement>(null);
   return (
     <Card classes={cardClasses} className={clsx(className, classes.root)}>
       {!noedit && (
@@ -172,11 +174,12 @@ export default function SectionsEdit(props: Props) {
         </Alert>
       )}
       {sortable && (
-        <>
+        <div ref={dragBoundaryRef}>
           <DraggableSections
             sections={sortableSections}
             onSectionsUpdate={handleSectionsUpdate}
             onSectionCreate={handleSectionCreate}
+            boundaryRef={dragBoundaryRef}
           />
           <div className={classes.footer}>
             <Divider className={classes.divider} />
@@ -195,7 +198,7 @@ export default function SectionsEdit(props: Props) {
               保存
             </Button>
           </div>
-        </>
+        </div>
       )}
       {!sortable && sections.length === 0 && (
         <p className={classes.placeholder}>

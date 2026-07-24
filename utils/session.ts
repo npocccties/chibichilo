@@ -9,10 +9,14 @@ export * from "$server/utils/session";
 const key = "/api/v2/session";
 
 export function useSessionInit() {
-  const { data, error } = useSWR<SessionSchema>(key, async () => {
-    const res = await api.apiV2SessionGetRaw();
-    return res.raw.json();
-  });
+  const { data, error } = useSWR<SessionSchema>(
+    key,
+    async () => {
+      const res = await api.apiV2SessionGetRaw();
+      return res.raw.json();
+    },
+    { revalidateOnFocus: false }
+  );
   const [state, update] = useUpdateSessionAtom();
   useEffect(() => {
     update({

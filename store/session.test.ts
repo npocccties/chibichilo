@@ -1,4 +1,5 @@
 import { createStore } from "jotai";
+import { vi } from "vitest";
 import {
   isLtiContextReadyAtom,
   loadLtiContext,
@@ -7,9 +8,9 @@ import {
 } from "./session";
 
 const createStorageMock = () => ({
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
 });
 
 const storageMock = createStorageMock();
@@ -35,7 +36,7 @@ describe("session.ts の包括的な検証", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     storageMock.getItem.mockReturnValue(null);
   });
 

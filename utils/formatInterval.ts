@@ -1,6 +1,5 @@
-import formatDuration from "date-fns/formatDuration";
-import intervalToDuration from "date-fns/intervalToDuration";
-import ja from "date-fns/locale/ja";
+import { formatDuration, intervalToDuration } from "date-fns";
+import { ja } from "date-fns/locale";
 
 /**
  * 時間間隔を日本語表記で表示する

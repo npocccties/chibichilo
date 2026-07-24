@@ -1,13 +1,17 @@
 import { getGradeTargets } from "./getGradeTargets";
 import type { SessionSchema } from "$server/models/session";
 import type { ActivityQuery } from "$server/validators/activityQuery";
-import type { LtiResourceLink, LtiMember, User } from "@prisma/client";
+import type {
+  LtiResourceLink,
+  LtiMember,
+  User,
+} from "$server/generated/prisma/client";
+import { type Mock, vi } from "vitest";
 
-jest.mock("$server/utils/prisma", () => ({
-  __esModule: true,
+vi.mock("$server/utils/prisma", () => ({
   default: {
-    user: { findUnique: jest.fn() },
-    ltiResourceLink: { findMany: jest.fn() },
+    user: { findUnique: vi.fn() },
+    ltiResourceLink: { findMany: vi.fn() },
   },
 }));
 
@@ -16,15 +20,15 @@ import prisma from "$server/utils/prisma";
 type MockUser = Partial<User> & {
   ltiMembers?: Partial<LtiMember>[];
 };
-const mockUserFindUnique = jest.mocked(
-  prisma.user.findUnique
-) as unknown as jest.Mock<Promise<MockUser | null>>;
+const mockUserFindUnique = vi.mocked(prisma.user.findUnique) as unknown as Mock<
+  Promise<MockUser | null>
+>;
 
 type MockResourceLink = Partial<LtiResourceLink> &
   Pick<LtiResourceLink, "consumerId" | "contextId" | "lineItem">;
-const mockLtiResourceLinkFindMany = jest.mocked(
+const mockLtiResourceLinkFindMany = vi.mocked(
   prisma.ltiResourceLink.findMany
-) as unknown as jest.Mock<Promise<MockResourceLink[]>>;
+) as unknown as Mock<Promise<MockResourceLink[]>>;
 
 describe("getGradeTargets()", () => {
   const bookId = 123;
@@ -40,7 +44,7 @@ describe("getGradeTargets()", () => {
     }) as SessionSchema;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("current_lti_context_onlyがtrueでクエリによるコンテキスト指定がある場合、そのコンテキストのみを返し、ラベルが 'Target Context' であること", async () => {

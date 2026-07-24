@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useBeforeUnload } from "react-use";
+import useBeforeUnload from "$utils/useBeforeUnload";
 import { NEXT_PUBLIC_API_BASE_PATH } from "$utils/env";
 
 /**

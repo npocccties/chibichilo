@@ -4,16 +4,18 @@
 
 ### 前提条件
 
-2025-01-19 現在、以下の環境で動作確認済み
+2026-05-22 現在、以下の環境で動作確認済み
 
 - Docker v24
 - Docker Compose v2
-- Node.js 22.13.0
-- Yarn v1.22.22
+- Node.js >=26.2.0、^24.16.0、または ^22.22.3（[package.json](../package.json) の `engines` に合わせています）
+- pnpm 11.1.2（Node.js 26 では corepack が同梱されていないため、その場合は `npm install -g pnpm@11.1.2` で [package.json の packageManager](https://nodejs.org/api/packages.html#packagemanager) に合わせて利用）
 
 ### 手順
 
 データベースを構築します。開発環境は次のコマンドで構築します。
+
+（以下、リポジトリルートで実行します）
 
 ```sh
 docker compose up -d
@@ -24,31 +26,31 @@ docker compose up -d
 .env.sample を参照し、書き換えてデータベースへの接続情報を書き込みます。
 
 ```sh
-cp .env.sample .env
+cp server/.env.sample server/.env
 ```
 
 依存パッケージ群をインストールします。
 
 ```sh
-yarn
+pnpm install
 ```
 
 その接続情報をもとにしてデータベースをマイグレートし、開発用サーバーを起動します。
 
 ```sh
-yarn dev
+pnpm --dir server dev
 ```
 
 データベースのマイグレートのみを実行する場合は次のコマンドを実行します。
 
 ```sh
-yarn migrate
+pnpm --dir server migrate
 ```
 
 データベースのビジュアルエディター[Prisma Studio](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-studio)を利用できます。
 
 ```sh
-yarn prisma studio
+pnpm --dir server exec prisma studio
 ```
 
 開発用サーバーを起動後、`http://localhost:{PORT}{BASE_PATH}/swagger` にアクセスすると API ドキュメントツール[Swagger UI](https://swagger.io/tools/swagger-ui/) を利用できます。
@@ -106,6 +108,7 @@ docker compose down
 | `VTT_ACCESS_TOKEN_EXPIRES_IN`        | 字幕を取得する際のアクセストークンの有効期限 (秒) (デフォルト: `5400`)                                                                                             |
 | `ACTIVITY_COUNT_INTERVAL`            | 実視聴回数を記録する際の区間の長さ (秒) (デフォルト:`1`) フロントエンド側の `NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL` と同一の値を設定すること                         |
 | `ACTIVITY_REWATCH_THRESHOLD`         | 繰り返し視聴したと判定する閾値 (回) (デフォルト:`2`)                                                                                                               |
+| `DASHBOARD_DISPLAY_LEVEL`            | 学習分析ページの表示レベル (表示しない:"none"、管理者のみ:"administrator"、教師:"instructor"(デフォルト))                                                          |
 
 [database_connection_url]: https://www.prisma.io/docs/reference/database-connectors/connection-urls/
 
@@ -138,8 +141,8 @@ Apps には、以下のスコープが必要です。
 ```sh
 git clone https://github.com/npocccties/chibichilo.git
 cd chibichilo
-yarn
-yarn build
+pnpm install
+pnpm build
 ```
 
 server/dist ディレクトリ以下にファイルが作られれば成功です。
@@ -151,7 +154,7 @@ server/dist ディレクトリ以下にファイルが作られれば成功で�
 ```sh
 cd server
 echo 'DATABASE_URL={PostgreSQL 接続 URL}' >> .env
-yarn migrate
+pnpm migrate
 ```
 
 ### LTI v1.3 の設定
@@ -294,7 +297,7 @@ psql "$DATABASE_URL"
 データベースのビジュアルエディター Prisma Studio を使い、LTI Tool Consumer の設定を行います。
 
 ```sh
-yarn --cwd server prisma studio
+pnpm --dir server exec prisma studio
 ```
 
 コマンドの実行し、ブラウザーから Prisma Studio にアクセスした後、 [Open a Model] → [LtiConsumer] を開きます。
@@ -332,5 +335,5 @@ UPDATE "Tag" SET "label" = '後で見る', "emoji" = '📌' WHERE "id" = 1;
 過去にActivityとBookmarkのスキーマにbookIdがないバージョンを利用して既にデータが蓄積されている場合、以下を実行することでbookIdが追加されたスキーマへのデータの移行ができます。
 
 ```sh
-yarn data-migration
+pnpm --dir server data-migration
 ```

@@ -24,7 +24,7 @@ async function app(fastify: FastifyInstance, options: Options) {
   const { basePath, allowOrigin, sessionSecret, sessionStore } = options;
 
   await fastify.register(swagger, {
-    swagger: {
+    openapi: {
       info: {
         title: pkg.name,
         version: pkg.version,
@@ -51,6 +51,8 @@ async function app(fastify: FastifyInstance, options: Options) {
     fastify.register(cors, {
       origin: allowOrigin,
       credentials: true,
+      // デフォルトは GET,HEAD,POST のみのため PUT/DELETE 等を明示する
+      methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     }),
     fastify.register(cookie),
     fastify.register(session, {

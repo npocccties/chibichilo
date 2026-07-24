@@ -1,5 +1,5 @@
 import type { FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { VideoTrackParams } from "$server/validators/videoTrackParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";

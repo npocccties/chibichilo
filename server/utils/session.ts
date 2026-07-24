@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "$server/generated/prisma/client";
 import type { SessionSchema } from "$server/models/session";
 import type { LtiRolesSchema } from "$server/models/ltiRoles";
 import * as ltiv1p3Roles from "./ltiv1p3/roles";

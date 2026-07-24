@@ -1,6 +1,6 @@
 import type { AuthorSchema } from "$server/models/author";
 import type { AuthorsProps } from "$server/models/authorsProps";
-import type { Topic, Book } from "@prisma/client";
+import type { Topic, Book } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 import type { Authorship } from "./authorToAuthorSchema";
 import { authorArg, authorToAuthorSchema } from "./authorToAuthorSchema";

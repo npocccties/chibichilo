@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import type { Book, Topic } from "@prisma/client";
+import type { Book, Topic } from "$server/generated/prisma/client";
 import prisma from "./prisma";
 
 export type UniqueIds = Pick<Book, "poid" | "oid" | "pid" | "vid" | "spid">;

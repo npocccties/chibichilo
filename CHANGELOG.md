@@ -11,11 +11,14 @@ All notable changes to this project will be documented in this file.
 - AGS grade submission for video viewing in tag management screen (OU)
 - Learning activity tracking for video viewing in tag management screen (OU)
 - Stored AGS line item URL in LTI resource link for grade submission without active LTI session (OU)
+- Topic-level direct access and LTI Deep Linking support (NII)
+- Configurable access control for learning analytics dashboard (NII)
 
 ### Changed
 
 - Pass LTI context via client-side session storage when accessing from tag management screen (OU)
 - Grade submission supports broadcasting to multiple LTI contexts when accessing from tag management screen (OU)
+- Improved player settings retention across topic switches (NII)
 
 ## [2025]
 

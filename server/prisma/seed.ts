@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import prisma from "$server/utils/prisma";
-import type { User } from "@prisma/client";
+import type { User } from "$server/generated/prisma/client";
 import type { BookSchema } from "$server/models/book";
 import users from "$server/config/seeds/users";
 import topics from "$server/config/seeds/topics";

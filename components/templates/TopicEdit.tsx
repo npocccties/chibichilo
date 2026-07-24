@@ -88,11 +88,12 @@ export default function TopicEdit(props: Props) {
   const confirm = useConfirm();
   const { releases, error: _ } = useReleaseTopics(topic.id);
   const handleDeleteButtonClick = async () => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: `トピック「${topic.name}」を削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onDelete(topic);
   };
   const handleItemEditClick = async (index: number) => {

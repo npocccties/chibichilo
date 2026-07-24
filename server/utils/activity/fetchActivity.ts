@@ -1,4 +1,4 @@
-import type { LtiConsumer, LtiContext } from "@prisma/client";
+import type { LtiConsumer, LtiContext } from "$server/generated/prisma/client";
 import type { ActivitySchema } from "$server/models/activity";
 import type { UserSchema } from "$server/models/user";
 import type { BookSchema } from "$server/models/book";

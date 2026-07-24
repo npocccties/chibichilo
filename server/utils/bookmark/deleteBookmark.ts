@@ -1,6 +1,6 @@
 import type { BookmarkSchema } from "$server/models/bookmark";
 import prisma from "$server/utils/prisma";
-import type { Bookmark } from "@prisma/client";
+import type { Bookmark } from "$server/generated/prisma/client";
 
 async function deleteBookmark({
   id,

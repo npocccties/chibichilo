@@ -1,5 +1,5 @@
 import type { FromSchema, JSONSchema } from "json-schema-to-ts";
-import type { Tag } from "@prisma/client";
+import type { Tag } from "$server/generated/prisma/client";
 import { type TopicSchema } from "./topic";
 import { type BookSchema } from "./book";
 import { LtiContextSchema } from "./ltiContext";

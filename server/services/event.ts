@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type Method from "$server/types/method";
 import { EventSchema, EventActivitySchema } from "$server/models/event";
 import eventLogger from "$server/utils/eventLogger";

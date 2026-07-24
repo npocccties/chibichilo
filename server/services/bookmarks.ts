@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { BookmarkTagMenu, BookmarkSchema } from "$server/models/bookmark";
 import { BookmarkQuery } from "$server/validators/bookmarkQuery";
 import authUser from "$server/auth/authUser";

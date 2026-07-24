@@ -1,4 +1,4 @@
-import outdent from "outdent";
+import outdent from "$utils/outdent";
 import resource from "./resource";
 import user from "./user";
 import { bookmark } from "./bookmark";

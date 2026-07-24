@@ -1,5 +1,5 @@
 import type { FastifySchema, FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { topicSchema } from "$server/models/topic";
 import type { TopicParams } from "$server/validators/topicParams";
 import { topicParamsSchema } from "$server/validators/topicParams";

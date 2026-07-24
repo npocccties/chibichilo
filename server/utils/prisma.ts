@@ -1,10 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma/client.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
-import addMinutes from "date-fns/addMinutes";
+import { addMinutes } from "date-fns";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter });
 const sessionStore = new PrismaSessionStore(prisma, {
-  checkPeriod: addMinutes(0, 2).getTime(),
+  checkPeriod: addMinutes(new Date(0), 2).getTime(),
   dbRecordIdIsSessionId: true,
 });
 

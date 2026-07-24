@@ -1,4 +1,4 @@
-import json2csv from "json2csv";
+import { Parser } from "@json2csv/plainjs";
 
 const bom = "\uFEFF";
 
@@ -12,7 +12,7 @@ export function download(
   filename: string
 ) {
   if (data.length === 0) return;
-  const csv = json2csv.parse(data);
+  const csv = new Parser().parse(data);
   const file = new File([bom, csv], filename, { type: "text/csv" });
   const dataUrl = URL.createObjectURL(file);
   const anchor = document.createElement("a");

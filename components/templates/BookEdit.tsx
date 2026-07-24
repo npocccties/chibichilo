@@ -103,19 +103,21 @@ export default function BookEdit({
   const handleTopicPreviewClick = (topic: TopicSchema) =>
     setPreviewTopic(topic);
   const handleDeleteButtonClick = async () => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: `ブック「${book.name}」を削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onDelete(book);
   };
   const handleDeleteWithTopicButtonClick = async () => {
-    await confirm({
+    const { confirmed } = await confirm({
       title: `ブック「${book.name}」と、ブックに含まれるトピックを削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onDelete(book, true);
   };
   const handleReleaseButtonClick = async () => {
@@ -133,11 +135,12 @@ export default function BookEdit({
       });
       return;
     }
-    await confirm({
+    const { confirmed } = await confirm({
       title: `ブック「${book.name}」をリリースします。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onRelease(book);
   };
   const handleItemEditClick = async (index: number) => {

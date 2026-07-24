@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { resourceSchema } from "$server/models/resource";
 import type { PaginationProps } from "$server/validators/paginationProps";
 import { paginationPropsSchema } from "$server/validators/paginationProps";

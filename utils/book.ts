@@ -7,12 +7,46 @@ import type { TopicSchema } from "$server/models/topic";
 import type { IsContentEditable } from "$server/models/content";
 import { useLtiContextAtom, useSessionAtom } from "$store/session";
 import { revalidateSession } from "./session";
+import {
+  clearBookCaches,
+  clearBookIdsCache,
+  clearSearchCaches,
+  extractResourceIdsFromBook,
+  extractTopicIdsFromBook,
+} from "./invalidateBookCache";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import { getDisplayableBook } from "./displayableBook";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import type { MetainfoProps } from "$server/models/metainfo";
 
 const key = "/api/v2/book/{book_id}";
+
+type BookCacheKey = {
+  key: typeof key;
+  bookId: BookSchema["id"];
+  token?: string;
+  ltiConsumerId?: string | null;
+  ltiContextId?: string | null;
+};
+
+function isBookCacheKey(k: unknown): k is BookCacheKey {
+  return (
+    typeof k === "object" &&
+    k !== null &&
+    "key" in k &&
+    (k as BookCacheKey).key === key &&
+    "bookId" in k
+  );
+}
+
+async function mutateBookCache(
+  bookId: BookSchema["id"],
+  data: BookSchema
+): Promise<void> {
+  await mutate((k) => isBookCacheKey(k) && k.bookId === bookId, data, {
+    revalidate: false,
+  });
+}
 
 async function fetchBook({
   bookId,
@@ -91,8 +125,9 @@ export function useBook(
 export async function createBook(body: BookProps): Promise<BookSchema> {
   // @ts-expect-error NOTE: body.sections[].topics[].name のUnion型に null 含むか否か異なる
   const res = await api.apiV2BookPost({ body });
-  await mutate({ key, bookId: res.id }, res);
-  return res as BookSchema;
+  const book = res as BookSchema;
+  await mutateBookCache(book.id, book);
+  return book;
 }
 
 export async function updateBook({
@@ -104,8 +139,9 @@ export async function updateBook({
 }): Promise<BookSchema> {
   // @ts-expect-error NOTE: body.sections[].topics[].name のUnion型に null 含むか否か異なる
   const res = await api.apiV2BookBookIdPut({ bookId: id, body, noclone });
-  await mutate({ key, bookId: res.id }, res);
-  return res as BookSchema;
+  const book = res as BookSchema;
+  await mutateBookCache(id, book);
+  return book;
 }
 
 export async function addTopicToBook(
@@ -134,16 +170,30 @@ export async function replaceTopicInBook(
   return updateBook({ ...book, sections });
 }
 
-export async function destroyBook(id: BookSchema["id"], withtopic: boolean) {
+export async function destroyBook(
+  id: BookSchema["id"],
+  withtopic: boolean,
+  book?: BookSchema
+) {
+  const topicIds = withtopic && book ? extractTopicIdsFromBook(book) : [];
+  const resourceIds = withtopic && book ? extractResourceIdsFromBook(book) : [];
   await api.apiV2BookBookIdDelete({ bookId: id, withtopic });
+  await clearBookCaches(id, { topicIds, resourceIds });
+  await clearSearchCaches();
+  await clearBookIdsCache();
   await revalidateSession();
 }
 
-export function revalidateBook(
+export async function revalidateBook(
   id: BookSchema["id"],
   res?: BookSchema
 ): Promise<BookSchema | void> {
-  return mutate({ key, bookId: id }, res);
+  await mutate(
+    (k) => isBookCacheKey(k) && k.bookId === id,
+    res,
+    res !== undefined ? { revalidate: false } : undefined
+  );
+  return res;
 }
 
 export async function getBookIdByZoom(meetingId: number) {

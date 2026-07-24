@@ -1,4 +1,4 @@
-import type { PublicBook } from "@prisma/client";
+import type { PublicBook } from "$server/generated/prisma/client";
 
 export type PublicBookSchema = Pick<
   PublicBook,

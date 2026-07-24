@@ -1,5 +1,5 @@
 import type { JSONSchema } from "json-schema-to-ts";
-import type { Bookmark } from "@prisma/client";
+import type { Bookmark } from "$server/generated/prisma/client";
 import { type TopicSchema } from "./topic";
 import { type BookSchema } from "./book";
 
