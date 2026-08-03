@@ -55,7 +55,7 @@ export function useLmsUrl() {
   return session?.ltiLaunchPresentation?.returnUrl;
 }
 
-const LTI_CONTEXT_KEY = "ltiContext";
+export const LTI_CONTEXT_KEY = "ltiContext";
 
 export type LtiContextState = {
   ltiConsumerId: LtiContextSchema["consumerId"] | null | undefined;
@@ -142,5 +142,48 @@ export function loadLtiContext(
     return JSON.parse(item) as LtiContextState;
   } catch {
     return;
+  }
+}
+
+export type LtiContextQuery = {
+  lti_consumer_id?: string;
+  lti_context_id?: string;
+};
+
+interface SyncLtiContextParams {
+  current: LtiContextState;
+  query: LtiContextQuery;
+  session: SessionSchema | undefined;
+  pathname: string;
+  setLtiContext: (value: LtiContextState) => void;
+}
+
+export function syncLtiContext({
+  current,
+  query,
+  session,
+  pathname,
+  setLtiContext,
+}: SyncLtiContextParams) {
+  // 1. If lti_context_id is present in the URL query.
+  if (query.lti_context_id) {
+    setLtiContext({
+      ltiConsumerId: query.lti_consumer_id ?? session?.oauthClient?.id ?? null,
+      ltiContextId: query.lti_context_id,
+      pathname,
+    });
+    return;
+  }
+  // 2. Do not overwrite if the context specific to the current tab is already preserved.
+  if (current?.ltiContextId) {
+    return;
+  }
+  // 3. Use the session only if there is no URL query and it is uninitialized.
+  if (session?.ltiContext?.id) {
+    setLtiContext({
+      ltiConsumerId: session.oauthClient?.id ?? null,
+      ltiContextId: session.ltiContext.id,
+      pathname,
+    });
   }
 }

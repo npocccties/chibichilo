@@ -26,27 +26,46 @@ import { pagesPath } from "$utils/$path";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
-import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
+import {
+  syncLtiContext,
+  useLtiContextAtom,
+  useUpdateLtiContextAtom,
+} from "$store/session";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
-  const { isLtiContextReady } = useLtiContextAtom();
-  const [, setLtiContext] = useUpdateLtiContextAtom();
+  useLtiContextAtom();
+  const [ltiContext, setLtiContext] = useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
 
   useEffect(() => {
-    if (session && !isLtiContextReady) {
-      // TODO: In the future, we should consider synchronizing with session.ltiResourceLink
-      // while carefully handling potential conflicts across multiple browser tabs.
-      // Currently, we just set null to mark the LTI context as "Ready" (Settled).
-      setLtiContext({
-        ltiConsumerId: null,
-        ltiContextId: null,
-        pathname: null,
-      });
-    }
-  }, [session, isLtiContextReady, setLtiContext]);
+    if (!router.isReady) return;
+
+    const query = {
+      lti_consumer_id: Array.isArray(router.query.lti_consumer_id)
+        ? router.query.lti_consumer_id[0]
+        : router.query.lti_consumer_id,
+      lti_context_id: Array.isArray(router.query.lti_context_id)
+        ? router.query.lti_context_id[0]
+        : router.query.lti_context_id,
+    };
+    syncLtiContext({
+      current: ltiContext,
+      query,
+      session,
+      pathname: router.pathname,
+      setLtiContext,
+    });
+  }, [
+    router.isReady,
+    router.query,
+    router.pathname,
+    session,
+    ltiContext,
+    setLtiContext,
+  ]);
+
   const resetBookmarkAuth = () => {
     setLtiContext({
       ltiConsumerId: null,
