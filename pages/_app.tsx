@@ -36,42 +36,30 @@ function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
   useLtiContextAtom();
-  const [ltiContext, setLtiContext] = useUpdateLtiContextAtom();
+  const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
+    useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
 
   useEffect(() => {
     if (!router.isReady) return;
 
-    const query = {
-      lti_consumer_id: Array.isArray(router.query.lti_consumer_id)
-        ? router.query.lti_consumer_id[0]
-        : router.query.lti_consumer_id,
-      lti_context_id: Array.isArray(router.query.lti_context_id)
-        ? router.query.lti_context_id[0]
-        : router.query.lti_context_id,
-    };
     syncLtiContext({
-      current: ltiContext,
-      query,
+      baseLtiContext,
       session,
       pathname: router.pathname,
-      setLtiContext,
+      setBaseLtiContext,
     });
   }, [
     router.isReady,
-    router.query,
     router.pathname,
     session,
-    ltiContext,
-    setLtiContext,
+    baseLtiContext,
+    setBaseLtiContext,
+    setOverrideLtiContext,
   ]);
 
   const resetBookmarkAuth = () => {
-    setLtiContext({
-      ltiConsumerId: null,
-      ltiContextId: null,
-      pathname: null,
-    });
+    setOverrideLtiContext(null);
   };
   const handleBooksClick = () => {
     resetBookmarkAuth();

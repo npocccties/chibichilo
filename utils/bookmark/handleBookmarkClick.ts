@@ -1,11 +1,14 @@
 import { pagesPath } from "$utils/$path";
-import type { LtiContextState } from "$store/session";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import type { NextRouter } from "next/router";
 
 export const handleBookmarkClick = async (
   bookmark: BookmarkSchema,
-  setLtiContext: (value: LtiContextState) => void,
+  setOverrideLtiContext: (value: {
+    ltiConsumerId?: string | null;
+    ltiContextId?: string | null;
+    pathname?: string | null;
+  }) => void,
   push: NextRouter["push"],
   currentPathname: string
 ) => {
@@ -15,12 +18,10 @@ export const handleBookmarkClick = async (
       topicId: bookmark.topicId,
     },
   });
-
-  setLtiContext({
+  setOverrideLtiContext({
     ltiConsumerId: bookmark.ltiConsumerId ?? null,
     ltiContextId: bookmark.ltiContext.id,
     pathname: currentPathname,
   });
-
   return await push(url);
 };

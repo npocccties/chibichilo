@@ -56,6 +56,7 @@ export function useLmsUrl() {
 }
 
 export const LTI_CONTEXT_KEY = "ltiContext";
+export const OVERRIDE_LTI_CONTEXT_KEY = "overrideLtiContext";
 
 export type LtiContextState = {
   ltiConsumerId: LtiContextSchema["consumerId"] | null | undefined;
@@ -79,7 +80,7 @@ const ltiContextStorage = createJSONStorage<LtiContextState>(() => {
   );
 });
 
-export const ltiContextAtom = atomWithStorage<LtiContextState>(
+export const baseLtiContextAtom = atomWithStorage<LtiContextState>(
   LTI_CONTEXT_KEY,
   {
     ltiConsumerId: undefined,
@@ -89,6 +90,33 @@ export const ltiContextAtom = atomWithStorage<LtiContextState>(
   ltiContextStorage
 );
 
+const overrideLtiContextStorage = createJSONStorage<LtiContextState | null>(
+  () => {
+    const s = getLtiContextSessionStorage();
+    return (
+      s ?? {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      }
+    );
+  }
+);
+
+export const overrideLtiContextAtom = atomWithStorage<LtiContextState | null>(
+  OVERRIDE_LTI_CONTEXT_KEY,
+  null,
+  overrideLtiContextStorage
+);
+
+export const ltiContextAtom = atom<LtiContextState>((get) => {
+  const override = get(overrideLtiContextAtom);
+  if (override && override.ltiContextId) {
+    return override;
+  }
+  return get(baseLtiContextAtom);
+});
+
 export const isLtiContextReadyAtom = atom((get) => {
   const context = get(ltiContextAtom);
   return (
@@ -96,24 +124,43 @@ export const isLtiContextReadyAtom = atom((get) => {
   );
 });
 
-export const updateLtiContextAtom = atom<
+export const updateBaseLtiContextAtom = atom<null, [LtiContextState], void>(
+  null,
+  (_get, set, update) => {
+    set(baseLtiContextAtom, update);
+  }
+);
+
+export const updateOverrideLtiContextAtom = atom<
   null,
   [
     {
       ltiConsumerId?: LtiContextSchema["consumerId"] | null;
       ltiContextId?: LtiContextSchema["id"] | null;
       pathname?: string | null;
-    },
+    } | null,
   ],
   void
 >(null, (get, set, update) => {
-  const current = get(ltiContextAtom);
-  set(ltiContextAtom, {
-    ltiConsumerId: current?.ltiConsumerId ?? null,
-    ltiContextId: current?.ltiContextId ?? null,
-    pathname: current?.pathname ?? null,
-    ...update,
-  });
+  if (!update || update.ltiContextId === null) {
+    set(overrideLtiContextAtom, null);
+  } else {
+    const current = get(overrideLtiContextAtom);
+    set(overrideLtiContextAtom, {
+      ltiConsumerId:
+        update.ltiConsumerId !== undefined
+          ? update.ltiConsumerId
+          : current?.ltiConsumerId ?? null,
+      ltiContextId:
+        update.ltiContextId !== undefined
+          ? update.ltiContextId
+          : current?.ltiContextId ?? null,
+      pathname:
+        update.pathname !== undefined
+          ? update.pathname
+          : current?.pathname ?? null,
+    });
+  }
 });
 
 export function useLtiContextAtom() {
@@ -125,7 +172,9 @@ export function useLtiContextAtom() {
 export function useUpdateLtiContextAtom() {
   return [
     useAtomValue(ltiContextAtom),
-    useSetAtom(updateLtiContextAtom),
+    useSetAtom(updateOverrideLtiContextAtom),
+    useSetAtom(updateBaseLtiContextAtom),
+    useAtomValue(baseLtiContextAtom),
   ] as const;
 }
 
@@ -151,36 +200,20 @@ export type LtiContextQuery = {
 };
 
 interface SyncLtiContextParams {
-  current: LtiContextState;
-  query: LtiContextQuery;
+  baseLtiContext: LtiContextState;
   session: SessionSchema | undefined;
   pathname: string;
-  setLtiContext: (value: LtiContextState) => void;
+  setBaseLtiContext: (value: LtiContextState) => void;
 }
 
 export function syncLtiContext({
-  current,
-  query,
+  baseLtiContext,
   session,
   pathname,
-  setLtiContext,
+  setBaseLtiContext,
 }: SyncLtiContextParams) {
-  // 1. If lti_context_id is present in the URL query.
-  if (query.lti_context_id) {
-    setLtiContext({
-      ltiConsumerId: query.lti_consumer_id ?? session?.oauthClient?.id ?? null,
-      ltiContextId: query.lti_context_id,
-      pathname,
-    });
-    return;
-  }
-  // 2. Do not overwrite if the context specific to the current tab is already preserved.
-  if (current?.ltiContextId) {
-    return;
-  }
-  // 3. Use the session only if there is no URL query and it is uninitialized.
-  if (session?.ltiContext?.id) {
-    setLtiContext({
+  if (!baseLtiContext.ltiContextId && session?.ltiContext?.id) {
+    setBaseLtiContext({
       ltiConsumerId: session.oauthClient?.id ?? null,
       ltiContextId: session.ltiContext.id,
       pathname,
