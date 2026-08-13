@@ -24,89 +24,13 @@ export interface InlineObject17 {
      * @type {string}
      * @memberof InlineObject17
      */
-    event?: string;
+    language?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject17
      */
-    detail?: string;
-    /**
-     * YouTubeの場合: YouTube Video ID等
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    file?: string;
-    /**
-     * YouTubeの場合: YouTube動画視聴ページのURLクエリー ("?" 含めず)
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    query?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    current?: string;
-    /**
-     * OauthClient["id"] + ":" + LtiResourceLinkRequest["id"]
-     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    rid?: string;
-    /**
-     * OauthClient["id"] + ":" + LtiUser["id"]
-     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    uid?: string;
-    /**
-     * OauthClient["id"] + ":" + LtiContext["id"]
-     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    cid?: string;
-    /**
-     * ウィンドウ間で共有しない OauthClient["nonce"]
-     * ツール起動時に sessionStorage に記録したセッション情報を使い続ける
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    nonce?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    videoType?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    path?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    topicId?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    bookId?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject17
-     */
-    playbackRate?: string;
+    content?: string;
 }
 
 export function InlineObject17FromJSON(json: any): InlineObject17 {
@@ -119,20 +43,8 @@ export function InlineObject17FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'event': !exists(json, 'event') ? undefined : json['event'],
-        'detail': !exists(json, 'detail') ? undefined : json['detail'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
-        'query': !exists(json, 'query') ? undefined : json['query'],
-        'current': !exists(json, 'current') ? undefined : json['current'],
-        'rid': !exists(json, 'rid') ? undefined : json['rid'],
-        'uid': !exists(json, 'uid') ? undefined : json['uid'],
-        'cid': !exists(json, 'cid') ? undefined : json['cid'],
-        'nonce': !exists(json, 'nonce') ? undefined : json['nonce'],
-        'videoType': !exists(json, 'videoType') ? undefined : json['videoType'],
-        'path': !exists(json, 'path') ? undefined : json['path'],
-        'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
-        'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
-        'playbackRate': !exists(json, 'playbackRate') ? undefined : json['playbackRate'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'content': !exists(json, 'content') ? undefined : json['content'],
     };
 }
 
@@ -145,20 +57,8 @@ export function InlineObject17ToJSON(value?: InlineObject17 | null): any {
     }
     return {
         
-        'event': value.event,
-        'detail': value.detail,
-        'file': value.file,
-        'query': value.query,
-        'current': value.current,
-        'rid': value.rid,
-        'uid': value.uid,
-        'cid': value.cid,
-        'nonce': value.nonce,
-        'videoType': value.videoType,
-        'path': value.path,
-        'topicId': value.topicId,
-        'bookId': value.bookId,
-        'playbackRate': value.playbackRate,
+        'language': value.language,
+        'content': value.content,
     };
 }
 

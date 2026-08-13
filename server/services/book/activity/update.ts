@@ -49,15 +49,6 @@ export async function update(
     Querystring: Query;
   }>
 ) {
-  const res = await show(req);
-  const activity = res.body?.activity;
-  if (
-    req.session.ltiVersion !== "1.3.0" ||
-    res.status !== 200 ||
-    activity == null
-  ) {
-    return res;
-  }
   const book = await findBook(req.params.book_id, req.session.user.id);
   if (book == null) return { status: 404 };
 
@@ -68,14 +59,35 @@ export async function update(
           bookId: book.id,
           creatorId: book.authors[0]?.id ?? 0,
           instructors: [],
+          consumerId:
+            req.query.lti_consumer_id ??
+            req.session.ltiResourceLink?.consumerId ??
+            "",
+          contextId:
+            req.query.lti_context_id ??
+            req.session.ltiResourceLink?.contextId ??
+            "",
         };
-  const topics =
-    getDisplayableBook(
-      book,
-      undefined,
-      currentResourceLink ?? undefined
-    )?.sections.flatMap((section) => section.topics.flat()) ?? [];
-
+  const displayableBook = getDisplayableBook(
+    book,
+    undefined,
+    currentResourceLink ?? undefined
+  );
+  if (displayableBook == null) {
+    return { status: 403 };
+  }
+  const res = await show(req);
+  const activity = res.body?.activity;
+  if (
+    req.session.ltiVersion !== "1.3.0" ||
+    res.status !== 200 ||
+    activity == null
+  ) {
+    return res;
+  }
+  const topics = displayableBook.sections.flatMap((section) =>
+    section.topics.flat()
+  );
   const completedSet = new Set(
     activity.filter((a) => a.completed).map((a) => a.topic.id)
   );

@@ -1,5 +1,4 @@
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { Box, Button, Typography } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import SectionsEdit from "$organisms/SectionsEdit";
@@ -17,6 +16,7 @@ import { useStyles, type Props } from "./BookEdit";
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import MetainfoForm from "$organisms/MetainfoForm";
+import BookContextAccessEdit from "$organisms/BookContextAccessEdit";
 
 export default function BookEditReleased({
   book,
@@ -36,6 +36,7 @@ export default function BookEditReleased({
   onItemEditClick,
   onClone,
   onMetainfoUpdate,
+  onContextAccessUpdate,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -114,6 +115,21 @@ export default function BookEditReleased({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      {book.ltiResourceLinks &&
+        book.ltiResourceLinks.length > 0 &&
+        onContextAccessUpdate && (
+          <>
+            <Typography className={classes.subtitle} variant="h5">
+              コース別配信設定
+            </Typography>
+            <Box className={classes.content}>
+              <BookContextAccessEdit
+                book={book}
+                onChange={onContextAccessUpdate}
+              />
+            </Box>
+          </>
+        )}
       <Typography className={classes.subtitle} variant="h5">
         メタ情報
       </Typography>

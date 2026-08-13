@@ -76,7 +76,13 @@ export async function index(req: FastifyRequest<{ Querystring: Query }>) {
       book,
       (content) =>
         content.authors.some((author) => author.id === req.session.user.id),
-      { bookId: book.id, creatorId: req.session.user.id }
+      {
+        bookId: book.id,
+        creatorId: req.session.user.id,
+        consumerId: req.session.ltiResourceLink?.consumerId ?? "",
+        contextId: req.session.ltiResourceLink?.contextId ?? "",
+        instructors: req.session.ltiResourceLink?.instructors ?? [],
+      }
     )?.sections.flatMap((section) => section.topics.flat()) ?? [];
 
   const topic = req.query.topic_id ? `&topicId=${req.query.topic_id}` : "";

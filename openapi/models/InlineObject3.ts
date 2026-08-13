@@ -22,6 +22,10 @@ import {
     ApiV2BookBookIdSectionsFromJSON,
     ApiV2BookBookIdSectionsFromJSONTyped,
     ApiV2BookBookIdSectionsToJSON,
+    InlineResponse2006LtiContextBookAccesses,
+    InlineResponse2006LtiContextBookAccessesFromJSON,
+    InlineResponse2006LtiContextBookAccessesFromJSONTyped,
+    InlineResponse2006LtiContextBookAccessesToJSON,
     InlineResponse2006PublicBooks,
     InlineResponse2006PublicBooksFromJSON,
     InlineResponse2006PublicBooksFromJSONTyped,
@@ -70,6 +74,12 @@ export interface InlineObject3 {
      * @memberof InlineObject3
      */
     publicBooks?: Array<InlineResponse2006PublicBooks>;
+    /**
+     * 
+     * @type {Array<InlineResponse2006LtiContextBookAccesses>}
+     * @memberof InlineObject3
+     */
+    ltiContextBookAccesses?: Array<InlineResponse2006LtiContextBookAccesses>;
 }
 
 export function InlineObject3FromJSON(json: any): InlineObject3 {
@@ -88,6 +98,7 @@ export function InlineObject3FromJSONTyped(json: any, ignoreDiscriminator: boole
         'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
         'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
         'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2006PublicBooksFromJSON)),
+        'ltiContextBookAccesses': !exists(json, 'ltiContextBookAccesses') ? undefined : ((json['ltiContextBookAccesses'] as Array<any>).map(InlineResponse2006LtiContextBookAccessesFromJSON)),
     };
 }
 
@@ -106,6 +117,7 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
         'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
         'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
         'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2006PublicBooksToJSON)),
+        'ltiContextBookAccesses': value.ltiContextBookAccesses === undefined ? undefined : ((value.ltiContextBookAccesses as Array<any>).map(InlineResponse2006LtiContextBookAccessesToJSON)),
     };
 }
 

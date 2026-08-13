@@ -14,10 +14,22 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
+    ApiV2BookBookIdKeywords,
+    ApiV2BookBookIdKeywordsFromJSON,
+    ApiV2BookBookIdKeywordsFromJSONTyped,
+    ApiV2BookBookIdKeywordsToJSON,
+    ApiV2BookBookIdSections,
+    ApiV2BookBookIdSectionsFromJSON,
+    ApiV2BookBookIdSectionsFromJSONTyped,
+    ApiV2BookBookIdSectionsToJSON,
+    InlineResponse2006LtiContextBookAccesses,
+    InlineResponse2006LtiContextBookAccessesFromJSON,
+    InlineResponse2006LtiContextBookAccessesFromJSONTyped,
+    InlineResponse2006LtiContextBookAccessesToJSON,
+    InlineResponse2006PublicBooks,
+    InlineResponse2006PublicBooksFromJSON,
+    InlineResponse2006PublicBooksFromJSONTyped,
+    InlineResponse2006PublicBooksToJSON,
 } from './';
 
 /**
@@ -28,10 +40,46 @@ import {
 export interface InlineObject4 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject4
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject4
+     */
+    description?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject4
+     */
+    shared?: boolean;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdSections>}
+     * @memberof InlineObject4
+     */
+    sections?: Array<ApiV2BookBookIdSections>;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdKeywords>}
+     * @memberof InlineObject4
+     */
+    keywords?: Array<ApiV2BookBookIdKeywords>;
+    /**
+     * 
+     * @type {Array<InlineResponse2006PublicBooks>}
+     * @memberof InlineObject4
+     */
+    publicBooks?: Array<InlineResponse2006PublicBooks>;
+    /**
+     * 
+     * @type {Array<InlineResponse2006LtiContextBookAccesses>}
+     * @memberof InlineObject4
+     */
+    ltiContextBookAccesses?: Array<InlineResponse2006LtiContextBookAccesses>;
 }
 
 export function InlineObject4FromJSON(json: any): InlineObject4 {
@@ -44,7 +92,13 @@ export function InlineObject4FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
+        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
+        'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2006PublicBooksFromJSON)),
+        'ltiContextBookAccesses': !exists(json, 'ltiContextBookAccesses') ? undefined : ((json['ltiContextBookAccesses'] as Array<any>).map(InlineResponse2006LtiContextBookAccessesFromJSON)),
     };
 }
 
@@ -57,7 +111,13 @@ export function InlineObject4ToJSON(value?: InlineObject4 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
+        'name': value.name,
+        'description': value.description,
+        'shared': value.shared,
+        'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
+        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
+        'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2006PublicBooksToJSON)),
+        'ltiContextBookAccesses': value.ltiContextBookAccesses === undefined ? undefined : ((value.ltiContextBookAccesses as Array<any>).map(InlineResponse2006LtiContextBookAccessesToJSON)),
     };
 }
 

@@ -1,5 +1,4 @@
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { Box, Button, Typography } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import makeStyles from "@mui/styles/makeStyles";
@@ -9,7 +8,10 @@ import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import Container from "$atoms/Container";
 import RequiredDot from "$atoms/RequiredDot";
 import BackButton from "$atoms/BackButton";
-import type { BookSchema } from "$server/models/book";
+import type {
+  BookSchema,
+  LtiContextBookAccessProps,
+} from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { SectionProps } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
@@ -24,6 +26,7 @@ import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import type { MetainfoProps } from "$server/models/metainfo";
 import MetainfoForm from "$organisms/MetainfoForm";
+import BookContextAccessEdit from "$organisms/BookContextAccessEdit";
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -70,6 +73,7 @@ export type Props = {
   onItemEditClick(id: BookSchema["id"]): void;
   onClone(book: BookSchema): void;
   onMetainfoUpdate(metainfo: MetainfoProps): void;
+  onContextAccessUpdate?: (settings: LtiContextBookAccessProps[]) => void;
 };
 
 export default function BookEdit({
@@ -90,6 +94,7 @@ export default function BookEdit({
   onRelease,
   onItemEditClick,
   onMetainfoUpdate,
+  onContextAccessUpdate,
 }: Props) {
   const { session } = useSessionAtom();
   const classes = useStyles();
@@ -189,6 +194,21 @@ export default function BookEdit({
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      {book.ltiResourceLinks &&
+        book.ltiResourceLinks.length > 0 &&
+        onContextAccessUpdate && (
+          <>
+            <Typography className={classes.subtitle} variant="h5">
+              コース別配信設定
+            </Typography>
+            <Box className={classes.content}>
+              <BookContextAccessEdit
+                book={book}
+                onChange={onContextAccessUpdate}
+              />
+            </Box>
+          </>
+        )}
       <Typography className={classes.subtitle} variant="h5">
         メタ情報
       </Typography>

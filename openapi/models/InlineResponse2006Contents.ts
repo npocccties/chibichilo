@@ -26,6 +26,10 @@ import {
     InlineResponse2006KeywordsFromJSON,
     InlineResponse2006KeywordsFromJSONTyped,
     InlineResponse2006KeywordsToJSON,
+    InlineResponse2006LtiContextBookAccesses,
+    InlineResponse2006LtiContextBookAccessesFromJSON,
+    InlineResponse2006LtiContextBookAccessesFromJSONTyped,
+    InlineResponse2006LtiContextBookAccessesToJSON,
     InlineResponse2006PublicBooks,
     InlineResponse2006PublicBooksFromJSON,
     InlineResponse2006PublicBooksFromJSONTyped,
@@ -192,6 +196,12 @@ export interface InlineResponse2006Contents {
      * @memberof InlineResponse2006Contents
      */
     release?: InlineResponse2006Release;
+    /**
+     * 
+     * @type {Array<InlineResponse2006LtiContextBookAccesses>}
+     * @memberof InlineResponse2006Contents
+     */
+    ltiContextBookAccesses?: Array<InlineResponse2006LtiContextBookAccesses>;
 }
 
 export function InlineResponse2006ContentsFromJSON(json: any): InlineResponse2006Contents {
@@ -227,6 +237,7 @@ export function InlineResponse2006ContentsFromJSONTyped(json: any, ignoreDiscrim
         'ltiResourceLinks': !exists(json, 'ltiResourceLinks') ? undefined : ((json['ltiResourceLinks'] as Array<any>).map(InlineResponse2005FromJSON)),
         'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2006PublicBooksFromJSON)),
         'release': !exists(json, 'release') ? undefined : InlineResponse2006ReleaseFromJSON(json['release']),
+        'ltiContextBookAccesses': !exists(json, 'ltiContextBookAccesses') ? undefined : ((json['ltiContextBookAccesses'] as Array<any>).map(InlineResponse2006LtiContextBookAccessesFromJSON)),
     };
 }
 
@@ -262,6 +273,7 @@ export function InlineResponse2006ContentsToJSON(value?: InlineResponse2006Conte
         'ltiResourceLinks': value.ltiResourceLinks === undefined ? undefined : ((value.ltiResourceLinks as Array<any>).map(InlineResponse2005ToJSON)),
         'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2006PublicBooksToJSON)),
         'release': InlineResponse2006ReleaseToJSON(value.release),
+        'ltiContextBookAccesses': value.ltiContextBookAccesses === undefined ? undefined : ((value.ltiContextBookAccesses as Array<any>).map(InlineResponse2006LtiContextBookAccessesToJSON)),
     };
 }
 

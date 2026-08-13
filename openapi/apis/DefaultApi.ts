@@ -60,6 +60,9 @@ import {
     InlineObject20,
     InlineObject20FromJSON,
     InlineObject20ToJSON,
+    InlineObject21,
+    InlineObject21FromJSON,
+    InlineObject21ToJSON,
     InlineObject3,
     InlineObject3FromJSON,
     InlineObject3ToJSON,
@@ -177,9 +180,15 @@ import {
     InlineResponse2012,
     InlineResponse2012FromJSON,
     InlineResponse2012ToJSON,
+    LTIV13,
+    LTIV13FromJSON,
+    LTIV13ToJSON,
     LTIV13LtiMemberParams,
     LTIV13LtiMemberParamsFromJSON,
     LTIV13LtiMemberParamsToJSON,
+    LTIV13URI,
+    LTIV13URIFromJSON,
+    LTIV13URIToJSON,
 } from '../models';
 
 export interface ApiV2ActivityGetRequest {
@@ -221,7 +230,7 @@ export interface ApiV2BookBookIdActivityPutRequest {
 
 export interface ApiV2BookBookIdAuthorsPutRequest {
     bookId: number;
-    body?: InlineObject4;
+    body?: InlineObject5;
 }
 
 export interface ApiV2BookBookIdClonePostRequest {
@@ -235,22 +244,24 @@ export interface ApiV2BookBookIdDeleteRequest {
 
 export interface ApiV2BookBookIdGetRequest {
     bookId: number;
+    ltiConsumerId?: string;
+    ltiContextId?: string;
 }
 
 export interface ApiV2BookBookIdImportPostRequest {
     bookId: number;
-    body?: InlineObject5;
+    body?: InlineObject6;
 }
 
 export interface ApiV2BookBookIdMetainfoPutRequest {
     bookId: number;
-    body?: InlineObject6;
+    body?: InlineObject7;
 }
 
 export interface ApiV2BookBookIdPutRequest {
     bookId: number;
     noclone?: boolean;
-    body?: InlineObject2;
+    body?: InlineObject3;
 }
 
 export interface ApiV2BookBookIdReleaseGetRequest {
@@ -259,16 +270,16 @@ export interface ApiV2BookBookIdReleaseGetRequest {
 
 export interface ApiV2BookBookIdReleasePostRequest {
     bookId: number;
-    body?: InlineObject8;
+    body?: InlineObject9;
 }
 
 export interface ApiV2BookBookIdReleasePutRequest {
     bookId: number;
-    body?: InlineObject7;
+    body?: InlineObject8;
 }
 
 export interface ApiV2BookPostRequest {
-    body?: InlineObject3;
+    body?: InlineObject4;
 }
 
 export interface ApiV2BookPublicTokenGetRequest {
@@ -286,15 +297,15 @@ export interface ApiV2BookmarkIdDeleteRequest {
 
 export interface ApiV2BookmarkMemoContentIdPutRequest {
     id: number;
-    body?: InlineObject20;
+    body?: InlineObject21;
 }
 
 export interface ApiV2BookmarkMemoContentPostRequest {
-    body?: InlineObject19;
+    body?: InlineObject20;
 }
 
 export interface ApiV2BookmarkPostRequest {
-    body?: InlineObject18;
+    body?: InlineObject19;
 }
 
 export interface ApiV2BookmarkStatsGetRequest {
@@ -316,16 +327,15 @@ export interface ApiV2BooksGetRequest {
 }
 
 export interface ApiV2BooksImportPostRequest {
-    body?: InlineObject9;
+    body?: InlineObject10;
 }
 
 export interface ApiV2EventPostRequest {
-    body?: InlineObject17;
+    body?: InlineObject18;
 }
 
 export interface ApiV2LtiCallbackPostRequest {
-    state: string;
-    idToken: string;
+    body?: LTIV13URI;
 }
 
 export interface ApiV2LtiDeepLinkingGetRequest {
@@ -334,24 +344,7 @@ export interface ApiV2LtiDeepLinkingGetRequest {
 }
 
 export interface ApiV2LtiLaunchPostRequest {
-    oauthVersion: string;
-    oauthNonce: string;
-    oauthTimestamp: string;
-    oauthConsumerKey: string;
-    oauthSignatureMethod: string;
-    oauthSignature: string;
-    ltiMessageType: string;
-    ltiVersion: string;
-    resourceLinkId: string;
-    userId: string;
-    roles: string;
-    contextId: string;
-    resourceLinkTitle?: string;
-    contextTitle?: string;
-    contextLabel?: string;
-    lisPersonNameFull?: string;
-    lisPersonContactEmailPrimary?: string;
-    launchPresentationReturnUrl?: string;
+    body?: InlineObject;
 }
 
 export interface ApiV2LtiLoginGetRequest {
@@ -364,12 +357,7 @@ export interface ApiV2LtiLoginGetRequest {
 }
 
 export interface ApiV2LtiLoginPostRequest {
-    iss: string;
-    loginHint: string;
-    targetLinkUri: string;
-    clientId: string;
-    ltiMessageHint?: string;
-    ltiDeploymentId?: string;
+    body?: LTIV13;
 }
 
 export interface ApiV2LtiLtiConsumerIdResourceLinkLtiResourceLinkIdDeleteRequest {
@@ -385,7 +373,7 @@ export interface ApiV2LtiLtiConsumerIdResourceLinkLtiResourceLinkIdGetRequest {
 export interface ApiV2LtiLtiConsumerIdResourceLinkLtiResourceLinkIdPutRequest {
     ltiConsumerId: string;
     ltiResourceLinkId: string;
-    body?: InlineObject;
+    body?: InlineObject1;
 }
 
 export interface ApiV2LtiMembersPutRequest {
@@ -405,7 +393,7 @@ export interface ApiV2ResourceResourceIdOembedGetRequest {
 
 export interface ApiV2ResourceResourceIdVideoTrackPostRequest {
     resourceId: number;
-    body?: InlineObject16;
+    body?: InlineObject17;
 }
 
 export interface ApiV2ResourceResourceIdVideoTrackVideoTrackIdDeleteRequest {
@@ -435,7 +423,7 @@ export interface ApiV2SearchGetRequest {
 }
 
 export interface ApiV2TopicPostRequest {
-    body?: InlineObject11;
+    body?: InlineObject12;
 }
 
 export interface ApiV2TopicTopicIdActivityPutRequest {
@@ -444,12 +432,12 @@ export interface ApiV2TopicTopicIdActivityPutRequest {
     currentLtiContextOnly?: boolean;
     ltiConsumerId?: string;
     ltiContextId?: string;
-    body?: InlineObject12;
+    body?: InlineObject13;
 }
 
 export interface ApiV2TopicTopicIdAuthorsPutRequest {
     topicId: number;
-    body?: InlineObject13;
+    body?: InlineObject14;
 }
 
 export interface ApiV2TopicTopicIdDeleteRequest {
@@ -462,17 +450,17 @@ export interface ApiV2TopicTopicIdGetRequest {
 
 export interface ApiV2TopicTopicIdImportPostRequest {
     topicId: number;
-    body?: InlineObject14;
+    body?: InlineObject15;
 }
 
 export interface ApiV2TopicTopicIdMetainfoPutRequest {
     topicId: number;
-    body?: InlineObject15;
+    body?: InlineObject16;
 }
 
 export interface ApiV2TopicTopicIdPutRequest {
     topicId: number;
-    body?: InlineObject10;
+    body?: InlineObject11;
 }
 
 export interface ApiV2TopicTopicIdReleaseGetRequest {
@@ -486,7 +474,7 @@ export interface ApiV2TopicsGetRequest {
 }
 
 export interface ApiV2UserSettingsPutRequest {
-    body?: InlineObject1;
+    body?: InlineObject2;
 }
 
 export interface ApiV2UserUserIdBooksGetRequest {
@@ -785,7 +773,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject4ToJSON(requestParameters.body),
+            body: InlineObject5ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2004BookAuthorsFromJSON));
@@ -878,6 +866,14 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const queryParameters: runtime.HTTPQuery = {};
 
+        if (requestParameters.ltiConsumerId !== undefined) {
+            queryParameters['lti_consumer_id'] = requestParameters.ltiConsumerId;
+        }
+
+        if (requestParameters.ltiContextId !== undefined) {
+            queryParameters['lti_context_id'] = requestParameters.ltiContextId;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -919,7 +915,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject5ToJSON(requestParameters.body),
+            body: InlineObject6ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
@@ -954,7 +950,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject6ToJSON(requestParameters.body),
+            body: InlineObject7ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -993,7 +989,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject2ToJSON(requestParameters.body),
+            body: InlineObject3ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2007BooksFromJSON(jsonValue));
@@ -1060,7 +1056,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject8ToJSON(requestParameters.body),
+            body: InlineObject9ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2007BooksFromJSON(jsonValue));
@@ -1095,7 +1091,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject7ToJSON(requestParameters.body),
+            body: InlineObject8ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1154,7 +1150,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject3ToJSON(requestParameters.body),
+            body: InlineObject4ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2007BooksFromJSON(jsonValue));
@@ -1288,7 +1284,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject20ToJSON(requestParameters.body),
+            body: InlineObject21ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1319,7 +1315,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject19ToJSON(requestParameters.body),
+            body: InlineObject20ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1350,7 +1346,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject18ToJSON(requestParameters.body),
+            body: InlineObject19ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -1531,7 +1527,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject9ToJSON(requestParameters.body),
+            body: InlineObject10ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
@@ -1562,7 +1558,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject17ToJSON(requestParameters.body),
+            body: InlineObject18ToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
@@ -1577,57 +1573,29 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 / にリダイレクトします。
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
      * LTI v1.3 リダイレクトURI
      */
     async apiV2LtiCallbackPostRaw(requestParameters: ApiV2LtiCallbackPostRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.state === null || requestParameters.state === undefined) {
-            throw new runtime.RequiredError('state','Required parameter requestParameters.state was null or undefined when calling apiV2LtiCallbackPost.');
-        }
-
-        if (requestParameters.idToken === null || requestParameters.idToken === undefined) {
-            throw new runtime.RequiredError('idToken','Required parameter requestParameters.idToken was null or undefined when calling apiV2LtiCallbackPost.');
-        }
-
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        const consumes: runtime.Consume[] = [
-            { contentType: 'application/x-www-form-urlencoded' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters.state !== undefined) {
-            formParams.append('state', requestParameters.state as any);
-        }
-
-        if (requestParameters.idToken !== undefined) {
-            formParams.append('id_token', requestParameters.idToken as any);
-        }
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/v2/lti/callback`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
+            body: LTIV13URIToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
     }
 
     /**
-     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 / にリダイレクトします。
+     * LTIツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのリダイレクトURIに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
      * LTI v1.3 リダイレクトURI
      */
     async apiV2LtiCallbackPost(requestParameters: ApiV2LtiCallbackPostRequest): Promise<void> {
@@ -1759,161 +1727,29 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 / にリダイレクトします。
+     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
      * LTI v1.1 起動エンドポイント (非推奨)
      */
     async apiV2LtiLaunchPostRaw(requestParameters: ApiV2LtiLaunchPostRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.oauthVersion === null || requestParameters.oauthVersion === undefined) {
-            throw new runtime.RequiredError('oauthVersion','Required parameter requestParameters.oauthVersion was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.oauthNonce === null || requestParameters.oauthNonce === undefined) {
-            throw new runtime.RequiredError('oauthNonce','Required parameter requestParameters.oauthNonce was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.oauthTimestamp === null || requestParameters.oauthTimestamp === undefined) {
-            throw new runtime.RequiredError('oauthTimestamp','Required parameter requestParameters.oauthTimestamp was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.oauthConsumerKey === null || requestParameters.oauthConsumerKey === undefined) {
-            throw new runtime.RequiredError('oauthConsumerKey','Required parameter requestParameters.oauthConsumerKey was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.oauthSignatureMethod === null || requestParameters.oauthSignatureMethod === undefined) {
-            throw new runtime.RequiredError('oauthSignatureMethod','Required parameter requestParameters.oauthSignatureMethod was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.oauthSignature === null || requestParameters.oauthSignature === undefined) {
-            throw new runtime.RequiredError('oauthSignature','Required parameter requestParameters.oauthSignature was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.ltiMessageType === null || requestParameters.ltiMessageType === undefined) {
-            throw new runtime.RequiredError('ltiMessageType','Required parameter requestParameters.ltiMessageType was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.ltiVersion === null || requestParameters.ltiVersion === undefined) {
-            throw new runtime.RequiredError('ltiVersion','Required parameter requestParameters.ltiVersion was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.resourceLinkId === null || requestParameters.resourceLinkId === undefined) {
-            throw new runtime.RequiredError('resourceLinkId','Required parameter requestParameters.resourceLinkId was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.userId === null || requestParameters.userId === undefined) {
-            throw new runtime.RequiredError('userId','Required parameter requestParameters.userId was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.roles === null || requestParameters.roles === undefined) {
-            throw new runtime.RequiredError('roles','Required parameter requestParameters.roles was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
-        if (requestParameters.contextId === null || requestParameters.contextId === undefined) {
-            throw new runtime.RequiredError('contextId','Required parameter requestParameters.contextId was null or undefined when calling apiV2LtiLaunchPost.');
-        }
-
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        const consumes: runtime.Consume[] = [
-            { contentType: 'application/x-www-form-urlencoded' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters.oauthVersion !== undefined) {
-            formParams.append('oauth_version', requestParameters.oauthVersion as any);
-        }
-
-        if (requestParameters.oauthNonce !== undefined) {
-            formParams.append('oauth_nonce', requestParameters.oauthNonce as any);
-        }
-
-        if (requestParameters.oauthTimestamp !== undefined) {
-            formParams.append('oauth_timestamp', requestParameters.oauthTimestamp as any);
-        }
-
-        if (requestParameters.oauthConsumerKey !== undefined) {
-            formParams.append('oauth_consumer_key', requestParameters.oauthConsumerKey as any);
-        }
-
-        if (requestParameters.oauthSignatureMethod !== undefined) {
-            formParams.append('oauth_signature_method', requestParameters.oauthSignatureMethod as any);
-        }
-
-        if (requestParameters.oauthSignature !== undefined) {
-            formParams.append('oauth_signature', requestParameters.oauthSignature as any);
-        }
-
-        if (requestParameters.ltiMessageType !== undefined) {
-            formParams.append('lti_message_type', requestParameters.ltiMessageType as any);
-        }
-
-        if (requestParameters.ltiVersion !== undefined) {
-            formParams.append('lti_version', requestParameters.ltiVersion as any);
-        }
-
-        if (requestParameters.resourceLinkId !== undefined) {
-            formParams.append('resource_link_id', requestParameters.resourceLinkId as any);
-        }
-
-        if (requestParameters.userId !== undefined) {
-            formParams.append('user_id', requestParameters.userId as any);
-        }
-
-        if (requestParameters.roles !== undefined) {
-            formParams.append('roles', requestParameters.roles as any);
-        }
-
-        if (requestParameters.contextId !== undefined) {
-            formParams.append('context_id', requestParameters.contextId as any);
-        }
-
-        if (requestParameters.resourceLinkTitle !== undefined) {
-            formParams.append('resource_link_title', requestParameters.resourceLinkTitle as any);
-        }
-
-        if (requestParameters.contextTitle !== undefined) {
-            formParams.append('context_title', requestParameters.contextTitle as any);
-        }
-
-        if (requestParameters.contextLabel !== undefined) {
-            formParams.append('context_label', requestParameters.contextLabel as any);
-        }
-
-        if (requestParameters.lisPersonNameFull !== undefined) {
-            formParams.append('lis_person_name_full', requestParameters.lisPersonNameFull as any);
-        }
-
-        if (requestParameters.lisPersonContactEmailPrimary !== undefined) {
-            formParams.append('lis_person_contact_email_primary', requestParameters.lisPersonContactEmailPrimary as any);
-        }
-
-        if (requestParameters.launchPresentationReturnUrl !== undefined) {
-            formParams.append('launch_presentation_return_url', requestParameters.launchPresentationReturnUrl as any);
-        }
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/v2/lti/launch`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
+            body: InlineObjectToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
     }
 
     /**
-     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 / にリダイレクトします。
+     * LTI v1.1 ツールとして起動するためのエンドポイントです。 このエンドポイントをLMSのLTIツールのURLに指定して利用します。 成功時 http://localhost:3000/ にリダイレクトします。
      * LTI v1.1 起動エンドポイント (非推奨)
      */
     async apiV2LtiLaunchPost(requestParameters: ApiV2LtiLaunchPostRequest): Promise<void> {
@@ -1992,70 +1828,18 @@ export class DefaultApi extends runtime.BaseAPI {
      * LTI v1.3 ログイン初期化エンドポイント
      */
     async apiV2LtiLoginPostRaw(requestParameters: ApiV2LtiLoginPostRequest): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.iss === null || requestParameters.iss === undefined) {
-            throw new runtime.RequiredError('iss','Required parameter requestParameters.iss was null or undefined when calling apiV2LtiLoginPost.');
-        }
-
-        if (requestParameters.loginHint === null || requestParameters.loginHint === undefined) {
-            throw new runtime.RequiredError('loginHint','Required parameter requestParameters.loginHint was null or undefined when calling apiV2LtiLoginPost.');
-        }
-
-        if (requestParameters.targetLinkUri === null || requestParameters.targetLinkUri === undefined) {
-            throw new runtime.RequiredError('targetLinkUri','Required parameter requestParameters.targetLinkUri was null or undefined when calling apiV2LtiLoginPost.');
-        }
-
-        if (requestParameters.clientId === null || requestParameters.clientId === undefined) {
-            throw new runtime.RequiredError('clientId','Required parameter requestParameters.clientId was null or undefined when calling apiV2LtiLoginPost.');
-        }
-
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        const consumes: runtime.Consume[] = [
-            { contentType: 'application/x-www-form-urlencoded' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters.iss !== undefined) {
-            formParams.append('iss', requestParameters.iss as any);
-        }
-
-        if (requestParameters.loginHint !== undefined) {
-            formParams.append('login_hint', requestParameters.loginHint as any);
-        }
-
-        if (requestParameters.targetLinkUri !== undefined) {
-            formParams.append('target_link_uri', requestParameters.targetLinkUri as any);
-        }
-
-        if (requestParameters.ltiMessageHint !== undefined) {
-            formParams.append('lti_message_hint', requestParameters.ltiMessageHint as any);
-        }
-
-        if (requestParameters.ltiDeploymentId !== undefined) {
-            formParams.append('lti_deployment_id', requestParameters.ltiDeploymentId as any);
-        }
-
-        if (requestParameters.clientId !== undefined) {
-            formParams.append('client_id', requestParameters.clientId as any);
-        }
+        headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
             path: `/api/v2/lti/login`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: formParams,
+            body: LTIV13ToJSON(requestParameters.body),
         });
 
         return new runtime.VoidApiResponse(response);
@@ -2165,7 +1949,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObjectToJSON(requestParameters.body),
+            body: InlineObject1ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2005FromJSON(jsonValue));
@@ -2367,7 +2151,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject16ToJSON(requestParameters.body),
+            body: InlineObject17ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2006ResourceTracksFromJSON(jsonValue));
@@ -2605,7 +2389,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject11ToJSON(requestParameters.body),
+            body: InlineObject12ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2006TopicsFromJSON(jsonValue));
@@ -2660,7 +2444,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject12ToJSON(requestParameters.body),
+            body: InlineObject13ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -2695,7 +2479,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject13ToJSON(requestParameters.body),
+            body: InlineObject14ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(InlineResponse2004BookAuthorsFromJSON));
@@ -2793,7 +2577,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject14ToJSON(requestParameters.body),
+            body: InlineObject15ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2011FromJSON(jsonValue));
@@ -2828,7 +2612,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject15ToJSON(requestParameters.body),
+            body: InlineObject16ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
@@ -2863,7 +2647,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject10ToJSON(requestParameters.body),
+            body: InlineObject11ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2006TopicsFromJSON(jsonValue));
@@ -2966,7 +2750,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: InlineObject1ToJSON(requestParameters.body),
+            body: InlineObject2ToJSON(requestParameters.body),
         });
 
         return new runtime.JSONApiResponse<any>(response);
