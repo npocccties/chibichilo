@@ -28,14 +28,20 @@ export function send(
     file: getFilePath(event),
     query: event.url.split("?")[1],
     current: event.currentTime.toString(),
-    rid: id(session?.ltiResourceLinkRequest?.id || ""),
+    rid: id(
+      ltiContext?.ltiResourceLinkRequest?.id ??
+        session?.ltiResourceLinkRequest?.id ??
+        ""
+    ),
     uid: id(session.ltiUser.id),
-    cid: id(session.ltiContext.id),
+    cid: id(ltiContext?.ltiContextId ?? session.ltiContext.id),
     nonce: session.oauthClient.nonce,
     videoType: getVideoType(event.providerUrl),
     path: ltiContext?.pathname ?? location.pathname,
     topicId: event.topicId.toString(),
-    bookId: session.ltiResourceLink?.bookId?.toString(),
+    bookId: (
+      ltiContext?.ltiResourceLink?.bookId ?? session.ltiResourceLink?.bookId
+    )?.toString(),
     playbackRate: playbackRate.toString(),
   };
   return api.apiV2EventPost({ body });

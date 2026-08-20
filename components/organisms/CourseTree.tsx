@@ -1,3 +1,4 @@
+import React from "react";
 import type { Dispatch, SetStateAction } from "react";
 import TreeItem from "@mui/lab/TreeItem";
 import Checkbox from "@mui/material/Checkbox";
@@ -9,7 +10,7 @@ import type { LtiContextSchema } from "$server/models/ltiContext";
 import type { LinkSchema } from "$server/models/link/content";
 import type { BookSchema } from "$server/models/book";
 import theme from "$theme";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import { isDisplayableBook } from "$utils/displayableBook";
 import getLocaleDateTimeString from "$utils/getLocaleDateTimeString";
 import Accordion from "./Accordion";
@@ -55,7 +56,7 @@ function LinksTree({
   onBookEditClick,
   isContentEditable,
 }: LinksTreeProps) {
-  const { session } = useSessionAtom();
+  const { ltiConsumerId, ltiContextId } = useLtiContextAtom();
 
   return (
     <>
@@ -68,6 +69,9 @@ function LinksTree({
           .map(encodeURIComponent)
           .join(":");
 
+        const isCurrentContext =
+          link.oauthClientId === ltiConsumerId &&
+          link.ltiContext.id === ltiContextId;
         return (
           <TreeView
             key={nodeId}
@@ -118,7 +122,9 @@ function LinksTree({
                   {isDisplayableBook(
                     link.book,
                     isContentEditable,
-                    session?.ltiResourceLink ?? undefined
+                    isCurrentContext
+                      ? { bookId: link.book.id, creatorId: 0 }
+                      : undefined
                   ) && (
                     <PreviewButton
                       variant="book"

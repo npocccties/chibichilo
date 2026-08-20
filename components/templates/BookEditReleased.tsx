@@ -9,7 +9,7 @@ import Container from "$atoms/Container";
 import BackButton from "$atoms/BackButton";
 import type { TopicSchema } from "$server/models/topic";
 import { useConfirm } from "material-ui-confirm";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import ReleaseForm from "$organisms/ReleaseForm";
 import Placeholder from "./Placeholder";
@@ -37,7 +37,7 @@ export default function BookEditReleased({
   onClone,
   onMetainfoUpdate,
 }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const classes = useStyles();
   const confirm = useConfirm();
   const {
@@ -108,7 +108,7 @@ export default function BookEditReleased({
         className={classes.content}
         book={book}
         linked={linked}
-        hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+        hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
         variant={editable ? "update" : "other"}
         onSubmit={onSubmit}
         onAuthorsUpdate={onAuthorsUpdate}

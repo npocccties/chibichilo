@@ -10,15 +10,20 @@ async function createBookmark({
   session: SessionSchema;
   bookmark: BookmarkProps;
 }): Promise<BookmarkSchema | undefined> {
-  if (!session.ltiResourceLink?.consumerId) {
+  const ltiConsumerId =
+    bookmark.ltiConsumerId ??
+    session.ltiResourceLink?.consumerId ??
+    session.oauthClient?.id;
+  const ltiContextId = bookmark.ltiContextId ?? session.ltiContext?.id;
+  if (!ltiConsumerId || !ltiContextId) {
     return;
   }
   const created = await prisma.bookmark.create({
     data: {
-      userId: session.user.id,
-      ltiConsumerId: session.ltiResourceLink?.consumerId,
-      ltiContextId: session.ltiContext.id,
       ...bookmark,
+      userId: session.user.id,
+      ltiConsumerId,
+      ltiContextId,
     },
     ...bookmarkWithTopicQuery,
   });

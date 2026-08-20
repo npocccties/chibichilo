@@ -1,51 +1,63 @@
 // @vitest-environment jsdom
 
-import { describe, it, expect } from "vitest";
-import { createStore } from "jotai";
-import { ltiContextAtom, syncLtiContext } from "../store/session";
+import { describe, it, expect, vi } from "vitest";
+import { syncLtiContext } from "../store/session";
 import type { SessionSchema } from "$server/models/session";
+import type { LtiContextState } from "../store/session";
 
 describe("pages/_app.tsx URLクエリ優先のLTIコンテキスト同期テスト", () => {
-  it("URLクエリが存在する場合、セッション情報ではなくURLクエリのコンテキストを最優先でセットすること", () => {
-    const store = createStore();
+  it("コンテキストが未初期化の場合、セッション情報をフォールバックとして使用すること", () => {
+    const baseLtiContext: LtiContextState = {
+      ltiConsumerId: undefined,
+      ltiContextId: undefined,
+      pathname: undefined,
+    };
+
     const sessionFromBackend = {
       oauthClient: { id: "consumer-1" },
       ltiContext: { id: "context-B" },
     } as unknown as SessionSchema;
 
-    const urlQuery = {
-      lti_consumer_id: "consumer-1",
-      lti_context_id: "context-A",
-    };
+    const setBaseLtiContextMock = vi.fn();
 
     syncLtiContext({
-      current: store.get(ltiContextAtom),
-      query: urlQuery,
+      baseLtiContext,
       session: sessionFromBackend,
       pathname: "/book/9",
-      setLtiContext: (val) => store.set(ltiContextAtom, val),
+      setBaseLtiContext: setBaseLtiContextMock,
     });
 
-    const current = store.get(ltiContextAtom);
-    expect(current.ltiContextId).toBe("context-A");
+    // expect.objectContaining を使用してオブジェクトを検証
+    expect(setBaseLtiContextMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ltiConsumerId: "consumer-1",
+        ltiContextId: "context-B",
+        pathname: "/book/9",
+      })
+    );
   });
 
-  it("URLクエリが存在せず未初期化の場合のみ、セッション情報をフォールバックとして使用すること", () => {
-    const store = createStore();
+  it("コンテキストがすでに初期化済みの場合は、セッション情報での上書きを行わないこと", () => {
+    const baseLtiContext: LtiContextState = {
+      ltiConsumerId: "consumer-1",
+      ltiContextId: "context-A",
+      pathname: "/book/9",
+    };
+
     const sessionFromBackend = {
       oauthClient: { id: "consumer-1" },
-      ltiContext: { id: "context-A" },
+      ltiContext: { id: "context-B" },
     } as unknown as SessionSchema;
 
+    const setBaseLtiContextMock = vi.fn();
+
     syncLtiContext({
-      current: store.get(ltiContextAtom),
-      query: {},
+      baseLtiContext,
       session: sessionFromBackend,
       pathname: "/book/9",
-      setLtiContext: (val) => store.set(ltiContextAtom, val),
+      setBaseLtiContext: setBaseLtiContextMock,
     });
 
-    const current = store.get(ltiContextAtom);
-    expect(current.ltiContextId).toBe("context-A");
+    expect(setBaseLtiContextMock).not.toHaveBeenCalled();
   });
 });

@@ -51,8 +51,8 @@ export function useUpdateSessionAtom() {
   return [useAtomValue(sessionAtom), useSetAtom(updateSessionAtom)] as const;
 }
 export function useLmsUrl() {
-  const { session } = useSessionAtom();
-  return session?.ltiLaunchPresentation?.returnUrl;
+  const context = useLtiContextAtom();
+  return context?.ltiLaunchPresentation?.returnUrl;
 }
 
 export const LTI_CONTEXT_KEY = "ltiContext";
@@ -61,6 +61,13 @@ export const OVERRIDE_LTI_CONTEXT_KEY = "overrideLtiContext";
 export type LtiContextState = {
   ltiConsumerId: LtiContextSchema["consumerId"] | null | undefined;
   ltiContextId: LtiContextSchema["id"] | null | undefined;
+  ltiContext?: SessionSchema["ltiContext"] | null;
+  ltiTargetLinkUri?: string | null | undefined;
+  ltiResourceLink?: SessionSchema["ltiResourceLink"] | null;
+  ltiDlSettings?: SessionSchema["ltiDlSettings"] | null;
+  ltiLaunchPresentation?: SessionSchema["ltiLaunchPresentation"] | null;
+  ltiResourceLinkRequest?: SessionSchema["ltiResourceLinkRequest"] | null;
+  ltiMessageType?: SessionSchema["ltiMessageType"] | null;
   pathname?: string | null | undefined;
 };
 
@@ -85,6 +92,13 @@ export const baseLtiContextAtom = atomWithStorage<LtiContextState>(
   {
     ltiConsumerId: undefined,
     ltiContextId: undefined,
+    ltiContext: undefined,
+    ltiTargetLinkUri: undefined,
+    ltiResourceLink: undefined,
+    ltiDlSettings: undefined,
+    ltiLaunchPresentation: undefined,
+    ltiResourceLinkRequest: undefined,
+    ltiMessageType: undefined,
     pathname: undefined,
   },
   ltiContextStorage
@@ -137,6 +151,13 @@ export const updateOverrideLtiContextAtom = atom<
     {
       ltiConsumerId?: LtiContextSchema["consumerId"] | null;
       ltiContextId?: LtiContextSchema["id"] | null;
+      ltiContext?: SessionSchema["ltiContext"] | null;
+      ltiTargetLinkUri?: string | null;
+      ltiResourceLink?: SessionSchema["ltiResourceLink"] | null;
+      ltiDlSettings?: SessionSchema["ltiDlSettings"] | null;
+      ltiMessageType?: SessionSchema["ltiMessageType"] | null;
+      ltiLaunchPresentation?: SessionSchema["ltiLaunchPresentation"] | null;
+      ltiResourceLinkRequest?: SessionSchema["ltiResourceLinkRequest"] | null;
       pathname?: string | null;
     } | null,
   ],
@@ -155,6 +176,34 @@ export const updateOverrideLtiContextAtom = atom<
         update.ltiContextId !== undefined
           ? update.ltiContextId
           : current?.ltiContextId ?? null,
+      ltiContext:
+        update.ltiContext !== undefined
+          ? update.ltiContext
+          : current?.ltiContext ?? null,
+      ltiTargetLinkUri:
+        update.ltiTargetLinkUri !== undefined
+          ? update.ltiTargetLinkUri
+          : current?.ltiTargetLinkUri ?? null,
+      ltiResourceLink:
+        update.ltiResourceLink !== undefined
+          ? update.ltiResourceLink
+          : current?.ltiResourceLink ?? null,
+      ltiDlSettings:
+        update.ltiDlSettings !== undefined
+          ? update.ltiDlSettings
+          : current?.ltiDlSettings ?? null,
+      ltiMessageType:
+        update.ltiMessageType !== undefined
+          ? update.ltiMessageType
+          : current?.ltiMessageType ?? null,
+      ltiLaunchPresentation:
+        update.ltiLaunchPresentation !== undefined
+          ? update.ltiLaunchPresentation
+          : current?.ltiLaunchPresentation ?? null,
+      ltiResourceLinkRequest:
+        update.ltiResourceLinkRequest !== undefined
+          ? update.ltiResourceLinkRequest
+          : current?.ltiResourceLinkRequest ?? null,
       pathname:
         update.pathname !== undefined
           ? update.pathname
@@ -199,12 +248,18 @@ export type LtiContextQuery = {
   lti_context_id?: string;
 };
 
-interface SyncLtiContextParams {
-  baseLtiContext: LtiContextState;
-  session: SessionSchema | undefined;
-  pathname: string;
-  setBaseLtiContext: (value: LtiContextState) => void;
+let isInitialSyncDone = false;
+
+export function resetSyncLtiContextFlag() {
+  isInitialSyncDone = false;
 }
+
+export type SyncLtiContextParams = {
+  baseLtiContext: LtiContextState;
+  session?: SessionSchema | null;
+  pathname?: string;
+  setBaseLtiContext: (val: LtiContextState) => void;
+};
 
 export function syncLtiContext({
   baseLtiContext,
@@ -212,11 +267,39 @@ export function syncLtiContext({
   pathname,
   setBaseLtiContext,
 }: SyncLtiContextParams) {
-  if (!baseLtiContext.ltiContextId && session?.ltiContext?.id) {
+  if (!session?.ltiContext?.id) return;
+
+  // 初回ロード時: このタブ/ウィンドウでJSが起動して、最初にセッションが取得できたタイミング (LTI起動時)
+  if (!isInitialSyncDone) {
+    isInitialSyncDone = true;
     setBaseLtiContext({
       ltiConsumerId: session.oauthClient?.id ?? null,
       ltiContextId: session.ltiContext.id,
+      ltiContext: session.ltiContext ?? null,
+      ltiTargetLinkUri: session.ltiTargetLinkUri ?? null,
+      ltiResourceLink: session.ltiResourceLink ?? null,
+      ltiDlSettings: session.ltiDlSettings ?? null,
+      ltiMessageType: session.ltiMessageType ?? null,
+      ltiLaunchPresentation: session.ltiLaunchPresentation ?? null,
+      ltiResourceLinkRequest: session.ltiResourceLinkRequest ?? null,
       pathname,
     });
+    return;
+  }
+  // 初回以降: SPA内でのSWR等によりバックエンドセッションが再取得された場合
+  // このタブと同じ LTI コースのセッションである場合のみ、bookId などの変更を同期する
+  const isSameContext =
+    session.oauthClient?.id === baseLtiContext.ltiConsumerId &&
+    session.ltiContext.id === baseLtiContext.ltiContextId;
+
+  if (isSameContext && session.ltiResourceLink !== undefined) {
+    if (
+      baseLtiContext.ltiResourceLink?.bookId !== session.ltiResourceLink?.bookId
+    ) {
+      setBaseLtiContext({
+        ...baseLtiContext,
+        ltiResourceLink: session.ltiResourceLink ?? null,
+      });
+    }
   }
 }

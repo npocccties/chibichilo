@@ -13,21 +13,22 @@ type MockSession = {
     user?: Partial<SessionSchema["user"]>;
   };
 };
-const mockUseSessionAtom = useSessionAtom as unknown as Mock<MockSession>;
+const mockUseSessionAtom = useSessionAtom as unknown as Mock<() => MockSession>;
 
 type MockLtiContext = Pick<
   ReturnType<typeof useLtiContextAtom>,
   "isLtiContextReady" | "ltiConsumerId" | "ltiContextId"
 >;
-const mockUseLtiContextAtom =
-  useLtiContextAtom as unknown as Mock<MockLtiContext>;
+const mockUseLtiContextAtom = useLtiContextAtom as unknown as Mock<
+  () => MockLtiContext
+>;
 
 type MockSWR = Pick<
   SWRResponse<ActivitySchema[], Error>,
   "data" | "error" | "mutate" | "isValidating" | "isLoading"
 >;
 
-const mockUseSWR = useSWR as unknown as Mock<MockSWR>;
+const mockUseSWR = useSWR as unknown as Mock<() => MockSWR>;
 
 vi.mock("swr");
 vi.mock("$store/session");
