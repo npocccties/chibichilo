@@ -13,7 +13,8 @@ async function grant(client: OidcClient): Promise<string> {
       ].join(" "),
     });
     return tokens.access_token ?? "";
-  } catch {
+  } catch (err) {
+    console.error("clientCredentialsGrant failed:", err);
     return "";
   }
 }

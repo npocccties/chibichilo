@@ -30,7 +30,10 @@ async function findClient(clientId: string, redirectUris?: string[]) {
   };
   const privateKey = await createPrivateKey();
   const clientAuth = privateKey
-    ? PrivateKeyJwt((await importJWK(privateKey, "RS256")) as CryptoKey)
+    ? PrivateKeyJwt({
+        key: (await importJWK(privateKey, "RS256")) as CryptoKey,
+        kid: privateKey.kid,
+      })
     : None();
   const config = new Configuration(
     server,
