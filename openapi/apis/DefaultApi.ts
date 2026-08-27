@@ -318,6 +318,8 @@ export interface ApiV2BookmarksGetRequest {
     bookId?: number;
     tagIds?: string;
     isExistMemoContent?: boolean;
+    ltiConsumerId?: string;
+    ltiContextId?: string;
 }
 
 export interface ApiV2BooksGetRequest {
@@ -1448,6 +1450,14 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.isAllUsers !== undefined) {
             queryParameters['isAllUsers'] = requestParameters.isAllUsers;
+        }
+
+        if (requestParameters.ltiConsumerId !== undefined) {
+            queryParameters['ltiConsumerId'] = requestParameters.ltiConsumerId;
+        }
+
+        if (requestParameters.ltiContextId !== undefined) {
+            queryParameters['ltiContextId'] = requestParameters.ltiContextId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
