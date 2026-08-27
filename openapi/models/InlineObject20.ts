@@ -37,6 +37,18 @@ export interface InlineObject20 {
      * @memberof InlineObject20
      */
     bookId?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject20
+     */
+    ltiConsumerId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject20
+     */
+    ltiContextId?: string;
 }
 
 export function InlineObject20FromJSON(json: any): InlineObject20 {
@@ -52,6 +64,8 @@ export function InlineObject20FromJSONTyped(json: any, ignoreDiscriminator: bool
         'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
         'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
+        'ltiConsumerId': !exists(json, 'ltiConsumerId') ? undefined : json['ltiConsumerId'],
+        'ltiContextId': !exists(json, 'ltiContextId') ? undefined : json['ltiContextId'],
     };
 }
 
@@ -67,6 +81,8 @@ export function InlineObject20ToJSON(value?: InlineObject20 | null): any {
         'memoContent': value.memoContent,
         'topicId': value.topicId,
         'bookId': value.bookId,
+        'ltiConsumerId': value.ltiConsumerId,
+        'ltiContextId': value.ltiContextId,
     };
 }
 
