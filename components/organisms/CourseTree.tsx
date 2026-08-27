@@ -118,7 +118,13 @@ function LinksTree({
                   {isDisplayableBook(
                     link.book,
                     isContentEditable,
-                    session?.ltiResourceLink ?? undefined
+                    session?.ltiResourceLink
+                      ? {
+                          ...session.ltiResourceLink,
+                          bookId: link.book.id,
+                          creatorId: link.book.authors[0]?.id ?? 0,
+                        }
+                      : undefined
                   ) && (
                     <PreviewButton
                       variant="book"
