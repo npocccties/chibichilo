@@ -21,14 +21,14 @@ type MockUser = Partial<User> & {
   ltiMembers?: Partial<LtiMember>[];
 };
 const mockUserFindUnique = vi.mocked(prisma.user.findUnique) as unknown as Mock<
-  Promise<MockUser | null>
+  () => Promise<MockUser | null>
 >;
 
 type MockResourceLink = Partial<LtiResourceLink> &
   Pick<LtiResourceLink, "consumerId" | "contextId" | "lineItem">;
 const mockLtiResourceLinkFindMany = vi.mocked(
   prisma.ltiResourceLink.findMany
-) as unknown as Mock<Promise<MockResourceLink[]>>;
+) as unknown as Mock<() => Promise<MockResourceLink[]>>;
 
 describe("getGradeTargets()", () => {
   const bookId = 123;

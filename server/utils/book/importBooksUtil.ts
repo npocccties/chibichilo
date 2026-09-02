@@ -461,6 +461,7 @@ class ImportBooksUtil {
     {
       sections: _sections,
       publicBooks: _publicBooks,
+      ltiContextBookAccesses: _ltiContextBookAccesses,
       ...book
     }: BookProps & Pick<Book, "language">
   ) {

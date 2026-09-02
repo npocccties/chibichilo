@@ -28,6 +28,7 @@ export const bookIncludingTopicsArg = {
         },
       },
     },
+    ltiContextBookAccesses: true,
   },
 } as const;
 
@@ -52,6 +53,7 @@ export const getBookIncludingArg = (userId: number) => {
         },
       },
       release: true,
+      ltiContextBookAccesses: true,
     },
   } as const;
 };

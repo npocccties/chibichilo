@@ -24,31 +24,109 @@ export interface InlineObject {
      * @type {string}
      * @memberof InlineObject
      */
-    contextId: string;
+    oauth_version: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject
      */
-    contextTitle: string;
+    oauth_nonce: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject
      */
-    contextLabel: string;
+    oauth_timestamp: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject
      */
-    title: string;
+    oauth_consumer_key: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject
      */
-    bookId: number;
+    oauth_signature_method: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    oauth_signature: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    lti_message_type: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    lti_version: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    resource_link_id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    user_id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    roles: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    context_id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    resource_link_title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    context_title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    context_label?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    lis_person_name_full?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    lis_person_contact_email_primary?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    launch_presentation_return_url?: string;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
@@ -61,11 +139,24 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'contextId': json['contextId'],
-        'contextTitle': json['contextTitle'],
-        'contextLabel': json['contextLabel'],
-        'title': json['title'],
-        'bookId': json['bookId'],
+        'oauth_version': json['oauth_version'],
+        'oauth_nonce': json['oauth_nonce'],
+        'oauth_timestamp': json['oauth_timestamp'],
+        'oauth_consumer_key': json['oauth_consumer_key'],
+        'oauth_signature_method': json['oauth_signature_method'],
+        'oauth_signature': json['oauth_signature'],
+        'lti_message_type': json['lti_message_type'],
+        'lti_version': json['lti_version'],
+        'resource_link_id': json['resource_link_id'],
+        'user_id': json['user_id'],
+        'roles': json['roles'],
+        'context_id': json['context_id'],
+        'resource_link_title': !exists(json, 'resource_link_title') ? undefined : json['resource_link_title'],
+        'context_title': !exists(json, 'context_title') ? undefined : json['context_title'],
+        'context_label': !exists(json, 'context_label') ? undefined : json['context_label'],
+        'lis_person_name_full': !exists(json, 'lis_person_name_full') ? undefined : json['lis_person_name_full'],
+        'lis_person_contact_email_primary': !exists(json, 'lis_person_contact_email_primary') ? undefined : json['lis_person_contact_email_primary'],
+        'launch_presentation_return_url': !exists(json, 'launch_presentation_return_url') ? undefined : json['launch_presentation_return_url'],
     };
 }
 
@@ -78,11 +169,24 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'contextId': value.contextId,
-        'contextTitle': value.contextTitle,
-        'contextLabel': value.contextLabel,
-        'title': value.title,
-        'bookId': value.bookId,
+        'oauth_version': value.oauth_version,
+        'oauth_nonce': value.oauth_nonce,
+        'oauth_timestamp': value.oauth_timestamp,
+        'oauth_consumer_key': value.oauth_consumer_key,
+        'oauth_signature_method': value.oauth_signature_method,
+        'oauth_signature': value.oauth_signature,
+        'lti_message_type': value.lti_message_type,
+        'lti_version': value.lti_version,
+        'resource_link_id': value.resource_link_id,
+        'user_id': value.user_id,
+        'roles': value.roles,
+        'context_id': value.context_id,
+        'resource_link_title': value.resource_link_title,
+        'context_title': value.context_title,
+        'context_label': value.context_label,
+        'lis_person_name_full': value.lis_person_name_full,
+        'lis_person_contact_email_primary': value.lis_person_contact_email_primary,
+        'launch_presentation_return_url': value.launch_presentation_return_url,
     };
 }
 

@@ -21,10 +21,34 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject1 {
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof InlineObject1
      */
-    zoomImportEnabled?: boolean;
+    contextId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject1
+     */
+    contextTitle: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject1
+     */
+    contextLabel: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject1
+     */
+    title: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject1
+     */
+    bookId: number;
 }
 
 export function InlineObject1FromJSON(json: any): InlineObject1 {
@@ -37,7 +61,11 @@ export function InlineObject1FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'zoomImportEnabled': !exists(json, 'zoomImportEnabled') ? undefined : json['zoomImportEnabled'],
+        'contextId': json['contextId'],
+        'contextTitle': json['contextTitle'],
+        'contextLabel': json['contextLabel'],
+        'title': json['title'],
+        'bookId': json['bookId'],
     };
 }
 
@@ -50,7 +78,11 @@ export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
     }
     return {
         
-        'zoomImportEnabled': value.zoomImportEnabled,
+        'contextId': value.contextId,
+        'contextTitle': value.contextTitle,
+        'contextLabel': value.contextLabel,
+        'title': value.title,
+        'bookId': value.bookId,
     };
 }
 

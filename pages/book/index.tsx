@@ -15,6 +15,7 @@ import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
 import useParentBookInfo from "$utils/useParentBookInfo";
 import TopicNotFoundProblem from "$templates/TopicNotFoundProblem";
+import BookViewingNotAllowedProblem from "$templates/BookViewingNotAllowedProblem";
 
 export type Query = {
   bookId: BookSchema["id"];
@@ -130,7 +131,19 @@ function Show(query: Query) {
     !query.token &&
     !Number.isFinite(query.zoom);
 
-  if (error || redirectError || queryError) return <BookNotFoundProblem />;
+  if (error) {
+    if (error.status === 403) {
+      return (
+        <BookViewingNotAllowedProblem
+          bookId={query.bookId}
+          topicId={query.topicId}
+        />
+      );
+    }
+    return <BookNotFoundProblem />;
+  } else if (redirectError || queryError) {
+    return <BookNotFoundProblem />;
+  }
   if (topicError) return <TopicNotFoundProblem />;
   if (!book) return <Placeholder />;
 
