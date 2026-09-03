@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -35,10 +35,21 @@ import {
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
-  useLtiContextAtom();
+  const { ltiContextId } = useLtiContextAtom();
   const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
     useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
+  const isAppMounted = useRef(false);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (!isAppMounted.current) {
+      isAppMounted.current = true;
+      if (!router.query.lti_context_id && ltiContextId) {
+        setOverrideLtiContext(null);
+      }
+    }
+  }, [router.isReady, router.query, ltiContextId, setOverrideLtiContext]);
 
   useEffect(() => {
     if (!router.isReady) return;
