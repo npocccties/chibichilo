@@ -19,6 +19,7 @@ import EmbedProblem from "$templates/EmbedProblem";
 import {
   NEXT_PUBLIC_NO_EMBED,
   NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK,
+  NEXT_PUBLIC_BOOKMARK_COLOR,
 } from "$utils/env";
 import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
@@ -27,13 +28,20 @@ import { pagesPath } from "$utils/$path";
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
 import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
+import Box from "@mui/material/Box";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
-  const { isLtiContextReady } = useLtiContextAtom();
+  const { isLtiContextReady, ltiContextId } = useLtiContextAtom();
   const [, setLtiContext] = useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
+
+  const isBookmarkView = Boolean(
+    ltiContextId &&
+      session?.ltiResourceLink &&
+      ltiContextId !== session.ltiResourceLink.contextId
+  );
 
   useEffect(() => {
     if (session && !isLtiContextReady) {
@@ -99,6 +107,21 @@ function Content({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {isBookmarkView && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            border: `2px solid ${NEXT_PUBLIC_BOOKMARK_COLOR}`,
+            boxShadow: `inset 0 0 20px ${NEXT_PUBLIC_BOOKMARK_COLOR}`,
+            pointerEvents: "none",
+            zIndex: 9999,
+          }}
+        />
+      )}
       {(isInstructor || NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) && (
         <Slide appear={false} direction="down" in={!trigger}>
           <AppBar
