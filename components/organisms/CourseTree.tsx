@@ -123,7 +123,12 @@ function LinksTree({
                     link.book,
                     isContentEditable,
                     isCurrentContext
-                      ? { bookId: link.book.id, creatorId: 0 }
+                      ? {
+                          consumerId: link.oauthClientId,
+                          contextId: link.ltiContext.id,
+                          bookId: link.book.id,
+                          creatorId: link.book.authors[0]?.id ?? 0,
+                        }
                       : undefined
                   ) && (
                     <PreviewButton

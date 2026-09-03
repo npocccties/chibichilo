@@ -1,5 +1,8 @@
 import { useRouter } from "next/router";
-import type { BookSchema } from "$server/models/book";
+import type {
+  BookSchema,
+  LtiContextBookAccessProps,
+} from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { SectionProps } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
@@ -135,6 +138,26 @@ function Edit({ bookId, context }: Query) {
       await revalidateBook(book.id);
     }
   }
+  async function handleContextAccessUpdate(
+    settings: LtiContextBookAccessProps[]
+  ) {
+    if (!book) return;
+    try {
+      await updateBook({
+        id: book.id,
+        name: book.name,
+        description: book.description,
+        shared: book.shared,
+        keywords: book.keywords,
+        publicBooks: book.publicBooks,
+        ltiContextBookAccesses: settings,
+        noclone: true,
+      });
+    } catch (error) {
+      console.error("更新エラー:", error);
+      alert("保存に失敗しました。ブラウザのコンソールを確認してください。");
+    }
+  }
   const handlers = {
     linked: bookId === ltiContext?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
@@ -154,6 +177,7 @@ function Edit({ bookId, context }: Query) {
     onItemEditClick: handleItemEditClick,
     onClone: handleClone,
     onMetainfoUpdate: handleMetainfoUpdate,
+    onContextAccessUpdate: handleContextAccessUpdate,
   };
 
   if (error) return <BookNotFoundProblem />;

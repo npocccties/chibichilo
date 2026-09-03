@@ -30,7 +30,13 @@ export interface InlineObject16 {
      * @type {string}
      * @memberof InlineObject16
      */
-    content?: string;
+    license?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject16
+     */
+    licenser?: string;
 }
 
 export function InlineObject16FromJSON(json: any): InlineObject16 {
@@ -44,7 +50,8 @@ export function InlineObject16FromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'language': !exists(json, 'language') ? undefined : json['language'],
-        'content': !exists(json, 'content') ? undefined : json['content'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
     };
 }
 
@@ -58,7 +65,8 @@ export function InlineObject16ToJSON(value?: InlineObject16 | null): any {
     return {
         
         'language': value.language,
-        'content': value.content,
+        'license': value.license,
+        'licenser': value.licenser,
     };
 }
 

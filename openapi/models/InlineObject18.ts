@@ -21,22 +21,92 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject18 {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject18
      */
-    tagId?: number;
+    event?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject18
      */
-    topicId?: number;
+    detail?: string;
+    /**
+     * YouTubeの場合: YouTube Video ID等
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    file?: string;
+    /**
+     * YouTubeの場合: YouTube動画視聴ページのURLクエリー ("?" 含めず)
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    query?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InlineObject18
      */
-    bookId?: number;
+    current?: string;
+    /**
+     * OauthClient["id"] + ":" + LtiResourceLinkRequest["id"]
+     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    rid?: string;
+    /**
+     * OauthClient["id"] + ":" + LtiUser["id"]
+     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    uid?: string;
+    /**
+     * OauthClient["id"] + ":" + LtiContext["id"]
+     * ツール起動時に sessionStorage に記録したセッション情報を使い続け、ウィンドウ間で共有しない
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    cid?: string;
+    /**
+     * ウィンドウ間で共有しない OauthClient["nonce"]
+     * ツール起動時に sessionStorage に記録したセッション情報を使い続ける
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    nonce?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    videoType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    path?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    topicId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    bookId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject18
+     */
+    playbackRate?: string;
 }
 
 export function InlineObject18FromJSON(json: any): InlineObject18 {
@@ -49,9 +119,20 @@ export function InlineObject18FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
+        'event': !exists(json, 'event') ? undefined : json['event'],
+        'detail': !exists(json, 'detail') ? undefined : json['detail'],
+        'file': !exists(json, 'file') ? undefined : json['file'],
+        'query': !exists(json, 'query') ? undefined : json['query'],
+        'current': !exists(json, 'current') ? undefined : json['current'],
+        'rid': !exists(json, 'rid') ? undefined : json['rid'],
+        'uid': !exists(json, 'uid') ? undefined : json['uid'],
+        'cid': !exists(json, 'cid') ? undefined : json['cid'],
+        'nonce': !exists(json, 'nonce') ? undefined : json['nonce'],
+        'videoType': !exists(json, 'videoType') ? undefined : json['videoType'],
+        'path': !exists(json, 'path') ? undefined : json['path'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
         'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
+        'playbackRate': !exists(json, 'playbackRate') ? undefined : json['playbackRate'],
     };
 }
 
@@ -64,9 +145,20 @@ export function InlineObject18ToJSON(value?: InlineObject18 | null): any {
     }
     return {
         
-        'tagId': value.tagId,
+        'event': value.event,
+        'detail': value.detail,
+        'file': value.file,
+        'query': value.query,
+        'current': value.current,
+        'rid': value.rid,
+        'uid': value.uid,
+        'cid': value.cid,
+        'nonce': value.nonce,
+        'videoType': value.videoType,
+        'path': value.path,
         'topicId': value.topicId,
         'bookId': value.bookId,
+        'playbackRate': value.playbackRate,
     };
 }
 

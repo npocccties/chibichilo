@@ -207,4 +207,39 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       expect.objectContaining({ scoreGiven: 1, scoreMaximum: 3 })
     );
   });
+
+  it("対象コースでの配信が停止されている場合、DB保存も成績送信も行わずに403エラーを返すこと", async () => {
+    // 配信停止状態(getDisplayableBookがundefinedを返す)をシミュレート
+    vi.mocked(getDisplayableBook).mockReturnValueOnce(undefined);
+
+    const res = await update(mockReq);
+
+    // 403エラーが返されること
+    expect(res.status).toBe(403);
+    // DB保存処理(show)が呼ばれていないこと
+    expect(show).not.toHaveBeenCalled();
+    // 成績送信処理(publishScore)が呼ばれていないこと
+    expect(publishScore).not.toHaveBeenCalled();
+  });
+
+  it("LTIのバージョンが1.3.0以外の場合、成績送信を行わずにスキップすること", async () => {
+    vi.mocked(show).mockResolvedValue({
+      status: 200,
+      body: {
+        activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
+      },
+    } as ShowResponse);
+
+    // LTI 1.1 などの古いバージョンからのアクセスをシミュレート
+    const legacyReq = {
+      ...mockReq,
+      session: { ...mockReq.session, ltiVersion: "1.1.0" },
+    } as unknown as UpdateRequest;
+
+    const res = await update(legacyReq);
+
+    // 期待値: LTI 1.3 ではないためスキップされ、そのまま200が返ること
+    expect(res.status).toBe(200);
+    expect(publishScore).not.toHaveBeenCalled();
+  });
 });

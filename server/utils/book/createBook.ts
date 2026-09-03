@@ -10,7 +10,7 @@ import type { Prisma } from "$server/generated/prisma/client";
 
 async function createBook(
   userId: UserSchema["id"],
-  { publicBooks, ...book }: BookProps,
+  { publicBooks, ltiContextBookAccesses, ...book }: BookProps,
   authors: Prisma.AuthorshipUncheckedCreateInput[]
 ): Promise<BookSchema | undefined> {
   const timeRequired = await aggregateTimeRequired(book);
@@ -24,6 +24,15 @@ async function createBook(
       authors: { create: authors },
       sections: { create: sectionsCreateInput },
       keywords: keywordsConnectOrCreateInput(book.keywords ?? []),
+      ...(ltiContextBookAccesses && {
+        ltiContextBookAccesses: {
+          create: ltiContextBookAccesses.map((access) => ({
+            consumerId: access.consumerId,
+            contextId: access.contextId,
+            allowViewing: access.allowViewing,
+          })),
+        },
+      }),
     },
   });
 

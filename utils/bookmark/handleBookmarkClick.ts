@@ -23,5 +23,14 @@ export const handleBookmarkClick = async (
     ltiContextId: bookmark.ltiContext.id,
     pathname: currentPathname,
   });
-  return await push(url);
+  return await push({
+    pathname: url.pathname,
+    query: {
+      ...url.query,
+      lti_context_id: bookmark.ltiContext.id,
+      ...(bookmark.ltiConsumerId
+        ? { lti_consumer_id: bookmark.ltiConsumerId }
+        : {}),
+    },
+  });
 };
