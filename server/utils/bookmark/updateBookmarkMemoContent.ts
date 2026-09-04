@@ -14,16 +14,23 @@ async function updateBookmarkMemoContent({
   session: SessionSchema;
   bookmark: BookmarkMemoContentProps;
 }): Promise<BookmarkSchema | undefined> {
-  if (!session.ltiResourceLink?.consumerId) {
+  const ltiConsumerId =
+    bookmark.ltiConsumerId ??
+    session.ltiResourceLink?.consumerId ??
+    session.oauthClient?.id;
+  const ltiContextId = bookmark.ltiContextId ?? session.ltiContext?.id;
+
+  if (!ltiConsumerId || !ltiContextId) {
     return;
   }
+
   const updated = await prisma.bookmark.update({
     where: {
       id,
       userId: session.user.id,
       tagId: null,
-      ltiConsumerId: session.ltiResourceLink?.consumerId,
-      ltiContextId: session.ltiContext.id,
+      ltiConsumerId,
+      ltiContextId,
       topicId: bookmark.topicId,
     },
     data: {

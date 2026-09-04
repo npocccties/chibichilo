@@ -18,7 +18,7 @@ import type { TopicSchema } from "$server/models/topic";
 import type { AuthorSchema } from "$server/models/author";
 import type { IsContentEditable } from "$server/models/content";
 import { useConfirm } from "material-ui-confirm";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import AddIcon from "@mui/icons-material/Add";
 import type { ReleaseProps } from "$server/models/book/release";
@@ -96,7 +96,7 @@ export default function BookEdit({
   onMetainfoUpdate,
   onContextAccessUpdate,
 }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const classes = useStyles();
   const confirm = useConfirm();
   const {
@@ -188,7 +188,7 @@ export default function BookEdit({
         className={classes.content}
         book={book}
         linked={linked}
-        hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+        hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
         variant="update"
         onSubmit={onSubmit}
         onAuthorsUpdate={onAuthorsUpdate}

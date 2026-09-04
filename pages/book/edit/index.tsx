@@ -7,7 +7,7 @@ import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptio
 import type { SectionProps } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import BookEdit from "$templates/BookEdit";
 import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
@@ -35,7 +35,8 @@ export type Query = {
 
 function Edit({ bookId, context }: Query) {
   const query = { bookId, ...(context && { context }) };
-  const { session, isContentEditable } = useSessionAtom();
+  const { isContentEditable } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const router = useRouter();
   const { onBookLinking } = useBookLinkingHandlers();
@@ -158,7 +159,7 @@ function Edit({ bookId, context }: Query) {
     }
   }
   const handlers = {
-    linked: bookId === session?.ltiResourceLink?.bookId,
+    linked: bookId === ltiContext?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onCancel: handleCancel,
