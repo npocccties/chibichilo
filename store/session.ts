@@ -269,37 +269,38 @@ export function syncLtiContext({
 }: SyncLtiContextParams) {
   if (!session?.ltiContext?.id) return;
 
-  // 初回ロード時: このタブ/ウィンドウでJSが起動して、最初にセッションが取得できたタイミング (LTI起動時)
   if (!isInitialSyncDone) {
     isInitialSyncDone = true;
-    setBaseLtiContext({
-      ltiConsumerId: session.oauthClient?.id ?? null,
-      ltiContextId: session.ltiContext.id,
-      ltiContext: session.ltiContext ?? null,
-      ltiTargetLinkUri: session.ltiTargetLinkUri ?? null,
-      ltiResourceLink: session.ltiResourceLink ?? null,
-      ltiDlSettings: session.ltiDlSettings ?? null,
-      ltiMessageType: session.ltiMessageType ?? null,
-      ltiLaunchPresentation: session.ltiLaunchPresentation ?? null,
-      ltiResourceLinkRequest: session.ltiResourceLinkRequest ?? null,
-      pathname,
-    });
-    return;
+
+    if (!baseLtiContext.ltiContextId) {
+      setBaseLtiContext({
+        ltiConsumerId: session.oauthClient?.id ?? null,
+        ltiContextId: session.ltiContext.id,
+        ltiContext: session.ltiContext ?? null,
+        ltiTargetLinkUri: session.ltiTargetLinkUri ?? null,
+        ltiResourceLink: session.ltiResourceLink ?? null,
+        ltiDlSettings: session.ltiDlSettings ?? null,
+        ltiMessageType: session.ltiMessageType ?? null,
+        ltiLaunchPresentation: session.ltiLaunchPresentation ?? null,
+        ltiResourceLinkRequest: session.ltiResourceLinkRequest ?? null,
+        pathname,
+      });
+      return;
+    }
   }
-  // 初回以降: SPA内でのSWR等によりバックエンドセッションが再取得された場合
-  // このタブと同じ LTI コースのセッションである場合のみ、bookId などの変更を同期する
   const isSameContext =
     session.oauthClient?.id === baseLtiContext.ltiConsumerId &&
     session.ltiContext.id === baseLtiContext.ltiContextId;
-
-  if (isSameContext && session.ltiResourceLink !== undefined) {
-    if (
-      baseLtiContext.ltiResourceLink?.bookId !== session.ltiResourceLink?.bookId
-    ) {
-      setBaseLtiContext({
-        ...baseLtiContext,
-        ltiResourceLink: session.ltiResourceLink ?? null,
-      });
-    }
+  if (
+    isSameContext &&
+    session.ltiResourceLink !== undefined &&
+    baseLtiContext.ltiResourceLink?.bookId !== session.ltiResourceLink?.bookId
+  ) {
+    setBaseLtiContext({
+      ...baseLtiContext,
+      ltiResourceLink: session.ltiResourceLink ?? null,
+      ltiDlSettings: session.ltiDlSettings ?? null,
+      ltiTargetLinkUri: session.ltiTargetLinkUri ?? null,
+    });
   }
 }
