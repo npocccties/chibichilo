@@ -23,7 +23,9 @@ async function checkLtiResourceLink(
         contextId: query.lti_context_id,
       },
     });
-    return validLink !== null;
+    if (validLink) {
+      return true;
+    }
   }
   // 2. Check if the book matches the resource link in the current session.
   if (session.ltiResourceLink?.bookId === bookId) {
