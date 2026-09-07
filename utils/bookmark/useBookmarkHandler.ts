@@ -12,7 +12,14 @@ const key = "/api/v2/bookmark";
 async function createBookmark(body: BookmarkProps): Promise<BookmarkSchema> {
   const res = await api.apiV2BookmarkPost({ body });
   await mutate(
-    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    {
+      key,
+      topicId: body.topicId,
+      bookId: body.bookId,
+      ltiContextId: body.ltiContextId,
+      ltiConsumerId: body.ltiConsumerId,
+      isAllUsers: false,
+    },
     res
   );
   return res as unknown as BookmarkSchema;
@@ -21,10 +28,15 @@ async function createBookmark(body: BookmarkProps): Promise<BookmarkSchema> {
 async function deleteBookmark(
   id: BookmarkParams["id"],
   topicId: BookmarkProps["topicId"],
-  bookId: BookmarkProps["bookId"]
+  bookId: BookmarkProps["bookId"],
+  ltiConsumerId?: string,
+  ltiContextId?: string
 ): Promise<void> {
   const res = await api.apiV2BookmarkIdDelete({ id });
-  await mutate({ key, topicId, bookId, isAllUsers: false }, res);
+  await mutate(
+    { key, topicId, bookId, ltiConsumerId, ltiContextId, isAllUsers: false },
+    res
+  );
 }
 
 async function createBookmarkMemoContent(
@@ -32,7 +44,14 @@ async function createBookmarkMemoContent(
 ): Promise<BookmarkSchema> {
   const res = await api.apiV2BookmarkMemoContentPost({ body });
   await mutate(
-    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    {
+      key,
+      topicId: body.topicId,
+      bookId: body.bookId,
+      ltiConsumerId: body.ltiConsumerId,
+      ltiContextId: body.ltiContextId,
+      isAllUsers: false,
+    },
     res
   );
   return res as unknown as BookmarkSchema;
@@ -44,7 +63,14 @@ async function updateBookmarkMemoContent(
 ): Promise<void> {
   const res = await api.apiV2BookmarkMemoContentIdPut({ id, body });
   await mutate(
-    { key, topicId: body.topicId, bookId: body.bookId, isAllUsers: false },
+    {
+      key,
+      topicId: body.topicId,
+      bookId: body.bookId,
+      ltiConsumerId: body.ltiConsumerId,
+      ltiContextId: body.ltiContextId,
+      isAllUsers: false,
+    },
     res
   );
 }
@@ -71,9 +97,15 @@ function useBookmarkHandler() {
       topicId: BookmarkProps["topicId"],
       bookId: BookmarkProps["bookId"]
     ) => {
-      await deleteBookmark(id, topicId, bookId);
+      await deleteBookmark(
+        id,
+        topicId,
+        bookId,
+        ltiContext?.ltiConsumerId ?? undefined,
+        ltiContext?.ltiContextId ?? undefined
+      );
     },
-    []
+    [ltiContext]
   );
 
   const onSubmitBookmarkMemoContent = useCallback(
