@@ -49,7 +49,7 @@ export async function show({
   const { book_id: bookId } = params;
   if (
     !isInstructor(session) &&
-    !(await checkLtiResourceLink(bookId, session, {}))
+    !(await checkLtiResourceLink(bookId, session, query))
   ) {
     return { status: 403 };
   }
@@ -62,10 +62,15 @@ export async function show({
       query?.lti_consumer_id ?? session.ltiResourceLink?.consumerId,
     ltiContextId: query?.lti_context_id ?? session.ltiResourceLink?.contextId,
   };
+
+  const effectiveLtiResourceLink = session.ltiResourceLink
+    ? { ...session.ltiResourceLink, bookId: bookId }
+    : undefined;
+
   const book = getDisplayableBook(
     rawBook,
     (content) => isContentEditable(session, content),
-    session.ltiResourceLink ?? undefined,
+    effectiveLtiResourceLink,
     undefined,
     isInstructor(session),
     currentLtiContext
