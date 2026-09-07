@@ -42,10 +42,12 @@ function Content({ children }: { children: ReactNode }) {
     useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
 
+  const currentBookId = Number(router.query.bookId);
   const isBookmarkView = Boolean(
-    ltiContextId &&
-      session?.ltiResourceLink &&
-      ltiContextId !== session.ltiResourceLink.contextId
+    session?.ltiResourceLink &&
+      ((ltiContextId && ltiContextId !== session.ltiResourceLink.contextId) ||
+        (!Number.isNaN(currentBookId) &&
+          currentBookId !== session.ltiResourceLink.bookId))
   );
   const isAppMounted = useRef(false);
 

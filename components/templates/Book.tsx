@@ -160,9 +160,9 @@ export default function Book(props: Props) {
   const { ltiContextId } = useLtiContextAtom();
 
   const isBookmarkView = Boolean(
-    ltiContextId &&
-      session?.ltiResourceLink &&
-      ltiContextId !== session.ltiResourceLink.contextId
+    session?.ltiResourceLink &&
+      ((ltiContextId && ltiContextId !== session.ltiResourceLink.contextId) ||
+        (book?.id && book.id !== session.ltiResourceLink.bookId))
   );
   const [expanded, setExpanded] = useState(false);
   const handleLinkClick = () => setExpanded(!expanded);
