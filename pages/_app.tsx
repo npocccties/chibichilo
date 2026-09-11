@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Provider } from "jotai";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -26,33 +26,51 @@ import { pagesPath } from "$utils/$path";
 // NOTE: For VideoJs components.
 import "video.js/dist/video-js.css";
 import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
-import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
+import {
+  syncLtiContext,
+  useLtiContextAtom,
+  useUpdateLtiContextAtom,
+} from "$store/session";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { session, isInstructor, error } = useSessionInit();
-  const { isLtiContextReady } = useLtiContextAtom();
-  const [, setLtiContext] = useUpdateLtiContextAtom();
+  const { ltiContextId } = useLtiContextAtom();
+  const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
+    useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
+  const isAppMounted = useRef(false);
 
   useEffect(() => {
-    if (session && !isLtiContextReady) {
-      // TODO: In the future, we should consider synchronizing with session.ltiResourceLink
-      // while carefully handling potential conflicts across multiple browser tabs.
-      // Currently, we just set null to mark the LTI context as "Ready" (Settled).
-      setLtiContext({
-        ltiConsumerId: null,
-        ltiContextId: null,
-        pathname: null,
-      });
+    if (!router.isReady) return;
+    if (!isAppMounted.current) {
+      isAppMounted.current = true;
+      if (!router.query.lti_context_id && ltiContextId) {
+        setOverrideLtiContext(null);
+      }
     }
-  }, [session, isLtiContextReady, setLtiContext]);
-  const resetBookmarkAuth = () => {
-    setLtiContext({
-      ltiConsumerId: null,
-      ltiContextId: null,
-      pathname: null,
+  }, [router.isReady, router.query, ltiContextId, setOverrideLtiContext]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    syncLtiContext({
+      baseLtiContext,
+      session,
+      pathname: router.pathname,
+      setBaseLtiContext,
     });
+  }, [
+    router.isReady,
+    router.pathname,
+    session,
+    baseLtiContext,
+    setBaseLtiContext,
+    setOverrideLtiContext,
+  ]);
+
+  const resetBookmarkAuth = () => {
+    setOverrideLtiContext(null);
   };
   const handleBooksClick = () => {
     resetBookmarkAuth();

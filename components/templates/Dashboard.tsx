@@ -28,6 +28,7 @@ import downloadBookActivity from "$utils/bookLearningActivity/download";
 import downloadBookmarkStats from "$utils/bookmark/download";
 import label from "$utils/learningStatusLabel";
 import rewatchLabel from "$utils/rewatchLabel";
+import { useLtiContextAtom } from "$store/session";
 
 import getLearnerActivities from "$utils/getLearnerActivities";
 import getActivitiesByBooks from "$utils/getActivitiesByBooks";
@@ -155,6 +156,11 @@ type Props = {
 
 export default function Dashboard(props: Props) {
   const { session, learners, courseBooks, bookActivities, scope } = props;
+  const ltiContext = useLtiContextAtom();
+  const courseTitle =
+    ltiContext?.ltiContext?.title ?? session.ltiContext?.title;
+  const courseLabel =
+    ltiContext?.ltiContext?.label ?? session.ltiContext?.label;
   const { data: memberships } = useMemberships();
   const newLtiMembers = useMemo(() => {
     if (!memberships) {
@@ -269,8 +275,8 @@ export default function Dashboard(props: Props) {
         学習分析
       </Typography>
       <ActionHeader>
-        <Typography variant="h6">{session.ltiContext.title}</Typography>
-        <span className={classes.contextLabel}>{session.ltiContext.label}</span>
+        <Typography variant="h6">{courseTitle}</Typography>
+        <span className={classes.contextLabel}>{courseLabel}</span>
         <ActivityScopeSelect
           value={props.scope}
           onActivityScopeChange={props.onScopeChange}
@@ -421,7 +427,7 @@ export default function Dashboard(props: Props) {
       </Card>
       {data && (
         <LearnerActivityDialog
-          courseTitle={session.ltiContext.title}
+          courseTitle={courseTitle}
           courseBooks={courseBooks}
           learner={data.learner}
           bookActivities={data.bookActivities}

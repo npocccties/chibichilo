@@ -154,16 +154,24 @@ export default function BookContextAccessEdit({ book, onChange }: Props) {
                   display: "flex",
                   alignItems: "center",
                   mr: 2,
+                  minWidth: 0,
                 }}
               >
-                <Typography variant="body1">{ctx.title}</Typography>
+                <Typography variant="body1" noWrap title={ctx.title}>
+                  {ctx.title}
+                </Typography>
                 {isCurrentCourse && (
                   <Chip
                     label="現在のコース"
                     size="small"
                     color="primary"
                     variant="outlined"
-                    sx={{ ml: 1, height: 20, fontSize: "0.7rem" }}
+                    sx={{
+                      ml: 1,
+                      height: 20,
+                      fontSize: "0.7rem",
+                      flexShrink: 0,
+                    }}
                   />
                 )}
               </Box>
