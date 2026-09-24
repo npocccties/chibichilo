@@ -12,20 +12,19 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "types": ["vite/client"],
-    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "baseUrl": ".",
     "paths": {
-      "$atoms/*": ["components/atoms/*"],
-      "$molecules/*": ["components/molecules/*"],
-      "$organisms/*": ["components/organisms/*"],
-      "$templates/*": ["components/templates/*"],
-      "$*": ["*"]
+      "$atoms/*": ["./components/atoms/*"],
+      "$molecules/*": ["./components/molecules/*"],
+      "$organisms/*": ["./components/organisms/*"],
+      "$templates/*": ["./components/templates/*"],
+      "$*": ["./*"],
+      "*": ["./*"]
     }
   },
   "exclude": [
@@ -36,5 +35,10 @@
     "**/*.stories.tsx",
     "vitest.config.ts"
   ],
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ]
 }
