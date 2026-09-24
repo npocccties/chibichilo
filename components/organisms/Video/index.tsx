@@ -13,6 +13,7 @@ import { useBookAtom } from "$store/book";
 import useOembed from "$utils/useOembed";
 import type { SxProps } from "@mui/system";
 import type { ActivitySchema } from "$server/models/activity";
+import { getMediaFromVideoInstance } from "$types/videoInstance";
 import { isInstructor, isAdministrator } from "$utils/session";
 import { useSessionAtom } from "$store/session";
 import type { ButtonProps } from "@mui/material";
@@ -131,20 +132,6 @@ type Props = {
   isBookPage?: boolean;
 };
 
-/**
- * 再生終了時間が有効か否か
- * @return 有効かつ再生終了: true、それ以外: false
- */
-function isValidPlaybackEnd({
-  currentTime = 0,
-  stopTime,
-}: {
-  currentTime: number | undefined;
-  stopTime: number | null | undefined;
-}): boolean {
-  return typeof stopTime === "number" && 0 < stopTime && stopTime < currentTime;
-}
-
 const BAR_SIZE = 480;
 function generateTimeRangeBarValue({
   timeRange,
@@ -190,114 +177,30 @@ export default function Video({
     if (!book) return;
     // バックグラウンドで動画プレイヤーオブジェクトプールに読み込む
     preloadVideo(book.sections);
-    return () => video.clear();
-  }, [book, preloadVideo, video]);
+  }, [book, preloadVideo, video.size]);
 
   const oembed = useOembed(topic.resource.id);
   const prevItemIndex = usePrevious(itemIndex);
+  const currentTopic = itemExists(itemIndex);
+
   useEffect(() => {
     if (!book) return;
-    const topic = itemExists(itemIndex);
-    const startTime = topic?.startTime;
-    const stopTime = topic?.stopTime;
     if (prevItemIndex?.some((v, i) => v !== itemIndex[i])) {
-      void video.get(String(itemExists(prevItemIndex)?.id))?.player.pause();
+      const prevInstance = video.get(String(itemExists(prevItemIndex)?.id));
+      if (prevInstance) getMediaFromVideoInstance(prevInstance)?.pause();
     }
-    const videoInstance = video.get(String(topic?.id));
-    if (!videoInstance) return;
-    if (videoInstance.type === "vimeo") {
-      videoInstance.player.on("timeupdate", async () => {
-        const currentTime = await videoInstance.player.getCurrentTime();
-        if (isValidPlaybackEnd({ currentTime, stopTime })) {
-          void videoInstance.player.pause();
-          onEnded?.();
-        }
-        // @ts-expect-error startTime is number
-        if (Number.isFinite(startTime) && currentTime < startTime) {
-          void videoInstance.player.setCurrentTime(startTime || 0);
-        }
-      });
-      void videoInstance.player.setCurrentTime(startTime || 0);
-      return;
-    }
-
-    const handleSeeked = () => {
-      const currentTime = videoInstance.player.currentTime();
-      // @ts-expect-error startTime is number
-      if (Number.isFinite(startTime) && currentTime < startTime) {
-        videoInstance.player.currentTime(startTime || 0);
-      }
-    };
-
-    const handleTimeUpdate = () => {
-      if (videoInstance.stopTimeOver) return;
-      const currentTime = videoInstance.player.currentTime();
-      if (isValidPlaybackEnd({ currentTime, stopTime })) {
-        videoInstance.stopTimeOver = true;
-        videoInstance.player.pause();
-        onEnded?.();
-      }
-    };
-
-    const handlePlay = () => {
-      // 終了位置より後ろにシークすると、意図せず再生が再開してしまうことがあるので、ユーザーの操作によらない再生開始を抑制する
-      if (videoInstance.stopTimeOver) videoInstance.player.pause();
-    };
-
-    const handleFirstPlay = () => {
-      if (!videoInstance.firstPlay) return;
-
-      // NOTE: 初回playイベントは再生位置を移動して再生する
-      if (startTime && Number.isFinite(startTime)) {
-        videoInstance.player.currentTime(startTime);
-      }
-
-      videoInstance.firstPlay = false;
-    };
-
-    const handleReady = () => {
-      if (videoInstance.stopTimeOver) {
-        if (Number.isFinite(startTime))
-          videoInstance.player.currentTime(startTime || 0);
-        videoInstance.stopTimeOver = false;
-      }
-      videoInstance.player.on("timeupdate", handleTimeUpdate);
-      videoInstance.player.on("seeked", handleSeeked);
-    };
-
-    videoInstance.player.on("play", handlePlay);
-    videoInstance.player.one("play", handleFirstPlay);
-    videoInstance.player.ready(handleReady);
-
-    return () => {
-      videoInstance.player.off("timeupdate", handleTimeUpdate);
-      videoInstance.player.off("seeked", handleSeeked);
-      videoInstance.player.off("play", handlePlay);
-      videoInstance.player.off("play", handleFirstPlay);
-    };
-    // TODO: videoの内容の変更検知は機能しないので修正したい。Mapオブジェクトでの管理をやめるかMap.prototype.set()を使用しないようにするなど必要かもしれない。
-  }, [book, video, itemExists, prevItemIndex, itemIndex, onEnded]);
+  }, [book, video, itemExists, prevItemIndex, itemIndex]);
 
   const handleSkipWatch = useCallback(async () => {
     const videoInstance = video.get(String(topic?.id));
     if (!videoInstance) return;
-    if (videoInstance.type === "vimeo") {
-      const currentTime = await videoInstance.player.getCurrentTime();
-      const nextUnwatchedTime = timeRange.find((timeRange) => {
-        return (timeRange.endMs || 0) / 1000 > currentTime;
-      });
-      if (!nextUnwatchedTime?.endMs) return;
-      void videoInstance.player.setCurrentTime(nextUnwatchedTime.endMs / 1000);
-    } else {
-      const nextUnwatchedTime = timeRange.find((timeRange) => {
-        return (
-          (timeRange.endMs || 0) / 1000 >
-          (videoInstance.player.currentTime() ?? 0)
-        );
-      });
-      if (!nextUnwatchedTime?.endMs) return;
-      void videoInstance.player.currentTime(nextUnwatchedTime.endMs / 1000);
-    }
+    const media = getMediaFromVideoInstance(videoInstance);
+    if (!media) return;
+    const nextUnwatchedTime = timeRange.find((timeRange) => {
+      return (timeRange.endMs || 0) / 1000 > media.currentTime;
+    });
+    if (!nextUnwatchedTime?.endMs) return;
+    media.currentTime = nextUnwatchedTime.endMs / 1000;
   }, [timeRange, topic?.id, video]);
 
   const { tabIndex, handleTabIndexChange } = useTabIndex();
@@ -332,6 +235,12 @@ export default function Video({
             videoInstance={videoInstance}
             autoplay={String(topic.id) === id}
             hidden={String(topic.id) !== id}
+            startTime={
+              String(topic.id) === id ? currentTopic?.startTime : undefined
+            }
+            stopTime={
+              String(topic.id) === id ? currentTopic?.stopTime : undefined
+            }
             onEnded={String(topic.id) === id ? onEnded : undefined}
           />
         ))

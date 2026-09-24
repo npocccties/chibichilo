@@ -1,13 +1,14 @@
-import { useEffect } from "react";
-import VimeoPlayer from "@vimeo/player";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import type { SxProps } from "@mui/system";
 import type { VideoInstance } from "$types/videoInstance";
+import type { VideoMedia } from "$utils/video/media";
+import { whenMediaReady } from "$utils/video/media";
 import { usePlayerTrackingAtom } from "$store/playerTracker";
 import Box from "@mui/material/Box";
 import { usePlayerState } from "$store/player";
-import Vimeo from "./Vimeo";
-import VideoJs from "./VideoJs";
-import videoJsDurationChangeShims from "$utils/videoJsDurationChangeShims";
+import type { VideoMediaKind } from "./Video";
+
+const VideoView = lazy(() => import("./Video"));
 
 type Props = {
   sx?: SxProps;
@@ -15,98 +16,190 @@ type Props = {
   videoInstance: VideoInstance;
   autoplay?: boolean;
   hidden?: boolean;
+  startTime?: number | null;
+  stopTime?: number | null;
   onEnded?: () => void;
   onDurationChange?: (duration: number) => void;
   onTimeUpdate?: (currentTime: number) => void;
 };
 
+const kindByType: Record<VideoInstance["type"], VideoMediaKind> = {
+  youtube: "youtube",
+  vimeo: "vimeo",
+  wowza: "hls",
+};
+
+function isValidPlaybackEnd({
+  currentTime = 0,
+  stopTime,
+}: {
+  currentTime: number | undefined;
+  stopTime: number | null | undefined;
+}): boolean {
+  return typeof stopTime === "number" && 0 < stopTime && stopTime < currentTime;
+}
+
 export default function VideoPlayer({
   videoInstance,
   autoplay = false,
   hidden = false,
+  startTime,
+  stopTime,
   onEnded,
   onDurationChange,
   onTimeUpdate,
   ...other
 }: Props) {
-  usePlayerState(videoInstance.player);
+  const [media, setMedia] = useState<VideoMedia | null>(videoInstance.media);
+  const handleMediaChange = useCallback(
+    (next: VideoMedia | null) => {
+      videoInstance.media = next;
+      setMedia(next);
+    },
+    [videoInstance]
+  );
+
+  usePlayerState(media);
 
   useEffect(() => {
+    if (!media || !autoplay) return;
     let active = true;
-    if (!autoplay) return;
-    const player = videoInstance.player;
     const play = async () => {
       if (!active) return;
       try {
-        await player.play();
+        await media.play();
       } catch {
         // nop
       }
     };
-    // NOTE: videojs-youtube において再生されない不具合があるので play イベントが発火されなければ再実行を試みる
+    const onPlay = () => {
+      clearTimeout(timeout);
+      media.removeEventListener("play", onPlay);
+    };
+    // NOTE: 埋め込み系メディアで初回 play が握りつぶされることがあるので再試行する
     const timeout = setTimeout(() => play(), 1_000);
-    player.on("play", () => clearTimeout(timeout));
-    const ready =
-      player instanceof VimeoPlayer
-        ? player.ready()
-        : new Promise((resolve) => player.ready(() => resolve(undefined)));
-    void ready.then(play);
+    media.addEventListener("play", onPlay);
+    const cancelReady = whenMediaReady(media, () => {
+      void play();
+    });
     return () => {
       active = false;
       clearTimeout(timeout);
+      media.removeEventListener("play", onPlay);
+      cancelReady();
     };
-  }, [
-    videoInstance,
-    autoplay,
-    // NOTE: セクションが切り替わったことを検知する目的でonEndedの変更検知を利用している
-    onEnded,
-  ]);
+  }, [media, autoplay, onEnded]);
+
   useEffect(() => {
-    const { player } = videoInstance;
+    if (!media) return;
     const handleEnded = () => onEnded?.();
-    const handleDurationChange = ({ duration }: { duration: number }) => {
-      onDurationChange?.(duration);
+    const handleDurationChange = () => {
+      const duration = media.duration;
+      if (Number.isFinite(duration) && duration > 0) {
+        onDurationChange?.(duration);
+      }
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleTimeUpdate = (event: any) => {
-      const currentTime =
-        event?.seconds || event?.target?.player?.currentTime?.();
+    const handleTimeUpdate = () => {
+      const currentTime = media.currentTime;
       if (Number.isFinite(currentTime)) onTimeUpdate?.(currentTime);
     };
 
-    player.on("ended", handleEnded);
-    player.on("durationchange", handleDurationChange);
-    player.on("timeupdate", handleTimeUpdate);
-    if (videoInstance.type !== "vimeo") {
-      videoJsDurationChangeShims(videoInstance.player, handleDurationChange);
-    }
+    media.addEventListener("ended", handleEnded);
+    media.addEventListener("durationchange", handleDurationChange);
+    media.addEventListener("timeupdate", handleTimeUpdate);
     return () => {
-      player.off("ended", handleEnded);
-      player.off("durationchange", handleDurationChange);
-      player.off("timeupdate", handleTimeUpdate);
+      media.removeEventListener("ended", handleEnded);
+      media.removeEventListener("durationchange", handleDurationChange);
+      media.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, [videoInstance, onEnded, onDurationChange, onTimeUpdate]);
+  }, [media, onEnded, onDurationChange, onTimeUpdate]);
+
+  useEffect(() => {
+    if (!media || hidden) return;
+
+    const handleSeeked = () => {
+      const currentTime = media.currentTime;
+      if (
+        typeof startTime === "number" &&
+        Number.isFinite(startTime) &&
+        currentTime < startTime
+      ) {
+        media.currentTime = startTime;
+      }
+    };
+
+    const handleTimeUpdate = () => {
+      if (videoInstance.stopTimeOver) return;
+      if (isValidPlaybackEnd({ currentTime: media.currentTime, stopTime })) {
+        videoInstance.stopTimeOver = true;
+        media.pause();
+        onEnded?.();
+      }
+    };
+
+    const handlePlay = () => {
+      // 終了位置より後ろにシークすると、意図せず再生が再開してしまうことがあるので抑制する
+      if (videoInstance.stopTimeOver) media.pause();
+    };
+
+    const handleFirstPlay = () => {
+      if (!videoInstance.firstPlay) return;
+      if (typeof startTime === "number" && Number.isFinite(startTime)) {
+        media.currentTime = startTime;
+      }
+      videoInstance.firstPlay = false;
+    };
+
+    const cancelReady = whenMediaReady(media, () => {
+      if (videoInstance.stopTimeOver) {
+        if (typeof startTime === "number" && Number.isFinite(startTime)) {
+          media.currentTime = startTime;
+        }
+        videoInstance.stopTimeOver = false;
+      }
+      media.addEventListener("timeupdate", handleTimeUpdate);
+      media.addEventListener("seeked", handleSeeked);
+    });
+
+    media.addEventListener("play", handlePlay);
+    media.addEventListener("play", handleFirstPlay, { once: true });
+
+    return () => {
+      cancelReady();
+      media.removeEventListener("timeupdate", handleTimeUpdate);
+      media.removeEventListener("seeked", handleSeeked);
+      media.removeEventListener("play", handlePlay);
+      media.removeEventListener("play", handleFirstPlay);
+    };
+  }, [media, hidden, startTime, stopTime, videoInstance, onEnded]);
 
   const playerTracking = usePlayerTrackingAtom();
 
   useEffect(() => {
-    if (!hidden) {
-      const { player } = videoInstance;
-      const ready =
-        player instanceof VimeoPlayer
-          ? player.ready()
-          : new Promise((resolve) => player.ready(() => resolve(undefined)));
-      void ready.then(() => {
-        playerTracking(videoInstance);
+    if (!media || hidden) return;
+    const cancelReady = whenMediaReady(media, () => {
+      playerTracking({
+        player: media,
+        url: videoInstance.url,
+        type: videoInstance.type,
       });
-    }
-  }, [videoInstance, hidden, playerTracking]);
+    });
+    return () => {
+      cancelReady();
+    };
+  }, [media, videoInstance, hidden, playerTracking]);
 
   return (
     <Box {...other} hidden={hidden}>
-      {videoInstance.type === "vimeo" && <Vimeo {...videoInstance} />}
-      {videoInstance.type === "youtube" && <VideoJs {...videoInstance} />}
-      {videoInstance.type === "wowza" && <VideoJs {...videoInstance} />}
+      <Suspense fallback={null}>
+        <VideoView
+          src={videoInstance.url}
+          kind={kindByType[videoInstance.type]}
+          poster={videoInstance.poster}
+          tracks={videoInstance.tracks}
+          onMediaChange={handleMediaChange}
+        />
+      </Suspense>
     </Box>
   );
 }

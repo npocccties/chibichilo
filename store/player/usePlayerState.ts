@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import useDebouncedCallback from "$utils/useDebouncedCallback";
-import type { VideoJsPlayer } from "$types/videoJsPlayer";
-import VimeoPlayer from "@vimeo/player";
+import type { VideoMedia } from "$utils/video/media";
+import { getMediaTextTracks } from "$utils/video/media";
 import type { Muted, PlaybackRate, TextTrack, Volume } from "./storage";
 import {
   muteAtom,
@@ -11,31 +11,31 @@ import {
   volumeAtom,
 } from "./storage";
 
-type Player = VideoJsPlayer | VimeoPlayer;
+/** 動画プレイヤー準備完了かどうかの取得処理 */
+function getReady(media: VideoMedia): boolean {
+  // NOTE: 埋め込み系メディアはバッファリング完了まで誤った値が得られうるため待機
+  return media.readyState === 4; // HaveEnoughData
+}
 
 /** イベント発火の間隔を間引くための遅延時間 (ms) */
 const wait = 100;
-/** VideoJsPlayer.readyState() 監視間隔 (ms) */
+/** readyState 監視間隔 (ms) */
 const interval = 1_000;
 
-/** 動画プレイヤー準備完了かどうかの取得処理 */
-function getReady(player: Player): boolean {
-  return (
-    player instanceof VimeoPlayer ||
-    // NOTE: videojs-youtube はバッファリングが行われるまで誤った値が得られうるため待機
-    player.readyState() === 4 // HaveEnoughData
-  );
-}
-
 /** 動画プレイヤー準備状況へのアクセス */
-function useReady(player: Player): boolean {
+function useReady(media: VideoMedia | null): boolean {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!media) {
+      setReady(false);
+      return;
+    }
+
     let id: ReturnType<typeof setInterval> | undefined;
 
     const update = () => {
-      if (!getReady(player)) return false;
+      if (!getReady(media)) return false;
       setReady(true);
       if (id !== undefined) {
         clearInterval(id);
@@ -52,119 +52,77 @@ function useReady(player: Player): boolean {
     return () => {
       if (id !== undefined) clearInterval(id);
     };
-  }, [player]);
+  }, [media]);
 
   return ready;
 }
 
-/** 動画プレイヤーへの再生速度の設定処理 */
-function setPlayerPlaybackRate(player: Player, data: PlaybackRate): void {
-  if (player instanceof VimeoPlayer) {
-    void player.setPlaybackRate(data);
-  } else {
-    player.playbackRate(data);
-  }
+function setPlayerPlaybackRate(media: VideoMedia, data: PlaybackRate): void {
+  media.playbackRate = data;
 }
 
-/** 動画プレイヤーからの再生速度の取得処理 */
-async function getPlayerPlaybackRate(player: Player): Promise<PlaybackRate> {
-  const data = await (player instanceof VimeoPlayer
-    ? player.getPlaybackRate()
-    : (player.playbackRate() ?? 1));
-  return data;
+async function getPlayerPlaybackRate(media: VideoMedia): Promise<PlaybackRate> {
+  return media.playbackRate ?? 1;
 }
 
-/** 動画プレイヤーへの音量の設定処理 */
 function setPlayerVolume(
-  player: Player,
+  media: VideoMedia,
   data: { volume: Volume; muted: Muted }
 ): void {
-  if (player instanceof VimeoPlayer) {
-    void player.setVolume(data.volume);
-    void player.setMuted(data.muted);
-  } else {
-    player.volume(data.volume);
-    player.muted(data.muted);
-  }
+  media.volume = data.volume;
+  media.muted = data.muted;
 }
 
-/** 動画プレイヤーからの音量の取得処理 */
-async function getPlayerVolume(player: Player): Promise<{
+async function getPlayerVolume(media: VideoMedia): Promise<{
   volume: Volume;
   muted: Muted;
 }> {
-  const [volume, muted] = await Promise.all([
-    player instanceof VimeoPlayer
-      ? player.getVolume()
-      : (player.volume() ?? NaN),
-    player instanceof VimeoPlayer
-      ? player.getMuted()
-      : (player.muted() ?? false),
-  ]);
-  return { volume, muted };
+  return {
+    volume: media.volume ?? NaN,
+    muted: media.muted ?? false,
+  };
 }
 
-/** 動画プレイヤーへの字幕の設定処理 */
-function setPlayerTextTrack(player: Player, data: TextTrack): void {
-  if (player instanceof VimeoPlayer) {
-    return; // Vimeo は字幕非対応
-  }
-
+function setPlayerTextTrack(media: VideoMedia, data: TextTrack): void {
   const textTracks: TextTrack[] = [];
+  const trackList = getMediaTextTracks(media);
 
-  // VideoJsTextTrackListは配列ではない
-  const vjsTtl = player.remoteTextTracks();
-
-  for (let i = 0; i < vjsTtl.length; i++) {
-    textTracks.push(Object.assign(vjsTtl[i], { index: i }) as TextTrack);
+  for (let i = 0; i < trackList.length; i++) {
+    textTracks.push(Object.assign(trackList[i], { index: i }) as TextTrack);
   }
 
-  // 最初に選択順・種別・言語の完全一致を探索
   let textTrack = textTracks.find(
     ({ index, kind, language }) =>
       index === data.index && kind === data.kind && language === data.language
   );
 
-  // 見つからない場合、種別・言語の一致を探索
   textTrack ??= textTracks.find(
     ({ kind, language }) => kind === data.kind && language === data.language
   );
 
   if (!textTrack) {
-    // それでも見つからない場合はすべて非表示にする
     for (const t of textTracks) {
       t.mode = "disabled";
     }
     return;
   }
 
-  // 見つかった字幕の表示・非表示を反映する
   textTrack.mode = data.mode;
 }
 
-/** 動画プレイヤーからの字幕の取得処理 */
 async function getPlayerTextTrack(
-  player: Player
+  media: VideoMedia
 ): Promise<TextTrack | undefined> {
-  // Vimeo は字幕非対応
-  if (player instanceof VimeoPlayer) return;
-
   const textTracks: TextTrack[] = [];
+  const trackList = getMediaTextTracks(media);
 
-  // VideoJsTextTrackListは配列ではない
-  const vjsTtl = player.remoteTextTracks();
-
-  for (let i = 0; i < vjsTtl.length; i++) {
-    textTracks.push(Object.assign(vjsTtl[i], { index: i }) as TextTrack);
+  for (let i = 0; i < trackList.length; i++) {
+    textTracks.push(Object.assign(trackList[i], { index: i }) as TextTrack);
   }
 
-  // 動画に字幕が設定されていない場合は何もしない
   if (textTracks.length === 0) return;
 
-  // 表示されている字幕を探索
   let textTrack = textTracks.find(({ mode }) => mode === "showing");
-
-  // 見つからない場合、先頭を使用
   textTrack ??= textTracks[0];
 
   return {
@@ -176,55 +134,70 @@ async function getPlayerTextTrack(
 }
 
 /** プレイヤー設定の保存と反映のためのカスタムフック */
-export function usePlayerState(player: Player) {
-  const ready = useReady(player);
+export function usePlayerState(media: VideoMedia | null) {
+  const ready = useReady(media);
   const [playbackRate, setPlaybackRate] = useAtom(playbackRateAtom);
   const [volume, setVolume] = useAtom(volumeAtom);
   const [muted, setMuted] = useAtom(muteAtom);
   const [textTrack, setTextTrack] = useAtom(textTrackAtom);
 
   const onPlaybackRateChange = useCallback(async () => {
-    const data = await getPlayerPlaybackRate(player);
+    if (!media) return;
+    const data = await getPlayerPlaybackRate(media);
     setPlaybackRate(data);
-  }, [player, setPlaybackRate]);
+  }, [media, setPlaybackRate]);
 
   useEffect(() => {
-    setPlayerPlaybackRate(player, playbackRate);
-  }, [player, ready, playbackRate]);
+    if (!media || !ready) return;
+    setPlayerPlaybackRate(media, playbackRate);
+  }, [media, ready, playbackRate]);
 
   useEffect(() => {
-    if (ready) player.on("ratechange", onPlaybackRateChange);
-    return () => player.off("ratechange", onPlaybackRateChange);
-  }, [player, ready, onPlaybackRateChange]);
+    if (!media || !ready) return;
+    media.addEventListener("ratechange", onPlaybackRateChange);
+    return () => {
+      media.removeEventListener("ratechange", onPlaybackRateChange);
+    };
+  }, [media, ready, onPlaybackRateChange]);
 
   const updateVolume = useCallback(async () => {
-    const data = await getPlayerVolume(player);
+    if (!media) return;
+    const data = await getPlayerVolume(media);
     setVolume(data.volume);
     setMuted(data.muted);
-  }, [player, setVolume, setMuted]);
+  }, [media, setVolume, setMuted]);
 
   const onVolumeChange = useDebouncedCallback(updateVolume, wait);
 
   useEffect(() => {
-    setPlayerVolume(player, { volume, muted });
-  }, [player, ready, volume, muted]);
+    if (!media || !ready) return;
+    setPlayerVolume(media, { volume, muted });
+  }, [media, ready, volume, muted]);
 
   useEffect(() => {
-    if (ready) player.on("volumechange", onVolumeChange);
-    return () => player.off("volumechange", onVolumeChange);
-  }, [player, ready, onVolumeChange]);
+    if (!media || !ready) return;
+    media.addEventListener("volumechange", onVolumeChange);
+    return () => {
+      media.removeEventListener("volumechange", onVolumeChange);
+    };
+  }, [media, ready, onVolumeChange]);
 
   const onTextTrackChange = useCallback(async () => {
-    const data = await getPlayerTextTrack(player);
+    if (!media) return;
+    const data = await getPlayerTextTrack(media);
     if (data) setTextTrack(data);
-  }, [player, setTextTrack]);
+  }, [media, setTextTrack]);
 
   useEffect(() => {
-    if (ready) setPlayerTextTrack(player, textTrack);
-  }, [player, ready, textTrack]);
+    if (!media || !ready) return;
+    setPlayerTextTrack(media, textTrack);
+  }, [media, ready, textTrack]);
 
   useEffect(() => {
-    if (ready) player.on("texttrackchange", onTextTrackChange);
-    return () => player.off("texttrackchange", onTextTrackChange);
-  }, [player, ready, onTextTrackChange]);
+    if (!media || !ready) return;
+    media.addEventListener("texttrackchange", onTextTrackChange);
+    return () => {
+      media.removeEventListener("texttrackchange", onTextTrackChange);
+    };
+  }, [media, ready, onTextTrackChange]);
 }

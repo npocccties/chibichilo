@@ -31,12 +31,20 @@ const nextItemIndexAtom = atom((get) => {
 
 const updateBookAtom = atom<undefined, [BookSchema], void>(
   () => undefined,
-  (_, set, book) => {
+  (get, set, book) => {
+    const prev = get(bookAtom);
+    const itemExists = ([sectionIndex, topicIndex]: ItemIndex) =>
+      book.sections[sectionIndex]?.topics[topicIndex];
+
+    let itemIndex = prev.itemIndex;
+    if (!itemExists(itemIndex)) {
+      itemIndex = itemExists([0, 0]) ? [0, 0] : [-1, -1];
+    }
+
     set(bookAtom, {
       book,
-      itemIndex: [-1, -1],
-      itemExists: ([sectionIndex, topicIndex]) =>
-        book.sections[sectionIndex]?.topics[topicIndex],
+      itemIndex,
+      itemExists,
     });
   }
 );
@@ -58,8 +66,14 @@ export function useBookAtom(book?: BookSchema) {
   const updateBook = useSetAtom(updateBookAtom);
   const updateItemIndex = useSetAtom(updateItemIndexAtom);
   useEffect(() => {
-    if (book && book !== state.book) updateBook(book);
+    if (book && book !== state.book) {
+      updateBook(book);
+    }
   }, [updateBook, book, state.book]);
-  useUnmount(reset);
+  useUnmount(() => {
+    // `useBookAtom()` is also used as a reader by nested components.
+    // Only the owner that provided a book should reset the global book state.
+    if (book) reset();
+  });
   return { ...state, updateItemIndex, nextItemIndex };
 }

@@ -6,12 +6,6 @@ import type { SessionSchema } from "$server/models/session";
 import type * as SessionStore from "$store/session";
 import { vi } from "vitest";
 
-vi.mock("@vimeo/player", () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    ready: vi.fn().mockResolvedValue(undefined),
-  })),
-}));
 vi.mock("./loggerSessionPersister");
 vi.mock("$store/session", async (importOriginal) => {
   const actual = await importOriginal<typeof SessionStore>();

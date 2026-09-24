@@ -23,8 +23,7 @@ import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
 import { bookUrl, paths } from "$utils/routes";
 import { useAppRouter } from "$utils/useAppRouter";
-import "video.js/dist/video-js.css";
-import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
+import "@videojs/react/video/skin.css";
 import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
 
 function Content() {

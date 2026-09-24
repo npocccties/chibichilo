@@ -14,16 +14,22 @@ const videoAtom = atom<{
 const preloadVideoAtom = atom(
   null,
   (get, set, sections: Pick<SectionSchema, "topics">[]) => {
-    const { video } = get(videoAtom);
+    const current = get(videoAtom).video;
+    const video = new Map(current);
+    let added = 0;
+    let removed = 0;
     for (const topic of sections.flatMap(({ topics }) => topics)) {
       if (!isVideoResource(topic.resource)) {
+        if (video.has(String(topic.id))) removed += 1;
         video.delete(String(topic.id));
         continue;
       }
       if (!video.has(String(topic.id))) {
         video.set(String(topic.id), getVideoInstance(topic.resource));
+        added += 1;
       }
     }
+    if (added === 0 && removed === 0) return;
     set(videoAtom, { video });
   }
 );

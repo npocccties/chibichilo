@@ -48,6 +48,7 @@ import useVideoResourceProps from "$utils/useVideoResourceProps";
 import usePaused from "$utils/video/usePaused";
 import type { AuthorSchema } from "$server/models/author";
 import type { TopicSubmitValues } from "$types/topicSubmitValues";
+import { getMediaFromVideoInstance } from "$types/videoInstance";
 import { useAuthorsAtom } from "store/authors";
 import { useVideoAtom } from "$store/video";
 import { useVideoTrackAtom } from "$store/videoTrack";
@@ -250,9 +251,8 @@ export default function TopicForm(props: Props) {
   const getDuration = useCallback(async () => {
     if (method == "url") {
       const videoInstance = video.get(videoResource?.url ?? "");
-      if (videoInstance?.type == "vimeo")
-        return await videoInstance.player.getDuration();
-      else return videoInstance?.player.duration() ?? 0;
+      if (!videoInstance) return 0;
+      return getMediaFromVideoInstance(videoInstance)?.duration ?? 0;
     } else {
       return localVideo.current?.duration ?? 0;
     }
@@ -281,7 +281,10 @@ export default function TopicForm(props: Props) {
     [getDuration, getValues, setValue, setStartStopMinMax]
   );
   const getPlayer = useCallback(() => {
-    if (method == "url") return video.get(videoResource?.url ?? "")?.player;
+    if (method == "url") {
+      const instance = video.get(videoResource?.url ?? "");
+      return instance ? getMediaFromVideoInstance(instance) : undefined;
+    }
     else return localVideo.current;
   }, [method, video, videoResource, localVideo]);
   const [paused, onTogglePause] = usePaused(getPlayer);
@@ -298,9 +301,8 @@ export default function TopicForm(props: Props) {
   const getCurrentTime = useCallback(async () => {
     if (method == "url") {
       const videoInstance = video.get(videoResource?.url ?? "");
-      if (videoInstance?.type == "vimeo")
-        return await videoInstance.player.getCurrentTime();
-      else return videoInstance?.player.currentTime() ?? 0;
+      if (!videoInstance) return 0;
+      return getMediaFromVideoInstance(videoInstance)?.currentTime ?? 0;
     } else {
       return localVideo.current?.currentTime ?? 0;
     }
@@ -309,9 +311,11 @@ export default function TopicForm(props: Props) {
     async (currentTime: number) => {
       if (method == "url") {
         const videoInstance = video.get(videoResource?.url ?? "");
-        if (videoInstance?.type == "vimeo")
-          await videoInstance.player.setCurrentTime(currentTime);
-        else videoInstance?.player.currentTime(currentTime);
+        const media = videoInstance
+          ? getMediaFromVideoInstance(videoInstance)
+          : null;
+        if (!media) return;
+        media.currentTime = currentTime;
       } else {
         const currentLocalVideo = localVideo.current;
         if (currentLocalVideo) currentLocalVideo.currentTime = currentTime;
