@@ -35,7 +35,9 @@ export function isYouTubeInstance(instance: VideoInstance): boolean {
   return instance.type === "youtube";
 }
 
-export function isChibichiloPlayer(player: unknown): player is ChibichiloPlayer {
+export function isChibichiloPlayer(
+  player: unknown
+): player is ChibichiloPlayer {
   return isVideoMedia(player);
 }
 

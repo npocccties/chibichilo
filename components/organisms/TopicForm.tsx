@@ -284,8 +284,7 @@ export default function TopicForm(props: Props) {
     if (method == "url") {
       const instance = video.get(videoResource?.url ?? "");
       return instance ? getMediaFromVideoInstance(instance) : undefined;
-    }
-    else return localVideo.current;
+    } else return localVideo.current;
   }, [method, video, videoResource, localVideo]);
   const [paused, onTogglePause] = usePaused(getPlayer);
   const handleTimeUpdate = useCallback(

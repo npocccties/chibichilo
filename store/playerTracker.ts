@@ -19,10 +19,7 @@ const playerTrackingAtom = atom<
     const prev = get(playerTrackerAtom);
     if (prev?.player === player) return;
     prev?.removeAllListeners();
-    set(
-      playerTrackerAtom,
-      player && new PlayerTracker(player, url, type)
-    );
+    set(playerTrackerAtom, player && new PlayerTracker(player, url, type));
   }
 );
 

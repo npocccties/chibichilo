@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { useMedia } from "@videojs/react";
-import {
-  VideoPlayer as VideoJsPlayer,
-  VideoSkin,
-} from "@videojs/react/video";
+import { VideoPlayer as VideoJsPlayer, VideoSkin } from "@videojs/react/video";
 import { HlsJsVideo } from "@videojs/react/media/hlsjs-video";
 import { YouTubeVideo } from "@videojs/react/media/youtube-video";
 import { VimeoVideo } from "@videojs/react/media/vimeo-video";

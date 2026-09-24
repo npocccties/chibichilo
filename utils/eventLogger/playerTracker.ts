@@ -63,11 +63,7 @@ export class PlayerTracker extends (EventEmitter as {
   /** 再生した時間範囲の取得 */
   readonly getPlayed: () => Promise<[number, number][]>;
 
-  constructor(
-    player: VideoMedia,
-    url = "",
-    type?: VideoProviderType
-  ) {
+  constructor(player: VideoMedia, url = "", type?: VideoProviderType) {
     super();
     this.player = player;
     this.url = url;
