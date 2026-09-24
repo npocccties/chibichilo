@@ -1,14 +1,15 @@
-import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { useMedia } from "@videojs/react";
-import { VideoPlayer as VideoJsPlayer, VideoSkin } from "@videojs/react/video";
+import {
+  VideoPlayer as VideoJsPlayer,
+  VideoSkin,
+} from "@videojs/react/video";
 import { HlsJsVideo } from "@videojs/react/media/hlsjs-video";
 import { YouTubeVideo } from "@videojs/react/media/youtube-video";
 import { VimeoVideo } from "@videojs/react/media/vimeo-video";
 import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
 import type { VideoMedia } from "$utils/video/media";
-import { isVideoMedia } from "$utils/video/media";
+import { useMediaBind } from "$utils/video/useMediaBind";
 
 const containerSx: SxProps<Theme> = {
   position: "relative",
@@ -65,16 +66,7 @@ function MediaBinder({
 }: {
   onMediaChange?: (media: VideoMedia | null) => void;
 }) {
-  const media = useMedia();
-
-  useEffect(() => {
-    const next = isVideoMedia(media) ? media : null;
-    onMediaChange?.(next);
-    return () => {
-      onMediaChange?.(null);
-    };
-  }, [media, onMediaChange]);
-
+  useMediaBind(onMediaChange);
   return null;
 }
 

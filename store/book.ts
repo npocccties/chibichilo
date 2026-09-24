@@ -4,6 +4,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useResetAtom } from "jotai/utils";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
+import { pauseOthersAtom, preloadVideoAtom } from "$store/video";
 
 type BookState = {
   book: BookSchema | undefined;
@@ -46,6 +47,11 @@ const updateBookAtom = atom<undefined, [BookSchema], void>(
       itemIndex,
       itemExists,
     });
+
+    // ブック確定時にプレイヤープールを同期
+    set(preloadVideoAtom, book.sections);
+    const topic = itemExists(itemIndex);
+    if (topic) set(pauseOthersAtom, String(topic.id));
   }
 );
 
@@ -53,9 +59,13 @@ const updateItemIndexAtom = atom<undefined, [ItemIndex] | [], void>(
   () => undefined,
   (get, set, itemIndex = get(nextItemIndexAtom)) => {
     const { book, itemExists } = get(bookAtom);
-    if (itemExists(itemIndex)) {
-      set(bookAtom, { book, itemIndex, itemExists });
-    }
+    if (!itemExists(itemIndex)) return;
+
+    set(bookAtom, { book, itemIndex, itemExists });
+
+    // トピック切替コマンド: 前の動画再生を破棄（現在動画の autoplay は VideoPlayer 側）
+    const topic = itemExists(itemIndex);
+    if (topic) set(pauseOthersAtom, String(topic.id));
   }
 );
 

@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import usePrevious from "$utils/usePrevious";
+import React, { useCallback, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -164,7 +163,7 @@ export default function Video({
 }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { video, preloadVideo } = useVideoAtom();
+  const { video } = useVideoAtom();
   const { book, itemIndex, itemExists } = useBookAtom();
   const { session } = useSessionAtom();
 
@@ -173,23 +172,8 @@ export default function Video({
     book && video.has(String(topic.id))
   );
 
-  useEffect(() => {
-    if (!book) return;
-    // バックグラウンドで動画プレイヤーオブジェクトプールに読み込む
-    preloadVideo(book.sections);
-  }, [book, preloadVideo, video.size]);
-
   const oembed = useOembed(topic.resource.id);
-  const prevItemIndex = usePrevious(itemIndex);
   const currentTopic = itemExists(itemIndex);
-
-  useEffect(() => {
-    if (!book) return;
-    if (prevItemIndex?.some((v, i) => v !== itemIndex[i])) {
-      const prevInstance = video.get(String(itemExists(prevItemIndex)?.id));
-      if (prevInstance) getMediaFromVideoInstance(prevInstance)?.pause();
-    }
-  }, [book, video, itemExists, prevItemIndex, itemIndex]);
 
   const handleSkipWatch = useCallback(async () => {
     const videoInstance = video.get(String(topic?.id));
