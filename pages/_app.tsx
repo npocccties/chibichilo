@@ -19,7 +19,6 @@ import EmbedProblem from "$templates/EmbedProblem";
 import {
   NEXT_PUBLIC_NO_EMBED,
   NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK,
-  NEXT_PUBLIC_BOOKMARK_COLOR,
 } from "$utils/env";
 import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
@@ -32,7 +31,6 @@ import {
   useLtiContextAtom,
   useUpdateLtiContextAtom,
 } from "$store/session";
-import Box from "@mui/material/Box";
 
 function Content({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -41,14 +39,6 @@ function Content({ children }: { children: ReactNode }) {
   const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
     useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
-
-  const currentBookId = Number(router.query.bookId);
-  const isBookmarkView = Boolean(
-    session?.ltiResourceLink &&
-      ((ltiContextId && ltiContextId !== session.ltiResourceLink.contextId) ||
-        (!Number.isNaN(currentBookId) &&
-          currentBookId !== session.ltiResourceLink.bookId))
-  );
   const isAppMounted = useRef(false);
 
   useEffect(() => {
@@ -124,24 +114,8 @@ function Content({ children }: { children: ReactNode }) {
   }
 
   const handleTopicsClick = () => router.push(pagesPath.topics.$url());
-
   return (
     <>
-      {isBookmarkView && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            border: `2px solid ${NEXT_PUBLIC_BOOKMARK_COLOR}`,
-            boxShadow: `inset 0 0 20px ${NEXT_PUBLIC_BOOKMARK_COLOR}`,
-            pointerEvents: "none",
-            zIndex: 9999,
-          }}
-        />
-      )}
       {(isInstructor || NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) && (
         <Slide appear={false} direction="down" in={!trigger}>
           <AppBar

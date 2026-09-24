@@ -30,6 +30,8 @@ import MoveDownloadPageDialog from "$organisms/MoveDownloadPageDialog";
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 import { showDashboard } from "$pages/dashboard";
 
+const MUI_TAB_INDICATOR_THICKNESS = 2;
+
 const useStyles = makeStyles((theme) => ({
   inner: {
     display: "flex",
@@ -67,6 +69,10 @@ const useStyles = makeStyles((theme) => ({
   roles: {
     fontSize: "0.75rem",
     color: gray[700],
+  },
+  activeNav: {
+    boxShadow: `inset 0 -${MUI_TAB_INDICATOR_THICKNESS}px 0 0 ${theme.palette.primary.main} !important`,
+    borderRadius: "0 !important",
   },
 }));
 
@@ -112,6 +118,18 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   const [openDownload, setOpenDownload] = useState(false);
 
   const router = useRouter();
+  const currentBookId = Number(router.query.bookId);
+  const isViewingBook = router.pathname === "/book";
+  const hasBookmarkQuery = Boolean(router.query.lti_context_id);
+  const isBookmarkView = Boolean(
+    session?.ltiResourceLink &&
+      hasBookmarkQuery &&
+      (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
+        (!Number.isNaN(currentBookId) &&
+          currentBookId !== session.ltiResourceLink.bookId))
+  );
+  const isTagManagementActive = isViewingBook && isBookmarkView;
+  const isCurrentBookActive = isViewingBook && !isBookmarkView;
 
   const handleClick = () => {
     setOpen(true);
@@ -200,6 +218,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                 </>
               )}
               <AppBarNavButton
+                className={clsx({ [classes.activeNav]: isCurrentBookActive })}
                 color="inherit"
                 icon={<CellTowerIcon />}
                 label="配信中のブック"
@@ -228,6 +247,9 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               )}
               {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
                 <AppBarNavButton
+                  className={clsx({
+                    [classes.activeNav]: isTagManagementActive,
+                  })}
                   color="inherit"
                   icon={<StyleIcon />}
                   label="タグ管理"
