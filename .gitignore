@@ -6,7 +6,7 @@
 /public/storybook/
 /public/LICENSE
 /out/
-/utils/$path.ts
+/dist/
 node_modules/
 .pnpm-store/
 server/generated/

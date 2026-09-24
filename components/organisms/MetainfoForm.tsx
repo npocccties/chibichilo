@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import TextField from "$atoms/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import useCardStyles from "styles/card";
+import card from "styles/card";
 import languages from "$utils/languages";
 import licenses from "$utils/licenses";
 import type { MetainfoProps } from "$server/models/metainfo";
@@ -21,22 +21,19 @@ export default function MetainfoForm({
   const { register, handleSubmit, formState } = useForm<MetainfoProps>({
     values: metainfo,
   });
-  const cardClasses = useCardStyles();
   const update = Boolean(onSubmit);
   if (!onSubmit) {
     onSubmit = () => {};
   }
   return (
     <Card
-      classes={cardClasses}
-      sx={
-        {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "start",
-          rowGap: 2.5,
-        } as const
-      }
+      sx={{
+        ...card,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "start",
+        rowGap: 2.5,
+      }}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >

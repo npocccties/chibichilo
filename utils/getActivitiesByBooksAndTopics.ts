@@ -57,7 +57,7 @@ function getActivitiesByBooksAndTopics({
         activities
           .map(
             (a: BookActivitySchema) =>
-              (a?.totalTimeMs ?? 0) / 1000 / topic.timeRequired ?? 0
+              (a?.totalTimeMs ?? 0) / 1000 / topic.timeRequired
           )
           .reduce((a, b) => {
             return a + b;

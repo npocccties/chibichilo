@@ -51,7 +51,9 @@ describe("init()", () => {
     mockedUserServices.upsertUser.mockResolvedValue({ id: 1 } as never);
     mockedResourceLinkServices.findLtiResourceLink.mockResolvedValue(null);
 
-    await init({ session: mockSession } as unknown as FastifyRequest);
+    const result = await init({
+      session: mockSession,
+    } as unknown as FastifyRequest);
 
     expect(
       mockedResourceLinkServices.upsertLtiResourceLink
@@ -61,5 +63,9 @@ describe("init()", () => {
       }),
       undefined
     );
+    expect(result).toEqual({
+      status: 302,
+      headers: { location: "http://localhost:3000/book?bookId=1" },
+    });
   });
 });

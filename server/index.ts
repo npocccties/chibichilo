@@ -25,7 +25,10 @@ if (HTTPS_CERT && HTTPS_KEY) {
 void fastify({ logger: isDev, trustProxy: true, ...options })
   .get(
     path.join(FRONTEND_PATH, "*"),
-    staticHandler({ public: path.join(__dirname, "public") })
+    staticHandler({
+      public: path.join(__dirname, "public"),
+      rewrites: [{ source: "**", destination: "/index.html" }],
+    })
   )
   .register(app, {
     basePath: API_BASE_PATH,

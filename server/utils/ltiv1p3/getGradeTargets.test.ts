@@ -1,12 +1,7 @@
 import { getGradeTargets } from "./getGradeTargets";
 import type { SessionSchema } from "$server/models/session";
 import type { ActivityQuery } from "$server/validators/activityQuery";
-import type {
-  LtiResourceLink,
-  LtiMember,
-  User,
-} from "$server/generated/prisma/client";
-import { type Mock, vi } from "vitest";
+import { vi } from "vitest";
 
 vi.mock("$server/utils/prisma", () => ({
   default: {
@@ -17,18 +12,8 @@ vi.mock("$server/utils/prisma", () => ({
 
 import prisma from "$server/utils/prisma";
 
-type MockUser = Partial<User> & {
-  ltiMembers?: Partial<LtiMember>[];
-};
-const mockUserFindUnique = vi.mocked(prisma.user.findUnique) as unknown as Mock<
-  Promise<MockUser | null>
->;
-
-type MockResourceLink = Partial<LtiResourceLink> &
-  Pick<LtiResourceLink, "consumerId" | "contextId" | "lineItem">;
-const mockLtiResourceLinkFindMany = vi.mocked(
-  prisma.ltiResourceLink.findMany
-) as unknown as Mock<Promise<MockResourceLink[]>>;
+const mockUserFindUnique = vi.mocked(prisma.user.findUnique);
+const mockLtiResourceLinkFindMany = vi.mocked(prisma.ltiResourceLink.findMany);
 
 describe("getGradeTargets()", () => {
   const bookId = 123;
@@ -59,7 +44,7 @@ describe("getGradeTargets()", () => {
     };
     mockLtiResourceLinkFindMany.mockResolvedValue([
       { consumerId: "curr-cons", contextId: "curr-ctx", lineItem: "url-1" },
-    ]);
+    ] as never);
 
     const result = await getGradeTargets(bookId, userId, session, query);
 
@@ -83,11 +68,11 @@ describe("getGradeTargets()", () => {
     };
     mockUserFindUnique.mockResolvedValue({
       ltiMembers: [{ consumerId: "cons-base", contextId: "ctx-other" }],
-    });
+    } as never);
     mockLtiResourceLinkFindMany.mockResolvedValue([
       { consumerId: "cons-base", contextId: "ctx-base", lineItem: "url-1" },
       { consumerId: "cons-base", contextId: "ctx-other", lineItem: "url-2" },
-    ]);
+    ] as never);
 
     const result = await getGradeTargets(bookId, userId, session, query);
 
@@ -139,7 +124,7 @@ describe("getGradeTargets()", () => {
     };
     mockUserFindUnique.mockResolvedValue({
       ltiMembers: [{ consumerId: "cons-session", contextId: "ctx-other" }],
-    });
+    } as never);
     mockLtiResourceLinkFindMany.mockResolvedValue([
       {
         consumerId: "cons-session",
@@ -151,7 +136,7 @@ describe("getGradeTargets()", () => {
         contextId: "ctx-other",
         lineItem: "shared-url",
       },
-    ]);
+    ] as never);
 
     const result = await getGradeTargets(bookId, userId, session, query);
 

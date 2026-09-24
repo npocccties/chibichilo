@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "api/v2.ts", "out", "openapi"],
+  "include": ["**/*.ts", "**/*.tsx", ".storybook/**/*"]
+}

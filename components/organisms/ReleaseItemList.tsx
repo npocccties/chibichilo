@@ -1,15 +1,18 @@
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
-import useTreeItemStyle from "$styles/treeItem";
+import treeItemLabel from "$styles/treeItem";
 import TreeItem from "$atoms/TreeItem";
+import { treeItemClasses } from "@mui/x-tree-view/TreeItem";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateTimeString";
 import EditButton from "$atoms/EditButton";
-import useCardStyles from "$styles/card";
-import TreeView from "@mui/lab/TreeView";
+import card from "$styles/card";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
+
+const treeItemSx = { [`& .${treeItemClasses.label}`]: treeItemLabel };
 
 type Props = {
   id: BookSchema["id"] | TopicSchema["id"];
@@ -33,12 +36,11 @@ function ReleaseItem({
   variant,
   onItemEditClick,
 }: ReleaseItemProps) {
-  const treeItemClasses = useTreeItemStyle();
   return (
     <>
       <TreeItem
-        classes={treeItemClasses}
-        nodeId={index.toString()}
+        sx={treeItemSx}
+        itemId={index.toString()}
         key={index}
         label={
           <>
@@ -48,7 +50,7 @@ function ReleaseItem({
               variant={variant}
               onClick={(event) => {
                 event.stopPropagation();
-                onItemEditClick && onItemEditClick(index);
+                onItemEditClick?.(index);
               }}
             />
             <Box
@@ -168,7 +170,6 @@ function createList(items: CategorizedItems) {
 
 export default function ReleaseItemList(props: Props) {
   const { releases, onItemEditClick } = props;
-  const cardClasses = useCardStyles();
   const items = categorizeReleases(props);
   const { list, categories } = createList(items);
   const handleItemEditClick = async (index: number) => {
@@ -179,8 +180,8 @@ export default function ReleaseItemList(props: Props) {
     if (index >= 0) onItemEditClick(index);
   };
   return (
-    <Card classes={cardClasses}>
-      <TreeView>
+    <Card sx={card}>
+      <SimpleTreeView>
         {list.map((item, index) => (
           <ReleaseItem
             key={index}
@@ -191,7 +192,7 @@ export default function ReleaseItemList(props: Props) {
             onItemEditClick={handleItemEditClick}
           />
         ))}
-      </TreeView>
+      </SimpleTreeView>
     </Card>
   );
 }

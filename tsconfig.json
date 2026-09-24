@@ -12,21 +12,33 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "downlevelIteration": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
     "experimentalDecorators": true,
-    "baseUrl": ".",
     "paths": {
-      "$atoms/*": ["components/atoms/*"],
-      "$molecules/*": ["components/molecules/*"],
-      "$organisms/*": ["components/organisms/*"],
-      "$templates/*": ["components/templates/*"],
-      "$*": ["*"]
+      "$atoms/*": ["./components/atoms/*"],
+      "$molecules/*": ["./components/molecules/*"],
+      "$organisms/*": ["./components/organisms/*"],
+      "$templates/*": ["./components/templates/*"],
+      "$*": ["./*"],
+      "*": ["./*"]
     }
   },
-  "exclude": ["node_modules", "api/v2.ts", "out", "openapi"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "api/v2.ts",
+    "out",
+    "openapi",
+    "**/*.stories.tsx",
+    "vitest.config.ts"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ]
 }

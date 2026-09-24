@@ -19,7 +19,7 @@ async function findPublicBook(
       !publicBook.domains.includes(new URL(originreferer).host)
     )
       return null;
-  } catch (e) {
+  } catch {
     return null;
   }
 

@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import CoursesTemplate from "$templates/Courses";
 import Book from "$templates/Book";
 import BookPreviewDialog from "$organisms/BookPreviewDialog";
@@ -11,7 +11,7 @@ import { useBook } from "$utils/book";
 import useClientIds from "$utils/courses/useClientIds";
 import useLinks, { revalidateLinks } from "$utils/courses/useLinks";
 import useDialogProps from "$utils/useDialogProps";
-import { pagesPath } from "$utils/$path";
+import { bookEditUrl } from "$utils/routes";
 
 function PreviewDialog({
   previewBookId,
@@ -41,7 +41,7 @@ function Index() {
   const contents = useLinks();
   const linkSearchProps = useLinkSearchAtom();
   const dialogProps = useDialogProps<BookSchema["id"]>();
-  const router = useRouter();
+  const router = useAppRouter();
   const handlers = {
     async onLinksDeleteClick(
       links: Array<Pick<LinkSchema, "oauthClientId" | "ltiResourceLink">>
@@ -63,11 +63,7 @@ function Index() {
       dialogProps.dispatch(book.id);
     },
     onBookEditClick(book: Pick<BookSchema, "id" | "authors">) {
-      return router.push(
-        pagesPath.book.edit.$url({
-          query: { context: "courses", bookId: book.id },
-        })
-      );
+      return router.push(bookEditUrl({ context: "courses", bookId: book.id }));
     },
   };
 

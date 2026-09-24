@@ -204,7 +204,7 @@ function parseJsonFromZipWithYauzl(ctx: ImportFileParseContext, file: string) {
       if (err) {
         try {
           finish(JSON.parse(fs.readFileSync(file).toString()));
-        } catch (e) {
+        } catch {
           ctx.errors.push(`ファイルがzipではありません。\n${err}`);
           finish({});
         }
@@ -251,7 +251,7 @@ function parseJsonFromZipWithYauzl(ctx: ImportFileParseContext, file: string) {
         .on("error", (error) => {
           try {
             finish(JSON.parse(fs.readFileSync(file).toString()));
-          } catch (e) {
+          } catch {
             ctx.errors.push(`ファイルがzipではありません。\n${error}`);
             finish({});
           }
@@ -801,7 +801,7 @@ class ImportBooksUtil {
                   sectionTopic.resource.providerUrl;
                 sectionTopic.resource.url =
                   parsedResource?.url ?? sectionTopic.resource.url;
-              } catch (e) {
+              } catch {
                 // nop
               }
             }

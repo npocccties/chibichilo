@@ -1,6 +1,6 @@
 import type { Story } from "@storybook/react";
 import BookTree from "./BookTree";
-import TreeView from "@mui/lab/TreeView";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { book } from "$samples";
@@ -12,12 +12,11 @@ export default {
 
 const Template: Story<Parameters<typeof BookTree>[0]> = (args) => {
   return (
-    <TreeView
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
+    <SimpleTreeView
+      slots={{ collapseIcon: ExpandMoreIcon, expandIcon: ChevronRightIcon }}
     >
       <BookTree {...args} />
-    </TreeView>
+    </SimpleTreeView>
   );
 };
 

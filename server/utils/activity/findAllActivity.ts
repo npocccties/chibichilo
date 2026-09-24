@@ -48,7 +48,7 @@ async function findLtiMembers(
 
   const bookActivityScope = { bookId: { in: bookIds } };
   const activityScope =
-    currentLtiContextOnly ?? true
+    (currentLtiContextOnly ?? true)
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,
@@ -127,9 +127,11 @@ async function findAllActivity(
   const isDownloadPage =
     isAdministrator(session) && currentLtiContextOnly === undefined;
   const consumerId = isDownloadPage
-    ? ltiConsumerId ?? ""
+    ? (ltiConsumerId ?? "")
     : session.oauthClient.id;
-  const contextId = isDownloadPage ? ltiContextId ?? "" : session.ltiContext.id;
+  const contextId = isDownloadPage
+    ? (ltiContextId ?? "")
+    : session.ltiContext.id;
 
   const ltiResourceLinks = await prisma.ltiResourceLink.findMany({
     where: { consumerId, contextId },

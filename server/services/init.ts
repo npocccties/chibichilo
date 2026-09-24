@@ -18,6 +18,35 @@ import { upsertLtiContext } from "$server/utils/ltiContext";
 
 const frontendUrl = `${FRONTEND_ORIGIN}${FRONTEND_PATH}`;
 
+function joinFrontendPath(pathname: string, search = ""): string {
+  const basePath = FRONTEND_PATH.endsWith("/")
+    ? FRONTEND_PATH.slice(0, -1)
+    : FRONTEND_PATH;
+  const path = `${basePath}/${pathname}${search}`.replace(/\/{2,}/g, "/");
+  return FRONTEND_ORIGIN ? `${FRONTEND_ORIGIN}${path}` : path;
+}
+
+function getRedirectLocation(
+  ltiResourceLink: LtiResourceLinkSchema | null,
+  instructor: boolean
+): string {
+  if (ltiResourceLink?.bookId) {
+    const params = new URLSearchParams({
+      bookId: String(ltiResourceLink.bookId),
+    });
+    if (ltiResourceLink.topicId) {
+      params.set("topicId", String(ltiResourceLink.topicId));
+    }
+    return joinFrontendPath("book", `?${params.toString()}`);
+  }
+
+  if (instructor) {
+    return joinFrontendPath("books");
+  }
+
+  return frontendUrl;
+}
+
 async function getInstructorsByNRPS(session: FastifySessionObject) {
   const instructors = await getInstructors(session);
   const ret: number[] = [];
@@ -142,7 +171,12 @@ async function init({ session }: FastifyRequest) {
 
   return {
     status: 302,
-    headers: { location: frontendUrl },
+    headers: {
+      location: getRedirectLocation(
+        ltiResourceLink,
+        isInstructor(session.ltiRoles)
+      ),
+    },
   } as const;
 }
 

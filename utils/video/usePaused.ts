@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import type { VideoJsPlayer } from "$types/videoJsPlayer";
-import VimeoPlayer from "@vimeo/player";
+import type { VideoMedia } from "$utils/video/media";
+
+type Playable = VideoMedia | HTMLVideoElement;
 
 /** メディア要素を一時停止しているかどうか */
 function usePaused(
-  getPlayer: () =>
-    | VideoJsPlayer
-    | VimeoPlayer
-    | HTMLVideoElement
-    | null
-    | undefined
+  getPlayer: () => Playable | null | undefined
 ): [boolean, () => void] {
   const [paused, setPaused] = useState(true);
 
@@ -20,24 +16,13 @@ function usePaused(
     const onPlay = () => setPaused(false);
     const onPause = () => setPaused(true);
 
-    if (player instanceof HTMLVideoElement) {
-      player.addEventListener("play", onPlay);
-      player.addEventListener("pause", onPause);
-      player.addEventListener("ended", onPause);
-      return () => {
-        player.removeEventListener("play", onPlay);
-        player.removeEventListener("pause", onPause);
-        player.removeEventListener("ended", onPause);
-      };
-    }
-
-    player.on("play", onPlay);
-    player.on("pause", onPause);
-    player.on("ended", onPause);
+    player.addEventListener("play", onPlay);
+    player.addEventListener("pause", onPause);
+    player.addEventListener("ended", onPause);
     return () => {
-      player.off("play", onPlay);
-      player.off("pause", onPause);
-      player.off("ended", onPause);
+      player.removeEventListener("play", onPlay);
+      player.removeEventListener("pause", onPause);
+      player.removeEventListener("ended", onPause);
     };
   }, [getPlayer, setPaused]);
 
@@ -45,17 +30,10 @@ function usePaused(
     const player = getPlayer();
     if (!player) return;
 
-    const isPaused: boolean =
-      player instanceof HTMLVideoElement
-        ? player.paused
-        : player instanceof VimeoPlayer
-        ? await player.getPaused()
-        : player.paused();
-
-    if (isPaused) {
+    if (player.paused) {
       void player.play();
     } else {
-      void player.pause();
+      player.pause();
     }
   }, [getPlayer]);
 

@@ -12,63 +12,56 @@ import StyleIcon from "@mui/icons-material/Style";
 import LinkIcon from "@mui/icons-material/Link";
 import CellTowerIcon from "@mui/icons-material/CellTower";
 import SettingsIcon from "@mui/icons-material/Settings";
-import makeStyles from "@mui/styles/makeStyles";
-import clsx from "clsx";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import AppBarNavButton from "$atoms/AppBarNavButton";
 import LtiItemDialog from "$organisms/LtiItemDialog";
-import useAppBarStyles from "$styles/appBar";
+import appBar from "$styles/appBar";
 import type { SessionSchema } from "$server/models/session";
 import type { UserSettingsProps } from "$server/models/userSettings";
 import { gray } from "$theme/colors";
 import { isAdministrator, isInstructor } from "$utils/session";
 import { updateUserSettings } from "$utils/userSettings";
 import { NEXT_PUBLIC_BASE_PATH, NEXT_PUBLIC_NO_DEEP_LINK_UI } from "$utils/env";
-import { useRouter } from "next/router";
-import { pagesPath } from "$utils/$path";
+import { useAppRouter } from "$utils/useAppRouter";
+import { paths } from "$utils/routes";
 import MoveDownloadPageDialog from "$organisms/MoveDownloadPageDialog";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 import { showDashboard } from "$pages/dashboard";
 
-const useStyles = makeStyles((theme) => ({
-  inner: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    maxWidth: theme.breakpoints.values.lg,
-    width: "100%",
-    margin: "0 auto",
-    padding: theme.spacing(0, 3),
-    [theme.breakpoints.down("sm")]: {
-      padding: theme.spacing(0, 2),
-    },
+const innerSx: SxProps<Theme> = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  maxWidth: (theme) => theme.breakpoints.values.lg,
+  width: "100%",
+  margin: "0 auto",
+  padding: (theme) => theme.spacing(0, 3),
+  [`@media (max-width:600px)`]: {
+    padding: (theme) => theme.spacing(0, 2),
   },
-  logo: {
-    maxWidth: 100,
-    maxHeight: 48,
-    width: "auto",
-    height: "auto",
+};
+const logoSx: SxProps<Theme> = {
+  maxWidth: 100,
+  maxHeight: 48,
+  width: "auto",
+  height: "auto",
+  mr: 1,
+};
+const navSx: SxProps<Theme> = {
+  flex: 1,
+  overflowX: "auto",
+  whiteSpace: "nowrap",
+};
+const userSx: SxProps<Theme> = {
+  display: "inline-block",
+  mr: 1,
+  "& > p": {
+    margin: 0,
+    lineHeight: 1.2,
   },
-  margin: {
-    marginRight: theme.spacing(1),
-  },
-  nav: {
-    flex: 1,
-    overflowX: "auto",
-    whiteSpace: "nowrap",
-  },
-  user: {
-    display: "inline-block",
-    "& > p": {
-      margin: 0,
-      lineHeight: 1.2,
-    },
-  },
-  roles: {
-    fontSize: "0.75rem",
-    color: gray[700],
-  },
-}));
+};
 
 type Props = ComponentProps<typeof MuiAppBar> & {
   session: SessionSchema;
@@ -106,12 +99,10 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
     !!session.ltiDlSettings?.deep_link_return_url &&
     !NEXT_PUBLIC_NO_DEEP_LINK_UI;
 
-  const appBarClasses = useAppBarStyles();
-  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openDownload, setOpenDownload] = useState(false);
 
-  const router = useRouter();
+  const router = useAppRouter();
 
   const handleClick = () => {
     setOpen(true);
@@ -127,7 +118,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   };
   const handleOpenUserSettings = () => {
     setShowZoomImportNotice(false);
-    return router.push(pagesPath.userSettings.$url());
+    return router.push(paths.userSettings);
   };
   const handleDisableZoomImport = async () => {
     await updateUserSettings({ zoomImportEnabled: false });
@@ -164,16 +155,17 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   );
 
   return (
-    <MuiAppBar classes={appBarClasses} color="default" {...others} ref={ref}>
+    <MuiAppBar sx={appBar} color="default" {...others} ref={ref}>
       <Toolbar color="inherit" disableGutters>
-        <div className={classes.inner}>
-          <img
+        <Box sx={innerSx}>
+          <Box
+            component="img"
             src={`${NEXT_PUBLIC_BASE_PATH}/logo.png`}
             alt="CHiBi-CHiLO"
-            className={clsx(classes.margin, classes.logo)}
+            sx={logoSx}
           />
           {!isDeepLink && (
-            <div className={classes.nav}>
+            <Box sx={navSx}>
               {isInstructor && (
                 <>
                   <AppBarNavButton
@@ -249,14 +241,16 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                   />
                 </>
               )}
-            </div>
+            </Box>
           )}
           {isInstructor && (
             <div>
-              <div className={clsx(classes.user, classes.margin)}>
+              <Box sx={userSx}>
                 <p>{session.user.name}</p>
-                <p className={classes.roles}>{role(session)}</p>
-              </div>
+                <p style={{ fontSize: "0.75rem", color: gray[700] }}>
+                  {role(session)}
+                </p>
+              </Box>
               {session && (
                 <>
                   <Button variant="text" color="primary" onClick={handleClick}>
@@ -271,7 +265,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               )}
             </div>
           )}
-        </div>
+        </Box>
       </Toolbar>
       <Snackbar
         open={showZoomImportNotice}

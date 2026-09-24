@@ -1,23 +1,45 @@
-import type { VideoResourceSchema } from "$server/models/videoResource";
-import type { VideoJsTextTrackList, VideoJsPlayer } from "$types/videoJsPlayer";
-import type VimeoPlayer from "@vimeo/player";
+import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
+import type { VideoMedia } from "$utils/video/media";
+import { isVideoMedia } from "$utils/video/media";
 
-export type VideoJsInstance = {
-  type: "youtube" | "wowza";
-  url: VideoResourceSchema["url"];
-  element: HTMLElement;
-  player: VideoJsPlayer;
+export type VideoProviderType = "youtube" | "vimeo" | "wowza";
+
+export type VideoInstance = {
+  type: VideoProviderType;
+  url: string;
+  /** Video.js の media。マウント後に設定される */
+  media: VideoMedia | null;
+  poster?: string;
   tracks?: VideoJsTextTrackList;
   stopTimeOver: boolean;
   /** 初回再生 */
   firstPlay: boolean;
 };
 
-export type VimeoInstance = {
-  type: "vimeo";
-  url: VideoResourceSchema["url"];
-  element: HTMLDivElement;
-  player: VimeoPlayer;
-};
+export type ChibichiloPlayer = VideoMedia;
 
-export type VideoInstance = VideoJsInstance | VimeoInstance;
+export function getMediaFromVideoInstance(
+  instance: VideoInstance
+): VideoMedia | null {
+  return instance.media;
+}
+
+/** @deprecated Use getMediaFromVideoInstance */
+export function getPlayerFromVideoInstance(
+  instance: VideoInstance
+): VideoMedia | null {
+  return getMediaFromVideoInstance(instance);
+}
+
+export function isYouTubeInstance(instance: VideoInstance): boolean {
+  return instance.type === "youtube";
+}
+
+export function isChibichiloPlayer(
+  player: unknown
+): player is ChibichiloPlayer {
+  return isVideoMedia(player);
+}
+
+/** @deprecated Use isChibichiloPlayer */
+export const isVideoJsLikePlayer = isChibichiloPlayer;

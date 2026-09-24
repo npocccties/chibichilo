@@ -1,13 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState, type MouseEvent } from "react";
 import useLockBodyScroll from "$utils/useLockBodyScroll";
-import useToggle from "$utils/useToggle";
-import { css } from "@emotion/css";
-import { Dropdown } from "@mui/base/Dropdown";
-import { Menu as BaseMenu, menuClasses } from "@mui/base/Menu";
-import { MenuButton as BaseMenuButton } from "@mui/base/MenuButton";
-import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import type {
   BookmarkProps,
   BookmarkTagMenu,
@@ -15,11 +12,38 @@ import type {
 } from "$server/models/bookmark";
 import Emoji from "./Emoji";
 
-const menuItem = css({
-  "> :first-child": {
-    marginRight: "8px",
-  },
-});
+const MenuButton = styled(Button)`
+  font-size: 12px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: left;
+  background: #f9fafb;
+  border: 1px solid #f9fafb;
+  color: #339dff;
+  text-transform: none;
+  min-width: 0;
+
+  &:hover {
+    background: #f9fafb;
+  }
+`;
+
+const StyledMenuItem = styled(MenuItem)`
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 8px;
+  font-size: 12px;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  > :first-of-type {
+    margin-right: 8px;
+  }
+`;
 
 type Props = {
   topicId: number;
@@ -52,21 +76,25 @@ export default function TagMenu({
     return selectedTag.every((selected) => selected.id !== tag.id);
   });
 
-  const [locked, toggleLocked] = useToggle(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const open = Boolean(anchorEl);
 
-  useLockBodyScroll(locked);
+  useLockBodyScroll(open);
+
+  const handleOpen = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   if (filterTags.length === 0 && isBookmarkMemoContent) {
     return null;
   }
 
   return (
-    <Dropdown
-      onOpenChange={() => {
-        toggleLocked();
-      }}
-    >
-      <MenuButton>
+    <>
+      <MenuButton onClick={handleOpen}>
         <AddReactionOutlinedIcon
           sx={{
             fontSize: 16,
@@ -75,84 +103,36 @@ export default function TagMenu({
         />{" "}
         タグを追加
       </MenuButton>
-      <Menu slots={{ listbox: Listbox }}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        slotProps={{
+          list: { sx: { p: "6px", width: 145 } },
+          paper: {
+            sx: {
+              borderRadius: "12px",
+              boxShadow: "0px 4px 6px rgba(0,0,0, 0.05)",
+            },
+          },
+        }}
+        // Dialogよりも上に表示する
+        sx={{ zIndex: 1301 }}
+      >
         {filterTags.map((option) => (
-          <MenuItem
+          <StyledMenuItem
             key={option.id}
-            value={option}
-            onClick={async () => await onClick(option)}
-            className={menuItem}
+            onClick={async () => {
+              handleClose();
+              await onClick(option);
+            }}
           >
             <Emoji emoji={option.emoji} />
             {option.label}
-          </MenuItem>
+          </StyledMenuItem>
         ))}
       </Menu>
-    </Dropdown>
+    </>
   );
 }
-
-const MenuButton = styled(BaseMenuButton)(
-  () => `
-  font-size: 12px;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  border-radius: 8px;
-  text-align: left;
-  background: #F9FAFB;
-  border: 1px solid #F9FAFB;
-  color: #339DFF;
-  `
-);
-
-const Menu = styled(BaseMenu)(
-  () => `
-  &.${menuClasses.root} {
-    margin-top: -12px !important;
-    margin-left: 20px !important;
-    // Dialogよりも上に表示する
-    z-index: 1301;
-  }
-  `
-);
-
-const Listbox = styled("ul")(
-  () => `
-  font-size: 12px;
-  box-sizing: border-box;
-  padding: 6px;
-  width: 145px;
-  border-radius: 12px;
-  overflow: auto;
-  outline: 0px;
-  background: #fff;
-  border: #fff;
-  box-shadow: 0px 4px 6px rgba(0,0,0, 0.05)
-  `
-);
-
-const MenuItem = styled(BaseMenuItem)(
-  () => `
-  display: flex;
-  align-items: center;
-  list-style: none;
-  padding: 8px;
-  cursor: default;
-  margin-right: -8px;
-  margin-left: -8px;
-  font-size: 12px;
-
-  &:hover {
-    background-color: #F9FAFB;
-  }
-
-  &.${menuItemClasses.focusVisible} {
-    background-color: #F9FAFB;
-    outline: none;
-  }
-
-  > span {
-    margin-left: 8px;
-  }
-  `
-);

@@ -1,8 +1,7 @@
 import React from "react";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
-import { useRouter } from "next/router";
-import { css } from "@emotion/css";
+import { useAppRouter } from "$utils/useAppRouter";
 
 import type { BookmarkSchema } from "$server/models/bookmark";
 import formatInterval from "$utils/formatInterval";
@@ -12,7 +11,7 @@ import Tag from "$atoms/Tag";
 import { useUpdateLtiContextAtom } from "$store/session";
 import { handleBookmarkClick } from "$utils/bookmark/handleBookmarkClick";
 
-const bookmarkButton = css({
+const bookmarkButtonSx = {
   textAlign: "left",
   padding: "8px 32px",
   width: "100%",
@@ -21,19 +20,19 @@ const bookmarkButton = css({
   cursor: "pointer",
   border: "none",
   margin: 0,
-});
+};
 
-const bookmarkTitle = css({
+const bookmarkTitleSx = {
   margin: 0,
   fontSize: 16,
-});
+};
 
 type Props = {
   bookmark: BookmarkSchema;
 };
 
 export default function BookmarkPreview({ bookmark }: Props) {
-  const router = useRouter();
+  const router = useAppRouter();
   const [, setLtiContext] = useUpdateLtiContextAtom();
 
   const courseBookmark = bookmark.topic.bookmarks.filter(
@@ -58,8 +57,10 @@ export default function BookmarkPreview({ bookmark }: Props) {
   };
 
   return (
-    <button className={bookmarkButton} onClick={handleClick}>
-      <h5 className={bookmarkTitle}>{bookmark.topic?.name}</h5>
+    <Box component="button" sx={bookmarkButtonSx} onClick={handleClick}>
+      <Box component="h5" sx={bookmarkTitleSx}>
+        {bookmark.topic?.name}
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -116,6 +117,6 @@ export default function BookmarkPreview({ bookmark }: Props) {
           return null;
         })}
       </Box>
-    </button>
+    </Box>
   );
 }

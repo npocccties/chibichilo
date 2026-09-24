@@ -1,10 +1,10 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 import { useSessionAtom } from "$store/session";
 import { createReleaseBook, useBook } from "$utils/book";
 import type { Query as BookEditQuery } from "../edit";
-import { pagesPath } from "$utils/$path";
+import { bookEditUrl } from "$utils/routes";
 import ReleaseEdit from "$templates/ReleaseEdit";
 import type { ReleaseProps } from "$server/models/book/release";
 
@@ -13,14 +13,15 @@ export type Query = BookEditQuery;
 function Release({ bookId, context }: Query) {
   const { isContentEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isContentEditable);
-  const router = useRouter();
+  const router = useAppRouter();
   async function handleSubmit(release: ReleaseProps) {
     if (!book) return;
     try {
       const created = await createReleaseBook({ id: bookId, ...release });
       return router.push(
-        pagesPath.book.edit.$url({
-          query: { bookId: created.id, ...(context && { context }) },
+        bookEditUrl({
+          bookId: created.id,
+          ...(context && { context }),
         })
       );
     } catch (e) {
@@ -40,7 +41,7 @@ function Release({ bookId, context }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const { context }: Pick<Query, "context"> = router.query;
 

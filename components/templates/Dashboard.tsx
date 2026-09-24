@@ -5,9 +5,10 @@ import Card from "@mui/material/Card";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import GetAppOutlinedIcon from "@mui/icons-material/GetAppOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import Container from "$atoms/Container";
 import ActionHeader from "$organisms/ActionHeader";
 import LearningStatusDot from "$atoms/LearningStatusDot";
@@ -17,7 +18,7 @@ import LearningActivityItem from "$molecules/LearningActivityItem";
 import BookAndTopicActivityItem from "$molecules/BookAndTopicActivityItem";
 import LearnerActivityItem from "$molecules/LearnerActivityItem";
 import LearnerActivityDialog from "$organisms/LearnerActivityDialog";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import type { CourseBookSchema } from "$server/models/courseBook";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { BookSchema } from "$server/models/book";
@@ -46,6 +47,7 @@ import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
 type TabPanelProps = {
   className?: string;
+  sx?: SxProps<Theme>;
   children?: React.ReactNode;
   index: number;
   value: number;
@@ -53,14 +55,17 @@ type TabPanelProps = {
 
 function TabPanel({
   className,
+  sx,
   children,
   value,
   index,
   ...other
 }: TabPanelProps) {
   return (
-    <div
+    <Box
+      component="div"
       className={className}
+      sx={sx}
       role="tabpanel"
       hidden={value !== index}
       id={`tabpanel=${index}`}
@@ -68,81 +73,91 @@ function TabPanel({
       {...other}
     >
       {value === index && children}
-    </div>
+    </Box>
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  contextLabel: {
-    flexGrow: 1,
-    fontSize: "0.875rem",
-    color: gray[700],
+const contextLabelSx = {
+  flexGrow: 1,
+  fontSize: "0.875rem",
+  color: gray[700],
+};
+
+const dashboardCardSx = {
+  pt: 0,
+};
+
+const tabsSx = {
+  m: (theme: Theme) => theme.spacing(0, -3, 2),
+  borderBottom: `1px solid ${gray[300]}`,
+};
+
+const itemsSx = {
+  "& > :not(:last-child)": {
+    mb: 4,
   },
-  card: {
-    paddingTop: 0,
+};
+
+const learnersSx = {
+  overflowX: "auto",
+};
+
+const learnersLabelSx = {
+  mb: 2,
+  position: "sticky",
+  left: 0,
+  "& > :not(:last-child)": {
+    mr: 1.5,
   },
-  tabs: {
-    margin: theme.spacing(0, -3, 2),
-    borderBottom: `1px solid ${gray[300]}`,
-  },
-  items: {
-    "& > :not(:last-child)": {
-      marginBottom: theme.spacing(4),
-    },
-  },
-  learners: {
-    overflowX: "auto",
-  },
-  learnersLabel: {
-    marginBottom: theme.spacing(2),
-    position: "sticky",
-    left: 0,
-    "& > :not(:last-child)": {
-      marginRight: theme.spacing(1.5),
-    },
-    "& > *": {
-      display: "inline-flex",
-      alignItems: "center",
-      "& > :first-child": {
-        marginRight: theme.spacing(0.5),
-      },
-    },
-  },
-  topicLabel: {
-    flex: 1,
-    display: "flex",
-    fontSize: "75%",
-  },
-  topicTitleColumn: {
-    width: "60%",
-    marginRight: theme.spacing(1),
+  "& > *": {
+    display: "inline-flex",
     alignItems: "center",
+    "& > :first-child": {
+      mr: 0.5,
+    },
   },
-  topicTitleColumnLong: {
-    width: "70%",
-    marginRight: theme.spacing(1),
-    alignItems: "center",
-  },
-  topicColumn: {
-    display: "flex",
-    width: "10%",
-    justifyContent: "center",
-  },
-  topicDataDescriptionArea: {
-    textAlign: "right",
-    fontSize: "50%",
-    marginBottom: "0.5em",
-  },
-  topicDataDescription: {
-    padding: 0,
-    margin: 0,
-  },
-  rewatchLabel: {
-    fontSize: 14,
-    lineHeight: "12px",
-    fontWeight: 900, // Black (Heavy)
-  },
-}));
+};
+
+const topicLabelSx = {
+  flex: 1,
+  display: "flex",
+  fontSize: "75%",
+};
+
+const topicTitleColumnSx = {
+  width: "60%",
+  mr: 1,
+  alignItems: "center",
+};
+
+const topicTitleColumnLongSx = {
+  width: "70%",
+  mr: 1,
+  alignItems: "center",
+};
+
+const topicColumnSx = {
+  display: "flex",
+  width: "10%",
+  justifyContent: "center",
+};
+
+const topicDataDescriptionAreaSx = {
+  textAlign: "right",
+  fontSize: "50%",
+  mb: "0.5em",
+};
+
+const topicDataDescriptionSx = {
+  p: 0,
+  m: 0,
+};
+
+const rewatchLabelSx = {
+  fontSize: 14,
+  lineHeight: "12px",
+  fontWeight: 900, // Black (Heavy)
+};
 
 type Props = {
   session: SessionSchema;
@@ -168,8 +183,6 @@ export default function Dashboard(props: Props) {
     });
   }, [memberships]);
   const updateLtiMembers = useLtiMembersHandler();
-  const classes = useStyles();
-  const cardClasses = useCardStyles();
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setTabIndex(value);
@@ -270,7 +283,9 @@ export default function Dashboard(props: Props) {
       </Typography>
       <ActionHeader>
         <Typography variant="h6">{session.ltiContext.title}</Typography>
-        <span className={classes.contextLabel}>{session.ltiContext.label}</span>
+        <Box component="span" sx={contextLabelSx}>
+          {session.ltiContext.label}
+        </Box>
         <ActivityScopeSelect
           value={props.scope}
           onActivityScopeChange={props.onScopeChange}
@@ -307,9 +322,9 @@ export default function Dashboard(props: Props) {
           受講者の同期
         </Button>
       </ActionHeader>
-      <Card classes={cardClasses} className={classes.card}>
+      <Card sx={[card, dashboardCardSx]}>
         <Tabs
-          className={classes.tabs}
+          sx={tabsSx}
           indicatorColor="primary"
           value={tabIndex}
           onChange={handleChange}
@@ -319,7 +334,7 @@ export default function Dashboard(props: Props) {
           <Tab label="学習者" />
           {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? <Tab label="タグ" /> : ""}
         </Tabs>
-        <TabPanel className={classes.items} value={tabIndex} index={0}>
+        <TabPanel sx={itemsSx} value={tabIndex} index={0}>
           {activitiesByBooks.map((activitiesByBook, index) => (
             <LearningActivityItem
               key={index}
@@ -332,22 +347,22 @@ export default function Dashboard(props: Props) {
           ))}
         </TabPanel>
         <TabPanel value={tabIndex} index={1}>
-          <div className={classes.topicDataDescriptionArea}>
-            <p className={classes.topicDataDescription}>
+          <Box sx={topicDataDescriptionAreaSx}>
+            <Box component="p" sx={topicDataDescriptionSx}>
               ※
               平均学習完了率、平均繰返視聴割合の計算に未視聴の学習者は含みません
-            </p>
-          </div>
-          <div className={classes.topicLabel}>
+            </Box>
+          </Box>
+          <Box sx={topicLabelSx}>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
-              <div className={classes.topicTitleColumn}></div>
+              <Box sx={topicTitleColumnSx}></Box>
             ) : (
-              <div className={classes.topicTitleColumnLong}></div>
+              <Box sx={topicTitleColumnLongSx}></Box>
             )}
 
-            <div className={classes.topicColumn}>動画の長さ</div>
-            <div className={classes.topicColumn}>未視聴</div>
-            <div className={classes.topicColumn}>
+            <Box sx={topicColumnSx}>動画の長さ</Box>
+            <Box sx={topicColumnSx}>未視聴</Box>
+            <Box sx={topicColumnSx}>
               <Tooltip title={tooltipMessage.completeRate} arrow>
                 <span>
                   平均学習
@@ -355,9 +370,9 @@ export default function Dashboard(props: Props) {
                   完了率
                 </span>
               </Tooltip>
-            </div>
+            </Box>
             {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
-              <div className={classes.topicColumn}>
+              <Box sx={topicColumnSx}>
                 <Tooltip title={tooltipMessage.rewatchRate} arrow>
                   <span>
                     平均繰返
@@ -365,11 +380,11 @@ export default function Dashboard(props: Props) {
                     視聴割合
                   </span>
                 </Tooltip>
-              </div>
+              </Box>
             ) : (
               ""
             )}
-          </div>
+          </Box>
           {activitiesByBooksAndTopics.map((activitiesByBookAndTopic, index) => (
             <BookAndTopicActivityItem
               key={index}
@@ -379,8 +394,8 @@ export default function Dashboard(props: Props) {
             />
           ))}
         </TabPanel>
-        <TabPanel className={classes.learners} value={tabIndex} index={2}>
-          <div className={classes.learnersLabel}>
+        <TabPanel sx={learnersSx} value={tabIndex} index={2}>
+          <Box sx={learnersLabelSx}>
             <div>
               <LearningStatusDot status="completed" />
               <span>{label.completed}</span>
@@ -394,10 +409,12 @@ export default function Dashboard(props: Props) {
               <span>{label.unopened}</span>
             </div>
             <div>
-              <span className={classes.rewatchLabel}>{rewatchLabel}</span>
+              <Box component="span" sx={rewatchLabelSx}>
+                {rewatchLabel}
+              </Box>
               <span>繰返視聴</span>
             </div>
-          </div>
+          </Box>
           {learnerActivities.map(([learner, activities], index) => (
             <LearnerActivityItem
               key={index}
@@ -410,7 +427,7 @@ export default function Dashboard(props: Props) {
           ))}
         </TabPanel>
         {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
-          <TabPanel className={classes.items} value={tabIndex} index={3}>
+          <TabPanel sx={itemsSx} value={tabIndex} index={3}>
             {activitiesByBooks.map((book, index) => (
               <BookmarkStatsDialog key={index} book={book} />
             ))}

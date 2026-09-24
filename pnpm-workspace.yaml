@@ -3,6 +3,8 @@ packages:
 
 overrides:
   normalize-package-data>resolve: 1.22.1
+  # React 18 と MUI v7 併用時の react-is バージョン不整合を防ぐ
+  react-is: "$react"
 
 # 公開から 7 日経過したバージョンのみ解決する（分単位: 7 * 24 * 60）
 minimumReleaseAge: 10080
@@ -17,5 +19,6 @@ allowBuilds:
   cpu-features: true
   esbuild: true
   prisma: true
+  sharp: true
   ssh2: true
   unrs-resolver: true

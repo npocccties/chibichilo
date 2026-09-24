@@ -1,12 +1,14 @@
 import type { ReactNode, MouseEvent } from "react";
-import TreeItem from "@mui/lab/TreeItem";
+import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
 import Checkbox from "@mui/material/Checkbox";
 import PreviewButton from "$atoms/PreviewButton";
 import EditButton from "$atoms/EditButton";
-import useTreeItemStyle from "$styles/treeItem";
+import treeItemLabel from "$styles/treeItem";
 import type { SectionSchema } from "$server/models/book/section";
 import type { IsContentEditable } from "$server/models/content";
 import { isNamedSection, getOutlineNumber } from "$utils/outline";
+
+const treeItemSx = { [`& .${treeItemClasses.label}`]: treeItemLabel };
 
 type SectionProps = {
   bookId: number;
@@ -26,7 +28,6 @@ function SectionTree({
   // selectedIndexes,
   children,
 }: SectionProps) {
-  const treeItemClasses = useTreeItemStyle();
   const nodeId = `${bookId}-${section.id}`;
   /* TODO: セクション単位での再利用の実装
   const handleChange = (handler?: (nodeId: string) => void) => () => {
@@ -36,8 +37,8 @@ function SectionTree({
   if (!isNamedSection(section)) return <>{children}</>;
   return (
     <TreeItem
-      nodeId={nodeId}
-      classes={treeItemClasses}
+      itemId={nodeId}
+      sx={treeItemSx}
       label={
         <>
           {/* TODO: セクション単位での再利用の実装
@@ -84,7 +85,6 @@ export default function SectionsTree(props: Props) {
     selectedIndexes,
     isContentEditable,
   } = props;
-  const treeItemClasses = useTreeItemStyle();
   return (
     <>
       {sections.map((section, sectionIndex) => (
@@ -109,8 +109,8 @@ export default function SectionsTree(props: Props) {
             return (
               <TreeItem
                 key={nodeId}
-                nodeId={nodeId}
-                classes={treeItemClasses}
+                itemId={nodeId}
+                sx={treeItemSx}
                 label={
                   <>
                     {onTreeChange && (

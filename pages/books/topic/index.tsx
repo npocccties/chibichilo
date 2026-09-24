@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import Placeholder from "$templates/Placeholder";
-import { pagesPath } from "$utils/$path";
+import { paths } from "$utils/routes";
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   useEffect(() => {
-    void router.replace(pagesPath.books.$url());
+    void router.replace(paths.books);
   }, [router]);
   return <Placeholder />;
 }

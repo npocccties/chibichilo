@@ -23,12 +23,11 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import clsx from "clsx";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import useDebouncedCallback from "$utils/useDebouncedCallback";
 import AddIcon from "@mui/icons-material/Add";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import makeStyles from "@mui/styles/makeStyles";
+import { styled } from "@mui/material/styles";
 import RemoveButton from "$atoms/RemoveButton";
 import SectionTextField from "$atoms/SectionTextField";
 import type { SectionSchema } from "$server/models/book/section";
@@ -153,21 +152,19 @@ function getTopicInsertionIndexInSection(
   return index;
 }
 
-const useSectionTopicsDroppableStyles = makeStyles(() => ({
-  topics: {
-    position: "relative",
-  },
-  topDropZone: {
-    position: "absolute",
-    top: -TOP_INSERT_MARGIN,
-    left: 0,
-    right: 0,
-    height: TOP_INSERT_MARGIN,
-  },
-}));
+const SectionTopicsRoot = styled("div")({
+  position: "relative",
+});
+
+const SectionTopDropZone = styled("div")({
+  position: "absolute",
+  top: `${-TOP_INSERT_MARGIN}px`,
+  left: 0,
+  right: 0,
+  height: TOP_INSERT_MARGIN,
+});
 
 function SectionTopDroppable({ section }: { section: SectionSchema }) {
-  const classes = useSectionTopicsDroppableStyles();
   const { setNodeRef } = useDroppable({
     id: `section-top-${section.id}`,
     data: {
@@ -175,85 +172,87 @@ function SectionTopDroppable({ section }: { section: SectionSchema }) {
       sectionId: section.id,
     } satisfies SectionTopDragData,
   });
-  return <div ref={setNodeRef} className={classes.topDropZone} aria-hidden />;
+  return <SectionTopDropZone ref={setNodeRef} aria-hidden />;
 }
 
-const useSectionCreateButtonStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    alignItems: "center",
-    borderRadius: theme.shape.borderRadius,
-    borderColor: primary[500],
-    borderStyle: "dotted",
-    backgroundColor: primary[50],
-    padding: theme.spacing(2),
-    width: "100%",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: primary[100],
-    },
+const SectionCreateButtonRoot = styled("button")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  borderRadius: theme.shape.borderRadius,
+  borderColor: primary[500],
+  borderStyle: "dotted",
+  backgroundColor: primary[50],
+  padding: theme.spacing(2),
+  width: "100%",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: primary[100],
   },
 }));
 
 type SectionCreateButtonProps = React.HTMLAttributes<HTMLButtonElement>;
 
 function SectionCreateButton(props: SectionCreateButtonProps) {
-  const classes = useSectionCreateButtonStyles();
   return (
-    <button className={classes.root} {...props}>
+    <SectionCreateButtonRoot {...props}>
       <AddIcon htmlColor={primary[500]} />
       新しいセクション
-    </button>
+    </SectionCreateButtonRoot>
   );
 }
 
-const useDraggableSectionStyles = makeStyles((theme) => ({
-  root: {
-    position: "relative",
-    padding: theme.spacing(2, 1),
-    marginLeft: 25,
-    marginBottom: theme.spacing(2),
-    backgroundColor: gray[50],
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[1],
-    "&:hover": {
-      backgroundColor: gray[200],
-    },
-    "&:hover > $tab": {
-      backgroundColor: gray[200],
-    },
-    "&:hover > [data-section-topics]:not(:hover) ~ $tab > $icon": {
+const sectionDragIconSx = {
+  color: gray[500],
+};
+
+const SectionTab = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  position: "absolute",
+  transform: "translateY(-50%)",
+  top: "50%",
+  left: "-25px",
+  width: 25,
+  height: "50%",
+  minHeight: 50,
+  border: `2px solid ${gray[200]}`,
+  borderRight: "none",
+  borderRadius: `4px 0 0 4px`,
+  backgroundColor: gray[50],
+  paddingLeft: theme.spacing(0.25),
+}));
+
+const SortableSectionRoot = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isDragging",
+})<{ isDragging?: boolean }>(({ theme, isDragging }) => ({
+  position: "relative",
+  padding: theme.spacing(2, 1),
+  marginLeft: "25px",
+  marginBottom: theme.spacing(2),
+  backgroundColor: gray[50],
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
+  "&:hover": {
+    backgroundColor: gray[200],
+  },
+  [`&:hover > ${SectionTab}`]: {
+    backgroundColor: gray[200],
+  },
+  [`&:hover > [data-section-topics]:not(:hover) ~ ${SectionTab} .MuiSvgIcon-root`]:
+    {
       color: gray[700],
     },
-  },
-  icon: {
-    color: gray[500],
-  },
-  tab: {
-    display: "flex",
-    alignItems: "center",
-    position: "absolute",
-    transform: "translateY(-50%)",
-    top: "50%",
-    left: -25,
-    width: 25,
-    height: "50%",
-    minHeight: 50,
-    border: `2px solid ${gray[200]}`,
-    borderRight: "none",
-    borderRadius: `4px 0 0 4px`,
-    backgroundColor: gray[50],
-    paddingLeft: theme.spacing(0.25),
-  },
-  drag: {
-    backgroundColor: gray[200],
-    "& $tab": {
-      backgroundColor: gray[200],
-      "& > $icon": {
-        color: gray[700],
-      },
-    },
-  },
+  ...(isDragging
+    ? {
+        backgroundColor: gray[200],
+        [`& ${SectionTab}`]: {
+          backgroundColor: gray[200],
+          "& .MuiSvgIcon-root": {
+            color: gray[700],
+          },
+        },
+      }
+    : {}),
 }));
 
 type DraggableSectionProps = {
@@ -267,7 +266,6 @@ function SortableSection({
   children,
   onSectionUpdate,
 }: DraggableSectionProps) {
-  const classes = useDraggableSectionStyles();
   const id = sectionSortableId(section.id);
   const {
     attributes,
@@ -291,12 +289,10 @@ function SortableSection({
     transition,
   };
   return (
-    <div
+    <SortableSectionRoot
       ref={setNodeRef}
       style={style}
-      className={clsx(classes.root, {
-        [classes.drag]: isDragging,
-      })}
+      isDragging={isDragging}
       {...attributes}
       {...listeners}
     >
@@ -310,10 +306,10 @@ function SortableSection({
         />
       )}
       {children}
-      <div className={classes.tab}>
-        <DragIndicatorIcon className={classes.icon} fontSize="small" />
-      </div>
-    </div>
+      <SectionTab>
+        <DragIndicatorIcon sx={sectionDragIconSx} fontSize="small" />
+      </SectionTab>
+    </SortableSectionRoot>
   );
 }
 
@@ -321,7 +317,6 @@ function SectionTopicsDroppable({
   section,
   children,
 }: Omit<DraggableSectionProps, "onSectionUpdate">) {
-  const classes = useSectionTopicsDroppableStyles();
   const { setNodeRef } = useDroppable({
     id: sectionDroppableId(section.id),
     data: {
@@ -330,10 +325,10 @@ function SectionTopicsDroppable({
     } satisfies SectionTopicsDragData,
   });
   return (
-    <div ref={setNodeRef} data-section-topics className={classes.topics}>
+    <SectionTopicsRoot ref={setNodeRef} data-section-topics>
       <SectionTopDroppable section={section} />
       {children}
-    </div>
+    </SectionTopicsRoot>
   );
 }
 
@@ -359,34 +354,39 @@ function DragDropSection({
   );
 }
 
-const useDraggableTopicStyles = makeStyles((theme) => ({
-  root: {
-    padding: `${theme.spacing(1)} 0`,
-    display: "flex",
-    alignItems: "center",
-    "&:hover $icon": {
-      color: gray[700],
-    },
+const topicDragIconSx = {
+  color: gray[500],
+  flexShrink: 0,
+};
+
+const SortableTopicRoot = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isDragging",
+})<{ isDragging?: boolean }>(({ theme, isDragging }) => ({
+  padding: `${theme.spacing(1)} 0`,
+  display: "flex",
+  alignItems: "center",
+  "&:hover .MuiSvgIcon-root": {
+    color: gray[700],
   },
-  icon: {
-    color: gray[500],
-    flexShrink: 0,
-  },
-  drag: {
-    backgroundColor: gray[200],
-    "& $icon": {
-      color: gray[700],
-    },
-  },
-  dragging: {
-    opacity: 0,
-  },
-  overlay: {
-    backgroundColor: gray[200],
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-    borderRadius: 4,
-    cursor: "grabbing",
-  },
+  ...(isDragging
+    ? {
+        backgroundColor: gray[200],
+        opacity: 0,
+        "& .MuiSvgIcon-root": {
+          color: gray[700],
+        },
+      }
+    : {}),
+}));
+
+const TopicDragPreviewRoot = styled("div")(({ theme }) => ({
+  padding: `${theme.spacing(1)} 0`,
+  display: "flex",
+  alignItems: "center",
+  backgroundColor: gray[200],
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  borderRadius: "4px",
+  cursor: "grabbing",
 }));
 
 type DraggableTopicProps = {
@@ -396,17 +396,15 @@ type DraggableTopicProps = {
 };
 
 function TopicDragPreview({ topic }: { topic: TopicSchema }) {
-  const classes = useDraggableTopicStyles();
   return (
-    <div className={clsx(classes.root, classes.overlay)}>
-      <DragIndicatorIcon className={classes.icon} fontSize="small" />
+    <TopicDragPreviewRoot>
+      <DragIndicatorIcon sx={topicDragIconSx} fontSize="small" />
       {topic.name}
-    </div>
+    </TopicDragPreviewRoot>
   );
 }
 
 function SortableTopic({ section, topic, onTopicRemove }: DraggableTopicProps) {
-  const classes = useDraggableTopicStyles();
   const id = topicSortableId(section.id, topic.id);
   const {
     attributes,
@@ -432,20 +430,17 @@ function SortableTopic({ section, topic, onTopicRemove }: DraggableTopicProps) {
     transition,
   };
   return (
-    <div
+    <SortableTopicRoot
       ref={setNodeRef}
       style={style}
-      className={clsx(classes.root, {
-        [classes.drag]: isDragging,
-        [classes.dragging]: isDragging,
-      })}
+      isDragging={isDragging}
       {...attributes}
       {...listeners}
     >
-      <DragIndicatorIcon className={classes.icon} fontSize="small" />
+      <DragIndicatorIcon sx={topicDragIconSx} fontSize="small" />
       {topic.name}
       <RemoveButton variant="topic" onClick={handleTopicRemove} />
-    </div>
+    </SortableTopicRoot>
   );
 }
 
@@ -565,14 +560,13 @@ function getTopicDropTarget(
   return null;
 }
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    position: "relative",
-  },
-  placeholder: {
-    margin: theme.spacing(1),
-    color: gray[700],
-  },
+const DraggableSectionsContainer = styled("div")({
+  position: "relative",
+});
+
+const SectionPlaceholder = styled("p")(({ theme }) => ({
+  margin: theme.spacing(1),
+  color: gray[700],
 }));
 
 function findActiveTopic(
@@ -593,7 +587,6 @@ type Props = {
 
 export default function DraggableSections(props: Props) {
   const { sections, onSectionsUpdate, onSectionCreate, boundaryRef } = props;
-  const classes = useStyles();
   const internalContainerRef = useRef<HTMLDivElement>(null);
   const isInsideBoundsRef = useRef(true);
   const [activeData, setActiveData] = useState<DragData | null>(null);
@@ -711,9 +704,8 @@ export default function DraggableSections(props: Props) {
       onDragCancel={handleDragCancel}
       onDragEnd={handleDragEnd}
     >
-      <div
+      <DraggableSectionsContainer
         ref={boundaryRef ? undefined : internalContainerRef}
-        className={classes.container}
       >
         <SortableContext
           items={sectionIds}
@@ -734,19 +726,19 @@ export default function DraggableSections(props: Props) {
                 />
               ))}
               {section.topics.length === 0 && (
-                <p className={classes.placeholder}>
+                <SectionPlaceholder>
                   ここにトピックをドロップ
                   <RemoveButton
                     variant="section"
                     onClick={handleSectionRemove(sectionIndex)}
                   />
-                </p>
+                </SectionPlaceholder>
               )}
             </DragDropSection>
           ))}
         </SortableContext>
         <SectionCreateButton onClick={handleSectionCreate} />
-      </div>
+      </DraggableSectionsContainer>
       <DragOverlay dropAnimation={null}>
         {isInsideBounds && activeTopic && (
           <TopicDragPreview topic={activeTopic} />
