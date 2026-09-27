@@ -8,6 +8,9 @@ overrides:
 
 # 公開から 7 日経過したバージョンのみ解決する（分単位: 7 * 24 * 60）
 minimumReleaseAge: 10080
+# React 18 の ref 転送修正（#2842）を含む rc.3+ を待つため一時除外
+minimumReleaseAgeExclude:
+  - "@videojs/*"
 
 allowBuilds:
   "@nestjs/core": true
