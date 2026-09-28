@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 import type { VideoProviderType } from "$types/videoInstance";
 import type { VideoMedia } from "$utils/video/media";
 import { getMediaTextTracks } from "$utils/video/media";
+import { SEEK_BUTTON_SECONDS } from "$utils/video/seekSeconds";
 
 const basicEventsMap = [
   "ended",
@@ -35,8 +36,6 @@ export type PlayerEvents = {
   playbackratechange: PlayerStats & { playbackRate: number };
   texttrackchange: PlayerStats & { language?: string };
 } & CustomEvents;
-
-const SEEK_BUTTON_SECONDS = 10;
 
 const providerUrlByType: Record<VideoProviderType, string> = {
   youtube: "https://www.youtube.com/",

@@ -7,6 +7,7 @@ import { VimeoVideo } from "@videojs/react/media/vimeo-video";
 import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
 import type { VideoMedia } from "$utils/video/media";
 import { useMediaBind } from "$utils/video/useMediaBind";
+import SeekButtons from "./SeekButtons";
 
 const containerSx: SxProps<Theme> = {
   position: "relative",
@@ -19,6 +20,18 @@ const containerSx: SxProps<Theme> = {
   "& video, & iframe": {
     width: "100%",
     height: "100%",
+  },
+  "& .chibichilo-seek-slot": {
+    display: "flex",
+    alignItems: "center",
+    flexShrink: 0,
+    gap: "1px",
+  },
+  "& .chibichilo-seek-button-icon": {
+    fontSize: "1.25rem",
+  },
+  "& .chibichilo-seek-button-icon-forward": {
+    scale: "-1 1",
   },
 };
 
@@ -75,6 +88,7 @@ function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
         <MediaBinder onMediaChange={onMediaChange} />
         <VideoSkin>
           <ProviderMedia kind={kind} src={src} tracks={tracks} />
+          <SeekButtons />
         </VideoSkin>
       </VideoJsPlayer>
     </Box>
