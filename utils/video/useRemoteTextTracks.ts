@@ -18,7 +18,9 @@ type LoadedTrack = TrackSource & {
 };
 
 function canUseNativeTextTracks(media: VideoMedia): boolean {
-  return typeof (media as { addTextTrack?: unknown }).addTextTrack === "function";
+  return (
+    typeof (media as { addTextTrack?: unknown }).addTextTrack === "function"
+  );
 }
 
 function toTrackSources(
@@ -49,9 +51,7 @@ async function fetchVttCues(src: string): Promise<ParsedVttCue[]> {
  * YouTube / Vimeo など iframe 系 media に外部 VTT を載せる。
  * textTracks を差し替え、CaptionsButton / 学習ログと接続する。
  */
-export function useRemoteTextTracks(
-  tracks: VideoJsTextTrackList | undefined
-): {
+export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
   media: VideoMedia | null;
   loadedTracks: LoadedTrack[];
 } {
@@ -121,9 +121,7 @@ export function useRemoteTextTracks(
             track.srclang
           );
           for (const cue of cues) {
-            textTrack.addCue(
-              new VTTCue(cue.startTime, cue.endTime, cue.text)
-            );
+            textTrack.addCue(new VTTCue(cue.startTime, cue.endTime, cue.text));
           }
           textTrack.mode = "hidden";
           next.push({ ...track, cues, textTrack });
@@ -150,7 +148,11 @@ export function useRemoteTextTracks(
       }
 
       if (previousAddTextTrack) {
-        Object.defineProperty(mediaRecord, "addTextTrack", previousAddTextTrack);
+        Object.defineProperty(
+          mediaRecord,
+          "addTextTrack",
+          previousAddTextTrack
+        );
       } else {
         Reflect.deleteProperty(mediaRecord, "addTextTrack");
       }
