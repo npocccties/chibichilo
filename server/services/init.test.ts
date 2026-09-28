@@ -5,6 +5,7 @@ import * as userServices from "$server/utils/user";
 import * as resourceLinkServices from "$server/utils/ltiResourceLink";
 import * as ltiServices from "$server/utils/ltiv1p3/services";
 import { getSystemSettings } from "$server/utils/systemSettings";
+import { FRONTEND_ORIGIN } from "$server/utils/env";
 
 vi.mock("$server/utils/user");
 vi.mock("$server/utils/ltiResourceLink");
@@ -65,7 +66,7 @@ describe("init()", () => {
     );
     expect(result).toEqual({
       status: 302,
-      headers: { location: "http://localhost:3000/book?bookId=1" },
+      headers: { location: `${FRONTEND_ORIGIN}/book?bookId=1` },
     });
   });
 });
