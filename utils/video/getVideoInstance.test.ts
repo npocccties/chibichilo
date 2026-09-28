@@ -14,39 +14,79 @@ const resourceBase: Pick<
 };
 
 describe("getVideoInstance", () => {
-  it("routes youtube to video instance", () => {
+  it("routes youtube to video instance with tracks", () => {
     const instance = getVideoInstance({
       ...resourceBase,
       providerUrl: "https://www.youtube.com/",
       url: "https://www.youtube.com/watch?v=test",
+      tracks: [
+        {
+          id: 1,
+          kind: "subtitles",
+          language: "ja",
+          url: "/api/v2/resource/1/video_track/1/vtt",
+          accessToken: "vtt-token",
+        },
+      ],
     });
 
     expect(instance).toMatchObject({
       type: "youtube",
       media: null,
     });
+    expect(instance.tracks).toHaveLength(1);
+    expect(instance.tracks?.[0]).toMatchObject({
+      kind: "subtitles",
+      srclang: "ja",
+    });
   });
 
-  it("routes vimeo to video instance", () => {
+  it("routes vimeo to video instance with tracks", () => {
     const instance = getVideoInstance({
       ...resourceBase,
       providerUrl: "https://vimeo.com/",
       url: "https://vimeo.com/123",
+      tracks: [
+        {
+          id: 2,
+          kind: "subtitles",
+          language: "en",
+          url: "/api/v2/resource/1/video_track/2/vtt",
+          accessToken: "vtt-token",
+        },
+      ],
     });
 
     expect(instance).toMatchObject({
       type: "vimeo",
       media: null,
     });
+    expect(instance.tracks).toHaveLength(1);
+    expect(instance.tracks?.[0]).toMatchObject({
+      kind: "subtitles",
+      srclang: "en",
+    });
   });
 
-  it("routes wowza to video instance", () => {
-    const instance = getVideoInstance(resourceBase);
+  it("routes wowza to video instance with tracks", () => {
+    const instance = getVideoInstance({
+      ...resourceBase,
+      tracks: [
+        {
+          id: 3,
+          kind: "subtitles",
+          language: "ja",
+          url: "/api/v2/resource/1/video_track/3/vtt",
+          accessToken: "vtt-token",
+        },
+      ],
+    });
 
     expect(instance).toMatchObject({
       type: "wowza",
       media: null,
     });
+    expect(instance.tracks).toHaveLength(1);
   });
 });
 

@@ -7,12 +7,15 @@ import { VimeoVideo } from "@videojs/react/media/vimeo-video";
 import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
 import type { VideoMedia } from "$utils/video/media";
 import { useMediaBind } from "$utils/video/useMediaBind";
+import RemoteSubtitles from "./RemoteSubtitles";
 import SeekButtons from "./SeekButtons";
 
 const containerSx: SxProps<Theme> = {
   position: "relative",
   width: "100%",
   aspectRatio: "16 / 9",
+  // 5cqh で字幕サイズをプレイヤー高さ基準にする（v8 vtt.js 相当）
+  containerType: "size",
   // Video.js デフォルトスキンは --media-border-radius: 2rem
   "& .media-default-skin, & .video-skin": {
     "--media-border-radius": "0",
@@ -20,6 +23,14 @@ const containerSx: SxProps<Theme> = {
   "& video, & iframe": {
     width: "100%",
     height: "100%",
+  },
+  // HLS ネイティブ <track> も v8 デフォルト見た目に寄せる
+  "& video::cue": {
+    color: "rgba(255, 255, 255, 1)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    fontFamily: "sans-serif",
+    fontSize: "5cqh",
+    textShadow: "none",
   },
   "& .chibichilo-seek-slot": {
     display: "flex",
@@ -45,6 +56,28 @@ type Props = {
   onMediaChange?: (media: VideoMedia | null) => void;
 };
 
+function TrackElements({ tracks }: { tracks?: VideoJsTextTrackList }) {
+  if (!tracks?.length) return null;
+
+  return (
+    <>
+      {Array.from({ length: tracks.length }, (_, index) => {
+        const track = tracks[index];
+        if (!track?.src) return null;
+        return (
+          <track
+            key={`${track.srclang}-${index}`}
+            kind={track.kind}
+            src={track.src}
+            srcLang={track.srclang}
+            label={track.label}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 function ProviderMedia({
   kind,
   src,
@@ -58,15 +91,7 @@ function ProviderMedia({
   }
   return (
     <HlsJsVideo src={src} playsInline crossOrigin="anonymous">
-      {tracks?.map((track, index) => (
-        <track
-          key={`${track.srclang}-${index}`}
-          kind={track.kind}
-          src={track.src}
-          srcLang={track.srclang}
-          label={track.label}
-        />
-      ))}
+      <TrackElements tracks={tracks} />
     </HlsJsVideo>
   );
 }
@@ -82,12 +107,15 @@ function MediaBinder({
 
 /** Video.js プレイヤー本体 */
 function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
+  const needsRemoteSubtitles = kind === "youtube" || kind === "vimeo";
+
   return (
     <Box sx={containerSx}>
       <VideoJsPlayer poster={poster}>
         <MediaBinder onMediaChange={onMediaChange} />
         <VideoSkin>
           <ProviderMedia kind={kind} src={src} tracks={tracks} />
+          {needsRemoteSubtitles && <RemoteSubtitles tracks={tracks} />}
           <SeekButtons />
         </VideoSkin>
       </VideoJsPlayer>

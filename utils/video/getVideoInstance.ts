@@ -41,7 +41,9 @@ function getVideoInstance(
         tracks: buildTracks(resource.tracks),
       });
     case "vimeo":
-      return createVideoInstance("vimeo", resource.url);
+      return createVideoInstance("vimeo", resource.url, {
+        tracks: buildTracks(resource.tracks),
+      });
     default: {
       const url = `${resource.url}?accessToken=${resource.accessToken}`;
       return createVideoInstance("wowza", url, {

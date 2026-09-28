@@ -24,6 +24,7 @@ export type VideoMedia = {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void;
+  dispatchEvent(event: Event): boolean;
 };
 
 export function isVideoMedia(value: unknown): value is VideoMedia {
