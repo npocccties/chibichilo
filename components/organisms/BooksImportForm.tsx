@@ -4,11 +4,9 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import { useForm } from "react-hook-form";
-import clsx from "clsx";
 import TextField from "$atoms/TextField";
-import useCardStyles from "styles/card";
+import card from "styles/card";
 import gray from "theme/colors/gray";
 import { useSessionAtom } from "$store/session";
 import type { AuthorSchema } from "$server/models/author";
@@ -17,17 +15,16 @@ import AuthorsInput from "$organisms/AuthorsInput";
 import { NEXT_PUBLIC_API_BASE_PATH } from "$utils/env";
 import { useAuthorsAtom } from "$store/authors";
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:first-child)": {
-      marginTop: theme.spacing(2.5),
-    },
+const marginSx = {
+  "& > :not(:first-child)": {
+    mt: 2.5,
   },
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
-  },
-}));
+};
+
+const labelDescriptionSx = {
+  ml: 0.75,
+  color: gray[600],
+};
 
 type Props = {
   className?: string;
@@ -37,8 +34,6 @@ type Props = {
 
 export default function BooksImportForm(props: Props) {
   const { className, onSubmit = () => undefined } = props;
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
   const { session } = useSessionAtom();
   const authorsInputProps = useAuthorsAtom();
   const providers: { [key: string]: string } = {};
@@ -58,8 +53,8 @@ export default function BooksImportForm(props: Props) {
 
   return (
     <Card
-      classes={cardClasses}
-      className={clsx(classes.margin, className)}
+      sx={[card, marginSx]}
+      className={className}
       component="form"
       onSubmit={handleSubmit((values: BooksImportParams) => {
         values.authors = authorsInputProps.authors;
@@ -89,11 +84,7 @@ export default function BooksImportForm(props: Props) {
         type="file"
         inputProps={register("file")}
       />
-      <Typography
-        className={classes.labelDescription}
-        variant="caption"
-        component="span"
-      >
+      <Typography sx={labelDescriptionSx} variant="caption" component="span">
         <Link
           href="https://github.com/npocccties/chilospeech/blob/main/docs/spec/import.md"
           target="_blank"
@@ -108,7 +99,7 @@ export default function BooksImportForm(props: Props) {
             <>
               動画ファイルをアップロードするサービス
               <Typography
-                className={classes.labelDescription}
+                sx={labelDescriptionSx}
                 variant="caption"
                 component="span"
               >

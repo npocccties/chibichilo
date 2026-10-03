@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { BookSchema } from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
-import { pagesPath } from "./$path";
+import { bookEditUrl, bookUrl, contextUrl, paths } from "$utils/routes";
 import { createBook } from "./book";
 import useBookLinkingHandlers from "./useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
@@ -12,7 +12,7 @@ function useBookNewHandlers(
   context: "books" | "topics" | "courses" | undefined,
   bookId?: BookSchema["id"]
 ) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { onBookLinking } = useBookLinkingHandlers();
   const { handleAuthorsUpdate, handleAuthorSubmit } = useAuthorsHandler();
   const handleSubmit = useCallback(
@@ -34,11 +34,9 @@ function useBookNewHandlers(
       });
       if (submitWithLink) await onBookLinking?.({ id: book.id });
       await router.replace(
-        pagesPath.book.edit.$url({
-          query: {
-            bookId: book.id,
-            ...(context && { context }),
-          },
+        bookEditUrl({
+          bookId: book.id,
+          ...(context && { context }),
         })
       );
     },
@@ -48,13 +46,9 @@ function useBookNewHandlers(
     switch (context) {
       case "books":
       case "topics":
-        return router.push(pagesPath[context].$url());
+        return router.push(contextUrl(context));
       default:
-        return router.push(
-          bookId
-            ? pagesPath.book.$url({ query: { bookId } })
-            : pagesPath.books.$url()
-        );
+        return router.push(bookId ? bookUrl({ bookId }) : paths.books);
     }
   }, [router, context, bookId]);
   const handlers = {

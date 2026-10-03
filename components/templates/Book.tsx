@@ -1,12 +1,12 @@
 import { useState } from "react";
-import clsx from "clsx";
 import { useTheme } from "@mui/material/styles";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import LinkIcon from "@mui/icons-material/Link";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import EditButton from "$atoms/EditButton";
@@ -33,85 +33,82 @@ import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import License from "$atoms/License";
 import type { ContentSchema } from "$server/models/content";
 
-const useStyles = makeStyles((theme) => ({
-  header: {
-    display: "flex",
-    alignItems: "center",
-    margin: 0,
-    width: "100%",
-    "& > *": {
-      marginRight: theme.spacing(1),
-    },
-    "& > $title ~ *": {
-      flexShrink: 0,
-    },
+const headerSx = {
+  display: "flex",
+  alignItems: "center",
+  m: 0,
+  width: "100%",
+  "& > *": {
+    mr: 1,
   },
-  headerHidden: {
-    visibility: "hidden",
+  "& > h4 ~ *": {
+    flexShrink: 0,
   },
-  title: {
-    fontSize: "1.75rem",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    // NOTE: IconButtonの有無で高さが変わることへの対処
-    minHeight: 40,
+};
+
+const headerHiddenSx = {
+  visibility: "hidden",
+};
+
+const titleSx = {
+  fontSize: "1.75rem",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+  // NOTE: IconButtonの有無で高さが変わることへの対処
+  minHeight: 40,
+};
+
+const descriptionSx = {
+  display: "flex",
+  alignItems: "baseline",
+  "& > dl": {
+    mr: 2,
   },
-  icon: {
-    marginRight: theme.spacing(0.5),
+  "& > button": {
+    fontSize: "0.75rem",
+    flexShrink: 0,
   },
-  description: {
-    display: "flex",
-    alignItems: "baseline",
-    "& > dl": {
-      marginRight: theme.spacing(2),
-    },
-    "& > button": {
-      fontSize: "0.75rem",
-      flexShrink: 0,
-    },
-  },
-  inner: {
-    display: "grid",
-    gap: theme.spacing(2),
-    "&$desktop": {
-      gridTemplateAreas: `
+};
+
+const infoSx = {
+  mb: 2,
+};
+
+const getInnerSx = (matches: boolean): SxProps<Theme> => ({
+  display: "grid",
+  gap: 2,
+  ...(matches
+    ? {
+        gridTemplateAreas: `
         "side main"
       `,
-      gridTemplateColumns: "30% minmax(0, 1fr)",
-      gridAutoRows: "min-content",
-    },
-    "&$mobile": {
-      gridTemplateAreas: `
+        gridTemplateColumns: "30% minmax(0, 1fr)",
+        gridAutoRows: "min-content",
+      }
+    : {
+        gridTemplateAreas: `
         "main"
         "side"
       `,
-    },
-  },
-  info: {
-    marginBottom: theme.spacing(2),
-  },
-  main: {
-    gridArea: "main",
-    minWidth: 0,
-    "&$desktop": {
-      marginBottom: theme.spacing(2),
-    },
-  },
-  side: {
-    gridArea: "side",
-    overflowY: "auto",
-    "&$mobile": {
-      marginBottom: theme.spacing(2),
-    },
-  },
-  scroll: ({ offset }: { offset: string }) => ({
-    overflowY: "auto",
-    height: `calc(100vh - ${offset})`,
-  }),
-  desktop: {},
-  mobile: {},
-}));
+      }),
+});
+
+const getMainSx = (matches: boolean): SxProps<Theme> => ({
+  gridArea: "main",
+  minWidth: 0,
+  ...(matches ? { mb: 2 } : {}),
+});
+
+const getSideSx = (matches: boolean, offset: string): SxProps<Theme> => ({
+  gridArea: "side",
+  overflowY: "auto",
+  ...(matches
+    ? {
+        height: `calc(100vh - ${offset})`,
+      }
+    : { mb: 2 }),
+});
 
 type Props = {
   linked?: boolean;
@@ -171,9 +168,7 @@ export default function Book(props: Props) {
     actionHeaderOffset,
     considerAppBar ? appBarOffset : "0px"
   );
-  const classes = useStyles({
-    offset: sumPixels(offset, sideOffset),
-  });
+  const scrollOffset = sumPixels(offset, sideOffset);
   const sticky = useSticky({ offset });
   const matches = useMediaQuery(theme.breakpoints.up("md"));
   const handleBookEditClick = () => book && onBookEditClick?.(book);
@@ -190,15 +185,8 @@ export default function Book(props: Props) {
   return (
     <Container maxWidth={matches ? "lg" : false} disableGutters={!matches}>
       <ActionHeader sx={{ pb: 0 }} considerAppBar={considerAppBar}>
-        <header
-          className={clsx(classes.header, {
-            [classes.headerHidden]: trigger,
-          })}
-        >
-          <Typography
-            className={clsx(classes.title, { [classes.mobile]: !matches })}
-            variant="h4"
-          >
+        <Box component="header" sx={[headerSx, trigger && headerHiddenSx]}>
+          <Typography sx={titleSx} variant="h4">
             {book?.name}
           </Typography>
           <Chip
@@ -226,15 +214,15 @@ export default function Book(props: Props) {
               color="primary"
               onClick={handleOtherBookLinkClick}
             >
-              <LinkIcon className={classes.icon} />
+              <LinkIcon sx={{ mr: 0.5 }} />
               他のブックを配信
             </Button>
           )}
-        </header>
+        </Box>
       </ActionHeader>
       {book && (
         <>
-          <div className={classes.description}>
+          <Box sx={descriptionSx}>
             <DescriptionList
               inline
               nowrap
@@ -276,24 +264,16 @@ export default function Book(props: Props) {
             >
               ブックの詳細
             </Link>
-          </div>
+          </Box>
           <CollapsibleContent expanded={expanded}>
-            <BookInfo
-              id="book-info"
-              className={classes.info}
-              book={book}
-              parent={parent}
-            />
+            <Box sx={infoSx}>
+              <BookInfo id="book-info" book={book} parent={parent} />
+            </Box>
           </CollapsibleContent>
         </>
       )}
-      <div
-        className={clsx(
-          classes.inner,
-          matches ? classes.desktop : classes.mobile
-        )}
-      >
-        <div className={clsx(classes.main, { [classes.desktop]: matches })}>
+      <Box sx={getInnerSx(matches)}>
+        <Box sx={getMainSx(matches)}>
           {topic && (
             <TopicViewer
               topic={topic}
@@ -305,14 +285,8 @@ export default function Book(props: Props) {
               isBookPage={isBookPage}
             />
           )}
-        </div>
-        <div
-          className={clsx(
-            classes.side,
-            matches ? classes.scroll : classes.mobile,
-            sticky
-          )}
-        >
+        </Box>
+        <Box sx={getSideSx(matches, scrollOffset)} className={sticky}>
           <Sections
             index={[sectionIndex, topicIndex]}
             bookId={book?.id ?? -1}
@@ -323,8 +297,8 @@ export default function Book(props: Props) {
             isPrivateBook={isPrivateBook}
             onContentLinkClick={onContentLinkClick}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Container>
   );
 }

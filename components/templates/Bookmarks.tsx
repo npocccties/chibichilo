@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { Box, Card, Container, Typography } from "@mui/material";
-import { css } from "@emotion/css";
 import { gray } from "$theme/colors";
 
 import type { SessionSchema } from "$server/models/session";
@@ -11,43 +10,43 @@ import BookmarkMultiSelect from "$molecules/BookmarkMultiSelect";
 
 import { NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK } from "$utils/env";
 
-const title = css({
+const titleSx = {
   fontSize: 32,
-  marginBottom: 32,
-});
+  mb: 4,
+};
 
-const card = css({
+const cardSx = {
   border: `1px solid ${gray[300]}`,
-  borderRadius: 12,
+  borderRadius: "12px",
   boxShadow: "none",
-});
+};
 
-const header = css({
+const headerSx = {
   padding: "8px 16px 8px 16px",
   borderBottom: `1px solid ${gray[300]}`,
   display: "flex",
   alignItems: "center",
-  gap: 16,
-});
+  gap: "16px",
+};
 
-const body = css({
+const bodySx = {
   backgroundColor: "#FFF",
-});
+};
 
-const bookmarkWrap = css({
+const bookmarkWrapSx = {
   margin: "8px 0",
   padding: 0,
-});
+};
 
-const bookmarkList = css({
+const bookmarkListSx = {
   listStyle: "none",
   borderBottom: `1px solid ${gray[300]}`,
-});
+};
 
-const empty = css({
+const emptySx = {
   padding: "16px",
   textAlign: "center",
-});
+};
 
 type Props = {
   session: SessionSchema;
@@ -91,11 +90,11 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
 
   return NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK ? (
     <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">
-      <Typography variant="h4" className={title}>
+      <Typography variant="h4" sx={titleSx}>
         タグ管理
       </Typography>
-      <Card className={card}>
-        <Box className={header}>
+      <Card sx={cardSx}>
+        <Box sx={headerSx}>
           <BookmarkMultiSelect
             tags={bookmarkTagMenu}
             selectedTagIds={selectedTagIds}
@@ -104,13 +103,13 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
             onClickMemoContent={onClickMemoContent}
           />
         </Box>
-        <Box className={body}>
+        <Box sx={bodySx}>
           {!data.bookmarks.length ? (
-            <div className={empty}>
+            <Box component="div" sx={emptySx}>
               <p>ブックマークが存在しません</p>
-            </div>
+            </Box>
           ) : (
-            <ul className={bookmarkWrap}>
+            <Box component="ul" sx={bookmarkWrapSx}>
               {data.bookmarks
                 .filter(
                   (element, index, self) =>
@@ -124,19 +123,19 @@ export default function Bookmarks({ bookmarkTagMenu }: Props) {
                 )
                 .map((bookmark) => {
                   return (
-                    <li key={bookmark.id} className={bookmarkList}>
+                    <Box component="li" key={bookmark.id} sx={bookmarkListSx}>
                       <BookmarkPreview bookmark={bookmark} />
-                    </li>
+                    </Box>
                   );
                 })}
-            </ul>
+            </Box>
           )}
         </Box>
       </Card>
     </Container>
   ) : (
     <Container sx={{ mt: 5, gridArea: "title" }} maxWidth="md">
-      <Typography variant="h4" className={title}>
+      <Typography variant="h4" sx={titleSx}>
         この機能は無効です。
       </Typography>
     </Container>

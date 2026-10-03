@@ -4,7 +4,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import {
   Button,
   DialogActions,
@@ -15,15 +14,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import type { LtiNrpsContextMemberSchema } from "$server/models/ltiNrpsContextMember";
-import React, { Fragment } from "react";
-
-const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    position: "absolute",
-    top: theme.spacing(1),
-    right: theme.spacing(1),
-  },
-}));
+import { Fragment } from "react";
 
 type Props = {
   members: LtiNrpsContextMemberSchema[] | undefined;
@@ -46,14 +37,16 @@ export default function MembersDialog(props: Props) {
     handleUpdateLtiMembers,
     firstTime,
   } = props;
-  const classes = useStyles();
   if (firstTime && members && newLtiMembers.length === 0) {
     onClose();
     return null;
   }
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <IconButton className={classes.closeButton} onClick={onClose}>
+      <IconButton
+        sx={{ position: "absolute", top: 1, right: 1 }}
+        onClick={onClose}
+      >
         <CloseIcon />
       </IconButton>
       <DialogTitle>
@@ -85,10 +78,10 @@ export default function MembersDialog(props: Props) {
                   </Typography>
                   <ListItem dense={true}>
                     <Grid container>
-                      <Grid item xs={5}>
+                      <Grid size={5}>
                         <ListItemText>ID: {member.user_id}</ListItemText>
                       </Grid>
-                      <Grid item xs={5}>
+                      <Grid size={5}>
                         <ListItemText>
                           名前: {member?.name || "未公開"}
                         </ListItemText>

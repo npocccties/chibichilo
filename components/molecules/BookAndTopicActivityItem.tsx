@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import clsx from "clsx";
-import makeStyles from "@mui/styles/makeStyles";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import { gray } from "$theme/colors";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
@@ -20,38 +18,41 @@ import ActivityRewatchGraph from "$components/organisms/ActivityRewatchGraph";
 
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flex: 4,
-    display: "flex",
-    alignItems: "center",
-  },
-  row: {
-    width: "100%",
-  },
-  name: {
-    flex: 1,
-    display: "flex",
-    alignItems: "center",
-    color: gray[700],
-    marginRight: theme.spacing(1),
-  },
-  topic: {
-    flex: 1,
-    display: "flex",
-    color: gray[700],
-  },
-  titleColumn: {
-    width: "70%",
-    alignItems: "center",
-  },
-  column: {
-    display: "flex",
-    width: "10%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-}));
+const rootSx = {
+  flex: 4,
+  display: "flex",
+  alignItems: "center",
+};
+
+const rowSx = {
+  width: "100%",
+};
+
+const nameSx = {
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  color: gray[700],
+  mr: 1,
+};
+
+const topicSx = {
+  flex: 1,
+  display: "flex",
+  color: gray[700],
+};
+
+const titleColumnSx = {
+  width: "70%",
+  alignItems: "center",
+};
+
+const columnSx = {
+  display: "flex",
+  width: "10%",
+  alignItems: "center",
+  justifyContent: "center",
+};
 
 type BookAndTopicProps = {
   scope: boolean;
@@ -82,27 +83,26 @@ function getAverageRewatchRate(
   topicId: number,
   bookId: number
 ) {
-  const topicRewatchRates =
-    rewatchRates.filter((r) => topicId === r.topicId && bookId === r.bookId) ??
-    [];
+  const topicRewatchRates = rewatchRates.filter(
+    (r) => topicId === r.topicId && bookId === r.bookId
+  );
 
   const averageRewatchRate =
-    topicRewatchRates
-      ?.map((r: ActivityRewatchRateProps) => r.rewatchRate ?? 0)
-      .reduce((a, b) => {
-        return a + b;
-      }, 0) / topicRewatchRates.length ?? 0;
+    topicRewatchRates.length > 0
+      ? topicRewatchRates
+          .map((r: ActivityRewatchRateProps) => r.rewatchRate ?? 0)
+          .reduce((a, b) => a + b, 0) / topicRewatchRates.length
+      : 0;
 
   return round(averageRewatchRate || 0, -3);
 }
 
 export default function BookAndTopicActivityItem(props: BookAndTopicProps) {
   const { scope, book, rewatchRates } = props;
-  const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <div className={classes.row}>
+    <Box component="div" sx={rootSx}>
+      <Box component="div" sx={rowSx}>
         <h4>{book.name}</h4>
         {book.activitiesByTopics.map((topic, index) => (
           <TopicActivityItem
@@ -116,8 +116,8 @@ export default function BookAndTopicActivityItem(props: BookAndTopicProps) {
             }
           />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
@@ -125,7 +125,6 @@ export function TopicActivityViewer(
   props: Pick<TopicProps, "scope" | "topic">
 ) {
   const [open, setOpen] = useState(false);
-  const cardClasses = useCardStyles();
   const theme = useTheme();
   const sticky = useSticky({
     offset: theme.spacing(-2),
@@ -151,8 +150,10 @@ export function TopicActivityViewer(
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{ classes: cardClasses }}
         fullWidth
+        slotProps={{
+          paper: { sx: card },
+        }}
       >
         {topic_detail === undefined ? (
           <div
@@ -196,21 +197,28 @@ export function TopicActivityViewer(
 
 export function TopicActivityItem(props: TopicProps) {
   const { scope, topic, averageRewatchRate } = props;
-  const classes = useStyles();
 
   return (
-    <div className={classes.topic}>
-      <div className={clsx(classes.name, classes.titleColumn)}>
+    <Box component="div" sx={topicSx}>
+      <Box component="div" sx={[nameSx, titleColumnSx]}>
         <TopicActivityViewer scope={scope} topic={topic} />
-      </div>
-      <div className={clsx(classes.column)}>{topic.timeRequired}</div>
-      <div className={clsx(classes.column)}>{topic.sizeOfUnopenedLearners}</div>
-      <div className={clsx(classes.column)}>{topic.averageCompleteRate}</div>
+      </Box>
+      <Box component="div" sx={columnSx}>
+        {topic.timeRequired}
+      </Box>
+      <Box component="div" sx={columnSx}>
+        {topic.sizeOfUnopenedLearners}
+      </Box>
+      <Box component="div" sx={columnSx}>
+        {topic.averageCompleteRate}
+      </Box>
       {NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD ? (
-        <div className={clsx(classes.column)}>{averageRewatchRate}</div>
+        <Box component="div" sx={columnSx}>
+          {averageRewatchRate}
+        </Box>
       ) : (
         <></>
       )}
-    </div>
+    </Box>
   );
 }

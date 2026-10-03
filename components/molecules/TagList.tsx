@@ -15,37 +15,31 @@ import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { useConfirm } from "material-ui-confirm";
 import type { BookmarkParams } from "$server/validators/bookmarkParams";
 
-import { Button } from "@mui/base/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { css } from "@emotion/css";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import type { BookmarkMemoContentProps } from "$server/models/bookmarkMemoContent";
 import { useForm } from "react-hook-form";
 
-const tooltipClass = css({
+const tooltipSx = {
   "> :first-child": {
     marginRight: "8px",
   },
-});
+};
 
-const text = css({
-  margin: "0",
-});
-
-const closeButtonClass = css({
+const closeButtonSx = {
   position: "absolute",
   top: "4px",
   right: "4px",
-});
+};
 
-const alertClass = css({
+const alertSx = {
   color: "red",
   fontSize: "12px",
-});
+};
 
 type Props = {
   topicId: number;
@@ -180,9 +174,10 @@ export default function TagList({
       <Tooltip
         title="教材の感想を自由に書いてください。感想は匿名で共有されます。"
         placement="bottom-start"
-        className={tooltipClass}
+        sx={tooltipSx}
       >
-        <Button
+        <button
+          type="button"
           style={{
             display: "flex",
             alignItems: "center",
@@ -214,11 +209,13 @@ export default function TagList({
               }}
             />
           )}
-          <p className={text}>コメント</p>
-        </Button>
+          <Box component="p" sx={{ margin: "0" }}>
+            コメント
+          </Box>
+        </button>
       </Tooltip>
       <Dialog open={open} onClose={onClose} fullWidth sx={{ margin: "24px" }}>
-        <IconButton className={closeButtonClass} onClick={onClose}>
+        <IconButton sx={closeButtonSx} onClick={onClose}>
           <CloseIcon />
         </IconButton>
         <DialogTitle sx={{ marginBottom: 0 }}>
@@ -254,13 +251,17 @@ export default function TagList({
               rows={4}
               fullWidth
               sx={{ borderRadius: "8px" }}
-              inputProps={register("memoContent", { required: "必須項目です" })}
               aria-invalid={errors.memoContent ? "true" : "false"}
+              slotProps={{
+                htmlInput: register("memoContent", {
+                  required: "必須項目です",
+                }),
+              }}
             />
             {errors.memoContent && (
-              <p role="alert" className={alertClass}>
+              <Box component="p" role="alert" sx={alertSx}>
                 {errors.memoContent?.message}
-              </p>
+              </Box>
             )}
             <Box
               sx={{

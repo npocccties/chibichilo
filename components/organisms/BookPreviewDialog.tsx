@@ -2,9 +2,9 @@ import type { ComponentProps } from "react";
 import { useCallback, forwardRef, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import CloseIcon from "@mui/icons-material/Close";
-import makeStyles from "@mui/styles/makeStyles";
 import Slide from "@mui/material/Slide";
 import type { TransitionProps } from "@mui/material/transitions";
+import type { SxProps, Theme } from "@mui/material/styles";
 import IconButton from "$atoms/IconButton";
 import type Book from "$templates/Book";
 import { useBookAtom } from "$store/book";
@@ -19,20 +19,16 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const useDialogStyles = makeStyles({
-  paper: {
-    backgroundColor: gray[50],
-  },
-});
+const dialogPaperSx: SxProps<Theme> = {
+  backgroundColor: gray[50],
+};
 
-const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    position: "fixed",
-    top: theme.spacing(4),
-    right: theme.spacing(3),
-    zIndex: 3,
-  },
-}));
+const closeButtonSx: SxProps<Theme> = {
+  position: "fixed",
+  top: 4,
+  right: 3,
+  zIndex: 3,
+};
 
 type Props = {
   book: BookSchema;
@@ -54,8 +50,6 @@ type Props = {
 
 export default function BookPreviewDialog(props: Props) {
   const { book, open, onClose, children } = props;
-  const dialogClasses = useDialogStyles();
-  const classes = useStyles();
   const { itemIndex, nextItemIndex, itemExists, updateItemIndex } =
     useBookAtom(book);
   useEffect(() => {
@@ -74,14 +68,18 @@ export default function BookPreviewDialog(props: Props) {
 
   return (
     <Dialog
-      classes={dialogClasses}
       fullScreen
       open={open}
       onClose={onClose}
-      TransitionComponent={Transition}
+      slotProps={{
+        paper: { sx: dialogPaperSx },
+      }}
+      slots={{
+        transition: Transition,
+      }}
     >
       <IconButton
-        className={classes.closeButton}
+        sx={closeButtonSx}
         tooltipProps={{ title: "閉じる" }}
         onClick={onClose}
         size="large"

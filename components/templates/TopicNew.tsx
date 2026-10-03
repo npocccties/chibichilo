@@ -1,6 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import TopicForm from "$organisms/TopicForm";
 import Container from "$atoms/Container";
 import RequiredDot from "$atoms/RequiredDot";
@@ -14,26 +14,26 @@ import type {
 } from "$server/models/videoTrack";
 import { useSessionAtom } from "$store/session";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: theme.spacing(1),
+const containerSx: SxProps<Theme> = {
+  mt: 1,
+};
+
+const titleSx: SxProps<Theme> = {
+  mb: 4,
+  "& span": {
+    verticalAlign: "middle",
   },
-  title: {
-    marginBottom: theme.spacing(4),
-    "& span": {
-      verticalAlign: "middle",
-    },
-    "& .RequiredDot": {
-      marginRight: theme.spacing(0.5),
-      marginBottom: theme.spacing(0.75),
-      marginLeft: theme.spacing(2),
-    },
+  "& .RequiredDot": {
+    mr: 0.5,
+    mb: 0.75,
+    ml: 2,
   },
-  alert: {
-    marginTop: theme.spacing(-2),
-    marginBottom: theme.spacing(2),
-  },
-}));
+};
+
+const alertSx: SxProps<Theme> = {
+  mt: -2,
+  mb: 2,
+};
 
 type Props = {
   topic?: TopicSchema;
@@ -66,12 +66,11 @@ export default function TopicNew({
     ...topic,
     ...(forkFrom && { name: [topic.name, "フォーク"].join("_") }),
   };
-  const classes = useStyles();
 
   return (
-    <Container className={classes.container} maxWidth="md">
+    <Container sx={containerSx} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
+      <Typography sx={titleSx} variant="h4">
         トピックの作成
         <Typography variant="caption" component="span" aria-hidden="true">
           <RequiredDot />
@@ -79,7 +78,7 @@ export default function TopicNew({
         </Typography>
       </Typography>
       {forkFrom && (
-        <Alert className={classes.alert} severity="info">
+        <Alert sx={alertSx} severity="info">
           {forkFrom.map(({ name }) => `${name} さん`).join("、")}
           のトピックをフォークしようとしています
         </Alert>

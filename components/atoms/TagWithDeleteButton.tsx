@@ -1,9 +1,9 @@
-import { css } from "@emotion/css";
+import Box from "@mui/material/Box";
 import CloseIcon from "@mui/icons-material/Close";
 import type { BookmarkProps, BookmarkSchema } from "$server/models/bookmark";
 import Emoji from "./Emoji";
 
-const tagClass = css({
+const tagSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -18,16 +18,16 @@ const tagClass = css({
   "> :first-child": {
     marginRight: "8px",
   },
-});
+};
 
-const text = css({
+const textSx = {
   lineHeight: "1.1",
   fontSize: "12px",
   marginRight: "8px",
   whiteSpace: "nowrap",
-});
+};
 
-const closeButton = css({
+const closeButtonSx = {
   // buttonのデフォルトスタイルを無効化
   border: "none",
   background: "none",
@@ -41,7 +41,7 @@ const closeButton = css({
   "> svg": {
     fontSize: "16px",
   },
-});
+};
 
 type Props = {
   topicId: BookmarkProps["topicId"];
@@ -63,17 +63,20 @@ export default function TagWithDeleteButton({
   if (!bookmark?.tag) return null;
 
   return (
-    <div className={tagClass}>
+    <Box sx={tagSx}>
       <Emoji emoji={bookmark.tag.emoji} />
-      <p className={text}>{bookmark.tag.label}</p>
-      <button
-        className={closeButton}
+      <Box component="p" sx={textSx}>
+        {bookmark.tag.label}
+      </Box>
+      <Box
+        component="button"
+        sx={closeButtonSx}
         onClick={async () =>
           await onDeleteBookmark(bookmark.id, topicId, bookId)
         }
       >
         <CloseIcon titleAccess="削除" />
-      </button>
-    </div>
+      </Box>
+    </Box>
   );
 }
