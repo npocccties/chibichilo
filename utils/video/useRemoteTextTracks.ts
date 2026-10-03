@@ -17,10 +17,68 @@ type LoadedTrack = TrackSource & {
   textTrack: TextTrack;
 };
 
+type MediaEngine = {
+  setOption?: (module: string, option: string, value: unknown) => void;
+  unloadModule?: (module: string) => void;
+  addEventListener?: (
+    event: string,
+    listener: (...args: unknown[]) => void
+  ) => void;
+  removeEventListener?: (
+    event: string,
+    listener: (...args: unknown[]) => void
+  ) => void;
+  disableTextTrack?: () => Promise<void> | void;
+};
+
 function canUseNativeTextTracks(media: VideoMedia): boolean {
   return (
     typeof (media as { addTextTrack?: unknown }).addTextTrack === "function"
   );
+}
+
+function getMediaEngine(media: VideoMedia): MediaEngine | null {
+  const engine = (media as { engine?: unknown }).engine;
+  if (!engine || typeof engine !== "object") return null;
+  return engine as MediaEngine;
+}
+
+/** iframe 側のネイティブ字幕を消し、外部 VTT オーバーレイと二重表示しない */
+function disableProviderNativeCaptions(media: VideoMedia): void {
+  const engine = getMediaEngine(media);
+  if (!engine) return;
+
+  try {
+    // YouTube IFrame API（空 track で選択解除）
+    engine.setOption?.("captions", "track", {});
+  } catch {
+    // ignore
+  }
+
+  try {
+    // 自動生成字幕などが残る場合にモジュール自体を外す
+    engine.unloadModule?.("captions");
+    engine.unloadModule?.("cc");
+  } catch {
+    // ignore
+  }
+
+  try {
+    // Vimeo Player API
+    void engine.disableTextTrack?.();
+  } catch {
+    // ignore
+  }
+}
+
+function disableAllTracks(textTracks: TextTrackList | undefined): void {
+  if (!textTracks) return;
+  for (let i = 0; i < textTracks.length; i++) {
+    const track = textTracks[i];
+    if (track && track.mode !== "disabled") {
+      track.mode = "disabled";
+    }
+  }
 }
 
 function toTrackSources(
@@ -83,6 +141,8 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
     document.body.appendChild(host);
 
     const mediaRecord = media as object;
+    // Video.js textTrack feature が attach 時に掴んだ list へ change を転送する
+    const providerTextTracks = media.textTracks;
     const previousTextTracks = Object.getOwnPropertyDescriptor(
       mediaRecord,
       "textTracks"
@@ -91,6 +151,17 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
       mediaRecord,
       "addTextTrack"
     );
+
+    disableAllTracks(providerTextTracks);
+    disableProviderNativeCaptions(media);
+
+    const onProviderApiChange = () => {
+      disableAllTracks(providerTextTracks);
+      disableProviderNativeCaptions(media);
+    };
+    const engine = getMediaEngine(media);
+    engine?.addEventListener?.("onApiChange", onProviderApiChange);
+    media.addEventListener("play", onProviderApiChange);
 
     Object.defineProperty(mediaRecord, "textTracks", {
       configurable: true,
@@ -104,8 +175,33 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
         host.addTextTrack(kind, label, language),
     });
 
+    const forwardTrackListEvent = (type: string) => {
+      providerTextTracks?.dispatchEvent(new Event(type));
+    };
+
+    const onHostTrackListEvent = (event: Event) => {
+      forwardTrackListEvent(event.type);
+      media.dispatchEvent(new Event("texttrackchange"));
+      // 選択変更時も provider ネイティブ字幕を抑止（二重表示防止）
+      disableProviderNativeCaptions(media);
+    };
+
+    host.textTracks.addEventListener("change", onHostTrackListEvent);
+    host.textTracks.addEventListener("addtrack", onHostTrackListEvent);
+    host.textTracks.addEventListener("removetrack", onHostTrackListEvent);
+
     let cancelled = false;
     const sources = trackSources;
+    // engine 準備前の setOption / disableTextTrack を取りこぼさないよう短時間再試行
+    let disableAttempts = 0;
+    const disableTimer = window.setInterval(() => {
+      if (cancelled || disableAttempts >= 15) {
+        window.clearInterval(disableTimer);
+        return;
+      }
+      disableAttempts += 1;
+      disableProviderNativeCaptions(media);
+    }, 500);
 
     void (async () => {
       const next: LoadedTrack[] = [];
@@ -132,6 +228,7 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
 
       if (!cancelled) {
         setLoadedTracks(next);
+        disableProviderNativeCaptions(media);
         host.textTracks.dispatchEvent(new Event("change"));
         media.dispatchEvent(new Event("texttrackchange"));
       }
@@ -139,7 +236,15 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
 
     return () => {
       cancelled = true;
+      window.clearInterval(disableTimer);
       setLoadedTracks([]);
+
+      engine?.removeEventListener?.("onApiChange", onProviderApiChange);
+      media.removeEventListener("play", onProviderApiChange);
+
+      host.textTracks.removeEventListener("change", onHostTrackListEvent);
+      host.textTracks.removeEventListener("addtrack", onHostTrackListEvent);
+      host.textTracks.removeEventListener("removetrack", onHostTrackListEvent);
 
       if (previousTextTracks) {
         Object.defineProperty(mediaRecord, "textTracks", previousTextTracks);

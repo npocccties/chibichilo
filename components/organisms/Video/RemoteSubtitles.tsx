@@ -80,11 +80,13 @@ function RemoteSubtitles({ tracks }: Props) {
 
   if (!cueText) return null;
 
+  // 視覚向けオーバーレイ。キュー文言の SR 読み上げはしない
+  //（言語切替は CaptionsLanguageAnnouncer、ON/OFF は StatusAnnouncer）
   return (
     <Box
       className="chibichilo-subtitle-overlay"
       sx={overlaySx}
-      aria-live="polite"
+      aria-hidden="true"
     >
       <span>{cueText}</span>
     </Box>

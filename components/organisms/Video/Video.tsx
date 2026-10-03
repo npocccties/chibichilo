@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { I18nProvider } from "@videojs/react/i18n";
 import { VideoPlayer as VideoJsPlayer, VideoSkin } from "@videojs/react/video";
 import { HlsJsVideo } from "@videojs/react/media/hlsjs-video";
 import { YouTubeVideo } from "@videojs/react/media/youtube-video";
@@ -7,6 +8,9 @@ import { VimeoVideo } from "@videojs/react/media/vimeo-video";
 import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
 import type { VideoMedia } from "$utils/video/media";
 import { useMediaBind } from "$utils/video/useMediaBind";
+import CaptionsLanguageAnnouncer from "./CaptionsLanguageAnnouncer";
+import CaptionsMenu from "./CaptionsMenu";
+import PlaybackRateMenu from "./PlaybackRateMenu";
 import RemoteSubtitles from "./RemoteSubtitles";
 import SeekButtons from "./SeekButtons";
 
@@ -43,6 +47,28 @@ const containerSx: SxProps<Theme> = {
   },
   "& .chibichilo-seek-button-icon-forward": {
     scale: "-1 1",
+  },
+  "& .chibichilo-captions-slot, & .chibichilo-playback-rate-slot": {
+    display: "contents",
+  },
+  // 0.75x / 1.75x でも窮屈にならないよう小さめ・固定幅で統一
+  "& .chibichilo-playback-rate-button": {
+    boxSizing: "border-box",
+    minWidth: "3.25em",
+    height: "2em",
+    paddingInline: "0.4em",
+    fontSize: "0.7rem",
+    fontWeight: 600,
+    fontVariantNumeric: "tabular-nums",
+    lineHeight: 1,
+    letterSpacing: "-0.02em",
+  },
+  "& .chibichilo-playback-rate-menu .media-menu-radio-item": {
+    fontSize: "0.8rem",
+    fontVariantNumeric: "tabular-nums",
+  },
+  "& .chibichilo-captions-menu .media-menu-content": {
+    minWidth: "10em",
   },
 };
 
@@ -111,14 +137,19 @@ function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
 
   return (
     <Box sx={containerSx}>
-      <VideoJsPlayer poster={poster}>
-        <MediaBinder onMediaChange={onMediaChange} />
-        <VideoSkin>
-          <ProviderMedia kind={kind} src={src} tracks={tracks} />
-          {needsRemoteSubtitles && <RemoteSubtitles tracks={tracks} />}
-          <SeekButtons />
-        </VideoSkin>
-      </VideoJsPlayer>
+      <I18nProvider locale="ja">
+        <VideoJsPlayer poster={poster}>
+          <MediaBinder onMediaChange={onMediaChange} />
+          <VideoSkin>
+            <ProviderMedia kind={kind} src={src} tracks={tracks} />
+            {needsRemoteSubtitles && <RemoteSubtitles tracks={tracks} />}
+            <CaptionsLanguageAnnouncer />
+            <SeekButtons />
+            <CaptionsMenu />
+            <PlaybackRateMenu />
+          </VideoSkin>
+        </VideoJsPlayer>
+      </I18nProvider>
     </Box>
   );
 }
