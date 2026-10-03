@@ -22,7 +22,9 @@ function isCaptionOrSubtitle(track: TextTrack): boolean {
   return track.kind === "captions" || track.kind === "subtitles";
 }
 
-function getSelectedCaptionsLabel(textTracks: TextTrackList | undefined): string {
+function getSelectedCaptionsLabel(
+  textTracks: TextTrackList | undefined
+): string {
   if (!textTracks) return OFF_LABEL;
 
   for (let i = 0; i < textTracks.length; i++) {
