@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { VideoInstance } from "$types/videoInstance";
 import type { VideoMedia } from "$utils/video/media";
-import { whenMediaReady } from "$utils/video/media";
+import { safePause, whenMediaReady } from "$utils/video/media";
 import { usePlayerState } from "$store/player";
 import { usePlayerTrackingAtom } from "$store/playerTracker";
 import { useLatestRef } from "./useLatestRef";
@@ -20,7 +20,10 @@ function isValidPlaybackEnd({
 function usePauseWhenInactive(media: VideoMedia | null, active: boolean): void {
   useEffect(() => {
     if (!media || active) return;
-    media.pause();
+    // YouTube は media 取得直後だと IFrame API 未 ready のことがある
+    return whenMediaReady(media, () => {
+      safePause(media);
+    });
   }, [media, active]);
 }
 
@@ -132,14 +135,14 @@ function useClipBounds(
       if (videoInstance.stopTimeOver) return;
       if (isValidPlaybackEnd({ currentTime: media.currentTime, stopTime })) {
         videoInstance.stopTimeOver = true;
-        media.pause();
+        safePause(media);
         onEndedRef.current?.();
       }
     };
 
     const handlePlay = () => {
       // 終了位置より後ろにシークすると、意図せず再生が再開してしまうことがあるので抑制する
-      if (videoInstance.stopTimeOver) media.pause();
+      if (videoInstance.stopTimeOver) safePause(media);
     };
 
     const handleFirstPlay = () => {

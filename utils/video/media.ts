@@ -38,6 +38,19 @@ export function isVideoMedia(value: unknown): value is VideoMedia {
   );
 }
 
+/**
+ * YouTube adapter は IFrame API ready 前に pause() すると
+ * `pauseVideo is not a function` で落ちることがあるので握りつぶす。
+ */
+export function safePause(media: VideoMedia | null | undefined): void {
+  if (!media) return;
+  try {
+    media.pause();
+  } catch {
+    // ignore: provider not ready / already torn down
+  }
+}
+
 export function whenMediaReady(
   media: VideoMedia,
   callback: () => void

@@ -40,4 +40,27 @@ describe("pauseOtherVideos", () => {
 
     expect(() => pauseOtherVideos(video, "1")).not.toThrow();
   });
+
+  it("swallows pause errors from unready providers", () => {
+    const video = new Map<string, VideoInstance>([
+      [
+        "1",
+        createInstance(
+          mockMedia(() => {
+            throw new TypeError("pauseVideo is not a function");
+          })
+        ),
+      ],
+      [
+        "2",
+        createInstance(
+          mockMedia(() => {
+            throw new TypeError("pauseVideo is not a function");
+          })
+        ),
+      ],
+    ]);
+
+    expect(() => pauseOtherVideos(video, "1")).not.toThrow();
+  });
 });
