@@ -71,8 +71,17 @@ const useStyles = makeStyles((theme) => ({
     color: gray[700],
   },
   activeNav: {
-    boxShadow: `inset 0 -${MUI_TAB_INDICATOR_THICKNESS}px 0 0 ${theme.palette.primary.main} !important`,
-    borderRadius: "0 !important",
+    position: "relative",
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: MUI_TAB_INDICATOR_THICKNESS,
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: 0,
+    },
   },
 }));
 
@@ -128,7 +137,14 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
         (!Number.isNaN(currentBookId) &&
           currentBookId !== session.ltiResourceLink.bookId))
   );
-  const isTagManagementActive = isViewingBook && isBookmarkView;
+  const isBooksActive = router.pathname.startsWith("/books");
+  const isTopicsActive = router.pathname.startsWith("/topics");
+  const isCoursesActive = router.pathname.startsWith("/courses");
+  const isDashboardActive = router.pathname.startsWith("/dashboard");
+  const isDownloadActive = router.pathname.startsWith("/download");
+  const isBookmarksActive =
+    router.pathname.startsWith("/bookmarks") ||
+    (isViewingBook && isBookmarkView);
   const isCurrentBookActive = isViewingBook && !isBookmarkView;
 
   const handleClick = () => {
@@ -195,6 +211,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               {isInstructor && (
                 <>
                   <AppBarNavButton
+                    className={clsx({ [classes.activeNav]: isBooksActive })}
                     color="inherit"
                     icon={<MenuBookOutlinedIcon />}
                     label="ブック"
@@ -202,6 +219,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     disabled={!onBooksClick}
                   />
                   <AppBarNavButton
+                    className={clsx({ [classes.activeNav]: isTopicsActive })}
                     color="inherit"
                     icon={<LibraryBooksOutlinedIcon />}
                     label="トピック"
@@ -209,6 +227,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     disabled={!onTopicsClick}
                   />
                   <AppBarNavButton
+                    className={clsx({ [classes.activeNav]: isCoursesActive })}
                     color="inherit"
                     icon={<LinkIcon />}
                     label="リンク"
@@ -239,6 +258,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                 )}
               {onDashboardClick && showDashboard(session) && (
                 <AppBarNavButton
+                  className={clsx({ [classes.activeNav]: isDashboardActive })}
                   color="inherit"
                   icon={<AssessmentOutlinedIcon />}
                   label="学習分析"
@@ -247,9 +267,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               )}
               {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
                 <AppBarNavButton
-                  className={clsx({
-                    [classes.activeNav]: isTagManagementActive,
-                  })}
+                  className={clsx({ [classes.activeNav]: isBookmarksActive })}
                   color="inherit"
                   icon={<StyleIcon />}
                   label="タグ管理"
@@ -259,6 +277,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               {onDownloadClick && isAdministrator(session) && (
                 <>
                   <AppBarNavButton
+                    className={clsx({ [classes.activeNav]: isDownloadActive })}
                     color="inherit"
                     icon={<DownloadOutlinedIcon />}
                     label="ダウンロード"
