@@ -212,6 +212,13 @@ export default function Book(props: Props) {
           >
             {book?.name}
           </Typography>
+          <Chip
+            sx={{ mr: 1, mb: 0.5 }}
+            label={`学習時間 ${formatInterval(
+              0,
+              (book?.timeRequired ?? 0) * 1000
+            )}`}
+          />
           {isBookmarkView && (
             <Chip
               sx={{
@@ -223,13 +230,6 @@ export default function Book(props: Props) {
               label="タグ管理から表示中"
             />
           )}
-          <Chip
-            sx={{ mr: 1, mb: 0.5 }}
-            label={`学習時間 ${formatInterval(
-              0,
-              (book?.timeRequired ?? 0) * 1000
-            )}`}
-          />
           {book?.license && <License license={book?.license} />}
           {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
