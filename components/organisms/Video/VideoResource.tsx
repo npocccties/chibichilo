@@ -5,7 +5,6 @@ import VideoPlayer from "./VideoPlayer";
 import getVideoInstance from "$utils/video/getVideoInstance";
 import { useVideoAtom } from "$store/video";
 import type { OembedSchema } from "$server/models/oembed";
-import type { VideoInstance } from "$types/videoInstance";
 
 type Props = Pick<
   VideoResourceSchema,
@@ -21,16 +20,6 @@ type Props = Pick<
   thumbnailUrl?: OembedSchema["thumbnail_url"];
 };
 
-function useRegisterVideoInstance(
-  identifier: string,
-  videoInstance: VideoInstance
-): void {
-  const { video } = useVideoAtom();
-  useEffect(() => {
-    video.set(identifier, videoInstance);
-  }, [video, identifier, videoInstance]);
-}
-
 export default function VideoResource({
   providerUrl,
   url,
@@ -41,6 +30,7 @@ export default function VideoResource({
   thumbnailUrl,
   ...other
 }: Props) {
+  const { registerVideo } = useVideoAtom();
   const videoInstance = useMemo(() => {
     return getVideoInstance(
       { providerUrl, url, accessToken, tracks },
@@ -48,7 +38,9 @@ export default function VideoResource({
     );
   }, [providerUrl, url, accessToken, tracks, thumbnailUrl]);
 
-  useRegisterVideoInstance(identifier, videoInstance);
+  useEffect(() => {
+    registerVideo({ identifier, videoInstance });
+  }, [registerVideo, identifier, videoInstance]);
 
   return (
     <VideoPlayer videoInstance={videoInstance} autoplay={autoplay} {...other} />

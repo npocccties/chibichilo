@@ -24,13 +24,6 @@ export function getMediaFromVideoInstance(
   return instance.media;
 }
 
-/** @deprecated Use getMediaFromVideoInstance */
-export function getPlayerFromVideoInstance(
-  instance: VideoInstance
-): VideoMedia | null {
-  return getMediaFromVideoInstance(instance);
-}
-
 export function isYouTubeInstance(instance: VideoInstance): boolean {
   return instance.type === "youtube";
 }
@@ -40,6 +33,3 @@ export function isChibichiloPlayer(
 ): player is ChibichiloPlayer {
   return isVideoMedia(player);
 }
-
-/** @deprecated Use isChibichiloPlayer */
-export const isVideoJsLikePlayer = isChibichiloPlayer;

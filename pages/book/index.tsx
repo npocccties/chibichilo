@@ -44,16 +44,25 @@ function getTopicItemIndex(
 
 function Show(query: Query) {
   const [redirectError, setRedirectError] = useState(false);
-  const router = useAppRouter();
-  if (query.zoom) {
+  const { push } = useAppRouter();
+
+  useEffect(() => {
+    if (!query.zoom) return;
+
+    let cancelled = false;
     void getBookIdByZoom(query.zoom)
       .then((res) => {
-        void router.push(bookUrl({ token: res.publicToken }));
+        if (cancelled) return;
+        void push(bookUrl({ token: res.publicToken }));
       })
-      .catch((_) => {
-        setRedirectError(true);
+      .catch(() => {
+        if (!cancelled) setRedirectError(true);
       });
-  }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [query.zoom, push]);
 
   const { session, isContentEditable } = useSessionAtom();
   const { book, error } = useBook(
@@ -94,16 +103,16 @@ function Show(query: Query) {
     [playerTracker, nextItemIndex, itemExists, updateItemIndex]
   );
   const handleBookEditClick = () => {
-    return router.push(bookEditUrl(query));
+    return push(bookEditUrl(query));
   };
   const handleOtherBookLinkClick = () => {
-    return router.push(paths.books);
+    return push(paths.books);
   };
   const handleTopicEditClick = (
     topic: Pick<TopicSchema, "id"> & ContentAuthors
   ) => {
     const url = bookTopicEditUrl({ ...query, topicId: topic.id });
-    return router.push(url);
+    return push(url);
   };
   const handlers = {
     linked: book?.id === session?.ltiResourceLink?.bookId,
@@ -118,7 +127,10 @@ function Show(query: Query) {
 
   // 読み込み直後はクエリがなにもないか判断できないので、少し待ってから判断する
   const [timedout, setTimedout] = useState(false);
-  if (!timedout) setTimeout(() => setTimedout(true), 5000);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTimedout(true), 5000);
+    return () => window.clearTimeout(id);
+  }, []);
   const queryError =
     timedout &&
     !Number.isFinite(query.bookId) &&

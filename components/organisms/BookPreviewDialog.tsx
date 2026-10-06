@@ -25,8 +25,8 @@ const dialogPaperSx: SxProps<Theme> = {
 
 const closeButtonSx: SxProps<Theme> = {
   position: "fixed",
-  top: 4,
-  right: 3,
+  top: (theme) => theme.spacing(4),
+  right: (theme) => theme.spacing(3),
   zIndex: 3,
 };
 

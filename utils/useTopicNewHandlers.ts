@@ -74,14 +74,10 @@ function useTopicNewHandlers(
           if (targetTopic) await replaceTopicInBook(book, targetTopic, topic);
           else await addTopicToBook(book, topic);
         }
-        await router.replace(
-          {
-            pathname: "./edit",
-            query: { ...bookEditQuery, topicId: topic.id },
-          },
-          undefined,
-          { shallow: true }
-        );
+        await router.replace({
+          pathname: "./edit",
+          query: { ...bookEditQuery, topicId: topic.id },
+        });
         return back();
       } catch (e) {
         const response = e as Response;

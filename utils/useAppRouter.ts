@@ -4,15 +4,12 @@ import {
   buildSearch,
   isRelativePath,
   normalizeQuery,
+  resolveRelativePathname,
   toPath,
   type AppRouterUrl,
 } from "$utils/toPath";
 
-export type AppRouterPush = (
-  url: AppRouterUrl,
-  _as?: unknown,
-  _options?: { shallow?: boolean }
-) => Promise<boolean> | void;
+export type AppRouterPush = (url: AppRouterUrl) => Promise<boolean> | void;
 
 function searchParamsToQuery(
   searchParams: URLSearchParams
@@ -38,9 +35,13 @@ export function useAppRouter() {
   const navigateTo = useCallback(
     (url: AppRouterUrl, replace: boolean) => {
       if (isRelativePath(url) && typeof url === "object" && "pathname" in url) {
+        const pathname = resolveRelativePathname(
+          url.pathname ?? ".",
+          location.pathname
+        );
         void navigate(
           {
-            pathname: url.pathname ?? ".",
+            pathname,
             search: buildSearch(
               normalizeQuery(
                 "query" in url &&
@@ -51,14 +52,14 @@ export function useAppRouter() {
               )
             ),
           },
-          { relative: "path", replace }
+          { replace }
         );
         return;
       }
 
       void navigate(toPath(url), { replace });
     },
-    [navigate]
+    [navigate, location.pathname]
   );
 
   const push = useCallback<AppRouterPush>(

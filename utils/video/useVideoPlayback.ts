@@ -27,13 +27,11 @@ function usePauseWhenInactive(media: VideoMedia | null, active: boolean): void {
   }, [media, active]);
 }
 
-/** アクティブかつ autoplay のとき再生を試みる（cleanup では pause しない） */
-function useAutoplay(
-  media: VideoMedia | null,
-  enabled: boolean,
-  /** セクション切替検知用（旧実装踏襲） */
-  replayToken?: unknown
-): void {
+/**
+ * アクティブかつ autoplay のとき再生を試みる（cleanup では pause しない）。
+ * セクション切替は呼び出し側の autoplay/active 変化で enabled が切り替わるため検知できる。
+ */
+function useAutoplay(media: VideoMedia | null, enabled: boolean): void {
   useEffect(() => {
     if (!media || !enabled) return;
     let active = true;
@@ -57,7 +55,7 @@ function useAutoplay(
       media.removeEventListener("play", onPlay);
       cancelReady();
     };
-  }, [media, enabled, replayToken]);
+  }, [media, enabled]);
 }
 
 /** media の基本イベントを React コールバックへ橋渡し */
@@ -230,7 +228,7 @@ export function useVideoPlayback({
 }: UseVideoPlaybackArgs): void {
   usePlayerState(media);
   usePauseWhenInactive(media, active);
-  useAutoplay(media, active && autoplay, onEnded);
+  useAutoplay(media, active && autoplay);
   useMediaEvents(media, { onEnded, onDurationChange, onTimeUpdate });
   useClipBounds(media, {
     enabled: active,

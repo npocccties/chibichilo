@@ -109,12 +109,6 @@ export default defineConfig([
     },
   },
   {
-    files: ["types/defaultTheme.d.ts"],
-    rules: {
-      "@typescript-eslint/no-empty-interface": "off",
-    },
-  },
-  {
     files: ["server/utils/handler.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",

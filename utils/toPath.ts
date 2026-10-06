@@ -89,3 +89,17 @@ export function isRelativePath(url: AppRouterUrl): boolean {
     (url.pathname.startsWith("./") || url.pathname.startsWith("../"))
   );
 }
+
+/**
+ * Resolve a relative pathname the way Next.js / the URL API does
+ * (last segment is a file), not React Router's directory-append style.
+ */
+export function resolveRelativePathname(
+  relativePath: string,
+  fromPathname: string
+): string {
+  const resolved = new URL(relativePath, `http://local${fromPathname}`)
+    .pathname;
+  if (resolved === "/") return "/";
+  return resolved.replace(/\/+$/, "");
+}

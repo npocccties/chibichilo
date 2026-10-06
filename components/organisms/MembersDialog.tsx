@@ -44,7 +44,11 @@ export default function MembersDialog(props: Props) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <IconButton
-        sx={{ position: "absolute", top: 1, right: 1 }}
+        sx={{
+          position: "absolute",
+          top: (theme) => theme.spacing(1),
+          right: (theme) => theme.spacing(1),
+        }}
         onClick={onClose}
       >
         <CloseIcon />

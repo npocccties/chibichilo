@@ -19,8 +19,8 @@ import { gray } from "$theme/colors";
 
 const closeButtonSx: SxProps<Theme> = {
   position: "absolute",
-  top: 1,
-  right: 1,
+  top: (theme) => theme.spacing(1),
+  right: (theme) => theme.spacing(1),
 };
 
 const bookTitleSx: SxProps<Theme> = {

@@ -43,6 +43,25 @@ const preloadVideoAtom = atom(
   }
 );
 
+/** VideoResource など単体登録用。Map を差し替えて購読側を再レンダーさせる */
+const registerVideoAtom = atom(
+  null,
+  (
+    get,
+    set,
+    {
+      identifier,
+      videoInstance,
+    }: { identifier: string; videoInstance: VideoInstance }
+  ) => {
+    const current = get(videoAtom).video;
+    if (current.get(identifier) === videoInstance) return;
+    const video = new Map(current);
+    video.set(identifier, videoInstance);
+    set(videoAtom, { video });
+  }
+);
+
 /** 現在トピック以外の再生を破棄する（トピック切替コマンドから呼ぶ） */
 const pauseOthersAtom = atom(null, (get, _set, currentId: string) => {
   pauseOtherVideos(get(videoAtom).video, currentId);
@@ -51,7 +70,8 @@ const pauseOthersAtom = atom(null, (get, _set, currentId: string) => {
 export function useVideoAtom() {
   const state = useAtomValue(videoAtom);
   const preloadVideo = useSetAtom(preloadVideoAtom);
-  return { ...state, preloadVideo };
+  const registerVideo = useSetAtom(registerVideoAtom);
+  return { ...state, preloadVideo, registerVideo };
 }
 
 /** @internal book store の切替コマンドから利用 */
