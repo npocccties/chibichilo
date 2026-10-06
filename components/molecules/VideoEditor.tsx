@@ -1,5 +1,6 @@
 import type { InputBaseComponentProps } from "@mui/material/InputBase";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
 import PlayIcon from "@mui/icons-material/PlayArrow";
@@ -32,25 +33,22 @@ type Props = {
   onTogglePause(): void | Promise<void>;
 };
 
-const useStyles = makeStyles((theme) => ({
-  videoController: {
-    display: "flex",
-    marginTop: theme.spacing(1),
-    justifyContent: "space-around",
-  },
-  rangeController: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "calc(100% / 3)",
-  },
-}));
+const videoControllerSx: SxProps<Theme> = {
+  display: "flex",
+  mt: 1,
+  justifyContent: "space-around",
+};
+
+const rangeControllerSx: SxProps<Theme> = {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "calc(100% / 3)",
+};
 
 export default function VideoEditor(props: Props) {
-  const classes = useStyles();
-
   return (
     <div>
-      <div className={classes.videoController}>
+      <Box component="div" sx={videoControllerSx}>
         <Button
           variant="outlined"
           color="primary"
@@ -80,8 +78,8 @@ export default function VideoEditor(props: Props) {
         >
           {label.end}
         </Button>
-      </div>
-      <div className={classes.rangeController}>
+      </Box>
+      <Box component="div" sx={rangeControllerSx}>
         <TextField
           type="number"
           fullWidth
@@ -112,7 +110,7 @@ export default function VideoEditor(props: Props) {
           error={props.stopTimeError}
           onChange={props.onStartTimeStopTimeChange}
         />
-      </div>
+      </Box>
     </div>
   );
 }

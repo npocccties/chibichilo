@@ -37,7 +37,7 @@ async function findLtiMembersWithTimeRangeCount(
   };
 
   const activityScope =
-    currentLtiContextOnly ?? true
+    (currentLtiContextOnly ?? true)
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,

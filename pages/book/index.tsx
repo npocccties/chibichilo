@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { BookSchema } from "$server/models/book";
 import { usePlayerTrackerAtom } from "$store/playerTracker";
 import Book from "$templates/Book";
@@ -10,7 +10,7 @@ import { useBook, getBookIdByZoom } from "$utils/book";
 import { useBookAtom } from "$store/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
-import { pagesPath } from "$utils/$path";
+import { bookEditUrl, bookTopicEditUrl, bookUrl, paths } from "$utils/routes";
 import useBookActivity from "$utils/useBookActivity";
 import { useActivityTracking } from "$utils/activity";
 import useParentBookInfo from "$utils/useParentBookInfo";
@@ -44,19 +44,25 @@ function getTopicItemIndex(
 
 function Show(query: Query) {
   const [redirectError, setRedirectError] = useState(false);
-  const router = useRouter();
-  if (query.zoom) {
+  const { push } = useAppRouter();
+
+  useEffect(() => {
+    if (!query.zoom) return;
+
+    let cancelled = false;
     void getBookIdByZoom(query.zoom)
       .then((res) => {
-        void router.push(
-          // @ts-expect-error 型としてはbookIdがないとエラーになるが、ダミー値を入れるとリダイレクト先urlにbookIdが入ってしまう
-          pagesPath.book.$url({ query: { token: res.publicToken } })
-        );
+        if (cancelled) return;
+        void push(bookUrl({ token: res.publicToken }));
       })
-      .catch((_) => {
-        setRedirectError(true);
+      .catch(() => {
+        if (!cancelled) setRedirectError(true);
       });
-  }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [query.zoom, push]);
 
   const { session, isContentEditable } = useSessionAtom();
   const { book, error } = useBook(
@@ -97,18 +103,16 @@ function Show(query: Query) {
     [playerTracker, nextItemIndex, itemExists, updateItemIndex]
   );
   const handleBookEditClick = () => {
-    return router.push(pagesPath.book.edit.$url({ query }));
+    return push(bookEditUrl(query));
   };
   const handleOtherBookLinkClick = () => {
-    return router.push(pagesPath.books.$url());
+    return push(paths.books);
   };
   const handleTopicEditClick = (
     topic: Pick<TopicSchema, "id"> & ContentAuthors
   ) => {
-    const url = pagesPath.book.topic.edit.$url({
-      query: { ...query, topicId: topic.id },
-    });
-    return router.push(url);
+    const url = bookTopicEditUrl({ ...query, topicId: topic.id });
+    return push(url);
   };
   const handlers = {
     linked: book?.id === session?.ltiResourceLink?.bookId,
@@ -123,7 +127,10 @@ function Show(query: Query) {
 
   // 読み込み直後はクエリがなにもないか判断できないので、少し待ってから判断する
   const [timedout, setTimedout] = useState(false);
-  if (!timedout) setTimeout(() => setTimedout(true), 5000);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTimedout(true), 5000);
+    return () => window.clearTimeout(id);
+  }, []);
   const queryError =
     timedout &&
     !Number.isFinite(query.bookId) &&
@@ -148,7 +155,7 @@ function Show(query: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const topicId = Number(router.query.topicId);
   const token = Array.isArray(router.query.token)

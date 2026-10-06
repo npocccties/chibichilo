@@ -1,8 +1,10 @@
-import { StorybookConfig } from "@storybook/nextjs";
+import type { StorybookConfig } from "@storybook/react-vite";
 import { readdirSync } from "fs";
+import { mergeConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { dirname, join, resolve } from "path";
 
-function getAbsolutePath(value) {
+function getAbsolutePath(value: string) {
   return dirname(require.resolve(join(value, "package.json")));
 }
 
@@ -15,34 +17,47 @@ function listChildDirectoryNames(
     .map((entry) => entry.name);
 }
 
+const projectRoot = join(__dirname, "..");
+
+function createAliases(): Record<string, string> {
+  const alias: Record<string, string> = {};
+
+  listChildDirectoryNames("..", __dirname).forEach((dir) => {
+    alias[dir] = resolve(projectRoot, dir);
+    alias[`$${dir}`] = resolve(projectRoot, dir);
+  });
+  listChildDirectoryNames("../components", __dirname).forEach((dir) => {
+    alias[`$${dir}`] = resolve(projectRoot, "components", dir);
+  });
+
+  return alias;
+}
+
 const config: StorybookConfig = {
-  webpackFinal: async (config) => {
-    const resolveConfig = (config.resolve ??= {});
-    const alias = (resolveConfig.alias ??= {});
-
-    listChildDirectoryNames("..", __dirname).forEach((dir) => {
-      alias[dir] = resolve(__dirname, "..", dir);
-      alias[`$${dir}`] = resolve(__dirname, "..", dir);
-    });
-    listChildDirectoryNames("../components", __dirname).forEach((dir) => {
-      alias[`$${dir}`] = resolve(__dirname, "..", "components", dir);
-    });
-    return config;
-  },
-
   stories: ["../components/**/*.stories.tsx"],
   addons: [
     getAbsolutePath("@storybook/addon-a11y"),
     getAbsolutePath("@storybook/addon-essentials"),
   ],
-
+  staticDirs: [
+    { from: "../public/favicon.ico", to: "/favicon.ico" },
+    { from: "../public/logo.png", to: "/logo.png" },
+    {
+      from: "../public/video-thumbnail-placeholder.png",
+      to: "/video-thumbnail-placeholder.png",
+    },
+  ],
   framework: {
-    name: getAbsolutePath("@storybook/nextjs"),
+    name: getAbsolutePath("@storybook/react-vite"),
     options: {},
   },
-
-  docs: {
-    autodocs: true,
+  async viteFinal(config) {
+    return mergeConfig(config, {
+      plugins: [tsconfigPaths({ root: projectRoot })],
+      resolve: {
+        alias: createAliases(),
+      },
+    });
   },
 };
 

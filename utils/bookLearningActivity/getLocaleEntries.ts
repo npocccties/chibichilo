@@ -79,7 +79,7 @@ export function getLocaleEntries(
     ),
     status: learningStatusLabel[activity.status],
     rewatchRate: NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
-      ? rewatchRate?.rewatchRate ?? 0
+      ? (rewatchRate?.rewatchRate ?? 0)
       : undefined,
     createdAt: activity.createdAt?.toLocaleString(),
     updatedAt: activity.updatedAt?.toLocaleString(),

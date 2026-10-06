@@ -8,5 +8,4 @@ node_modules/
 /public/LICENSE
 /server/dist/
 /server/prisma/migrations/
-/utils/$path.ts
 .env*

@@ -1,5 +1,6 @@
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import ContentImportForm from "$organisms/ContentImportForm";
 import Container from "$atoms/Container";
 import BackButton from "$atoms/BackButton";
@@ -8,38 +9,20 @@ import type {
   BooksImportResult,
 } from "$server/models/booksImportParams";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: theme.spacing(1),
-    "& > :not($title):not($form)": {
-      marginBottom: theme.spacing(2),
-    },
+const containerSx: SxProps<Theme> = {
+  mt: 1,
+  "& > :not(.content-import-title):not(.content-import-form)": {
+    mb: 2,
   },
-  title: {
-    marginBottom: theme.spacing(4),
-  },
-  form: {
-    marginBottom: theme.spacing(4),
-  },
-  subtitle: {
-    "& span": {
-      verticalAlign: "middle",
-    },
-    "& .RequiredDot": {
-      marginRight: theme.spacing(0.5),
-      marginBottom: theme.spacing(0.75),
-      marginLeft: theme.spacing(2),
-    },
-  },
-  icon: {
-    marginRight: theme.spacing(0.5),
-  },
-  books: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, 296px)",
-    gap: theme.spacing(2),
-  },
-}));
+};
+
+const titleSx: SxProps<Theme> = {
+  mb: 4,
+};
+
+const formSx: SxProps<Theme> = {
+  mb: 4,
+};
 
 type Props = {
   importResult?: BooksImportResult;
@@ -54,22 +37,26 @@ export default function ContentImport({
   onCancel,
   title,
 }: Props) {
-  const classes = useStyles();
-
   const showSuccess = importResult?.errors && importResult.errors.length === 0;
   const showErrors = importResult?.errors && importResult.errors.length > 0;
   const showResult = showSuccess || showErrors;
 
   return (
-    <Container className={classes.container} maxWidth="lg">
+    <Container sx={containerSx} maxWidth="lg">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
+      <Typography className="content-import-title" sx={titleSx} variant="h4">
         {title}
       </Typography>
-      <ContentImportForm className={classes.form} onSubmit={onSubmit} />
+      <Box className="content-import-form" sx={formSx}>
+        <ContentImportForm onSubmit={onSubmit} />
+      </Box>
       {showResult && (
         <>
-          <Typography className={classes.title} variant="h4">
+          <Typography
+            className="content-import-title"
+            sx={titleSx}
+            variant="h4"
+          >
             インポート結果
           </Typography>
           {showSuccess && <ul>成功</ul>}
