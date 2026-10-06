@@ -67,6 +67,8 @@ export class PlayerTracker extends (EventEmitter as {
     this.player = player;
     this.url = url;
     this.providerUrl = resolveProviderUrl(type, url);
+    // YouTube / Vimeo: @videojs adapters の MediaPlayedRangesMixin.played
+    // Wowza (HLS): HTMLVideoAdapter → ネイティブ HTMLMediaElement.played
     this.getPlayed = async () => {
       const timeRanges = player.played ?? createEmptyTimeRanges();
       return [...Array(timeRanges.length)].map((_, i) => [
