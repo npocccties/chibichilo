@@ -103,7 +103,32 @@ function findCaptionsAnchor(primary: Element): HTMLElement | null {
 }
 
 /**
- * 設定歯車を隠し、現在速度を表示するメニューボタンを字幕の右に置く。
+ * 字幕があればその直後、なければ設定歯車の直前（なければ末尾）。
+ * 速度スロット自身は基準にしない。直後に置くと nextSibling が自分になり、
+ * insertBefore が空の移動を繰り返して MutationObserver が回り続ける。
+ */
+function findPlaybackRateInsertBefore(
+  primary: Element,
+  slotEl: HTMLElement | null
+): Node | null {
+  const captionsAnchor = findCaptionsAnchor(primary);
+  if (captionsAnchor) {
+    const next = captionsAnchor.nextSibling;
+    if (slotEl && next === slotEl) return slotEl.nextSibling;
+    return next;
+  }
+
+  const settings = findPrimaryChildWrapper(
+    primary,
+    ".video-controls-settings-button"
+  );
+  if (slotEl && settings === slotEl) return slotEl.nextSibling;
+  return settings;
+}
+
+/**
+ * 設定歯車を隠し、現在速度を表示するメニューボタンを置く。
+ * 字幕あり: 字幕の右 / 字幕なし: 設定歯車の位置（歯車は非表示）
  */
 function PlaybackRateMenu() {
   const hostRef = useRef<HTMLSpanElement>(null);
@@ -131,10 +156,7 @@ function PlaybackRateMenu() {
       setSlot(null);
     };
 
-    const hideSettings = () => {
-      const primary = root.querySelector(".video-controls-primary");
-      if (!primary) return;
-
+    const hideSettings = (primary: Element) => {
       const settings = findPrimaryChildWrapper(
         primary,
         ".video-controls-settings-button"
@@ -150,30 +172,31 @@ function PlaybackRateMenu() {
       const primary = root.querySelector(".video-controls-primary");
       if (!primary) return false;
 
-      hideSettings();
+      hideSettings(primary);
 
-      // 一度差し込んだら再配置しない（CaptionsMenu との位置取り合いを防ぐ）
+      const insertBefore = findPlaybackRateInsertBefore(primary, slotEl);
+
       if (slotEl?.isConnected && slotEl.parentElement === primary) {
+        // 後から字幕スロットが付いたら、字幕 → 速度 に並び替える
+        if (slotEl.nextSibling !== insertBefore) {
+          primary.insertBefore(slotEl, insertBefore);
+        }
         return true;
       }
 
-      const captionsAnchor = findCaptionsAnchor(primary);
-      if (!captionsAnchor) return false;
-
       slotEl = document.createElement("div");
       slotEl.className = "chibichilo-playback-rate-slot";
-      // 字幕 → 速度 の順にする
-      primary.insertBefore(slotEl, captionsAnchor.nextSibling);
+      primary.insertBefore(slotEl, insertBefore);
       setSlot(slotEl);
       return true;
     };
 
-    if (!attach()) {
-      observer = new MutationObserver(() => {
-        if (attach()) observer?.disconnect();
-      });
-      observer.observe(root, { childList: true, subtree: true });
-    }
+    attach();
+    // コントロール構築遅延・字幕スロット後差し込みの両方に追従する
+    observer = new MutationObserver(() => {
+      attach();
+    });
+    observer.observe(root, { childList: true, subtree: true });
 
     return () => {
       observer?.disconnect();
