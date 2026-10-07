@@ -137,9 +137,13 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
         (!Number.isNaN(currentBookId) &&
           currentBookId !== session.ltiResourceLink.bookId))
   );
-  const isBooksActive = router.pathname.startsWith("/books");
-  const isTopicsActive = router.pathname.startsWith("/topics");
-  const isCoursesActive = router.pathname.startsWith("/courses");
+  const pathSegments = router.pathname.split("/");
+  const isBooksActive =
+    router.pathname.startsWith("/books") ||
+    (router.pathname.startsWith("/book/") && !pathSegments.includes("topic"));
+  const isTopicsActive =
+    pathSegments.includes("topic") || pathSegments.includes("topics");
+  const isCoursesActive = router.pathname.startsWith("/course");
   const isDashboardActive = router.pathname.startsWith("/dashboard");
   const isDownloadActive = router.pathname.startsWith("/download");
   const isBookmarksActive =
