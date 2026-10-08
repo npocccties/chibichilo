@@ -114,7 +114,6 @@ function Content({ children }: { children: ReactNode }) {
   }
 
   const handleTopicsClick = () => router.push(pagesPath.topics.$url());
-
   return (
     <>
       {(isInstructor || NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) && (
