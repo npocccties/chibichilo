@@ -1,5 +1,6 @@
 import type { FromSchema, JSONSchema } from "json-schema-to-ts";
 import type { Tag } from "$server/generated/prisma/client";
+import type { Bookmark } from "$server/generated/prisma/client";
 import { type TopicSchema } from "./topic";
 import { type BookSchema } from "./book";
 import { LtiContextSchema } from "./ltiContext";
@@ -21,6 +22,8 @@ export type BookmarkProps = {
   tagId: Tag["id"];
   topicId: TopicSchema["id"];
   bookId: BookSchema["id"];
+  ltiConsumerId?: Bookmark["ltiConsumerId"];
+  ltiContextId?: Bookmark["ltiContextId"];
 };
 
 export const bookmarkPropsSchema = {
@@ -29,6 +32,8 @@ export const bookmarkPropsSchema = {
     tagId: { type: "integer" },
     topicId: { type: "integer" },
     bookId: { type: "integer" },
+    ltiContextId: { type: "string" },
+    ltiConsumerId: { type: "string" },
   },
   additionalProperties: false,
 } as const satisfies JSONSchema;

@@ -5,6 +5,7 @@ import type { FastifyRequest } from "fastify";
 import type { FastifySessionObject } from "@fastify/session";
 import type { BookParams } from "$server/validators/bookParams";
 import type { SessionSchema } from "$server/models/session";
+import type { ShowQuery } from "$server/services/book";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import findBook from "$server/utils/book/findBook";
 import type { BookSchema } from "$server/models/book";
@@ -52,7 +53,10 @@ describe("show()", () => {
     return {
       session: createMockSession(overrides),
       params,
-    } as unknown as FastifyRequest<{ Params: BookParams }>;
+    } as unknown as FastifyRequest<{
+      Params: BookParams;
+      Querystring: ShowQuery;
+    }>;
   };
 
   it("教員ではなく、かつリソースリンクも不一致な場合は 403 を返すこと", async () => {

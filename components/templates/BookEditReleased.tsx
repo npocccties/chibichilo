@@ -1,5 +1,4 @@
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { Box, Button, Typography } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import SectionsEdit from "$organisms/SectionsEdit";
@@ -9,7 +8,7 @@ import Container from "$atoms/Container";
 import BackButton from "$atoms/BackButton";
 import type { TopicSchema } from "$server/models/topic";
 import { useConfirm } from "material-ui-confirm";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import ReleaseForm from "$organisms/ReleaseForm";
 import Placeholder from "./Placeholder";
@@ -17,6 +16,7 @@ import { useStyles, type Props } from "./BookEdit";
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import MetainfoForm from "$organisms/MetainfoForm";
+import BookContextAccessEdit from "$organisms/BookContextAccessEdit";
 
 export default function BookEditReleased({
   book,
@@ -36,8 +36,9 @@ export default function BookEditReleased({
   onItemEditClick,
   onClone,
   onMetainfoUpdate,
+  onContextAccessUpdate,
 }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const classes = useStyles();
   const confirm = useConfirm();
   const {
@@ -108,12 +109,27 @@ export default function BookEditReleased({
         className={classes.content}
         book={book}
         linked={linked}
-        hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+        hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
         variant={editable ? "update" : "other"}
         onSubmit={onSubmit}
         onAuthorsUpdate={onAuthorsUpdate}
         onAuthorSubmit={onAuthorSubmit}
       />
+      {book.ltiResourceLinks &&
+        book.ltiResourceLinks.length > 0 &&
+        onContextAccessUpdate && (
+          <>
+            <Typography className={classes.subtitle} variant="h5">
+              コース別配信設定
+            </Typography>
+            <Box className={classes.content}>
+              <BookContextAccessEdit
+                book={book}
+                onChange={onContextAccessUpdate}
+              />
+            </Box>
+          </>
+        )}
       <Typography className={classes.subtitle} variant="h5">
         メタ情報
       </Typography>
