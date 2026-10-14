@@ -6,7 +6,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import DescriptionList from "$atoms/DescriptionList";
 import type { BookSchema } from "$server/models/book";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import { common, blue } from "@mui/material/colors";
 
 const Thumb = styled("span")(({ theme }) => ({
@@ -36,7 +36,9 @@ type Props = {
 };
 
 export default function LinkInfo({ sx, book, onLinkedBookClick }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
+  const returnUrl = ltiContext?.ltiLaunchPresentation?.returnUrl;
+  const title = ltiContext?.ltiResourceLinkRequest?.title;
   const handleLinkedBookClick = () => book && onLinkedBookClick?.(book);
   return (
     <Info sx={sx}>
@@ -49,15 +51,9 @@ export default function LinkInfo({ sx, book, onLinkedBookClick }: Props) {
           {
             key: "リンク元",
             value:
-              session &&
-              session.ltiLaunchPresentation &&
-              session?.ltiResourceLinkRequest ? (
-                <Link
-                  href={session.ltiLaunchPresentation.returnUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {session.ltiResourceLinkRequest.title}
+              returnUrl && title ? (
+                <Link href={returnUrl} target="_blank" rel="noreferrer">
+                  {title}
                 </Link>
               ) : (
                 "なし"

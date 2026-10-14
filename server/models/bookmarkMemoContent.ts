@@ -7,6 +7,8 @@ export type BookmarkMemoContentProps = {
   memoContent: Bookmark["memoContent"];
   topicId: TopicSchema["id"];
   bookId: BookSchema["id"];
+  ltiConsumerId?: Bookmark["ltiConsumerId"];
+  ltiContextId?: Bookmark["ltiContextId"];
 };
 
 export const bookmarkMemoContentPropsSchema = {
@@ -15,6 +17,8 @@ export const bookmarkMemoContentPropsSchema = {
     memoContent: { type: "string" },
     topicId: { type: "integer" },
     bookId: { type: "integer" },
+    ltiConsumerId: { type: "string" },
+    ltiContextId: { type: "string" },
   },
   additionalProperties: false,
 } as const satisfies JSONSchema;

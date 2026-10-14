@@ -103,6 +103,29 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   const [openDownload, setOpenDownload] = useState(false);
 
   const router = useAppRouter();
+  const currentBookId = Number(router.query.bookId);
+  const isViewingBook = router.pathname === "/book";
+  const hasBookmarkQuery = Boolean(router.query.lti_context_id);
+  const isBookmarkView = Boolean(
+    session?.ltiResourceLink &&
+      hasBookmarkQuery &&
+      (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
+        (!Number.isNaN(currentBookId) &&
+          currentBookId !== session.ltiResourceLink.bookId))
+  );
+  const pathSegments = router.pathname.split("/");
+  const isBooksActive =
+    router.pathname.startsWith("/books") ||
+    (router.pathname.startsWith("/book/") && !pathSegments.includes("topic"));
+  const isTopicsActive =
+    pathSegments.includes("topic") || pathSegments.includes("topics");
+  const isCoursesActive = router.pathname.startsWith("/course");
+  const isDashboardActive = router.pathname.startsWith("/dashboard");
+  const isDownloadActive = router.pathname.startsWith("/download");
+  const isBookmarksActive =
+    router.pathname.startsWith("/bookmarks") ||
+    (isViewingBook && isBookmarkView);
+  const isCurrentBookActive = isViewingBook && !isBookmarkView;
 
   const handleClick = () => {
     setOpen(true);
@@ -169,6 +192,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               {isInstructor && (
                 <>
                   <AppBarNavButton
+                    active={isBooksActive}
                     color="inherit"
                     icon={<MenuBookOutlinedIcon />}
                     label="ブック"
@@ -176,6 +200,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     disabled={!onBooksClick}
                   />
                   <AppBarNavButton
+                    active={isTopicsActive}
                     color="inherit"
                     icon={<LibraryBooksOutlinedIcon />}
                     label="トピック"
@@ -183,6 +208,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                     disabled={!onTopicsClick}
                   />
                   <AppBarNavButton
+                    active={isCoursesActive}
                     color="inherit"
                     icon={<LinkIcon />}
                     label="リンク"
@@ -192,6 +218,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                 </>
               )}
               <AppBarNavButton
+                active={isCurrentBookActive}
                 color="inherit"
                 icon={<CellTowerIcon />}
                 label="配信中のブック"
@@ -212,6 +239,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
                 )}
               {onDashboardClick && showDashboard(session) && (
                 <AppBarNavButton
+                  active={isDashboardActive}
                   color="inherit"
                   icon={<AssessmentOutlinedIcon />}
                   label="学習分析"
@@ -220,6 +248,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               )}
               {NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK && (
                 <AppBarNavButton
+                  active={isBookmarksActive}
                   color="inherit"
                   icon={<StyleIcon />}
                   label="タグ管理"
@@ -229,6 +258,7 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
               {onDownloadClick && isAdministrator(session) && (
                 <>
                   <AppBarNavButton
+                    active={isDownloadActive}
                     color="inherit"
                     icon={<DownloadOutlinedIcon />}
                     label="ダウンロード"

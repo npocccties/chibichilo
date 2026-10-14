@@ -1,5 +1,5 @@
 import { useAppRouter } from "$utils/useAppRouter";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import UnlinkedProblem from "$templates/UnlinkedProblem";
 import Placeholder from "$templates/Placeholder";
 import { bookUrl, paths } from "$utils/routes";
@@ -12,8 +12,9 @@ function Replace(props: { href: AppRouterUrl }) {
 }
 
 function Router() {
-  const { session, isInstructor } = useSessionAtom();
-  const ltiResourceLink = session?.ltiResourceLink;
+  const { isInstructor } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
+  const ltiResourceLink = ltiContext?.ltiResourceLink;
 
   if (!ltiResourceLink && isInstructor) return <Replace href={paths.books} />;
 

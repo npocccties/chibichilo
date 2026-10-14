@@ -1,7 +1,7 @@
 import { useAppRouter } from "$utils/useAppRouter";
 import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import BooksTemplate from "$templates/Books";
 import DeepLinkBooksTemplate from "$templates/DeepLinkBooks";
 import Book from "$templates/Book";
@@ -34,7 +34,7 @@ const DeepLinkBooks = (
 
 function Index() {
   const router = useAppRouter();
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const { linkedBook } = useLinkedBook();
   const {
     data: previewContent,
@@ -61,8 +61,9 @@ function Index() {
     onContentLinkClick,
     onLinkedBookClick: handleLinkedBookClick,
   };
+
   const isDeepLink =
-    !!session?.ltiDlSettings?.deep_link_return_url &&
+    !!ltiContext?.ltiDlSettings?.deep_link_return_url &&
     !NEXT_PUBLIC_NO_DEEP_LINK_UI;
 
   if (isDeepLink) {

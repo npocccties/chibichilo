@@ -314,14 +314,23 @@ export default function ContentPreview({
               key: "コース",
               value: (
                 <>
-                  {content.ltiResourceLinks.map((ltiResourceLink, index) => (
-                    <CourseChip
-                      sx={{ mr: 0.5, my: 0.125 }}
-                      key={index}
-                      ltiResourceLink={ltiResourceLink}
-                      onLtiResourceLinkClick={onLtiContextClick}
-                    />
-                  ))}
+                  {content.ltiResourceLinks.map((ltiResourceLink, index) => {
+                    const access = content.ltiContextBookAccesses?.find(
+                      (a) =>
+                        a.consumerId === ltiResourceLink.consumerId &&
+                        a.contextId === ltiResourceLink.contextId
+                    );
+                    const allowViewing = access ? access.allowViewing : true;
+                    return (
+                      <CourseChip
+                        sx={{ mr: 0.5, my: 0.125 }}
+                        key={index}
+                        ltiResourceLink={ltiResourceLink}
+                        onLtiResourceLinkClick={onLtiContextClick}
+                        allowViewing={allowViewing} // 👇 状態を渡す
+                      />
+                    );
+                  })}
                 </>
               ),
             },

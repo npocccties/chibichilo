@@ -9,14 +9,17 @@ import TopicPreviewDialog from "$organisms/TopicPreviewDialog";
 import Container from "$atoms/Container";
 import RequiredDot from "$atoms/RequiredDot";
 import BackButton from "$atoms/BackButton";
-import type { BookSchema } from "$server/models/book";
+import type {
+  BookSchema,
+  LtiContextBookAccessProps,
+} from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { SectionProps } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { AuthorSchema } from "$server/models/author";
 import type { IsContentEditable } from "$server/models/content";
 import { useConfirm } from "material-ui-confirm";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import AddIcon from "@mui/icons-material/Add";
 import type { ReleaseProps } from "$server/models/book/release";
@@ -24,6 +27,7 @@ import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import type { MetainfoProps } from "$server/models/metainfo";
 import MetainfoForm from "$organisms/MetainfoForm";
+import BookContextAccessEdit from "$organisms/BookContextAccessEdit";
 
 export const containerSx = {
   mt: 1,
@@ -71,6 +75,7 @@ export type Props = {
   onItemEditClick(id: BookSchema["id"]): void;
   onClone(book: BookSchema): void;
   onMetainfoUpdate(metainfo: MetainfoProps): void;
+  onContextAccessUpdate?: (settings: LtiContextBookAccessProps[]) => void;
 };
 
 export default function BookEdit({
@@ -91,8 +96,9 @@ export default function BookEdit({
   onRelease,
   onItemEditClick,
   onMetainfoUpdate,
+  onContextAccessUpdate,
 }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const confirm = useConfirm();
   const {
     data: previewTopic,
@@ -184,13 +190,28 @@ export default function BookEdit({
         <BookForm
           book={book}
           linked={linked}
-          hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+          hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
           variant="update"
           onSubmit={onSubmit}
           onAuthorsUpdate={onAuthorsUpdate}
           onAuthorSubmit={onAuthorSubmit}
         />
       </Box>
+      {book.ltiResourceLinks &&
+        book.ltiResourceLinks.length > 0 &&
+        onContextAccessUpdate && (
+          <>
+            <Typography sx={subtitleSx} variant="h5">
+              コース別配信設定
+            </Typography>
+            <Box className="book-edit-content" sx={contentSx}>
+              <BookContextAccessEdit
+                book={book}
+                onChange={onContextAccessUpdate}
+              />
+            </Box>
+          </>
+        )}
       <Typography sx={subtitleSx} variant="h5">
         メタ情報
       </Typography>

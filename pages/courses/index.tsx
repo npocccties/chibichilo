@@ -6,7 +6,7 @@ import type { LinkSchema } from "$server/models/link/content";
 import type { BookSchema } from "$server/models/book";
 import { useLinkSearchAtom } from "$store/linkSearch";
 import { destroyLtiResourceLink } from "$utils/ltiResourceLink";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import { useBook } from "$utils/book";
 import useClientIds from "$utils/courses/useClientIds";
 import useLinks, { revalidateLinks } from "$utils/courses/useLinks";
@@ -21,11 +21,12 @@ function PreviewDialog({
   open: boolean;
   onClose: React.MouseEventHandler;
 }) {
-  const { isContentEditable, session } = useSessionAtom();
+  const { isContentEditable } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const { book } = useBook(
     previewBookId,
     isContentEditable,
-    session?.ltiResourceLink
+    ltiContext?.ltiResourceLink
   );
 
   if (!book) return null;

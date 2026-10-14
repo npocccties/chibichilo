@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Provider } from "jotai";
@@ -24,31 +24,47 @@ import { useSessionInit } from "$utils/session";
 import { bookUrl, paths } from "$utils/routes";
 import { useAppRouter } from "$utils/useAppRouter";
 import "@videojs/react/video/skin.css";
-import { useLtiContextAtom, useUpdateLtiContextAtom } from "$store/session";
+import {
+  syncLtiContext,
+  useLtiContextAtom,
+  useUpdateLtiContextAtom,
+} from "$store/session";
 
 function Content() {
   const router = useAppRouter();
   const { session, isInstructor, error } = useSessionInit();
-  const { isLtiContextReady } = useLtiContextAtom();
-  const [, setLtiContext] = useUpdateLtiContextAtom();
+  const { ltiContextId } = useLtiContextAtom();
+  const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
+    useUpdateLtiContextAtom();
   const trigger = useScrollTrigger();
+  const isAppMounted = useRef(false);
 
   useEffect(() => {
-    if (session && !isLtiContextReady) {
-      setLtiContext({
-        ltiConsumerId: null,
-        ltiContextId: null,
-        pathname: null,
-      });
+    if (!isAppMounted.current) {
+      isAppMounted.current = true;
+      if (!router.query.lti_context_id && ltiContextId) {
+        setOverrideLtiContext(null);
+      }
     }
-  }, [session, isLtiContextReady, setLtiContext]);
+  }, [router.query, ltiContextId, setOverrideLtiContext]);
+
+  useEffect(() => {
+    syncLtiContext({
+      baseLtiContext,
+      session,
+      pathname: router.pathname,
+      setBaseLtiContext,
+    });
+  }, [
+    router.pathname,
+    session,
+    baseLtiContext,
+    setBaseLtiContext,
+    setOverrideLtiContext,
+  ]);
 
   const resetBookmarkAuth = () => {
-    setLtiContext({
-      ltiConsumerId: null,
-      ltiContextId: null,
-      pathname: null,
-    });
+    setOverrideLtiContext(null);
   };
   const handleBooksClick = () => {
     resetBookmarkAuth();

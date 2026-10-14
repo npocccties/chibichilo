@@ -13,21 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    ApiV2BookBookIdKeywords,
-    ApiV2BookBookIdKeywordsFromJSON,
-    ApiV2BookBookIdKeywordsFromJSONTyped,
-    ApiV2BookBookIdKeywordsToJSON,
-    ApiV2BookBookIdSections,
-    ApiV2BookBookIdSectionsFromJSON,
-    ApiV2BookBookIdSectionsFromJSONTyped,
-    ApiV2BookBookIdSectionsToJSON,
-    InlineResponse2006PublicBooks,
-    InlineResponse2006PublicBooksFromJSON,
-    InlineResponse2006PublicBooksFromJSONTyped,
-    InlineResponse2006PublicBooksToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -36,40 +21,10 @@ import {
 export interface InlineObject2 {
     /**
      * 
-     * @type {string}
-     * @memberof InlineObject2
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject2
-     */
-    description?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof InlineObject2
      */
-    shared?: boolean;
-    /**
-     * 
-     * @type {Array<ApiV2BookBookIdSections>}
-     * @memberof InlineObject2
-     */
-    sections?: Array<ApiV2BookBookIdSections>;
-    /**
-     * 
-     * @type {Array<ApiV2BookBookIdKeywords>}
-     * @memberof InlineObject2
-     */
-    keywords?: Array<ApiV2BookBookIdKeywords>;
-    /**
-     * 
-     * @type {Array<InlineResponse2006PublicBooks>}
-     * @memberof InlineObject2
-     */
-    publicBooks?: Array<InlineResponse2006PublicBooks>;
+    zoomImportEnabled?: boolean;
 }
 
 export function InlineObject2FromJSON(json: any): InlineObject2 {
@@ -82,12 +37,7 @@ export function InlineObject2FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'name': !exists(json, 'name') ? undefined : json['name'],
-        'description': !exists(json, 'description') ? undefined : json['description'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
-        'sections': !exists(json, 'sections') ? undefined : ((json['sections'] as Array<any>).map(ApiV2BookBookIdSectionsFromJSON)),
-        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
-        'publicBooks': !exists(json, 'publicBooks') ? undefined : ((json['publicBooks'] as Array<any>).map(InlineResponse2006PublicBooksFromJSON)),
+        'zoomImportEnabled': !exists(json, 'zoomImportEnabled') ? undefined : json['zoomImportEnabled'],
     };
 }
 
@@ -100,12 +50,7 @@ export function InlineObject2ToJSON(value?: InlineObject2 | null): any {
     }
     return {
         
-        'name': value.name,
-        'description': value.description,
-        'shared': value.shared,
-        'sections': value.sections === undefined ? undefined : ((value.sections as Array<any>).map(ApiV2BookBookIdSectionsToJSON)),
-        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
-        'publicBooks': value.publicBooks === undefined ? undefined : ((value.publicBooks as Array<any>).map(InlineResponse2006PublicBooksToJSON)),
+        'zoomImportEnabled': value.zoomImportEnabled,
     };
 }
 

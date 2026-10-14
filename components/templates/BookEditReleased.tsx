@@ -10,7 +10,7 @@ import Container from "$atoms/Container";
 import BackButton from "$atoms/BackButton";
 import type { TopicSchema } from "$server/models/topic";
 import { useConfirm } from "material-ui-confirm";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import ReleaseForm from "$organisms/ReleaseForm";
 import Placeholder from "./Placeholder";
@@ -24,6 +24,7 @@ import {
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import MetainfoForm from "$organisms/MetainfoForm";
+import BookContextAccessEdit from "$organisms/BookContextAccessEdit";
 
 export default function BookEditReleased({
   book,
@@ -43,8 +44,9 @@ export default function BookEditReleased({
   onItemEditClick,
   onClone,
   onMetainfoUpdate,
+  onContextAccessUpdate,
 }: Props) {
-  const { session } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const confirm = useConfirm();
   const {
     data: previewTopic,
@@ -115,13 +117,28 @@ export default function BookEditReleased({
         <BookForm
           book={book}
           linked={linked}
-          hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+          hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
           variant={editable ? "update" : "other"}
           onSubmit={onSubmit}
           onAuthorsUpdate={onAuthorsUpdate}
           onAuthorSubmit={onAuthorSubmit}
         />
       </Box>
+      {book.ltiResourceLinks &&
+        book.ltiResourceLinks.length > 0 &&
+        onContextAccessUpdate && (
+          <>
+            <Typography sx={subtitleSx} variant="h5">
+              コース別配信設定
+            </Typography>
+            <Box className="book-edit-content" sx={contentSx}>
+              <BookContextAccessEdit
+                book={book}
+                onChange={onContextAccessUpdate}
+              />
+            </Box>
+          </>
+        )}
       <Typography sx={subtitleSx} variant="h5">
         メタ情報
       </Typography>

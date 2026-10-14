@@ -1,10 +1,15 @@
 import { useCallback, useMemo } from "react";
 import { useAppRouter } from "$utils/useAppRouter";
+import { useAtomValue, useSetAtom } from "jotai";
 import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
-import type { SessionSchema } from "$server/models/session";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
-import { useSessionAtom } from "$store/session";
+import type { LtiContextState } from "$store/session";
+import {
+  useLtiContextAtom,
+  baseLtiContextAtom,
+  updateBaseLtiContextAtom,
+} from "$store/session";
 import { useSearchAtom } from "$store/search";
 import {
   destroyLtiResourceLink,
@@ -14,33 +19,38 @@ import { revalidateContents } from "./useContents";
 import { bookLinkingUrl } from "$utils/routes";
 import type { TopicSchema } from "$server/models/topic";
 
-/**
- * セッションのltiResourceLinkRequestからltiResourceLinkを作成
- * @param session セッション
- * @return creatorIdとbookIdを除いたLTIリソースリンク
- */
 function getLtiResourceLink(
-  session?: SessionSchema
+  ltiContext?: LtiContextState
 ): Omit<LtiResourceLinkSchema, "creatorId" | "bookId"> | undefined {
-  if (session == null) return;
-  if (session.ltiResourceLinkRequest?.id == null) return;
+  if (!ltiContext?.ltiContextId || !ltiContext?.ltiConsumerId) return;
 
-  const ltiResourceLink = {
-    consumerId: session.oauthClient.id,
-    id: session.ltiResourceLinkRequest.id,
-    title: session.ltiResourceLinkRequest.title ?? "",
-    contextId: session.ltiContext.id,
-    contextTitle: session.ltiContext.title ?? "",
-    contextLabel: session.ltiContext.label ?? "",
+  const linkId =
+    ltiContext.ltiResourceLinkRequest?.id ?? ltiContext.ltiResourceLink?.id;
+  if (!linkId) return;
+
+  return {
+    consumerId: ltiContext.ltiConsumerId,
+    id: linkId,
+    title:
+      ltiContext.ltiResourceLinkRequest?.title ??
+      ltiContext.ltiResourceLink?.title ??
+      "",
+    contextId: ltiContext.ltiContextId,
+    contextTitle: ltiContext.ltiContext?.title ?? "",
+    contextLabel: ltiContext.ltiContext?.label ?? "",
   };
-
-  return ltiResourceLink;
 }
 
 function useBookLinkingHandlers() {
   const router = useAppRouter();
-  const { session } = useSessionAtom();
-  const ltiResourceLink = useMemo(() => getLtiResourceLink(session), [session]);
+  const ltiContext = useLtiContextAtom();
+  const baseLtiContext = useAtomValue(baseLtiContextAtom);
+  const setBaseLtiContext = useSetAtom(updateBaseLtiContextAtom);
+
+  const ltiResourceLink = useMemo(
+    () => getLtiResourceLink(ltiContext),
+    [ltiContext]
+  );
   const { query } = useSearchAtom();
 
   const update = useCallback(
@@ -49,17 +59,28 @@ function useBookLinkingHandlers() {
       ltiResourceLink?: Omit<LtiResourceLinkSchema, "creatorId" | "bookId">,
       topicId?: TopicSchema["id"]
     ) => {
-      if (session?.ltiMessageType === "LtiDeepLinkingRequest") {
+      if (ltiContext?.ltiMessageType === "LtiDeepLinkingRequest") {
         await router.push(bookLinkingUrl({ bookId, topicId }));
         return;
       }
 
       if (ltiResourceLink) {
         await updateLtiResourceLink({ ...ltiResourceLink, bookId });
+
+        const currentLink = baseLtiContext.ltiResourceLink;
+        setBaseLtiContext({
+          ...baseLtiContext,
+          ltiResourceLink: {
+            ...currentLink,
+            ...ltiResourceLink,
+            creatorId: currentLink?.creatorId ?? null,
+            bookId,
+          },
+        });
         return;
       }
     },
-    [router, session]
+    [router, ltiContext, baseLtiContext, setBaseLtiContext]
   );
 
   const destroy = useCallback(
@@ -69,8 +90,14 @@ function useBookLinkingHandlers() {
       if (ltiResourceLink == null) return;
 
       await destroyLtiResourceLink(ltiResourceLink);
+
+      // 👇 常に本タブの baseLtiContext の ltiResourceLink を null にクリア
+      setBaseLtiContext({
+        ...baseLtiContext,
+        ltiResourceLink: null,
+      });
     },
-    []
+    [baseLtiContext, setBaseLtiContext]
   );
 
   const onBookLinking = useCallback(
@@ -95,15 +122,12 @@ function useBookLinkingHandlers() {
     },
     [update, destroy, ltiResourceLink, query]
   );
-
-  // LTI Resource Link Request かつ Target URI が設定済みの場合は変更禁止
   if (
-    session?.ltiMessageType === "LtiResourceLinkRequest" &&
-    Boolean(session?.ltiTargetLinkUri)
+    ltiContext?.ltiMessageType === "LtiResourceLinkRequest" &&
+    Boolean(ltiContext?.ltiTargetLinkUri)
   ) {
     return {};
   }
-
   return { onBookLinking };
 }
 

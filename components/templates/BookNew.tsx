@@ -9,7 +9,7 @@ import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { AuthorSchema } from "$server/models/author";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 
 const containerSx: SxProps<Theme> = {
   mt: 1,
@@ -49,7 +49,8 @@ export default function BookNew({
   onAuthorsUpdate,
   onAuthorSubmit,
 }: Props) {
-  const { session, isContentEditable } = useSessionAtom();
+  const { isContentEditable } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const forkFrom =
     book && !isContentEditable(book) && book.authors.length > 0 && book.authors;
   const defaultBook = book && {
@@ -87,7 +88,7 @@ export default function BookNew({
         book={defaultBook}
         topics={topics}
         linked={false}
-        hasLtiTargetLinkUri={Boolean(session?.ltiTargetLinkUri)}
+        hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
         variant="create"
         onSubmit={onSubmit}
         onAuthorsUpdate={onAuthorsUpdate}

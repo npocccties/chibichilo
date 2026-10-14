@@ -11,6 +11,12 @@ import type {
 
 export type Params = BookParams;
 export type Props = BookProps;
+
+export type ShowQuery = {
+  lti_consumer_id?: string;
+  lti_context_id?: string;
+};
+
 export type UpdateQuery = BookUpdateQuery;
 export type DestroyQuery = BookDestroyQuery;
 
