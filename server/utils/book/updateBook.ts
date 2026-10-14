@@ -23,7 +23,13 @@ export function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
 
 async function updateBook(
   userId: number,
-  { id, sections, publicBooks, ...book }: Pick<Book, "id"> & BookProps,
+  {
+    id,
+    sections,
+    publicBooks,
+    ltiContextBookAccesses,
+    ...book
+  }: Pick<Book, "id"> & BookProps,
   origBook: BookSchema,
   noclone?: boolean
 ): Promise<BookSchema | undefined> {
@@ -55,6 +61,16 @@ async function updateBook(
         ...keywordsConnectOrCreateInput(book.keywords ?? []),
         ...keywordsDisconnectInput(keywordsBeforeUpdate, book.keywords ?? []),
       },
+      ...(ltiContextBookAccesses && {
+        ltiContextBookAccesses: {
+          deleteMany: {},
+          create: ltiContextBookAccesses.map((access) => ({
+            consumerId: access.consumerId,
+            contextId: access.contextId,
+            allowViewing: access.allowViewing,
+          })),
+        },
+      }),
       updatedAt: new Date(),
     },
   });

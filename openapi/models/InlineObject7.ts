@@ -24,19 +24,19 @@ export interface InlineObject7 {
      * @type {string}
      * @memberof InlineObject7
      */
-    version?: string;
+    language?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject7
      */
-    comment?: string;
+    license?: string;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof InlineObject7
      */
-    shared?: boolean;
+    licenser?: string;
 }
 
 export function InlineObject7FromJSON(json: any): InlineObject7 {
@@ -49,9 +49,9 @@ export function InlineObject7FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'version': !exists(json, 'version') ? undefined : json['version'],
-        'comment': !exists(json, 'comment') ? undefined : json['comment'],
-        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'language': !exists(json, 'language') ? undefined : json['language'],
+        'license': !exists(json, 'license') ? undefined : json['license'],
+        'licenser': !exists(json, 'licenser') ? undefined : json['licenser'],
     };
 }
 
@@ -64,9 +64,9 @@ export function InlineObject7ToJSON(value?: InlineObject7 | null): any {
     }
     return {
         
-        'version': value.version,
-        'comment': value.comment,
-        'shared': value.shared,
+        'language': value.language,
+        'license': value.license,
+        'licenser': value.licenser,
     };
 }
 

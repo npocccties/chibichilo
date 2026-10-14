@@ -51,11 +51,9 @@ async function mutateBookCache(
 async function fetchBook({
   bookId,
   token,
-}: {
-  key: typeof key;
-  bookId: BookSchema["id"];
-  token?: string;
-}) {
+  ltiConsumerId,
+  ltiContextId,
+}: BookCacheKey) {
   if (token) {
     const res = await api.apiV2BookPublicTokenGet({
       token,
@@ -63,7 +61,11 @@ async function fetchBook({
     });
     return res as BookSchema;
   } else {
-    const res = await api.apiV2BookBookIdGet({ bookId });
+    const res = await api.apiV2BookBookIdGet({
+      bookId,
+      ltiConsumerId: ltiConsumerId ?? undefined,
+      ltiContextId: ltiContextId ?? undefined,
+    });
     return res as BookSchema;
   }
 }
@@ -73,7 +75,7 @@ export function useBook(
   isContentEditable?: IsContentEditable,
   ltiResourceLink?: Pick<
     LtiResourceLinkSchema,
-    "bookId" | "creatorId" | "consumerId" | "contextId"
+    "bookId" | "creatorId" | "consumerId" | "contextId" | "instructors"
   > | null,
   token?: string
 ) {
@@ -100,10 +102,13 @@ export function useBook(
       return {
         bookId: bookId,
         creatorId: ltiResourceLink?.creatorId ?? 0,
+        consumerId: ltiResourceLink?.consumerId ?? ltiConsumerId ?? "",
+        contextId: ltiResourceLink?.contextId ?? ltiContextId ?? "",
+        instructors: ltiResourceLink?.instructors ?? [],
       };
     }
     return ltiResourceLink ?? undefined;
-  }, [ltiContextId, bookId, ltiResourceLink]);
+  }, [ltiContextId, bookId, ltiResourceLink, ltiConsumerId]);
 
   const displayable = useMemo(
     () =>
@@ -111,9 +116,21 @@ export function useBook(
         data,
         isContentEditable,
         effectiveLtiResourceLink,
-        publicBook
+        publicBook,
+        false,
+        {
+          ltiConsumerId: ltiConsumerId ?? undefined,
+          ltiContextId: ltiContextId ?? undefined,
+        }
       ),
-    [data, isContentEditable, effectiveLtiResourceLink, publicBook]
+    [
+      data,
+      isContentEditable,
+      effectiveLtiResourceLink,
+      publicBook,
+      ltiConsumerId,
+      ltiContextId,
+    ]
   );
 
   return {

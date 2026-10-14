@@ -56,7 +56,7 @@ describe("checkLtiResourceLink()検証", () => {
   });
 
   describe("クエリパラメータ(lti_context_id)", () => {
-    it("クエリに情報がある場合、セッションの bookId が一致していても DB 検証を優先し、不一致なら false を返すこと", async () => {
+    it("クエリの DB 検証が不一致でも、セッションの bookId が一致すれば後続チェックで承認すること", async () => {
       vi.mocked(prisma.ltiResourceLink.findFirst).mockResolvedValue(null);
       const session = createMockSession({
         ltiResourceLink: { bookId: VALID_BOOK_ID },
@@ -64,7 +64,7 @@ describe("checkLtiResourceLink()検証", () => {
       const query = { lti_context_id: OTHER_CONTEXT_ID };
 
       const result = await checkLtiResourceLink(VALID_BOOK_ID, session, query);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
       expect(prisma.ltiResourceLink.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({ contextId: OTHER_CONTEXT_ID }),

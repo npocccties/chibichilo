@@ -20,6 +20,7 @@ export async function book(fastify: FastifyInstance) {
 
   fastify.get<{
     Params: service.Params;
+    Querystring: service.ShowQuery;
   }>(pathWithParams, { schema: method.get, ...hooks.get }, handler(show));
 
   fastify.post<{

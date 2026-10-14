@@ -104,8 +104,8 @@
     "typecheck:tsc": "tsc --noEmit --incremental false",
     "lint": "run-s compile 'lint:eslint {@}' --",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "pnpm run lint -- --fix",
-    "lint:fix:report": "pnpm run lint:fix -- --output-file eslint_report.json --format json",
+    "lint:fix": "pnpm run lint --fix",
+    "lint:fix:report": "pnpm run lint:fix --output-file eslint_report.json --format json",
     "storybook": "storybook dev -s ./public"
   },
   "engines": {

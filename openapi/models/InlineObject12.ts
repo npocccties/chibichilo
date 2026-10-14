@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    ApiV2TopicTopicIdActivityTimeRanges,
-    ApiV2TopicTopicIdActivityTimeRangesFromJSON,
-    ApiV2TopicTopicIdActivityTimeRangesFromJSONTyped,
-    ApiV2TopicTopicIdActivityTimeRangesToJSON,
+    ApiV2BookBookIdKeywords,
+    ApiV2BookBookIdKeywordsFromJSON,
+    ApiV2BookBookIdKeywordsFromJSONTyped,
+    ApiV2BookBookIdKeywordsToJSON,
+    ApiV2TopicTopicIdResource,
+    ApiV2TopicTopicIdResourceFromJSON,
+    ApiV2TopicTopicIdResourceFromJSONTyped,
+    ApiV2TopicTopicIdResourceToJSON,
 } from './';
 
 /**
@@ -28,10 +32,52 @@ import {
 export interface InlineObject12 {
     /**
      * 
-     * @type {Array<ApiV2TopicTopicIdActivityTimeRanges>}
+     * @type {string}
      * @memberof InlineObject12
      */
-    timeRanges: Array<ApiV2TopicTopicIdActivityTimeRanges>;
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject12
+     */
+    timeRequired?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject12
+     */
+    startTime?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineObject12
+     */
+    stopTime?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InlineObject12
+     */
+    shared?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject12
+     */
+    description?: string;
+    /**
+     * 
+     * @type {ApiV2TopicTopicIdResource}
+     * @memberof InlineObject12
+     */
+    resource?: ApiV2TopicTopicIdResource;
+    /**
+     * 
+     * @type {Array<ApiV2BookBookIdKeywords>}
+     * @memberof InlineObject12
+     */
+    keywords?: Array<ApiV2BookBookIdKeywords>;
 }
 
 export function InlineObject12FromJSON(json: any): InlineObject12 {
@@ -44,7 +90,14 @@ export function InlineObject12FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'timeRanges': ((json['timeRanges'] as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesFromJSON)),
+        'name': !exists(json, 'name') ? undefined : json['name'],
+        'timeRequired': !exists(json, 'timeRequired') ? undefined : json['timeRequired'],
+        'startTime': !exists(json, 'startTime') ? undefined : json['startTime'],
+        'stopTime': !exists(json, 'stopTime') ? undefined : json['stopTime'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'resource': !exists(json, 'resource') ? undefined : ApiV2TopicTopicIdResourceFromJSON(json['resource']),
+        'keywords': !exists(json, 'keywords') ? undefined : ((json['keywords'] as Array<any>).map(ApiV2BookBookIdKeywordsFromJSON)),
     };
 }
 
@@ -57,7 +110,14 @@ export function InlineObject12ToJSON(value?: InlineObject12 | null): any {
     }
     return {
         
-        'timeRanges': ((value.timeRanges as Array<any>).map(ApiV2TopicTopicIdActivityTimeRangesToJSON)),
+        'name': value.name,
+        'timeRequired': value.timeRequired,
+        'startTime': value.startTime,
+        'stopTime': value.stopTime,
+        'shared': value.shared,
+        'description': value.description,
+        'resource': ApiV2TopicTopicIdResourceToJSON(value.resource),
+        'keywords': value.keywords === undefined ? undefined : ((value.keywords as Array<any>).map(ApiV2BookBookIdKeywordsToJSON)),
     };
 }
 

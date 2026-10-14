@@ -30,7 +30,10 @@ async function findClient(clientId: string, redirectUris?: string[]) {
   };
   const privateKey = await createPrivateKey();
   const clientAuth = privateKey
-    ? PrivateKeyJwt((await importJWK(privateKey, "RS256")) as CryptoKey)
+    ? PrivateKeyJwt({
+        key: (await importJWK(privateKey, "RS256")) as CryptoKey,
+        kid: privateKey.kid,
+      })
     : None();
   const config = new Configuration(
     server,
@@ -43,6 +46,7 @@ async function findClient(clientId: string, redirectUris?: string[]) {
     },
     clientAuth
   );
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useIdTokenResponseType(config);
 
   if (process.env.NODE_ENV !== "production") {
