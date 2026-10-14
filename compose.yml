@@ -1,12 +1,17 @@
 # NOTE: DON'T USE IT IN PRODUCTION. 本番環境で使用しないで。
 services:
   mariadb:
-    image: "mariadb:11.2.6-jammy"
+    image: "mariadb:11.4.13-noble"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: bitnami_moodle
     volumes:
-      - mariadb_data_v10:/var/lib/mysql
+      - mariadb_data_v11:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   moodle:
     image: ghcr.io/npocccties/chibichilo-moodle
     build: moodle
@@ -15,12 +20,15 @@ services:
       MOODLE_USERNAME: user
       MOODLE_PASSWORD: password
       ALLOW_EMPTY_PASSWORD: "yes"
+      MOODLE_DATABASE_HOST: mariadb
       MOODLE_DATABASE_USER: root
       BITNAMI_DEBUG: "true"
-    depends_on: [mariadb]
+    depends_on:
+      mariadb:
+        condition: service_healthy
     volumes:
-      - moodle_data_v4:/bitnami/moodle
-      - moodledata_data_v4:/bitnami/moodledata
+      - moodle_data_v5:/bitnami/moodle
+      - moodledata_data_v5:/bitnami/moodledata
   db:
     image: "postgres:17.2-alpine3.21"
     environment:
@@ -53,7 +61,7 @@ services:
       - "8080:8080"
     depends_on: [moodle, db]
 volumes:
-  mariadb_data_v10:
-  moodle_data_v4:
-  moodledata_data_v4:
+  mariadb_data_v11:
+  moodle_data_v5:
+  moodledata_data_v5:
   postgres_data_v17:

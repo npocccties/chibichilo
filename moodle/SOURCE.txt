@@ -1,0 +1,12 @@
+# Bitnami Moodle container sources (development only)
+#
+# Free Hub images (bitnami/moodle) are no longer available. This tree vendors
+# the Apache-2.0 build recipe from bitnami/containers and downloads components
+# from downloads.bitnami.com/files/stacksmith at image build time.
+#
+# Source: https://github.com/bitnami/containers/tree/main/bitnami/moodle/5.3/debian-12
+# Commit: 6d240f83a943eac9879af6e289cd51d5111caeb1
+# Fetched: 2026-10-14
+#
+# If stacksmith packages become unavailable, migrate to the
+# moodlehq/moodle-php-apache-based approach instead.
