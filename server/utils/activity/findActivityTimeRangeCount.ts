@@ -1,4 +1,4 @@
-import type { Activity } from "@prisma/client";
+import type { Activity } from "$server/generated/prisma/client";
 
 import prisma from "$server/utils/prisma";
 

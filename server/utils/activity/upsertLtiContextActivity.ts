@@ -4,7 +4,7 @@ import type {
   Topic,
   LtiConsumer,
   LtiContext,
-} from "@prisma/client";
+} from "$server/generated/prisma/client";
 import type { ActivityProps } from "$server/validators/activityProps";
 import upsertActivity from "./upsertActivity";
 

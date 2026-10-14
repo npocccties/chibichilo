@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { WordCloudSchema } from "$server/models/wordCloud";

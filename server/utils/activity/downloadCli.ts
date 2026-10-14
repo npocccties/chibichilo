@@ -1,17 +1,20 @@
 import dotenv from "dotenv";
 import fs from "fs";
 
-import format from "date-fns/format";
-import utcToZoneTime from "date-fns-tz/utcToZonedTime";
+import { TZDate } from "@date-fns/tz";
+import { format } from "date-fns";
 import prisma from "$server/utils/prisma";
 import { nullSession } from "$server/services/session";
 import findAllActivity from "./findAllActivity";
-import getLocaleEntries from "$utils/bookLearningActivity/getLocaleEntries";
+import getLocaleEntries, {
+  label,
+  keyOrder,
+} from "$utils/bookLearningActivity/getLocaleEntries";
 import type { BookActivitySchema } from "$server/models/bookActivity";
 import type { SessionSchema } from "$server/models/session";
 import { getActivityRewatchRate } from "$server/services/activityRewatchRate";
 import type { ActivityRewatchRateProps } from "$server/validators/activityRewatchRate";
-import json2csv from "json2csv";
+import { Parser } from "@json2csv/plainjs";
 
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 import findClient from "../ltiv1p3/findClient";
@@ -72,22 +75,31 @@ async function getDecoratedData(consumerId: string, contextId: string) {
 
 const deleteList = ["ユーザ名", "メールアドレス"];
 
-function writeCsv(
+function appendCsv(
   decoratedData: ReturnType<typeof download>,
   filename: string
 ) {
-  if (!decoratedData || decoratedData.length === 0) {
-    throw new Error("No data to write to CSV");
-  }
+  if (!decoratedData || decoratedData.length === 0) return;
+  const fields = keyOrder
+    .map((key) => label[key])
+    .filter((l) => !deleteList.includes(l))
+    .filter(
+      (l) => NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD || l !== label["rewatchRate"]
+    );
   const filterd = decoratedData.map((d) => {
     for (const key of deleteList) {
       delete d[key];
     }
     return d;
   });
-  const csv = json2csv.parse(filterd);
-  const bom = "\uFEFF";
-  fs.writeFileSync(filename, bom + csv, "utf-8");
+  const fileExists = fs.existsSync(filename);
+  if (!fileExists) {
+    const csv = new Parser({ fields }).parse(filterd);
+    fs.writeFileSync(filename, "\uFEFF" + csv, "utf-8");
+  } else {
+    const csv = new Parser({ fields, header: false }).parse(filterd);
+    fs.appendFileSync(filename, "\n" + csv, "utf-8");
+  }
 }
 
 //
@@ -130,7 +142,7 @@ function download(
 
 function logger(level: string, output: string, error?: Error | unknown) {
   console.log(
-    format(utcToZoneTime(new Date(), "Asia/Tokyo"), "yyyy-MM-dd HH:mm:ss"),
+    format(new TZDate(new Date(), "Asia/Tokyo"), "yyyy-MM-dd HH:mm:ss"),
     level,
     output,
     "ActivityDownloadLog"
@@ -149,15 +161,15 @@ async function do_download(filename: string) {
   }
   try {
     logger("INFO", "begin activity download...");
+    if (fs.existsSync(filename)) fs.unlinkSync(filename);
     const contexts = (await getContexts()).filter(
       ({ consumerId, id }) => consumerId && id
     );
-    const list = await Promise.all(
-      contexts.map(async ({ consumerId, id }) =>
-        consumerId ? await getDecoratedData(consumerId, id) : []
-      )
-    );
-    writeCsv(list.flat(), filename);
+    for (const { consumerId, id, title } of contexts) {
+      logger("INFO", `processing context ${consumerId} ${id} ${title}...`);
+      const data = consumerId ? await getDecoratedData(consumerId, id) : [];
+      if (data.length > 0) appendCsv(data, filename);
+    }
     exitCode = 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {

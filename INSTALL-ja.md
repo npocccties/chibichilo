@@ -14,7 +14,7 @@ Docker を使っているのは、開発用途である。
 
 ## 環境変数
 
-フロントエンド周りの静的コンテンツは環境変数を与えた後 `yarn build` コマンドを実行して生成する。
+フロントエンド周りの静的コンテンツは環境変数を与えた後 `pnpm build` コマンドを実行して生成する。
 API の接続先の情報を変更する場合 .env を適宜書き換える必要がある。
 
 .env:
@@ -37,14 +37,25 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 | `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | DeepLink用のUIを無効にする。BlackboardでDeepLinkを使用する際には有効にする (フォーマット: [YAML 1.1 真偽値](https://yaml.org/type/bool.html)) (デフォルト: 無効) |
 | `NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL`         | 実視聴回数を記録する際の区間の長さ (秒) (デフォルト:`1`) サーバ側の `ACTIVITY_COUNT_INTERVAL` と同一の値を設定すること                                           |
 | `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | ダウンロードページでの分割視聴分析データの1ファイルあたりのデータ数 (デフォルト: `0`) `0`のとき、視聴分析データは分割されない                                    |
+| `NEXT_PUBLIC_BOOKMARK_COLOR`                  | 「タグ管理から表示中」マークの背景色（デフォルト: `#4caf50`） |
 
 ## フロントエンド周りのビルド
 
 ### 前提条件
 
-2023-03-29 現在、以下の環境でビルドを確認。
+2026-05-21 現在、以下の環境でビルドを確認。
 
-- Node.js LTS
+- Node.js 26.2 以上、24.x LTS（24.16.0 以上）、または 22.x LTS（22.22.3 以上）（[package.json](package.json) の `engines` に合わせる）
+- pnpm 11.1.2（[package.json](package.json) の `packageManager` に合わせる）
+
+## pnpm をインストールする
+
+https://pnpm.io/ja/installation
+
+```sh
+# npm でグローバルインストール
+npm install -g pnpm@11.1.2
+```
 
 ### ビルド
 
@@ -53,9 +64,8 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 ```sh
 git clone https://github.com/npocccties/chibichilo.git
 cd chibichilo
-corepack enable yarn
-yarn
-yarn build
+pnpm install
+pnpm build
 ```
 
 server/dist ディレクトリ以下にファイルが作られれば成功です。
@@ -75,10 +85,10 @@ server/dist
 
 ### 使用しているソフトウェアライセンスの詳細
 
-使用しているソフトウェアライセンスの詳細を取得するには `yarn` 実行後、以下のコマンドを実行します。
+使用しているソフトウェアライセンスの詳細を取得するには `pnpm install` 実行後、以下のコマンドを実行します。
 
 ```sh
-yarn build:license
+pnpm build:license
 ```
 
 成功するとテキストファイル `public/LICENSE` が得られます。
@@ -109,8 +119,8 @@ tab に表示する favicoon 画像を変更するには`public/favicon.ico` を
 
 ### Storybook
 
-いくつかの UI をブラウザで確認するには `yarn` 実行後、以下のコマンドを実行します。
+いくつかの UI をブラウザで確認するには `pnpm install` 実行後、以下のコマンドを実行します。
 
 ```sh
-yarn storybook
+pnpm storybook
 ```

@@ -1,13 +1,14 @@
 import type { LinkedBook } from "$types/linkedBook";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import { useBook } from "./book";
 
 function useLinkedBook() {
-  const { session, isContentEditable } = useSessionAtom();
+  const { isContentEditable } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const { book, error } = useBook(
-    session?.ltiResourceLink?.bookId,
+    ltiContext?.ltiResourceLink?.bookId,
     isContentEditable,
-    session?.ltiResourceLink
+    ltiContext?.ltiResourceLink
   );
   const linkedBook: LinkedBook | undefined = book && {
     ...book,

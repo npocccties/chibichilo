@@ -1,4 +1,4 @@
-import type { Book, Topic } from "@prisma/client";
+import type { Book, Topic } from "$server/generated/prisma/client";
 import prisma from "./prisma";
 import type { MetainfoProps } from "$server/models/metainfo";
 

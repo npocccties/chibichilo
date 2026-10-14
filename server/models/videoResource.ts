@@ -1,4 +1,4 @@
-import type { Resource, Video } from "@prisma/client";
+import type { Resource, Video } from "$server/generated/prisma/client";
 import type { VideoTrackSchema } from "./videoTrack";
 import { videoTrackSchema } from "./videoTrack";
 

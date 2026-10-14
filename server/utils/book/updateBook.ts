@@ -1,4 +1,4 @@
-import type { Book, PrismaPromise } from "@prisma/client";
+import type { Book, Prisma } from "$server/generated/prisma/client";
 import type { BookProps, BookSchema } from "$server/models/book";
 import type { SectionProps } from "$server/models/book/section";
 import type { PublicBookSchema } from "$server/models/book/public";
@@ -23,11 +23,17 @@ export function upsertSections(bookId: Book["id"], sections: SectionProps[]) {
 
 async function updateBook(
   userId: number,
-  { id, sections, publicBooks, ...book }: Pick<Book, "id"> & BookProps,
+  {
+    id,
+    sections,
+    publicBooks,
+    ltiContextBookAccesses,
+    ...book
+  }: Pick<Book, "id"> & BookProps,
   origBook: BookSchema,
   noclone?: boolean
 ): Promise<BookSchema | undefined> {
-  const ops: Array<PrismaPromise<unknown>> = [];
+  const ops: Array<Prisma.PrismaPromise<unknown>> = [];
 
   if (sections != null) {
     if (!noclone) {
@@ -55,6 +61,16 @@ async function updateBook(
         ...keywordsConnectOrCreateInput(book.keywords ?? []),
         ...keywordsDisconnectInput(keywordsBeforeUpdate, book.keywords ?? []),
       },
+      ...(ltiContextBookAccesses && {
+        ltiContextBookAccesses: {
+          deleteMany: {},
+          create: ltiContextBookAccesses.map((access) => ({
+            consumerId: access.consumerId,
+            contextId: access.contextId,
+            allowViewing: access.allowViewing,
+          })),
+        },
+      }),
       updatedAt: new Date(),
     },
   });

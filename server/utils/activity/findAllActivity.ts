@@ -126,10 +126,10 @@ async function findAllActivity(
 }> {
   const isDownloadPage =
     isAdministrator(session) && currentLtiContextOnly === undefined;
-  const consumerId = isDownloadPage
-    ? ltiConsumerId ?? ""
-    : session.oauthClient.id;
-  const contextId = isDownloadPage ? ltiContextId ?? "" : session.ltiContext.id;
+  const consumerId =
+    ltiConsumerId ?? (isDownloadPage ? "" : session.oauthClient.id);
+  const contextId =
+    ltiContextId ?? (isDownloadPage ? "" : session.ltiContext.id);
 
   const ltiResourceLinks = await prisma.ltiResourceLink.findMany({
     where: { consumerId, contextId },

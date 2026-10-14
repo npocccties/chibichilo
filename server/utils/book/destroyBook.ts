@@ -1,4 +1,4 @@
-import type { Book } from "@prisma/client";
+import type { Book } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 import cleanupSections from "./cleanupSections";
 import { findBookUniqueIds, updateBookSpid } from "../uniqueId";

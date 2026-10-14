@@ -1,15 +1,25 @@
 import { createStore } from "jotai";
 import {
+  vi,
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "vitest";
+import {
   isLtiContextReadyAtom,
   loadLtiContext,
   ltiContextAtom,
-  updateLtiContextAtom,
+  updateBaseLtiContextAtom,
+  updateOverrideLtiContextAtom,
 } from "./session";
 
 const createStorageMock = () => ({
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
 });
 
 const storageMock = createStorageMock();
@@ -35,7 +45,7 @@ describe("session.ts の包括的な検証", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     storageMock.getItem.mockReturnValue(null);
   });
 
@@ -46,55 +56,104 @@ describe("session.ts の包括的な検証", () => {
       expect(isReady).toBe(false);
     });
 
-    it("値が確定したとき、ready判定がtrueになること", async () => {
+    it("BaseLtiContext を更新すると、ltiContextAtom からその値が取得でき、ready になること", () => {
       const store = createStore();
-      store.set(updateLtiContextAtom, {
-        ltiConsumerId: "test",
-        ltiContextId: "ctx",
+      store.set(updateBaseLtiContextAtom, {
+        ltiConsumerId: "base-consumer",
+        ltiContextId: "base-context",
+        pathname: "/base",
       });
-      const isReady = store.get(isLtiContextReadyAtom);
-      expect(isReady).toBe(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 10));
-      expect(storageMock.setItem).toHaveBeenCalledWith(
-        "ltiContext",
-        expect.stringContaining('"ltiConsumerId":"test"')
-      );
+      const state = store.get(ltiContextAtom);
+      expect(state).toEqual({
+        ltiConsumerId: "base-consumer",
+        ltiContextId: "base-context",
+        pathname: "/base",
+      });
+      expect(store.get(isLtiContextReadyAtom)).toBe(true);
     });
 
-    it("updateLtiContextAtom で値が確定(null)したとき、ready判定がtrueになること", () => {
+    it("OverrideLtiContext がセットされると、Base の値よりも優先して取得されること", () => {
       const store = createStore();
-      store.set(updateLtiContextAtom, {
+
+      // まず Base をセット
+      store.set(updateBaseLtiContextAtom, {
+        ltiConsumerId: "base-consumer",
+        ltiContextId: "base-context",
+      });
+
+      // 次に Override をセット (別タブのURLパラメータ等で上書きされた想定)
+      store.set(updateOverrideLtiContextAtom, {
+        ltiConsumerId: "override-consumer",
+        ltiContextId: "override-context",
+      });
+
+      // Override の値が優先して返される
+      const state = store.get(ltiContextAtom);
+      expect(state).toMatchObject({
+        ltiConsumerId: "override-consumer",
+        ltiContextId: "override-context",
+        pathname: null,
+      });
+      expect(store.get(isLtiContextReadyAtom)).toBe(true);
+    });
+
+    it("Override を null でクリアすると、再び Base の値が取得されるようになること", () => {
+      const store = createStore();
+
+      store.set(updateBaseLtiContextAtom, {
+        ltiConsumerId: "base-consumer",
+        ltiContextId: "base-context",
+      });
+      store.set(updateOverrideLtiContextAtom, {
+        ltiConsumerId: "override-consumer",
+        ltiContextId: "override-context",
+      });
+
+      // オーバーライドを解除
+      store.set(updateOverrideLtiContextAtom, null);
+
+      // Base に戻る
+      const state = store.get(ltiContextAtom);
+      expect(state).toEqual({
+        ltiConsumerId: "base-consumer",
+        ltiContextId: "base-context",
+      });
+    });
+
+    it("Override の一部プロパティのみを更新した場合、既存の Override の他のプロパティが維持されること", () => {
+      const store = createStore();
+
+      store.set(updateOverrideLtiContextAtom, {
+        ltiConsumerId: "override-consumer-1",
+        ltiContextId: "override-context-1",
+      });
+
+      // contextId だけを更新
+      store.set(updateOverrideLtiContextAtom, {
+        ltiContextId: "override-context-2",
+      });
+
+      const state = store.get(ltiContextAtom);
+      expect(state).toMatchObject({
+        ltiConsumerId: "override-consumer-1",
+        ltiContextId: "override-context-2",
+        pathname: null,
+      });
+    });
+
+    it("値が確定(null)したとき、ready判定がtrueになること", () => {
+      const store = createStore();
+      // LTI経由でない通常アクセスの場合は null がセットされる
+      store.set(updateBaseLtiContextAtom, {
         ltiConsumerId: null,
         ltiContextId: null,
       });
       const state = store.get(ltiContextAtom);
       expect(state.ltiConsumerId).toBeNull();
-      const isReady = store.get(isLtiContextReadyAtom);
-      expect(isReady).toBe(true);
-    });
 
-    it("片方のプロパティだけが更新された場合、もう一方はnullに補完され、ready判定はtrueになる", () => {
-      const store = createStore();
-      store.set(updateLtiContextAtom, { ltiConsumerId: "test-consumer" });
-      const state = store.get(ltiContextAtom);
-
-      expect(state.ltiConsumerId).toBe("test-consumer");
-      expect(state.ltiContextId).toBe(null);
+      // undefined ではない (null である) ため ready とみなす仕様
       expect(store.get(isLtiContextReadyAtom)).toBe(true);
-    });
-  });
-
-  describe("ltiContextAtom の検証", () => {
-    it("pathname をセットした場合、正しく保持されること", () => {
-      const store = createStore();
-      store.set(updateLtiContextAtom, {
-        ltiConsumerId: "test-consumer",
-        ltiContextId: "test-context",
-        pathname: "/bookmark",
-      });
-      const state = store.get(ltiContextAtom);
-      expect(state).toMatchObject({ pathname: "/bookmark" });
     });
   });
 

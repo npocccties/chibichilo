@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { BookmarkTagMenu, BookmarkSchema } from "$server/models/bookmark";
 import { BookmarkQuery } from "$server/validators/bookmarkQuery";
 import authUser from "$server/auth/authUser";
@@ -39,12 +39,20 @@ export async function index({
   query,
   session,
 }: FastifyRequest<{ Querystring: Query }>) {
-  const { topicId, bookId, tagIds, isExistMemoContent, isAllUsers } = query;
+  const {
+    topicId,
+    bookId,
+    tagIds,
+    isExistMemoContent,
+    isAllUsers,
+    ltiConsumerId,
+    ltiContextId,
+  } = query;
 
   if (topicId !== undefined) {
     const bookmarks = await findBookmarks({
-      ltiContextId: session.ltiContext.id,
-      ltiConsumerId: session.oauthClient.id,
+      ltiContextId: ltiContextId ?? session.ltiContext.id,
+      ltiConsumerId: ltiConsumerId ?? session.oauthClient.id,
       topicId,
       bookId,
       userId: isAllUsers ? undefined : session.user.id,
@@ -59,8 +67,8 @@ export async function index({
     const ids = params.getAll("tagIds").map(Number);
 
     const bookmarks = await findBookmarks({
-      ltiContextId: session.ltiContext.id,
-      ltiConsumerId: session.oauthClient.id,
+      ltiContextId: ltiContextId ?? session.ltiContext.id,
+      ltiConsumerId: ltiConsumerId ?? session.oauthClient.id,
       tagIds: ids,
       isExistMemoContent,
       bookId,

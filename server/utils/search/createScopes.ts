@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import type { AuthorFilter } from "$server/models/authorFilter";
 
 /** 著者フィルターの表示範囲の Prisma クエリーの生成 */

@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { LearnerSchema } from "$server/models/learner";
 import { CourseBookSchema } from "$server/models/courseBook";
 import { BookActivitySchema } from "$server/models/bookActivity";

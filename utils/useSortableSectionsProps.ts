@@ -3,7 +3,7 @@ import type { SectionSchema } from "$server/models/book/section";
 
 function useSortableSectionsProps(
   sections: SectionSchema[],
-  onSubmit: (sections: SectionSchema[]) => void
+  onSubmit: (sections: SectionSchema[]) => void | Promise<void>
 ) {
   const [sortable, setSortable] = useState(false);
   const [inProgress, setInProgress] = useState(false);
@@ -20,10 +20,14 @@ function useSortableSectionsProps(
     setSortableSections(sections);
     setInProgress(false);
   };
-  const handleSectionsSave = () => {
-    onSubmit(sortableSections);
-    setInProgress(false);
-    setSortable(false);
+  const handleSectionsSave = async () => {
+    try {
+      await onSubmit(sortableSections);
+      setInProgress(false);
+      setSortable(false);
+    } catch {
+      // 保存失敗時は編集モードを維持する
+    }
   };
   const handleSectionCreate = () => {
     setSortableSections([

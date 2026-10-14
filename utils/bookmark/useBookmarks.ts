@@ -3,6 +3,7 @@ import useSWR from "swr";
 
 import type { BookmarkSchema, BookmarkTagMenu } from "$server/models/bookmark";
 import type { BookmarkQuery } from "$server/validators/bookmarkQuery";
+import { useLtiContextAtom } from "$store/session";
 
 const key = "/api/v2/bookmark";
 
@@ -20,7 +21,15 @@ async function fetchBookmarks({
 }
 
 function useBookmarks(query: BookmarkQuery) {
-  const { data, isLoading } = useSWR({ key, ...query }, fetchBookmarks);
+  const { ltiConsumerId, ltiContextId } = useLtiContextAtom();
+  const mergedQuery = {
+    ...query,
+    ...(ltiConsumerId ? { ltiConsumerId } : {}),
+    ...(ltiContextId ? { ltiContextId } : {}),
+  };
+  const { data, isLoading } = useSWR({ key, ...mergedQuery }, fetchBookmarks, {
+    revalidateOnFocus: false,
+  });
   const bookmarks: BookmarkSchema[] = data?.bookmark ?? [];
   const bookmarkTagMenu: BookmarkTagMenu = data?.bookmarkTagMenu ?? [];
   return { bookmarks, bookmarkTagMenu, isLoading };

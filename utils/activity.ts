@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
-import throttle from "lodash.throttle";
-import usePrevious from "@rooks/use-previous";
+import throttle from "$utils/throttle";
+import usePrevious from "$utils/usePrevious";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookSchema } from "$server/models/book";
 import { useLtiContextAtom, useSessionAtom } from "$store/session";

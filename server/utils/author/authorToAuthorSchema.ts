@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import { AuthorSchema } from "$server/models/author";
 
 export const authorArg = {

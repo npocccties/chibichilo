@@ -1,4 +1,4 @@
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { getMemberships } from "$server/utils/ltiv1p3/services";

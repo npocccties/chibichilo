@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import type { ResourceSchema } from "$server/models/resource";
 import {
   getWowzaAccessToken,

@@ -1,4 +1,4 @@
-import type jose from "jose";
+import type { JWK } from "jose";
 import { calculateJwkThumbprint } from "jose";
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
@@ -16,21 +16,25 @@ async function readKey() {
 }
 
 /** Private Key 作成 */
-export async function createPrivateKey(): Promise<jose.JWK | null> {
+export async function createPrivateKey(): Promise<JWK | null> {
   const key = await readKey();
   if (!key) return null;
 
-  const jwk = crypto.createPrivateKey(key).export({ format: "jwk" });
-  const kid = await calculateJwkThumbprint(jwk);
+  const jwk = crypto.createPrivateKey(key).export({
+    format: "jwk",
+  }) as JWK;
+  const kid = await calculateJwkThumbprint(jwk, "sha256");
   return { ...jwk, kid };
 }
 
 /** Public Key 作成 */
-export async function createPublicKey(): Promise<jose.JWK | null> {
+export async function createPublicKey(): Promise<JWK | null> {
   const key = await readKey();
   if (!key) return null;
 
-  const jwk = crypto.createPublicKey(key).export({ format: "jwk" });
-  const kid = await calculateJwkThumbprint(jwk);
+  const jwk = crypto.createPublicKey(key).export({
+    format: "jwk",
+  }) as JWK;
+  const kid = await calculateJwkThumbprint(jwk, "sha256");
   return { ...jwk, kid };
 }

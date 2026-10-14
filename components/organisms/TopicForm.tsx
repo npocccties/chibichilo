@@ -24,7 +24,7 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import Autocomplete from "$atoms/Autocomplete";
 import { useForm } from "react-hook-form";
-import { useDebouncedCallback } from "use-debounce";
+import useDebouncedCallback from "$utils/useDebouncedCallback";
 import clsx from "clsx";
 import InputLabel from "$atoms/InputLabel";
 import TextField from "$atoms/TextField";

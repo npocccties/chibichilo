@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type { BookParams } from "$server/validators/bookParams";
 import { bookParamsSchema } from "$server/validators/bookParams";
 import authUser from "$server/auth/authUser";

@@ -28,8 +28,9 @@ import { authors } from "$utils/descriptionList";
 import useOembed from "$utils/useOembed";
 import { NEXT_PUBLIC_BASE_PATH } from "$utils/env";
 import BookChip from "$atoms/BookChip";
-import type { RelatedBook } from "$server/models/topic";
+import type { RelatedBook, TopicSchema } from "$server/models/topic";
 import { getReleaseFromRelatedBooks } from "$utils/release";
+import type { BookSchema } from "$server/models/book";
 
 type HeaderProps = Parameters<typeof Checkbox>[0] & {
   checkable: boolean;
@@ -121,7 +122,11 @@ export type ContentPreviewProps = Omit<
   content: ContentSchema;
   onContentPreviewClick(content: ContentSchema): void;
   onContentEditClick?(content: ContentSchema): void;
-  onContentLinkClick?(content: ContentSchema, checked: boolean): void;
+  onContentLinkClick?(
+    content: Pick<BookSchema, "id"> | ContentSchema,
+    checked: boolean,
+    topicId?: TopicSchema["id"]
+  ): void;
   onLtiContextClick?(
     ltiResourceLink: Pick<LtiResourceLinkSchema, "consumerId" | "contextId">
   ): void;
@@ -309,14 +314,23 @@ export default function ContentPreview({
               key: "コース",
               value: (
                 <>
-                  {content.ltiResourceLinks.map((ltiResourceLink, index) => (
-                    <CourseChip
-                      sx={{ mr: 0.5, my: 0.125 }}
-                      key={index}
-                      ltiResourceLink={ltiResourceLink}
-                      onLtiResourceLinkClick={onLtiContextClick}
-                    />
-                  ))}
+                  {content.ltiResourceLinks.map((ltiResourceLink, index) => {
+                    const access = content.ltiContextBookAccesses?.find(
+                      (a) =>
+                        a.consumerId === ltiResourceLink.consumerId &&
+                        a.contextId === ltiResourceLink.contextId
+                    );
+                    const allowViewing = access ? access.allowViewing : true;
+                    return (
+                      <CourseChip
+                        sx={{ mr: 0.5, my: 0.125 }}
+                        key={index}
+                        ltiResourceLink={ltiResourceLink}
+                        onLtiResourceLinkClick={onLtiContextClick}
+                        allowViewing={allowViewing} // 👇 状態を渡す
+                      />
+                    );
+                  })}
                 </>
               ),
             },

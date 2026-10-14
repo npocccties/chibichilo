@@ -88,11 +88,12 @@ export default function Topics(props: Props) {
   const handleTopicsDeleteClick = async () => {
     const topics = getSelectedTopics();
     if (topics.length === 0) return;
-    await confirm({
+    const { confirmed } = await confirm({
       title: `${topics.length}件のトピックを削除します。よろしいですか？`,
       cancellationText: "キャンセル",
       confirmationText: "OK",
     });
+    if (!confirmed) return;
     onTopicsDeleteClick(topics);
     select(() => new Map([]));
   };

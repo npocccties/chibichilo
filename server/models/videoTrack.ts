@@ -1,4 +1,4 @@
-import type { Track, Prisma } from "@prisma/client";
+import type { Track, Prisma } from "$server/generated/prisma/client";
 
 export type VideoTrackProps = Pick<
   Prisma.TrackCreateWithoutVideoInput,

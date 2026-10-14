@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";
 import { isInstructor } from "$server/utils/session";
@@ -37,13 +37,34 @@ export const hooks = {
   get: { auth: [authUser, authInstructor] },
 };
 
-const ACTIVITY_COUNT_INTERVAL2 = Number(
-  process.env.ACTIVITY_COUNT_INTERVAL ?? 1
+function parseEnvInt(value: string | undefined, defaultValue: number): number {
+  if (value === undefined || value.trim() === "") return defaultValue;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : defaultValue;
+}
+
+const ACTIVITY_COUNT_INTERVAL2 = parseEnvInt(
+  process.env.ACTIVITY_COUNT_INTERVAL,
+  1
 );
 
-const ACTIVITY_REWATCH_THRESHOLD2 = Number(
-  process.env.ACTIVITY_REWATCH_THRESHOLD ?? 2
+const ACTIVITY_REWATCH_THRESHOLD2 = parseEnvInt(
+  process.env.ACTIVITY_REWATCH_THRESHOLD,
+  2
 );
+
+function calcRewatchRate(
+  timeRangeCounts: number,
+  timeRequired: number,
+  countInterval: number
+): number {
+  if (countInterval <= 0) return 0;
+  const divisor = timeRequired / countInterval;
+  if (divisor <= 0 || !Number.isFinite(divisor)) return 0;
+  const rate = timeRangeCounts / divisor;
+  if (!Number.isFinite(rate)) return 0;
+  return round(rate, -3);
+}
 
 export async function getActivityRewatchRate(
   session: SessionSchema,
@@ -62,10 +83,10 @@ export async function getActivityRewatchRate(
       bookId: activity.bookId,
       topicId: activity.topic.id,
       learnerId: activity.learnerId,
-      rewatchRate: round(
-        activity._count.timeRangeCounts /
-          (activity.topic.timeRequired / ACTIVITY_COUNT_INTERVAL2),
-        -3
+      rewatchRate: calcRewatchRate(
+        activity._count.timeRangeCounts,
+        activity.topic.timeRequired,
+        ACTIVITY_COUNT_INTERVAL2
       ),
     };
   });

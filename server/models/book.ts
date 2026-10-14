@@ -1,4 +1,7 @@
-import type { Book } from "@prisma/client";
+import type {
+  Book,
+  LtiContextBookAccess,
+} from "$server/generated/prisma/client";
 import { AuthorSchema } from "./author";
 import type { SectionProps, SectionSchema } from "./book/section";
 import { sectionPropsSchema, sectionSchema } from "./book/section";
@@ -10,6 +13,12 @@ import { KeywordPropSchema, KeywordSchema } from "./keyword";
 import type { ReleaseSchema } from "./book/release";
 import { releaseSchema } from "./book/release";
 
+export type LtiContextBookAccessProps = {
+  consumerId: string;
+  contextId: string;
+  allowViewing: boolean;
+};
+
 export type BookProps = {
   name: string;
   description?: string;
@@ -17,7 +26,10 @@ export type BookProps = {
   sections?: SectionProps[];
   keywords?: KeywordPropSchema[];
   publicBooks?: PublicBookSchema[];
+  ltiContextBookAccesses?: LtiContextBookAccessProps[];
 };
+
+export type LtiContextBookAccessSchema = LtiContextBookAccess;
 
 export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid" | "spid"> & {
   authors: AuthorSchema[];
@@ -26,7 +38,18 @@ export type BookSchema = Omit<Book, "poid" | "oid" | "pid" | "vid" | "spid"> & {
   keywords: KeywordSchema[];
   publicBooks?: PublicBookSchema[];
   release?: ReleaseSchema;
+  ltiContextBookAccesses?: LtiContextBookAccessSchema[];
 };
+
+export const ltiContextBookAccessSchema = {
+  type: "object",
+  properties: {
+    consumerId: { type: "string" },
+    contextId: { type: "string" },
+    allowViewing: { type: "boolean" },
+  },
+  required: ["consumerId", "contextId", "allowViewing"],
+} as const;
 
 export const bookPropsSchema = {
   type: "object",
@@ -45,6 +68,10 @@ export const bookPropsSchema = {
     publicBooks: {
       type: "array",
       items: publicBookSchema,
+    },
+    ltiContextBookAccesses: {
+      type: "array",
+      items: ltiContextBookAccessSchema,
     },
   },
 } as const;
@@ -81,6 +108,10 @@ export const bookSchema = {
     release: {
       ...releaseSchema,
       nullable: true,
+    },
+    ltiContextBookAccesses: {
+      type: "array",
+      items: ltiContextBookAccessSchema,
     },
   },
 } as const;

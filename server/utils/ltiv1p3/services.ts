@@ -1,10 +1,10 @@
-import type { Client } from "openid-client";
+import { fetchProtectedResource } from "openid-client";
 import prisma from "$server/utils/prisma";
 import type { LtiNrpsContextMembershipSchema } from "$server/models/ltiNrpsContextMembership";
 import { createAccessToken } from "./accessToken";
 import { isInstructor } from "./roles";
 import type { FastifySessionObject } from "@fastify/session";
-import findClient from "./findClient";
+import findClient, { type OidcClient } from "./findClient";
 
 const successCode = [200, 201, 202, 204];
 const authFailureCode = [401];
@@ -17,24 +17,27 @@ const authFailureCode = [401];
  * @param retry リトライを行うか否か (デフォルト: true 行う)
  */
 export async function getMemberships(
-  client: Client,
+  client: OidcClient,
   contextMembershipsUrl?: string,
   retry = true,
   query: string = ""
 ): Promise<LtiNrpsContextMembershipSchema> {
-  const clientId = client.metadata.client_id;
+  const clientId = client.clientMetadata().client_id;
   if (!contextMembershipsUrl) {
     throw new Error(`Failed to get contextMembershipsUrl`);
   }
+
+  const url = new URL(contextMembershipsUrl);
   if (query) {
-    contextMembershipsUrl +=
-      (contextMembershipsUrl.includes("?") ? "&" : "?") + query;
+    const params = new URLSearchParams(query);
+    params.forEach((value, key) => url.searchParams.set(key, value));
   }
+
   const { accessToken } = await createAccessToken(client);
 
-  const res = await client.requestResource(contextMembershipsUrl, accessToken);
+  const res = await fetchProtectedResource(client, accessToken, url, "GET");
 
-  const statusCode = Number(res.statusCode);
+  const statusCode = res.status;
 
   if (authFailureCode.includes(statusCode)) {
     await prisma.ltiConsumer.update({
@@ -48,23 +51,17 @@ export async function getMemberships(
   }
 
   if (!successCode.includes(statusCode)) {
-    throw new Error(`${res.statusCode} ${res.statusMessage}`);
+    throw new Error(`${statusCode} ${res.statusText}`);
   }
 
-  if (!res.body) {
-    throw new Error("Failed to request memberships resource");
-  }
-
-  const memberships = JSON.parse(
-    res.body.toString()
-  ) as LtiNrpsContextMembershipSchema;
+  const memberships = (await res.json()) as LtiNrpsContextMembershipSchema;
 
   if (query) {
     return memberships;
   }
 
   // 教師を除く、学習者のみのデータを返す
-  const learnerMemberships = {
+  return {
     ...memberships,
     members: memberships.members.filter(
       (member) =>
@@ -73,7 +70,6 @@ export async function getMemberships(
         !member.roles.includes("Instructor")
     ),
   };
-  return learnerMemberships;
 }
 
 /**

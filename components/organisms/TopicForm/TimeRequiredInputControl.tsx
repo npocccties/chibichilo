@@ -1,6 +1,6 @@
 import type { FieldValues, Control, FieldPath } from "react-hook-form";
 import { useController } from "react-hook-form";
-import { useToggle } from "react-use";
+import useToggle from "$utils/useToggle";
 import Alert from "@mui/material/Alert";
 import TextField from "$atoms/TextField";
 import type { TopicSchema } from "$server/models/topic";

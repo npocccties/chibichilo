@@ -31,6 +31,9 @@ import Chip from "@mui/material/Chip";
 import formatInterval from "$utils/formatInterval";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import License from "$atoms/License";
+import type { ContentSchema } from "$server/models/content";
+import { useRouter } from "next/router";
+import { NEXT_PUBLIC_BOOKMARK_COLOR } from "$utils/env";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -77,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateAreas: `
         "side main"
       `,
-      gridTemplateColumns: "30% 1fr",
+      gridTemplateColumns: "30% minmax(0, 1fr)",
       gridAutoRows: "min-content",
     },
     "&$mobile": {
@@ -92,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
   },
   main: {
     gridArea: "main",
+    minWidth: 0,
     "&$desktop": {
       marginBottom: theme.spacing(2),
     },
@@ -125,6 +129,11 @@ type Props = {
   onTopicEnded(): void;
   onItemClick(index: ItemIndex): void;
   considerAppBar?: boolean;
+  onContentLinkClick?(
+    content: Pick<BookSchema, "id"> | ContentSchema,
+    checked: boolean,
+    topicId?: TopicSchema["id"]
+  ): void;
 };
 
 export default function Book(props: Props) {
@@ -142,10 +151,20 @@ export default function Book(props: Props) {
     onTopicEnded,
     onItemClick,
     considerAppBar = true,
+    onContentLinkClick,
   } = props;
 
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
-  const { isInstructor, isContentEditable } = useSessionAtom();
+  const { session, isInstructor, isContentEditable } = useSessionAtom();
+  const router = useRouter();
+  const hasBookmarkQuery = Boolean(router.query.lti_context_id);
+  const isBookmarkView = Boolean(
+    session?.ltiResourceLink &&
+      hasBookmarkQuery &&
+      (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
+        (book?.id && book.id !== session.ltiResourceLink.bookId))
+  );
+
   const [expanded, setExpanded] = useState(false);
   const handleLinkClick = () => setExpanded(!expanded);
   const theme = useTheme();
@@ -200,6 +219,17 @@ export default function Book(props: Props) {
               (book?.timeRequired ?? 0) * 1000
             )}`}
           />
+          {isBookmarkView && (
+            <Chip
+              sx={{
+                mr: 1,
+                mb: 0.5,
+                backgroundColor: NEXT_PUBLIC_BOOKMARK_COLOR,
+                color: "#fff",
+              }}
+              label="タグ管理から表示中"
+            />
+          )}
           {book?.license && <License license={book?.license} />}
           {book?.release?.shared && <SharedIndicator />}
           {isInstructor &&
@@ -313,6 +343,7 @@ export default function Book(props: Props) {
             onItemEditClick={handleItemEditClick}
             isContentEditable={isContentEditable}
             isPrivateBook={isPrivateBook}
+            onContentLinkClick={onContentLinkClick}
           />
         </div>
       </div>

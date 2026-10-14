@@ -1,4 +1,4 @@
-import type { Prisma } from "$node_modules/@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import type { SectionProps } from "$server/models/book/section";
 import prisma from "../prisma";
 import { cloneTopic } from "../topic/cloneTopic";

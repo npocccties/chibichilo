@@ -3,7 +3,7 @@ import type { BookSchema } from "$server/models/book";
 import createBook from "./createBook";
 import { cloneTopic } from "../topic/cloneTopic";
 import prisma from "../prisma";
-import type { Prisma, Topic } from "@prisma/client";
+import type { Prisma, Topic } from "$server/generated/prisma/client";
 import type { SectionSchema } from "$server/models/book/section";
 import {
   cloneBookUniqueIds,

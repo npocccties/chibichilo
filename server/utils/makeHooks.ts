@@ -1,12 +1,4 @@
-import type {
-  FastifyInstance,
-  RawRequestDefaultExpression,
-  RawServerBase,
-  RawServerDefault,
-  RawReplyDefaultExpression,
-  RouteShorthandOptions,
-} from "fastify";
-import type { RouteGenericInterface } from "fastify/types/route";
+import type { FastifyInstance } from "fastify";
 import type { FastifyAuthFunction } from "@fastify/auth";
 import type Hooks from "$server/types/hooks";
 
@@ -18,27 +10,13 @@ function makePreHandler(
   return { preHandler: fastify.auth(auth, { relation: "and", run: "all" }) };
 }
 
-function makeHooks<
-  RawServer extends RawServerBase = RawServerDefault,
-  RawRequest extends
-    RawRequestDefaultExpression<RawServer> = RawRequestDefaultExpression<RawServer>,
-  RawReply extends
-    RawReplyDefaultExpression<RawServer> = RawReplyDefaultExpression<RawServer>,
-  RouteGeneric extends RouteGenericInterface = RouteGenericInterface,
->(fastify: FastifyInstance, hooks: Hooks) {
+function makeHooks(fastify: FastifyInstance, hooks: Hooks) {
   return Object.fromEntries(
     [...Object.entries(hooks)].map(([key, value]) => [
       key,
       makePreHandler(fastify, { auth: value?.auth ?? [] }),
     ])
-  ) as {
-    [K in keyof Hooks]: RouteShorthandOptions<
-      RawServer,
-      RawRequest,
-      RawReply,
-      RouteGeneric
-    >;
-  };
+  );
 }
 
 export default makeHooks;

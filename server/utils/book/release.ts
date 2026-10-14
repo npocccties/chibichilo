@@ -1,4 +1,4 @@
-import type { Book, Prisma, Release } from "@prisma/client";
+import type { Book, Prisma, Release } from "$server/generated/prisma/client";
 import type { ReleaseProps } from "$server/models/book/release";
 import prisma from "$server/utils/prisma";
 import type { BookSchema } from "$server/models/book";

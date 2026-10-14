@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    ApiV2BookBookIdAuthorsAuthors,
-    ApiV2BookBookIdAuthorsAuthorsFromJSON,
-    ApiV2BookBookIdAuthorsAuthorsFromJSONTyped,
-    ApiV2BookBookIdAuthorsAuthorsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -28,34 +21,22 @@ import {
 export interface InlineObject9 {
     /**
      * 
-     * @type {Array<ApiV2BookBookIdAuthorsAuthors>}
+     * @type {string}
      * @memberof InlineObject9
      */
-    authors: Array<ApiV2BookBookIdAuthorsAuthors>;
+    version?: string;
     /**
      * 
      * @type {string}
      * @memberof InlineObject9
      */
-    provider: string;
+    comment?: string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof InlineObject9
      */
-    wowzaBaseUrl: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject9
-     */
-    json?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject9
-     */
-    file?: string;
+    shared?: boolean;
 }
 
 export function InlineObject9FromJSON(json: any): InlineObject9 {
@@ -68,11 +49,9 @@ export function InlineObject9FromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'authors': ((json['authors'] as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsFromJSON)),
-        'provider': json['provider'],
-        'wowzaBaseUrl': json['wowzaBaseUrl'],
-        'json': !exists(json, 'json') ? undefined : json['json'],
-        'file': !exists(json, 'file') ? undefined : json['file'],
+        'version': !exists(json, 'version') ? undefined : json['version'],
+        'comment': !exists(json, 'comment') ? undefined : json['comment'],
+        'shared': !exists(json, 'shared') ? undefined : json['shared'],
     };
 }
 
@@ -85,11 +64,9 @@ export function InlineObject9ToJSON(value?: InlineObject9 | null): any {
     }
     return {
         
-        'authors': ((value.authors as Array<any>).map(ApiV2BookBookIdAuthorsAuthorsToJSON)),
-        'provider': value.provider,
-        'wowzaBaseUrl': value.wowzaBaseUrl,
-        'json': value.json,
-        'file': value.file,
+        'version': value.version,
+        'comment': value.comment,
+        'shared': value.shared,
     };
 }
 

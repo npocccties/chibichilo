@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "$server/generated/prisma/client";
 import prisma from "$server/utils/prisma";
 import type { ActivitySchema } from "$server/models/activity";
 import type { BookmarkSchema } from "$server/models/bookmark";
