@@ -6,13 +6,12 @@ import type { FastifyRequest } from "fastify";
 import type { TopicParams } from "$server/validators/topicParams";
 import type { TopicActivityQuery } from "$server/validators/topicActivityQuery";
 import type { ActivityProps } from "$server/validators/activityProps";
+import { vi } from "vitest";
 
-jest.mock("$server/utils/topic/topicExists");
-jest.mock("$server/utils/activity/upsertLtiContextActivity");
-jest.mock("$server/utils/activity/upsertTopicActivity");
-jest.mock("$server/utils/prisma", () => ({
-  __esModule: true,
-}));
+vi.mock("$server/utils/topic/topicExists");
+vi.mock("$server/utils/activity/upsertLtiContextActivity");
+vi.mock("$server/utils/activity/upsertTopicActivity");
+vi.mock("$server/utils/prisma", () => ({}));
 
 describe("update() - トピック活動履歴の更新", () => {
   type UpdateRequest = FastifyRequest<{
@@ -44,8 +43,8 @@ describe("update() - トピック活動履歴の更新", () => {
   } as unknown as UpsertResult;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.mocked(topicExists).mockResolvedValue(mockTopicFound);
+    vi.clearAllMocks();
+    vi.mocked(topicExists).mockResolvedValue(mockTopicFound);
   });
 
   it("リソースリンク経由（LTIセッション中）: book_id が一致しクエリが空なら、セッション情報を使用すること", async () => {
@@ -56,8 +55,8 @@ describe("update() - トピック活動履歴の更新", () => {
       body: mockBody,
     } as unknown as UpdateRequest;
 
-    jest.mocked(upsertLtiContextActivity).mockResolvedValue(mockUpsertResult);
-    jest.mocked(upsertTopicActivity).mockResolvedValue(mockUpsertResult);
+    vi.mocked(upsertLtiContextActivity).mockResolvedValue(mockUpsertResult);
+    vi.mocked(upsertTopicActivity).mockResolvedValue(mockUpsertResult);
 
     await update(req);
 
@@ -82,8 +81,8 @@ describe("update() - トピック活動履歴の更新", () => {
       body: mockBody,
     } as unknown as UpdateRequest;
 
-    jest.mocked(upsertLtiContextActivity).mockResolvedValue(mockUpsertResult);
-    jest.mocked(upsertTopicActivity).mockResolvedValue(mockUpsertResult);
+    vi.mocked(upsertLtiContextActivity).mockResolvedValue(mockUpsertResult);
+    vi.mocked(upsertTopicActivity).mockResolvedValue(mockUpsertResult);
 
     await update(req);
 
@@ -96,7 +95,7 @@ describe("update() - トピック活動履歴の更新", () => {
   });
 
   it("トピックが存在しない場合、404を返すこと", async () => {
-    jest.mocked(topicExists).mockResolvedValue(null);
+    vi.mocked(topicExists).mockResolvedValue(null);
 
     const req = {
       session: mockSession,

@@ -1,5 +1,5 @@
 import type { FastifyRequest } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import authInstructor from "$server/auth/authInstructor";
 import authUser from "$server/auth/authUser";
 import { isAdministrator } from "$server/utils/session";

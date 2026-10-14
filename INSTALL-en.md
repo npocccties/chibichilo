@@ -4,7 +4,7 @@ English | [日本語](INSTALL-ja.md)
 
 ## Environment variable
 
-Static contents around the front end are created by executing the `yarn build` command after giving environment variables.
+Static contents around the front end are created by executing the `pnpm build` command after giving environment variables.
 When changing the information of the connection destination of API, .env must be rewritten appropriately.
 
 .env:
@@ -26,30 +26,43 @@ When changing the information of the connection destination of API, .env must be
 | `NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK`         | Option for enabling tag and bookmark (Format: [YAML 1.1 Boolean](https://yaml.org/type/bool.html)) (Default: `true`)                  |
 | `NEXT_PUBLIC_NO_DEEP_LINK_UI`                 | Do not allow anyone to DeepLink UI. Disabled by default.                                                                              |
 | `NEXT_PUBLIC_DOWNLOAD_PAGE_SIZE`              | The number of data per file on download page (Default: `0`) `0` means that the download data is not splitted.                         |
+| `NEXT_PUBLIC_BOOKMARK_COLOR`                  | Background color for the "タグ管理から表示中" indicator (default: `#4caf50`)                                                          |
 
 ## Build front-ends
 
 ### Prerequisites
 
-As of 2023-03-29, confirm the build in the following environment.
+As of 2026-05-21, confirm the build in the following environment.
 
-- Node.js LTS
+- Node.js 26.2+, 24.x LTS (24.16.0+), or 22.x LTS (22.22.3+) (match [package.json](package.json) `engines`)
+- pnpm 11.1.2 (match [package.json](package.json) `packageManager`)
+
+## Install pnpm
+
+https://pnpm.io/installation
+
+```sh
+# global install via npm
+npm install -g pnpm@11.1.2
+```
 
 ### Build
 
-Execute the following command.
+Execute the following commands to generate and place static front-end files.
 
 ```sh
-corepack enable yarn
-yarn && yarn build
+git clone https://github.com/npocccties/chibichilo.git
+cd chibichilo
+pnpm install
+pnpm build
 ```
 
 ### Storybook
 
-To confirm some UI on the browser, execute the following command after executing `yarn`.
+To confirm some UI on the browser, execute the following command after executing `pnpm install`.
 
 ```sh
-yarn storybook
+pnpm storybook
 ```
 
 ## Customization

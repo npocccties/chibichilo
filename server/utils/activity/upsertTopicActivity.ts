@@ -1,4 +1,4 @@
-import type { User, Book, Topic } from "@prisma/client";
+import type { User, Book, Topic } from "$server/generated/prisma/client";
 import type { ActivityProps } from "$server/validators/activityProps";
 import upsertActivity from "./upsertActivity";
 

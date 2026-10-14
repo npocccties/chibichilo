@@ -5,7 +5,10 @@
 /public/api/v2/swagger/
 /public/storybook/
 /public/LICENSE
+/out/
 /utils/$path.ts
 node_modules/
+.pnpm-store/
+server/generated/
 .env*
 .*.swp

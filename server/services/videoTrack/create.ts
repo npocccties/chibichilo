@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type { VideoTrackProps } from "$server/models/videoTrack";
 import {
   videoTrackPropsSchema,

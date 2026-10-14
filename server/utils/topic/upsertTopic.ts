@@ -1,4 +1,4 @@
-import type { User, Topic } from "@prisma/client";
+import type { User, Topic } from "$server/generated/prisma/client";
 import type { TopicProps, TopicSchema } from "$server/models/topic";
 import type { KeywordSchema } from "$server/models/keyword";
 import prisma from "$server/utils/prisma";

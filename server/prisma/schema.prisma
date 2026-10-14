@@ -1,10 +1,10 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 // Version Management
@@ -180,6 +180,7 @@ model LtiContext {
   members       LtiMember[]
   activities    Activity[]
   bookmarks     Bookmark[]
+  ltiContextBookAccesses LtiContextBookAccess[]
   title         String
   label         String
   contextMembershipsUrl String  @default("") @map("context_memberships_url")
@@ -243,6 +244,7 @@ model Book {
   publicBooks      PublicBook[]
   ltiResourceLinks LtiResourceLink[]
   bookmarks Bookmark[]
+  ltiContextBookAccesses LtiContextBookAccess[]
   /// 題名
   name             String
   /// 説明 (Markdown)
@@ -494,6 +496,21 @@ model Bookmark {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([ltiConsumerId, ltiContextId, tagId, userId, topicId, bookId])
+}
+
+/// 特定のコース(LTIコンテキスト)におけるブックのアクセス制御
+model LtiContextBookAccess {
+  bookId        Int        @map("book_id")
+  consumerId    String     @map("consumer_id")
+  contextId     String     @map("context_id")
+  
+  allowViewing  Boolean    @default(true) @map("allow_viewing")
+
+  book          Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  ltiContext    LtiContext @relation(fields: [consumerId, contextId], references: [consumerId, id], onDelete: Cascade)
+
+  @@id([bookId, consumerId, contextId])
+  @@map("lti_context_book_access")
 }
 
 // Etc.

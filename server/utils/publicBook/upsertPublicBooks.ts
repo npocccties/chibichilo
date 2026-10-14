@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import type { Book, PrismaPromise } from "@prisma/client";
+import type { Book, Prisma } from "$server/generated/prisma/client";
 import type { PublicBookSchema } from "$server/models/book/public";
 import prisma from "$server/utils/prisma";
 import {
@@ -13,7 +13,7 @@ function upsertPublicBooks(
   publicBooks: PublicBookSchema[]
 ) {
   const tokens: string[] = [];
-  const ops: Array<PrismaPromise<unknown>> = [];
+  const ops: Array<Prisma.PrismaPromise<unknown>> = [];
   for (const publicBook of publicBooks) {
     const token = generateToken(userId, bookId, publicBook);
     if (tokens.includes(token)) continue;

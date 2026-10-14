@@ -1,10 +1,13 @@
 import { useRouter } from "next/router";
-import type { BookSchema } from "$server/models/book";
+import type {
+  BookSchema,
+  LtiContextBookAccessProps,
+} from "$server/models/book";
 import type { BookPropsWithSubmitOptions } from "$types/bookPropsWithSubmitOptions";
 import type { SectionProps } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { ContentAuthors } from "$server/models/content";
-import { useSessionAtom } from "$store/session";
+import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import BookEdit from "$templates/BookEdit";
 import BookEditReleased from "$templates/BookEditReleased";
 import Placeholder from "$templates/Placeholder";
@@ -32,7 +35,8 @@ export type Query = {
 
 function Edit({ bookId, context }: Query) {
   const query = { bookId, ...(context && { context }) };
-  const { session, isContentEditable } = useSessionAtom();
+  const { isContentEditable } = useSessionAtom();
+  const ltiContext = useLtiContextAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const router = useRouter();
   const { onBookLinking } = useBookLinkingHandlers();
@@ -58,11 +62,8 @@ function Edit({ bookId, context }: Query) {
     if (submitWithLink) await onBookLinking?.({ id: bookId });
     return back();
   }
-  async function handleDelete(
-    { id }: Pick<BookSchema, "id">,
-    withtopic: boolean
-  ) {
-    await destroyBook(id, withtopic);
+  async function handleDelete(book: BookSchema, withtopic?: boolean) {
+    await destroyBook(book.id, withtopic ?? false, book);
     switch (context) {
       case "books":
       case "topics":
@@ -137,8 +138,28 @@ function Edit({ bookId, context }: Query) {
       await revalidateBook(book.id);
     }
   }
+  async function handleContextAccessUpdate(
+    settings: LtiContextBookAccessProps[]
+  ) {
+    if (!book) return;
+    try {
+      await updateBook({
+        id: book.id,
+        name: book.name,
+        description: book.description,
+        shared: book.shared,
+        keywords: book.keywords,
+        publicBooks: book.publicBooks,
+        ltiContextBookAccesses: settings,
+        noclone: true,
+      });
+    } catch (error) {
+      console.error("更新エラー:", error);
+      alert("保存に失敗しました。ブラウザのコンソールを確認してください。");
+    }
+  }
   const handlers = {
-    linked: bookId === session?.ltiResourceLink?.bookId,
+    linked: bookId === ltiContext?.ltiResourceLink?.bookId,
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onCancel: handleCancel,
@@ -156,6 +177,7 @@ function Edit({ bookId, context }: Query) {
     onItemEditClick: handleItemEditClick,
     onClone: handleClone,
     onMetainfoUpdate: handleMetainfoUpdate,
+    onContextAccessUpdate: handleContextAccessUpdate,
   };
 
   if (error) return <BookNotFoundProblem />;

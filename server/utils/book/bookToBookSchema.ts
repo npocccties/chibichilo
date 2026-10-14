@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import type { BookSchema } from "$server/models/book";
 import type { SectionSchema } from "$server/models/book/section";
 import {
@@ -28,6 +28,7 @@ export const bookIncludingTopicsArg = {
         },
       },
     },
+    ltiContextBookAccesses: true,
   },
 } as const;
 
@@ -52,6 +53,7 @@ export const getBookIncludingArg = (userId: number) => {
         },
       },
       release: true,
+      ltiContextBookAccesses: true,
     },
   } as const;
 };

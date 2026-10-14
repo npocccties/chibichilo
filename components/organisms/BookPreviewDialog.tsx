@@ -1,5 +1,5 @@
+import React, { useCallback, forwardRef, useEffect } from "react";
 import type { ComponentProps } from "react";
-import { useCallback, forwardRef, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import CloseIcon from "@mui/icons-material/Close";
 import makeStyles from "@mui/styles/makeStyles";
@@ -8,7 +8,7 @@ import type { TransitionProps } from "@mui/material/transitions";
 import IconButton from "$atoms/IconButton";
 import type Book from "$templates/Book";
 import { useBookAtom } from "$store/book";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import type { BookSchema } from "$server/models/book";
 import { gray } from "$theme/colors";
 
@@ -47,6 +47,7 @@ type Props = {
       | "onTopicEnded"
       | "onItemClick"
       | "considerAppBar"
+      | "onContentLinkClick"
     >
   ): React.ReactNode;
 };
@@ -60,7 +61,7 @@ export default function BookPreviewDialog(props: Props) {
   useEffect(() => {
     updateItemIndex([0, 0]);
   }, [book, updateItemIndex]);
-  const { session } = useSessionAtom();
+  const { ltiConsumerId, ltiContextId } = useLtiContextAtom();
   const handleTopicNext = useCallback(
     (index: ItemIndex = nextItemIndex) => {
       const topic = itemExists(index);
@@ -70,6 +71,18 @@ export default function BookPreviewDialog(props: Props) {
     },
     [nextItemIndex, itemExists, updateItemIndex]
   );
+
+  let isLinked = false;
+  if (!book.ltiResourceLinks) {
+    console.warn(
+      "BookPreviewDialog: book.ltiResourceLinks is undefined. The linked status will be false."
+    );
+  } else if (ltiConsumerId && ltiContextId) {
+    isLinked = book.ltiResourceLinks.some(
+      (link) =>
+        link.consumerId === ltiConsumerId && link.contextId === ltiContextId
+    );
+  }
 
   return (
     <Dialog
@@ -90,7 +103,7 @@ export default function BookPreviewDialog(props: Props) {
       {children({
         book,
         index: itemIndex,
-        linked: book.id === session?.ltiResourceLink?.bookId,
+        linked: isLinked,
         onTopicEnded: handleTopicNext,
         onItemClick: handleTopicNext,
         considerAppBar: false,

@@ -1,4 +1,4 @@
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import { UsersParams } from "$server/validators/usersParams";
 import authUser from "$server/auth/authUser";
 import authInstructor from "$server/auth/authInstructor";

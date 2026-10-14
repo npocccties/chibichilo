@@ -1,27 +1,27 @@
 import upsertActivity from "./upsertActivity";
 import prisma from "$server/utils/prisma";
+import { vi } from "vitest";
 
-jest.mock("$server/utils/prisma", () => ({
-  __esModule: true,
+vi.mock("$server/utils/prisma", () => ({
   default: {
-    $transaction: jest.fn((promises) => Promise.all(promises)),
+    $transaction: vi.fn((promises) => Promise.all(promises)),
     activity: {
-      findUnique: jest.fn(),
-      upsert: jest.fn(),
+      findUnique: vi.fn(),
+      upsert: vi.fn(),
     },
     topic: {
-      findUnique: jest.fn(),
+      findUnique: vi.fn(),
     },
     activityTimeRange: {
-      deleteMany: jest.fn(),
+      deleteMany: vi.fn(),
     },
     activityTimeRangeLog: {
-      findMany: jest.fn(),
-      deleteMany: jest.fn(),
+      findMany: vi.fn(),
+      deleteMany: vi.fn(),
     },
     activityTimeRangeCount: {
-      findMany: jest.fn(),
-      deleteMany: jest.fn(),
+      findMany: vi.fn(),
+      deleteMany: vi.fn(),
     },
   },
 }));
@@ -39,11 +39,11 @@ describe("upsertActivity() - DB操作の整合性検証", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("LTIコンテキスト情報がある場合、渡された bookId (100) で upsert されること", async () => {
-    jest.mocked(prisma.activity.findUnique).mockResolvedValue(null);
+    vi.mocked(prisma.activity.findUnique).mockResolvedValue(null);
 
     await upsertActivity(mockProps);
 
@@ -65,7 +65,7 @@ describe("upsertActivity() - DB操作の整合性検証", () => {
   });
 
   it("LTIコンテキスト情報が欠けている場合、bookId: 0 として upsert されること", async () => {
-    jest.mocked(prisma.activity.findUnique).mockResolvedValue(null);
+    vi.mocked(prisma.activity.findUnique).mockResolvedValue(null);
 
     await upsertActivity({
       ...mockProps,

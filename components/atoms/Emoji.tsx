@@ -20,7 +20,6 @@ export default function Emoji({ emoji }: Props) {
     <span
       className={emojiClass}
       dangerouslySetInnerHTML={{
-        // @ts-expect-error twemojiの型定義が間違っている
         __html: twemoji.parse(emoji),
       }}
     />

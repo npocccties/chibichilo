@@ -2,16 +2,20 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import type { BookSchema } from "$server/models/book";
 import Placeholder from "$templates/Placeholder";
-import { useSessionAtom } from "$store/session";
+import { useLtiContextAtom } from "$store/session";
 import { useDlResponseJwt } from "$utils/deepLinking";
+import type { TopicSchema } from "$server/models/topic";
 
-export type Query = { bookId: BookSchema["id"] };
+export type Query = { bookId: BookSchema["id"]; topicId?: TopicSchema["id"] };
 
 function Linking() {
   const { query } = useRouter();
   const [bookId] = [query.bookId].flat();
-  const { session } = useSessionAtom();
-  const jwt = useDlResponseJwt(Number(bookId));
+  const ltiContext = useLtiContextAtom();
+  const jwt = useDlResponseJwt(
+    Number(bookId),
+    query.topicId ? Number(query.topicId) : undefined
+  );
   const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -24,7 +28,7 @@ function Linking() {
     <form
       ref={ref}
       style={{ display: "none" }}
-      action={session?.ltiDlSettings?.deep_link_return_url}
+      action={ltiContext?.ltiDlSettings?.deep_link_return_url}
       method="POST"
     >
       <input type="hidden" name="JWT" value={jwt} />

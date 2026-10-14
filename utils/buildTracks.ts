@@ -1,4 +1,4 @@
-import ISO6391 from "iso-639-1";
+import getLanguageNativeName from "$utils/getLanguageNativeName";
 import type { VideoTrackSchema } from "$server/models/videoTrack";
 import type { VideoJsTextTrackList } from "$types/videoJsPlayer";
 import { NEXT_PUBLIC_API_BASE_PATH } from "$utils/env";
@@ -15,7 +15,7 @@ function buildTrack({ url, language, accessToken }: VideoTrackSchema): {
       ? url
       : `${NEXT_PUBLIC_API_BASE_PATH}${url}?accessToken=${accessToken}`,
     srclang: language,
-    label: ISO6391.getNativeName(language),
+    label: getLanguageNativeName(language),
   };
 }
 

@@ -16,12 +16,12 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import PublicIcon from "@mui/icons-material/Public";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { styled } from "@mui/material/styles";
 import makeStyles from "@mui/styles/makeStyles";
 import { useForm } from "react-hook-form";
 import clsx from "clsx";
-import ja from "date-fns/locale/ja";
+import { ja } from "date-fns/locale";
 import InputLabel from "$atoms/InputLabel";
 import TextField from "$atoms/TextField";
 import AuthorsInput from "$organisms/AuthorsInput";
@@ -253,7 +253,6 @@ export default function BookForm({
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={ja}
-              dateFormats={{ monthAndYear: "yyyy年MM月" }}
               localeText={{
                 previousMonth: "前月を表示",
                 nextMonth: "次月を表示",
@@ -263,6 +262,7 @@ export default function BookForm({
                 slotProps={{
                   textField: { fullWidth: true, error: expireAtError },
                   toolbar: { toolbarFormat: "yyyy年MM月dd日" },
+                  calendarHeader: { format: "yyyy年MM月" },
                 }}
                 label={
                   <>

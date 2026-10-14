@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "$server/generated/prisma/client";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
 import prisma from "./prisma";
 import bookExists from "./book/bookExists";
@@ -33,6 +33,7 @@ export async function upsertLtiResourceLink(
     creatorId,
     lineItem,
     instructors: _instructors,
+    topicId: _topicId,
     ...link
   } = props;
 

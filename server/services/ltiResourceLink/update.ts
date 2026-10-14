@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type { LtiResourceLinkProps } from "$server/models/ltiResourceLink";
 import {
   ltiResourceLinkPropsSchema,

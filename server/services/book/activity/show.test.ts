@@ -4,11 +4,10 @@ import type { FastifyRequest } from "fastify";
 import type { BookParams } from "$server/validators/bookParams";
 import type { ActivityQuery } from "$server/validators/activityQuery";
 import type { ActivitySchema } from "$server/models/activity";
+import { vi } from "vitest";
 
-jest.mock("$server/utils/activity/fetchActivity");
-jest.mock("$server/utils/prisma", () => ({
-  __esModule: true,
-}));
+vi.mock("$server/utils/activity/fetchActivity");
+vi.mock("$server/utils/prisma", () => ({}));
 
 const createMockActivity = (
   overrides: Partial<ActivitySchema>
@@ -48,7 +47,7 @@ describe("show()", () => {
   const mockParams: BookParams = { book_id: 100 };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("セッション情報が欠けている場合、401を返すこと", async () => {
@@ -64,7 +63,7 @@ describe("show()", () => {
 
   it("クエリが空の場合、セッションのコンテキスト情報を使用して活動履歴を取得すること", async () => {
     const mockActivities = [createMockActivity({ id: 1 })];
-    jest.mocked(fetchActivity).mockResolvedValue(mockActivities);
+    vi.mocked(fetchActivity).mockResolvedValue(mockActivities);
 
     const req = {
       session: mockSession,
@@ -88,7 +87,7 @@ describe("show()", () => {
   });
 
   it("クエリに値がある場合、セッションよりもクエリのコンテキスト情報を優先すること", async () => {
-    jest.mocked(fetchActivity).mockResolvedValue([]);
+    vi.mocked(fetchActivity).mockResolvedValue([]);
 
     const req = {
       session: mockSession,
@@ -113,7 +112,7 @@ describe("show()", () => {
 
   it("current_lti_context_only が true の場合、現在のコンテキストに絞られた結果を返すこと", async () => {
     const currentContextActivity = [createMockActivity({ id: 101 })];
-    jest.mocked(fetchActivity).mockResolvedValue(currentContextActivity);
+    vi.mocked(fetchActivity).mockResolvedValue(currentContextActivity);
 
     const req = {
       session: mockSession,
@@ -135,7 +134,7 @@ describe("show()", () => {
       createMockActivity({ id: 101 }),
       createMockActivity({ id: 102 }),
     ];
-    jest.mocked(fetchActivity).mockResolvedValue(allActivities);
+    vi.mocked(fetchActivity).mockResolvedValue(allActivities);
 
     const req = {
       session: mockSession,

@@ -10,21 +10,22 @@ import type { ActivityQuery } from "$server/validators/activityQuery";
 import type { ActivitySchema } from "$server/models/activity";
 import type { BookSchema } from "$server/models/book";
 import { getDisplayableBook } from "$server/utils/displayableBook";
+import { vi } from "vitest";
 
 type ClientType = NonNullable<Awaited<ReturnType<typeof findClient>>>;
 type ShowResponse = Awaited<ReturnType<typeof show>>;
 
-jest.mock("./show");
-jest.mock("$server/utils/ltiv1p3/getGradeTargets");
-jest.mock("$server/utils/ltiv1p3/grade");
-jest.mock("$server/utils/book/findBook");
-jest.mock("$server/utils/ltiv1p3/findClient");
-jest.mock("$server/utils/displayableBook", () => ({
-  getDisplayableBook: jest.fn(() => ({
+vi.mock("./show");
+vi.mock("$server/utils/ltiv1p3/getGradeTargets");
+vi.mock("$server/utils/ltiv1p3/grade");
+vi.mock("$server/utils/book/findBook");
+vi.mock("$server/utils/ltiv1p3/findClient");
+vi.mock("$server/utils/displayableBook", () => ({
+  getDisplayableBook: vi.fn(() => ({
     sections: [{ topics: [{ id: 101 }, { id: 102 }] }],
   })),
 }));
-jest.mock("$server/utils/prisma", () => ({ __esModule: true }));
+vi.mock("$server/utils/prisma", () => ({}));
 
 const createMockTopic = (
   overrides: Partial<ActivitySchema["topic"]>
@@ -97,25 +98,25 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       oauthClient: { id: "consumer-session" },
       ltiContext: { id: "context-session" },
     },
-    log: { error: jest.fn() },
+    log: { error: vi.fn() },
   } as unknown as UpdateRequest;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.mocked(findBook).mockResolvedValue(createMockBook({ id: 1 }));
-    jest
-      .mocked(findClient)
-      .mockResolvedValue({ id: "client-id" } as unknown as ClientType);
+    vi.clearAllMocks();
+    vi.mocked(findBook).mockResolvedValue(createMockBook({ id: 1 }));
+    vi.mocked(findClient).mockResolvedValue({
+      id: "client-id",
+    } as unknown as ClientType);
   });
 
   it("クエリで指定されたコンテキストの活動内容に基づいて成績を算出し、正しい宛先に送信すること", async () => {
-    jest.mocked(show).mockResolvedValue({
+    vi.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
       },
     } as ShowResponse);
-    jest.mocked(getGradeTargets).mockResolvedValue([
+    vi.mocked(getGradeTargets).mockResolvedValue([
       {
         consumerId: "consumer-A",
         contextId: "context-A",
@@ -134,7 +135,7 @@ describe("update() - LTI成績送信ロジックの検証", () => {
   });
 
   it("リソースリンク由来とブックマーク由来のターゲットが共存する場合、その両方に送信すること", async () => {
-    jest.mocked(show).mockResolvedValue({
+    vi.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
@@ -145,7 +146,7 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       { consumerId: "LMS-A", contextId: "ctx-A", lineItem: "url-A", label: "" },
       { consumerId: "LMS-B", contextId: "ctx-B", lineItem: "url-B", label: "" },
     ];
-    jest.mocked(getGradeTargets).mockResolvedValue(mockTargets);
+    vi.mocked(getGradeTargets).mockResolvedValue(mockTargets);
 
     await update(mockReq);
 
@@ -172,9 +173,8 @@ describe("update() - LTI成績送信ロジックの検証", () => {
         label: "",
       },
     ];
-    jest.mocked(getGradeTargets).mockResolvedValue(mockTargets);
-    jest
-      .mocked(publishScore)
+    vi.mocked(getGradeTargets).mockResolvedValue(mockTargets);
+    vi.mocked(publishScore)
       .mockResolvedValueOnce(undefined)
       .mockRejectedValueOnce(new Error("LTI Error"));
 
@@ -188,11 +188,11 @@ describe("update() - LTI成績送信ロジックの検証", () => {
   });
 
   it("コンテキストごとのトピック構成に応じた満点を算出すること", async () => {
-    jest.mocked(getDisplayableBook).mockReturnValue({
+    vi.mocked(getDisplayableBook).mockReturnValue({
       sections: [{ topics: [{ id: 101 }, { id: 102 }, { id: 103 }] }],
     } as ReturnType<typeof getDisplayableBook>);
 
-    jest.mocked(show).mockResolvedValue({
+    vi.mocked(show).mockResolvedValue({
       status: 200,
       body: {
         activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
@@ -206,5 +206,40 @@ describe("update() - LTI成績送信ロジックの検証", () => {
       expect.anything(),
       expect.objectContaining({ scoreGiven: 1, scoreMaximum: 3 })
     );
+  });
+
+  it("対象コースでの配信が停止されている場合、DB保存も成績送信も行わずに403エラーを返すこと", async () => {
+    // 配信停止状態(getDisplayableBookがundefinedを返す)をシミュレート
+    vi.mocked(getDisplayableBook).mockReturnValueOnce(undefined);
+
+    const res = await update(mockReq);
+
+    // 403エラーが返されること
+    expect(res.status).toBe(403);
+    // DB保存処理(show)が呼ばれていないこと
+    expect(show).not.toHaveBeenCalled();
+    // 成績送信処理(publishScore)が呼ばれていないこと
+    expect(publishScore).not.toHaveBeenCalled();
+  });
+
+  it("LTIのバージョンが1.3.0以外の場合、成績送信を行わずにスキップすること", async () => {
+    vi.mocked(show).mockResolvedValue({
+      status: 200,
+      body: {
+        activity: [createMockActivity({ topic: { id: 101 }, completed: true })],
+      },
+    } as ShowResponse);
+
+    // LTI 1.1 などの古いバージョンからのアクセスをシミュレート
+    const legacyReq = {
+      ...mockReq,
+      session: { ...mockReq.session, ltiVersion: "1.1.0" },
+    } as unknown as UpdateRequest;
+
+    const res = await update(legacyReq);
+
+    // 期待値: LTI 1.3 ではないためスキップされ、そのまま200が返ること
+    expect(res.status).toBe(200);
+    expect(publishScore).not.toHaveBeenCalled();
   });
 });

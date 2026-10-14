@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject19 {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof InlineObject19
      */
-    memoContent?: string;
+    tagId?: number;
     /**
      * 
      * @type {number}
@@ -37,6 +37,18 @@ export interface InlineObject19 {
      * @memberof InlineObject19
      */
     bookId?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject19
+     */
+    ltiContextId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject19
+     */
+    ltiConsumerId?: string;
 }
 
 export function InlineObject19FromJSON(json: any): InlineObject19 {
@@ -49,9 +61,11 @@ export function InlineObject19FromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'memoContent': !exists(json, 'memoContent') ? undefined : json['memoContent'],
+        'tagId': !exists(json, 'tagId') ? undefined : json['tagId'],
         'topicId': !exists(json, 'topicId') ? undefined : json['topicId'],
         'bookId': !exists(json, 'bookId') ? undefined : json['bookId'],
+        'ltiContextId': !exists(json, 'ltiContextId') ? undefined : json['ltiContextId'],
+        'ltiConsumerId': !exists(json, 'ltiConsumerId') ? undefined : json['ltiConsumerId'],
     };
 }
 
@@ -64,9 +78,11 @@ export function InlineObject19ToJSON(value?: InlineObject19 | null): any {
     }
     return {
         
-        'memoContent': value.memoContent,
+        'tagId': value.tagId,
         'topicId': value.topicId,
         'bookId': value.bookId,
+        'ltiContextId': value.ltiContextId,
+        'ltiConsumerId': value.ltiConsumerId,
     };
 }
 

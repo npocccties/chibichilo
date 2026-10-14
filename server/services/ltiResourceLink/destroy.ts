@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifySchema } from "fastify";
-import { outdent } from "outdent";
+import outdent from "$utils/outdent";
 import type { LtiResourceLinkParams } from "$server/validators/ltiResourceLinkParams";
 import { ltiResourceLinkParamsSchema } from "$server/validators/ltiResourceLinkParams";
 import authUser from "$server/auth/authUser";

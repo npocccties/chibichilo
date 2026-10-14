@@ -12,7 +12,8 @@ function useRewatchRate(currentLtiContextOnly: boolean) {
     NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD
       ? { key, currentLtiContextOnly }
       : null,
-    fetchRewatchRate
+    fetchRewatchRate,
+    { revalidateOnFocus: false }
   );
   return { data, error };
 }
