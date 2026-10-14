@@ -46,7 +46,7 @@ async function findClient(clientId: string, redirectUris?: string[]) {
     },
     clientAuth
   );
-   
+
   useIdTokenResponseType(config);
 
   if (process.env.NODE_ENV !== "production") {

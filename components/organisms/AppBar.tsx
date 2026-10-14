@@ -108,10 +108,10 @@ function AppBar(props: Props, ref: Ref<HTMLDivElement>) {
   const hasBookmarkQuery = Boolean(router.query.lti_context_id);
   const isBookmarkView = Boolean(
     session?.ltiResourceLink &&
-      hasBookmarkQuery &&
-      (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
-        (!Number.isNaN(currentBookId) &&
-          currentBookId !== session.ltiResourceLink.bookId))
+    hasBookmarkQuery &&
+    (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
+      (!Number.isNaN(currentBookId) &&
+        currentBookId !== session.ltiResourceLink.bookId))
   );
   const pathSegments = router.pathname.split("/");
   const isBooksActive =
