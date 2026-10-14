@@ -1,5 +1,5 @@
 import { handleBookmarkClick } from "./handleBookmarkClick";
-import { bookUrl } from "$utils/routes";
+import { paths } from "$utils/routes";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import { vi } from "vitest";
 
@@ -31,14 +31,11 @@ describe("handleBookmarkClick()", () => {
         pathname: currentPath,
       })
     );
-    const expectedUrl = bookUrl({
-      bookId: mockBookmark.bookId,
-      topicId: mockBookmark.topicId,
-    });
     expect(mockPush).toHaveBeenCalledWith({
-      pathname: expectedUrl.pathname,
+      pathname: paths.book,
       query: {
-        ...expectedUrl.query,
+        bookId: mockBookmark.bookId,
+        topicId: mockBookmark.topicId,
         lti_context_id: mockBookmark.ltiContext.id,
         lti_consumer_id: mockBookmark.ltiConsumerId,
       },

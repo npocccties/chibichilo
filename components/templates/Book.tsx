@@ -32,7 +32,7 @@ import formatInterval from "$utils/formatInterval";
 import type { ReleaseItemSchema } from "$server/models/releaseResult";
 import License from "$atoms/License";
 import type { ContentSchema } from "$server/models/content";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import { NEXT_PUBLIC_BOOKMARK_COLOR } from "$utils/env";
 
 const headerSx = {
@@ -153,7 +153,7 @@ export default function Book(props: Props) {
 
   const topic = book?.sections[sectionIndex]?.topics[topicIndex];
   const { session, isInstructor, isContentEditable } = useSessionAtom();
-  const router = useRouter();
+  const router = useAppRouter();
   const hasBookmarkQuery = Boolean(router.query.lti_context_id);
   const isBookmarkView = Boolean(
     session?.ltiResourceLink &&

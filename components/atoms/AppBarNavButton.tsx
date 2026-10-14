@@ -13,9 +13,10 @@ export default function AppBarNavButton(props: Props) {
   const { icon, label, active, ...others } = props;
   return (
     <Button
-      sx={[
-        { flexDirection: "column", lineHeight: 1.5 },
-        active && {
+      sx={{
+        flexDirection: "column",
+        lineHeight: 1.5,
+        ...(active && {
           position: "relative",
           "&::after": {
             content: '""',
@@ -27,8 +28,8 @@ export default function AppBarNavButton(props: Props) {
             backgroundColor: (theme) => theme.palette.primary.main,
             borderRadius: 0,
           },
-        },
-      ]}
+        }),
+      }}
       {...others}
     >
       {icon}

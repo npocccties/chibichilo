@@ -1,4 +1,4 @@
-import { bookUrl } from "$utils/routes";
+import { paths } from "$utils/routes";
 import type { AppRouterPush } from "$utils/useAppRouter";
 import type { BookmarkSchema } from "$server/models/bookmark";
 
@@ -12,19 +12,16 @@ export const handleBookmarkClick = async (
   push: AppRouterPush,
   currentPathname: string
 ) => {
-  const url = bookUrl({
-    bookId: bookmark.bookId,
-    topicId: bookmark.topicId,
-  });
   setOverrideLtiContext({
     ltiConsumerId: bookmark.ltiConsumerId ?? null,
     ltiContextId: bookmark.ltiContext.id,
     pathname: currentPathname,
   });
   return await push({
-    pathname: url.pathname,
+    pathname: paths.book,
     query: {
-      ...url.query,
+      bookId: bookmark.bookId,
+      topicId: bookmark.topicId,
       lti_context_id: bookmark.ltiContext.id,
       ...(bookmark.ltiConsumerId
         ? { lti_consumer_id: bookmark.ltiConsumerId }
