@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 
 import { describe, it, expect, vi } from "vitest";
-import { syncLtiContext } from "../../store/session";
+import { syncLtiContext } from "./session";
 import type { SessionSchema } from "$server/models/session";
-import type { LtiContextState } from "../../store/session";
+import type { LtiContextState } from "./session";
 
 describe("pages/_app.tsx URLクエリ優先のLTIコンテキスト同期テスト", () => {
   it("コンテキストが未初期化の場合、セッション情報をフォールバックとして使用すること", () => {
