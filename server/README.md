@@ -208,8 +208,8 @@ INSERT INTO "lti_consumer" ("platform_id", "id") VALUES ('https://example', '***
 
 ```sql
 INSERT INTO "lti_platform" ("issuer", "metadata") VALUES ('http://localhost:8081', '{
-  "jwks_uri": "http://moodle:8080/mod/lti/certs.php",
-  "token_endpoint": "http://moodle:8080/mod/lti/token.php",
+  "jwks_uri": "http://moodle/mod/lti/certs.php",
+  "token_endpoint": "http://moodle/mod/lti/token.php",
   "authorization_endpoint": "http://localhost:8081/mod/lti/auth.php"
 }');
 INSERT INTO "lti_consumer" ("platform_id", "id") VALUES ('http://localhost:8081', '***');
