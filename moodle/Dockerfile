@@ -1,10 +1,15 @@
+# syntax=docker/dockerfile:1
 # Copyright Broadcom, Inc. All Rights Reserved.
 # SPDX-License-Identifier: APACHE-2.0
 #
 # Hub's bitnami/moodle image is subscription-only. Build Moodle 5.3.0 from
-# vendored Bitnami container sources under ./upstream.
-# See ./SOURCE.txt for upstream commit SHA.
+# bitnami/containers at the pinned commit (BITNAMI_CONTAINERS_REF).
+# See ./SOURCE.txt for upstream details.
 # https://github.com/bitnami/containers/tree/main/bitnami/moodle/5.3/debian-12
+
+FROM scratch AS upstream
+ARG BITNAMI_CONTAINERS_REF=6d240f83a943eac9879af6e289cd51d5111caeb1
+ADD https://github.com/bitnami/containers.git#${BITNAMI_CONTAINERS_REF}:bitnami/moodle/5.3/debian-12 /
 
 FROM docker.io/bitnami/minideb:bookworm
 
@@ -25,7 +30,7 @@ ENV OS_ARCH="${TARGETARCH:-amd64}" \
     OS_FLAVOUR="debian-12" \
     OS_NAME="linux"
 
-COPY upstream/prebuildfs /
+COPY --from=upstream /prebuildfs /
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 # Install required system packages and dependencies
 RUN install_packages acl ca-certificates cron curl libatomic1 libaudit1 libbrotli1 libbsd0 libbz2-1.0 libcap-ng0 libcom-err2 libcrypt1 libcurl4 libedit2 libexpat1 libffi8 libfftw3-double3 libfontconfig1 libfreetype6 libgcc-s1 libgcrypt20 libglib2.0-0 libgmp10 libgnutls30 libgomp1 libgpg-error0 libgssapi-krb5-2 libhashkit2 libhogweed6 libicu72 libidn2-0 libjpeg62-turbo libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 liblcms2-2 libldap-2.5-0 liblqr-1-0 libltdl7 liblzma5 libmagickcore-6.q16-6 libmagickwand-6.q16-6 libmd0 libmemcached11 libncurses6 libnettle8 libnghttp2-14 libonig5 libp11-kit0 libpam0g libpcre2-8-0 libpng16-16 libpsl5 libreadline8 librtmp1 libsasl2-2 libsodium23 libsqlite3-0 libssh2-1 libssl3 libstdc++6 libsybdb5 libtasn1-6 libtidy5deb1 libtinfo6 libunistring2 libuuid1 libwebp7 libx11-6 libxau6 libxcb1 libxdmcp6 libxext6 libxml2 libxslt1.1 libzip4 libzstd1 locales openssl procps zlib1g
@@ -60,7 +65,7 @@ RUN echo 'en_AU.UTF-8 UTF-8' >> /etc/locale.gen
 RUN /opt/bitnami/scripts/locales/generate-locales.sh
 RUN uninstall_packages curl
 
-COPY upstream/rootfs /
+COPY --from=upstream /rootfs /
 RUN /opt/bitnami/scripts/apache/postunpack.sh
 RUN /opt/bitnami/scripts/php/postunpack.sh
 RUN /opt/bitnami/scripts/apache-modphp/postunpack.sh

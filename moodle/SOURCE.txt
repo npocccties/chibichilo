@@ -1,12 +1,15 @@
 # Bitnami Moodle container sources (development only)
 #
-# Free Hub images (bitnami/moodle) are no longer available. This tree vendors
-# the Apache-2.0 build recipe from bitnami/containers and downloads components
-# from downloads.bitnami.com/files/stacksmith at image build time.
+# Free Hub images (bitnami/moodle) are no longer available. The Dockerfile
+# fetches the Apache-2.0 build recipe from bitnami/containers at build time
+# (BITNAMI_CONTAINERS_REF) and downloads components from
+# downloads.bitnami.com/files/stacksmith with SHA-256 verification.
 #
 # Source: https://github.com/bitnami/containers/tree/main/bitnami/moodle/5.3/debian-12
 # Commit: 6d240f83a943eac9879af6e289cd51d5111caeb1
-# Fetched: 2026-10-14
+#
+# To bump versions, update BITNAMI_CONTAINERS_REF, COMPONENTS, and the
+# display LABEL / APP_VERSION. Mismatched COMPONENTS fail sha256sum -c.
 #
 # If stacksmith packages become unavailable, migrate to the
 # moodlehq/moodle-php-apache-based approach instead.

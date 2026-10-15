@@ -2,6 +2,8 @@
 services:
   mariadb:
     image: "mariadb:11.4.13-noble"
+    # MariaDB 11.4 default collation (utf8mb4_uca1400_ai_ci) fails Moodle's unicode check
+    command: ["--collation-server=utf8mb4_unicode_ci"]
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: bitnami_moodle
