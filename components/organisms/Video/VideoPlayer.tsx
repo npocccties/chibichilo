@@ -1,13 +1,12 @@
-import { useEffect } from "react";
-import VimeoPlayer from "@vimeo/player";
+import { lazy, Suspense, useCallback, useState } from "react";
 import type { SxProps } from "@mui/system";
 import type { VideoInstance } from "$types/videoInstance";
-import { usePlayerTrackingAtom } from "$store/playerTracker";
+import type { VideoMedia } from "$utils/video/media";
+import { useVideoPlayback } from "$utils/video/useVideoPlayback";
 import Box from "@mui/material/Box";
-import { usePlayerState } from "$store/player";
-import Vimeo from "./Vimeo";
-import VideoJs from "./VideoJs";
-import videoJsDurationChangeShims from "$utils/videoJsDurationChangeShims";
+import type { VideoMediaKind } from "./Video";
+
+const VideoView = lazy(() => import("./Video"));
 
 type Props = {
   sx?: SxProps;
@@ -15,98 +14,62 @@ type Props = {
   videoInstance: VideoInstance;
   autoplay?: boolean;
   hidden?: boolean;
+  startTime?: number | null;
+  stopTime?: number | null;
   onEnded?: () => void;
   onDurationChange?: (duration: number) => void;
   onTimeUpdate?: (currentTime: number) => void;
+};
+
+const kindByType: Record<VideoInstance["type"], VideoMediaKind> = {
+  youtube: "youtube",
+  vimeo: "vimeo",
+  wowza: "hls",
 };
 
 export default function VideoPlayer({
   videoInstance,
   autoplay = false,
   hidden = false,
+  startTime,
+  stopTime,
   onEnded,
   onDurationChange,
   onTimeUpdate,
   ...other
 }: Props) {
-  usePlayerState(videoInstance.player);
+  const [media, setMedia] = useState<VideoMedia | null>(videoInstance.media);
+  const handleMediaChange = useCallback(
+    (next: VideoMedia | null) => {
+      videoInstance.media = next;
+      setMedia(next);
+    },
+    [videoInstance]
+  );
 
-  useEffect(() => {
-    let active = true;
-    if (!autoplay) return;
-    const player = videoInstance.player;
-    const play = async () => {
-      if (!active) return;
-      try {
-        await player.play();
-      } catch {
-        // nop
-      }
-    };
-    // NOTE: videojs-youtube において再生されない不具合があるので play イベントが発火されなければ再実行を試みる
-    const timeout = setTimeout(() => play(), 1_000);
-    player.on("play", () => clearTimeout(timeout));
-    const ready =
-      player instanceof VimeoPlayer
-        ? player.ready()
-        : new Promise((resolve) => player.ready(() => resolve(undefined)));
-    void ready.then(play);
-    return () => {
-      active = false;
-      clearTimeout(timeout);
-    };
-  }, [
+  useVideoPlayback({
+    media,
     videoInstance,
+    active: !hidden,
     autoplay,
-    // NOTE: セクションが切り替わったことを検知する目的でonEndedの変更検知を利用している
+    startTime,
+    stopTime,
     onEnded,
-  ]);
-  useEffect(() => {
-    const { player } = videoInstance;
-    const handleEnded = () => onEnded?.();
-    const handleDurationChange = ({ duration }: { duration: number }) => {
-      onDurationChange?.(duration);
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleTimeUpdate = (event: any) => {
-      const currentTime =
-        event?.seconds || event?.target?.player?.currentTime?.();
-      if (Number.isFinite(currentTime)) onTimeUpdate?.(currentTime);
-    };
-
-    player.on("ended", handleEnded);
-    player.on("durationchange", handleDurationChange);
-    player.on("timeupdate", handleTimeUpdate);
-    if (videoInstance.type !== "vimeo") {
-      videoJsDurationChangeShims(videoInstance.player, handleDurationChange);
-    }
-    return () => {
-      player.off("ended", handleEnded);
-      player.off("durationchange", handleDurationChange);
-      player.off("timeupdate", handleTimeUpdate);
-    };
-  }, [videoInstance, onEnded, onDurationChange, onTimeUpdate]);
-
-  const playerTracking = usePlayerTrackingAtom();
-
-  useEffect(() => {
-    if (!hidden) {
-      const { player } = videoInstance;
-      const ready =
-        player instanceof VimeoPlayer
-          ? player.ready()
-          : new Promise((resolve) => player.ready(() => resolve(undefined)));
-      void ready.then(() => {
-        playerTracking(videoInstance);
-      });
-    }
-  }, [videoInstance, hidden, playerTracking]);
+    onDurationChange,
+    onTimeUpdate,
+  });
 
   return (
     <Box {...other} hidden={hidden}>
-      {videoInstance.type === "vimeo" && <Vimeo {...videoInstance} />}
-      {videoInstance.type === "youtube" && <VideoJs {...videoInstance} />}
-      {videoInstance.type === "wowza" && <VideoJs {...videoInstance} />}
+      <Suspense fallback={null}>
+        <VideoView
+          src={videoInstance.url}
+          kind={kindByType[videoInstance.type]}
+          poster={videoInstance.poster}
+          tracks={videoInstance.tracks}
+          onMediaChange={handleMediaChange}
+        />
+      </Suspense>
     </Box>
   );
 }

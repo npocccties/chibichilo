@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import WordCloud from "react-d3-cloud";
 import type { BookSchema } from "$server/models/book";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import { useBook } from "$utils/book";
 import { useBookmarksByTopicId } from "$utils/bookmark/useBookmarks";
 import BookmarkStats from "./BookmarkStats";
@@ -36,7 +36,6 @@ type Props = {
 
 export default function BookmarkStatsDialog(props: Props) {
   const [open, setOpen] = useState(false);
-  const cardClasses = useCardStyles();
   const { book } = useBook(props.book.id);
   const sections = props.book.sections ?? book?.sections ?? [];
   const data = useWordCloud({ bookId: props.book.id });
@@ -57,8 +56,10 @@ export default function BookmarkStatsDialog(props: Props) {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{ classes: cardClasses }}
         fullWidth
+        slotProps={{
+          paper: { sx: card },
+        }}
       >
         {data.isLoading ? (
           <div

@@ -1,7 +1,0 @@
-overrides:
-  - files: "utils/handler.ts"
-    rules:
-      "@typescript-eslint/no-explicit-any": "off"
-  - files: "config/seeds/*"
-    rules:
-      no-irregular-whitespace: "off"

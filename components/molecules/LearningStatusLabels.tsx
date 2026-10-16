@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from "react";
-import clsx from "clsx";
+import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import makeStyles from "@mui/styles/makeStyles";
+import type { Theme } from "@mui/material/styles";
 import type { LearnerSchema } from "$server/models/learner";
 import type { LearningStatus } from "$server/models/learningStatus";
 import LearningStatusDot from "$atoms/LearningStatusDot";
@@ -11,51 +11,44 @@ import label from "$utils/learningStatusLabel";
 import useSelectorProps from "$utils/useSelectorProps";
 import { grey, common } from "@mui/material/colors";
 
-const useButtonStyles = makeStyles((theme) => ({
-  root: {
-    "&$disabled": {
-      color: theme.palette.text.primary,
-    },
+const disabledButtonSx = {
+  "&.Mui-disabled": {
+    color: (theme: Theme) => theme.palette.text.primary,
   },
-  disabled: {},
-}));
+};
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > :not(:last-child)": {
-      marginRight: theme.spacing(1.5),
-    },
+const rootSx = {
+  "& > :not(:last-child)": {
+    mr: 1.5,
   },
-  item: {
-    display: "inline-flex",
-    alignItems: "center",
-    "& > :first-child": {
-      marginRight: theme.spacing(0.5),
-    },
-    "&$clickable": {
-      textDecoration: "underline",
-    },
+};
+
+const itemSx = {
+  display: "inline-flex",
+  alignItems: "center",
+  "& > :first-child": {
+    mr: 0.5,
   },
-  menuHeader: {
-    display: "flex",
-    position: "sticky",
-    backgroundColor: common.white,
-    zIndex: 1,
-    top: 0,
-    alignItems: "center",
+};
+
+const menuHeaderSx = {
+  display: "flex",
+  position: "sticky",
+  backgroundColor: common.white,
+  zIndex: 1,
+  top: 0,
+  alignItems: "center",
+  margin: 0,
+  p: (theme: Theme) => theme.spacing(1, 2),
+  "& > :first-child": {
+    mr: 0.5,
+  },
+  "& > h6": {
     margin: 0,
-    padding: theme.spacing(1, 2),
-    "& > :first-child": {
-      marginRight: theme.spacing(0.5),
-    },
-    "& > h6": {
-      margin: 0,
-      fontSize: "0.875rem",
-      color: grey[700],
-    },
+    fontSize: "0.875rem",
+    color: grey[700],
   },
-  clickable: {},
-}));
+};
 
 function LearningStatusLabel({
   status,
@@ -68,8 +61,6 @@ function LearningStatusLabel({
   learners: Array<LearnerSchema>;
   onLearnerClick?(learner: LearnerSchema): void;
 }) {
-  const classes = useStyles();
-  const buttonClasses = useButtonStyles();
   const { onOpen, onSelect, ...menuProps } = useSelectorProps<null>(null);
   const handleLearnerClick = useCallback(
     (learner: LearnerSchema) => () => {
@@ -82,14 +73,13 @@ function LearningStatusLabel({
 
   return (
     <>
-      <div
-        className={clsx(classes.item, {
-          [classes.clickable]: clickable,
-        })}
+      <Box
+        component="div"
+        sx={[itemSx, clickable && { textDecoration: "underline" }]}
       >
         <LearningStatusDot status={status} />
         <Button
-          classes={buttonClasses}
+          sx={disabledButtonSx}
           aria-controls={`learner-activities-menu-${status}`}
           variant="text"
           disabled={!clickable}
@@ -98,19 +88,19 @@ function LearningStatusLabel({
           {label}
           {learners.length}人
         </Button>
-      </div>
+      </Box>
       <Menu
         {...menuProps}
         id={`learner-activities-menu-${status}`}
         aria-haspopup="true"
       >
-        <header className={classes.menuHeader}>
+        <Box component="header" sx={menuHeaderSx}>
           <LearningStatusDot status={status} />
           <h6>
             {label}
             {learners.length}人
           </h6>
-        </header>
+        </Box>
         {[...learners].map((learner) => (
           <MenuItem key={learner.id} onClick={handleLearnerClick(learner)}>
             {learner.name || "名前未公開"}
@@ -167,10 +157,9 @@ export default function LearningStatusLabels(props: Props) {
       ] as const,
     [completedLearners, incompletedLearners, unopenedLearners]
   );
-  const classes = useStyles();
 
   return (
-    <div className={clsx(className, classes.root)}>
+    <Box component="div" className={className} sx={rootSx}>
       {items.map((item, index) => (
         <LearningStatusLabel
           key={index}
@@ -178,6 +167,6 @@ export default function LearningStatusLabels(props: Props) {
           onLearnerClick={onLearnerClick}
         />
       ))}
-    </div>
+    </Box>
   );
 }

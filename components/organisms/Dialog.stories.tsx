@@ -35,7 +35,9 @@ export const Default = () => {
         fullScreen
         open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
+        slots={{
+          transition: Transition,
+        }}
       >
         <DialogContent>
           <IconButton

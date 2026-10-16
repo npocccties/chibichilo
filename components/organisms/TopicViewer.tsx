@@ -1,19 +1,17 @@
-import clsx from "clsx";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookSchema } from "$server/models/book";
 import Card from "@mui/material/Card";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import TopicViewerContent from "$organisms/TopicViewerContent";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import type { ActivitySchema } from "$server/models/activity";
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 0,
-    maxWidth: "100%",
-    overflow: "visible",
-  },
-});
+const rootSx: SxProps<Theme> = {
+  ...card,
+  minWidth: 0,
+  maxWidth: "100%",
+  overflow: "visible",
+};
 
 type Props = {
   className?: string;
@@ -36,10 +34,8 @@ export default function TopicViewer({
   isPrivateBook = false,
   isBookPage = false,
 }: Props) {
-  const classes = useStyles();
-  const cardClasses = useCardStyles();
   return (
-    <Card classes={cardClasses} className={clsx(classes.root, className)}>
+    <Card sx={rootSx} className={className}>
       <TopicViewerContent
         topic={topic}
         book={book}
