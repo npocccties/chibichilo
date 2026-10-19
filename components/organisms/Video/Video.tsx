@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { I18nProvider } from "@videojs/react/i18n";
@@ -74,6 +75,10 @@ const containerSx: SxProps<Theme> = {
 
 export type VideoMediaKind = "hls" | "youtube" | "vimeo";
 
+// Wowza の URL は `.mp4` で終わるが、応答は HLS プレイリスト。
+// 拡張子のままだとネイティブ再生になり、Firefox は HLS を再生できない。
+const HLS_SOURCE_TYPE = "application/vnd.apple.mpegurl";
+
 type Props = {
   src: string;
   kind: VideoMediaKind;
@@ -115,8 +120,14 @@ function ProviderMedia({
   if (kind === "vimeo") {
     return <VimeoVideo src={src} playsInline />;
   }
+  return <HlsSource src={src} tracks={tracks} />;
+}
+
+function HlsSource({ src, tracks }: Pick<Props, "src" | "tracks">) {
+  const source = useMemo(() => ({ src, type: HLS_SOURCE_TYPE }), [src]);
+
   return (
-    <HlsJsVideo src={src} playsInline crossOrigin="anonymous">
+    <HlsJsVideo source={source} playsInline crossOrigin="anonymous">
       <TrackElements tracks={tracks} />
     </HlsJsVideo>
   );
