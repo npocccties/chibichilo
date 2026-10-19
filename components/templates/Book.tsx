@@ -157,9 +157,9 @@ export default function Book(props: Props) {
   const hasBookmarkQuery = Boolean(router.query.lti_context_id);
   const isBookmarkView = Boolean(
     session?.ltiResourceLink &&
-      hasBookmarkQuery &&
-      (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
-        (book?.id && book.id !== session.ltiResourceLink.bookId))
+    hasBookmarkQuery &&
+    (router.query.lti_context_id !== session.ltiResourceLink.contextId ||
+      (book?.id && book.id !== session.ltiResourceLink.bookId))
   );
 
   const [expanded, setExpanded] = useState(false);
