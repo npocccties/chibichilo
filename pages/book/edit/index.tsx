@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type {
   BookSchema,
   LtiContextBookAccessProps,
@@ -21,7 +21,18 @@ import {
   updateReleaseBook,
   useBook,
 } from "$utils/book";
-import { pagesPath } from "$utils/$path";
+import {
+  bookEditTopicEditUrl,
+  bookEditTopicNewUrl,
+  bookEditUrl,
+  bookImportUrl,
+  bookOverwriteUrl,
+  bookReleaseUrl,
+  bookTopicImportUrl,
+  bookUrl,
+  contextUrl,
+  paths,
+} from "$utils/routes";
 import useBookLinkingHandlers from "$utils/useBookLinkingHandlers";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import type { ReleaseProps } from "$server/models/book/release";
@@ -38,7 +49,7 @@ function Edit({ bookId, context }: Query) {
   const { isContentEditable } = useSessionAtom();
   const ltiContext = useLtiContextAtom();
   const { book, error } = useBook(bookId, isContentEditable);
-  const router = useRouter();
+  const router = useAppRouter();
   const { onBookLinking } = useBookLinkingHandlers();
   const { handleAuthorsUpdate, handleAuthorSubmit } = useAuthorsHandler(
     book && { type: "book", ...book }
@@ -48,9 +59,9 @@ function Edit({ bookId, context }: Query) {
       case "books":
       case "topics":
       case "courses":
-        return router.push(pagesPath[context].$url());
+        return router.push(contextUrl(context));
       default:
-        return router.push(pagesPath.book.$url({ query }));
+        return router.push(bookUrl({ bookId: query.bookId }));
     }
   };
   async function handleSubmit({
@@ -67,9 +78,9 @@ function Edit({ bookId, context }: Query) {
     switch (context) {
       case "books":
       case "topics":
-        return router.push(pagesPath[context].$url());
+        return router.push(contextUrl(context));
       default:
-        return router.push(pagesPath.books.$url());
+        return router.push(paths.books);
     }
   }
   function handleCancel() {
@@ -85,22 +96,20 @@ function Edit({ bookId, context }: Query) {
   function handleTopicEditClick(
     topic: Pick<TopicSchema, "id"> & ContentAuthors
   ) {
-    const url = pagesPath.book.edit.topic.edit.$url({
-      query: { ...query, topicId: topic.id },
-    });
+    const url = bookEditTopicEditUrl({ ...query, topicId: topic.id });
     return router.push(url);
   }
   function handleTopicNewClick() {
-    return router.push(pagesPath.book.edit.topic.new.$url({ query }));
+    return router.push(bookEditTopicNewUrl(query));
   }
   function handleBookImportClick() {
-    return router.push(pagesPath.book.import.$url({ query }));
+    return router.push(bookImportUrl(query));
   }
   function handleTopicImportClick() {
-    return router.push(pagesPath.book.topic.import.$url({ query }));
+    return router.push(bookTopicImportUrl(query));
   }
   const handleOverwriteClick = () => {
-    return router.push(pagesPath.book.overwrite.$url({ query: { bookId } }));
+    return router.push(bookOverwriteUrl({ bookId }));
   };
   async function handleReleaseUpdate(release: ReleaseProps) {
     if (!book) return;
@@ -112,23 +121,26 @@ function Edit({ bookId, context }: Query) {
   }
   async function handleRelease({ id }: Pick<BookSchema, "id">) {
     return router.push(
-      pagesPath.book.release.$url({
-        query: { bookId: id, ...(context && { context }) },
+      bookReleaseUrl({
+        bookId: id,
+        ...(context && { context }),
       })
     );
   }
   async function handleItemEditClick(bookId: BookSchema["id"]) {
     return router.push(
-      pagesPath.book.edit.$url({
-        query: { bookId, ...(context && { context }) },
+      bookEditUrl({
+        bookId,
+        ...(context && { context }),
       })
     );
   }
   async function handleClone({ id }: Pick<BookSchema, "id">) {
     const created = await cloneBook(id);
     return router.push(
-      pagesPath.book.edit.$url({
-        query: { bookId: created.id, ...(context && { context }) },
+      bookEditUrl({
+        bookId: created.id,
+        ...(context && { context }),
       })
     );
   }
@@ -189,7 +201,7 @@ function Edit({ bookId, context }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const { context }: Pick<Query, "context"> = router.query;
 

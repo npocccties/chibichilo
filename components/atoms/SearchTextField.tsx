@@ -48,23 +48,25 @@ const SearchTextField = styled(
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         variant="outlined"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchClearButton onClick={onSearchInputReset} />
-              <IconButton
-                onClick={handleSearchSubmit}
-                size="small"
-                color="primary"
-                tooltipProps={{ title: "検索" }}
-              >
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-          ...InputProps,
-        }}
         {...other}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchClearButton onClick={onSearchInputReset} />
+                <IconButton
+                  onClick={handleSearchSubmit}
+                  size="small"
+                  color="primary"
+                  tooltipProps={{ title: "検索" }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+            ...InputProps,
+          },
+        }}
       />
     );
   }

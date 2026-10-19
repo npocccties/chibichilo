@@ -1,8 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { Outlet } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Provider } from "jotai";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { useRouter } from "next/router";
 import {
   ThemeProvider as MuiThemeProvider,
   StyledEngineProvider,
@@ -22,18 +21,17 @@ import {
 } from "$utils/env";
 import inIframe from "$utils/inIframe";
 import { useSessionInit } from "$utils/session";
-import { pagesPath } from "$utils/$path";
-// NOTE: For VideoJs components.
-import "video.js/dist/video-js.css";
-import "videojs-seek-buttons/dist/videojs-seek-buttons.css";
+import { bookUrl, paths } from "$utils/routes";
+import { useAppRouter } from "$utils/useAppRouter";
+import "@videojs/react/video/skin.css";
 import {
   syncLtiContext,
   useLtiContextAtom,
   useUpdateLtiContextAtom,
 } from "$store/session";
 
-function Content({ children }: { children: ReactNode }) {
-  const router = useRouter();
+function Content() {
+  const router = useAppRouter();
   const { session, isInstructor, error } = useSessionInit();
   const { ltiContextId } = useLtiContextAtom();
   const [, setOverrideLtiContext, setBaseLtiContext, baseLtiContext] =
@@ -42,18 +40,15 @@ function Content({ children }: { children: ReactNode }) {
   const isAppMounted = useRef(false);
 
   useEffect(() => {
-    if (!router.isReady) return;
     if (!isAppMounted.current) {
       isAppMounted.current = true;
       if (!router.query.lti_context_id && ltiContextId) {
         setOverrideLtiContext(null);
       }
     }
-  }, [router.isReady, router.query, ltiContextId, setOverrideLtiContext]);
+  }, [router.query, ltiContextId, setOverrideLtiContext]);
 
   useEffect(() => {
-    if (!router.isReady) return;
-
     syncLtiContext({
       baseLtiContext,
       session,
@@ -61,7 +56,6 @@ function Content({ children }: { children: ReactNode }) {
       setBaseLtiContext,
     });
   }, [
-    router.isReady,
     router.pathname,
     session,
     baseLtiContext,
@@ -74,31 +68,36 @@ function Content({ children }: { children: ReactNode }) {
   };
   const handleBooksClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.books.$url());
+    void router.push(paths.books);
   };
   const handleCoursesClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.courses.$url());
+    void router.push(paths.courses);
   };
   const handleDashboardClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.dashboard.$url());
+    void router.push(paths.dashboard);
   };
   const handleBookClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.$url());
+    const ltiResourceLink = session?.ltiResourceLink;
+    if (!ltiResourceLink?.bookId) return;
+    const query = ltiResourceLink.topicId
+      ? { bookId: ltiResourceLink.bookId, topicId: ltiResourceLink.topicId }
+      : { bookId: ltiResourceLink.bookId };
+    void router.push(bookUrl(query));
   };
   const handleBookmarksClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.bookmarks.$url());
+    void router.push(paths.bookmarks);
   };
   const handleDownloadClick = () => {
     resetBookmarkAuth();
-    void router.push(pagesPath.download.$url());
+    void router.push(paths.download);
   };
 
-  if (session?.user?.id === 0 && router.pathname === "/book") {
-    return <>{children}</>;
+  if (session?.user?.id === 0 && router.pathname === paths.book) {
+    return <Outlet />;
   }
   if (error || session?.user?.id === 0) {
     return (
@@ -113,7 +112,8 @@ function Content({ children }: { children: ReactNode }) {
     return <EmbedProblem />;
   }
 
-  const handleTopicsClick = () => router.push(pagesPath.topics.$url());
+  const handleTopicsClick = () => router.push(paths.topics);
+
   return (
     <>
       {(isInstructor || NEXT_PUBLIC_ENABLE_TAG_AND_BOOKMARK) && (
@@ -132,7 +132,7 @@ function Content({ children }: { children: ReactNode }) {
           />
         </Slide>
       )}
-      {children}
+      <Outlet />
     </>
   );
 }
@@ -140,31 +140,29 @@ function Content({ children }: { children: ReactNode }) {
 function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <>
-      <Head>
+      <Helmet>
         <title>CHiBi-CHiLO</title>
         <meta name="viewport" content="width=device-width" />
         <meta name="theme-color" content={theme.palette.primary.main} />
-      </Head>
+      </Helmet>
       <StyledEngineProvider injectFirst>
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
-          <Content>{children}</Content>
+          {children}
         </MuiThemeProvider>
       </StyledEngineProvider>
     </>
   );
 }
 
-function App({ Component, pageProps }: AppProps) {
+export default function App() {
   return (
     <Provider>
       <ThemeProvider>
         <ConfirmProvider>
-          <Component {...pageProps} />
+          <Content />
         </ConfirmProvider>
       </ThemeProvider>
     </Provider>
   );
 }
-
-export default App;

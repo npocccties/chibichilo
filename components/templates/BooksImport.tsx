@@ -1,5 +1,6 @@
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import BooksImportForm from "$organisms/BooksImportForm";
 import ContentPreview from "$organisms/ContentPreview";
 import Container from "$atoms/Container";
@@ -12,38 +13,26 @@ import type {
 import type { ContentSchema } from "$server/models/content";
 import type { AuthorSchema } from "$server/models/author";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: theme.spacing(1),
-    "& > :not($title):not($form)": {
-      marginBottom: theme.spacing(2),
-    },
+const containerSx: SxProps<Theme> = {
+  mt: 1,
+  "& > :not(.books-import-title):not(.books-import-form)": {
+    mb: 2,
   },
-  title: {
-    marginBottom: theme.spacing(4),
-  },
-  form: {
-    marginBottom: theme.spacing(4),
-  },
-  subtitle: {
-    "& span": {
-      verticalAlign: "middle",
-    },
-    "& .RequiredDot": {
-      marginRight: theme.spacing(0.5),
-      marginBottom: theme.spacing(0.75),
-      marginLeft: theme.spacing(2),
-    },
-  },
-  icon: {
-    marginRight: theme.spacing(0.5),
-  },
-  books: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, 296px)",
-    gap: theme.spacing(2),
-  },
-}));
+};
+
+const titleSx: SxProps<Theme> = {
+  mb: 4,
+};
+
+const formSx: SxProps<Theme> = {
+  mb: 4,
+};
+
+const booksSx: SxProps<Theme> = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, 296px)",
+  gap: 2,
+};
 
 type Props = {
   importResult?: BooksImportResult;
@@ -60,7 +49,6 @@ export default function BooksImport({
   onCancel,
   onAuthorSubmit,
 }: Props) {
-  const classes = useStyles();
   const searchProps = useSearchAtom();
 
   const showSuccess = importResult?.books && importResult.books.length > 0;
@@ -69,27 +57,28 @@ export default function BooksImport({
   const showForm = !showSuccess;
 
   return (
-    <Container className={classes.container} maxWidth="lg">
+    <Container sx={containerSx} maxWidth="lg">
       <BackButton onClick={onCancel}>戻る</BackButton>
       {showForm && (
         <>
-          <Typography className={classes.title} variant="h4">
+          <Typography className="books-import-title" sx={titleSx} variant="h4">
             ブックのインポート
           </Typography>
-          <BooksImportForm
-            className={classes.form}
-            onSubmit={onSubmit}
-            onAuthorSubmit={onAuthorSubmit}
-          />
+          <Box className="books-import-form" sx={formSx}>
+            <BooksImportForm
+              onSubmit={onSubmit}
+              onAuthorSubmit={onAuthorSubmit}
+            />
+          </Box>
         </>
       )}
       {showResult && (
         <>
-          <Typography className={classes.title} variant="h4">
+          <Typography className="books-import-title" sx={titleSx} variant="h4">
             インポート結果
           </Typography>
           {showSuccess && (
-            <div className={classes.books}>
+            <Box sx={booksSx}>
               {importResult?.books?.map((book) => (
                 <ContentPreview
                   key={book.id}
@@ -98,7 +87,7 @@ export default function BooksImport({
                   onKeywordClick={searchProps.onKeywordClick}
                 />
               ))}
-            </div>
+            </Box>
           )}
           {showErrors && (
             <ul>

@@ -1,5 +1,5 @@
-import clsx from "clsx";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 import LearningStatusLabels from "$molecules/LearningStatusLabels";
 import { learningStatus, gray } from "$theme/colors";
 import useLineClampStyles from "$styles/lineClamp";
@@ -47,27 +47,27 @@ function LearningBargraph(props: LearningBargraphProps) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    alignItems: "center",
+const rootSx: SxProps<Theme> = {
+  display: "flex",
+  alignItems: "center",
+};
+
+const nameSx: SxProps<Theme> = {
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  color: gray[700],
+  mr: 1,
+};
+
+const graphSx: SxProps<Theme> = {
+  maxWidth: 400,
+  width: "50%",
+  "& > svg": {
+    width: "100%",
+    mb: 1,
   },
-  name: {
-    flex: 1,
-    display: "flex",
-    alignItems: "center",
-    color: gray[700],
-    marginRight: theme.spacing(1),
-  },
-  graph: {
-    maxWidth: 400,
-    width: "50%",
-    "& > svg": {
-      width: "100%",
-      marginBottom: theme.spacing(1),
-    },
-  },
-}));
+};
 
 type Props = {
   book: Pick<BookSchema, "id" | "name">;
@@ -88,7 +88,6 @@ export default function LearningActivityItem(props: Props) {
   const totalLearnerCount = learners.length;
   const completedCount = completedLearners.size;
   const incompletedCount = incompletedLearners.size;
-  const classes = useStyles();
   const lineClamp = useLineClampStyles({
     fontSize: "1rem",
     lineClamp: 2,
@@ -96,11 +95,11 @@ export default function LearningActivityItem(props: Props) {
   });
 
   return (
-    <div className={classes.root}>
-      <div className={clsx(classes.name, lineClamp.placeholder)}>
+    <Box component="div" sx={rootSx}>
+      <Box component="div" className={lineClamp.placeholder} sx={nameSx}>
         <span className={lineClamp.clamp}>{book.name}</span>
-      </div>
-      <div className={classes.graph}>
+      </Box>
+      <Box component="div" sx={graphSx}>
         <LearningBargraph
           totalLearnerCount={totalLearnerCount}
           completedCount={completedCount}
@@ -116,7 +115,7 @@ export default function LearningActivityItem(props: Props) {
           )}
           onLearnerClick={onLearnerClick}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

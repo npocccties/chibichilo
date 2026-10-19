@@ -3,23 +3,14 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { FormGroup, FormControlLabel } from "@mui/material";
 import Switch from "@mui/material/Switch";
-import makeStyles from "@mui/styles/makeStyles";
-import clsx from "clsx";
-import useCardStyles from "styles/card";
-import gray from "theme/colors/gray";
+import card from "$styles/card";
 import type { UserSettingsProps } from "$server/models/userSettings";
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:first-child)": {
-      marginTop: theme.spacing(2.5),
-    },
+const marginSx = {
+  "& > :not(:first-of-type)": {
+    mt: 2.5,
   },
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
-  },
-}));
+};
 
 type Props = {
   className?: string;
@@ -29,14 +20,12 @@ type Props = {
 
 export default function ZoomImportEnabledSwitch(props: Props) {
   const { className, userSettings, onChange } = props;
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
   const [zoomImportEnabled, setZoomImportEnabled] = useState(
     userSettings.zoomImportEnabled
   );
 
   return (
-    <Card classes={cardClasses} className={clsx(classes.margin, className)}>
+    <Card sx={[card, marginSx]} className={className}>
       <Typography variant="h6">
         Zoomクラウドレコーディングのインポート
       </Typography>

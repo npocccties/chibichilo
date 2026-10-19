@@ -2,16 +2,14 @@ import { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import DescriptionList from "$atoms/DescriptionList";
 import type { SessionSchema } from "$server/models/session";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: theme.spacing(2),
-  },
-}));
+const titleSx: SxProps<Theme> = {
+  mb: 2,
+};
 
 type Props = {
   session: SessionSchema;
@@ -42,19 +40,19 @@ function useLtiLaunchBody(session: SessionSchema) {
 }
 
 export default function LtiItemDialog(props: Props) {
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
   const { session, open, onClose } = props;
   const ltiLaunchBody = useLtiLaunchBody(session);
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ classes: cardClasses }}
       fullWidth
+      slotProps={{
+        paper: { sx: card },
+      }}
     >
       <DialogContent>
-        <Typography className={classes.title} variant="h5">
+        <Typography sx={titleSx} variant="h5">
           LTI情報
         </Typography>
         <DescriptionList

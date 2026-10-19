@@ -1,6 +1,5 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-// @ts-expect-error: Ignored because there is no type definition.
 import { renderToString } from "react-dom/server";
 import CourseTree from "./CourseTree";
 import { useSessionAtom, useLtiContextAtom } from "$store/session";

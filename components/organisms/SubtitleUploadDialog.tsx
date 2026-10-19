@@ -3,25 +3,18 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { useForm } from "react-hook-form";
 import TextField from "$atoms/TextField";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import type { VideoTrackProps } from "$server/models/videoTrack";
 import languages from "$utils/languages";
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:last-child)": {
-      marginBottom: theme.spacing(2),
-    },
+const marginSx: SxProps<Theme> = {
+  "& > :not(:last-child)": {
+    mb: 2,
   },
-  input: {
-    "& > *": {
-      height: "unset",
-    },
-  },
-}));
+};
 
 type Props = {
   open: boolean;
@@ -30,9 +23,7 @@ type Props = {
 };
 
 export default function SubtitleUploadDialog(props: Props) {
-  const classes = useStyles();
   const { open, onClose, onSubmit = () => undefined } = props;
-  const cardClasses = useCardStyles();
   const defaultValues = {
     language: Object.getOwnPropertyNames(languages)[0],
     content: "",
@@ -46,8 +37,10 @@ export default function SubtitleUploadDialog(props: Props) {
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        classes: cardClasses,
+      slotProps={{
+        paper: {
+          sx: card,
+        },
       }}
     >
       <form
@@ -57,7 +50,7 @@ export default function SubtitleUploadDialog(props: Props) {
         })}
       >
         <DialogTitle>字幕のアップロード</DialogTitle>
-        <DialogContent className={classes.margin}>
+        <DialogContent sx={marginSx}>
           <TextField
             label="字幕ファイル"
             type="file"

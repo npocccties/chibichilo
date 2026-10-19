@@ -16,18 +16,17 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import PublicIcon from "@mui/icons-material/Public";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { styled } from "@mui/material/styles";
-import makeStyles from "@mui/styles/makeStyles";
+import type { Theme } from "@mui/material/styles";
 import { useForm } from "react-hook-form";
-import clsx from "clsx";
 import { ja } from "date-fns/locale";
 import InputLabel from "$atoms/InputLabel";
 import TextField from "$atoms/TextField";
 import AuthorsInput from "$organisms/AuthorsInput";
 import KeywordsInput from "$organisms/KeywordsInput";
 import DomainsInput from "$organisms/DomainsInput";
-import useCardStyles from "styles/card";
+import card from "styles/card";
 import gray from "theme/colors/gray";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
@@ -38,26 +37,24 @@ import { useAuthorsAtom } from "store/authors";
 import useKeywordsInput from "$utils/useKeywordsInput";
 import useDomainsInput from "$utils/useDomainsInput";
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:first-child)": {
-      marginTop: theme.spacing(2.5),
-    },
+const marginSx = {
+  "& > :not(:first-of-type)": {
+    mt: 2.5,
   },
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
-  },
-  inlineIcon: {
-    verticalAlign: "middle",
-  },
-  divider: {
-    margin: theme.spacing(0, -3, 0),
-  },
-  marginLeft: {
-    marginLeft: theme.spacing(0.75),
-  },
-}));
+};
+const labelDescriptionSx = {
+  ml: 0.75,
+  color: gray[600],
+};
+const inlineIconSx = {
+  verticalAlign: "middle",
+};
+const dividerSx = {
+  m: (theme: Theme) => theme.spacing(0, -3, 0),
+};
+const marginLeftSx = {
+  ml: 0.75,
+};
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion {...props} />
@@ -134,8 +131,6 @@ export default function BookForm({
   onAuthorsUpdate,
   onAuthorSubmit,
 }: Props) {
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
   const { updateState: _updateState, ...authorsInputProps } = useAuthorsAtom();
 
   // 初期値の設定
@@ -182,8 +177,8 @@ export default function BookForm({
 
   return (
     <Card
-      classes={cardClasses}
-      className={clsx(classes.margin, className)}
+      sx={[card, marginSx]}
+      className={className}
       id={id}
       component="form"
       onSubmit={handleSubmit((values) => {
@@ -207,7 +202,7 @@ export default function BookForm({
         <div>
           シェア機能はリリース共有機能に移行しました。現在のシェアはそのまま継続できますが、リリースして共有を有効にすることをお勧めします。
           <FormControlLabel
-            className={classes.marginLeft}
+            sx={marginLeftSx}
             label="シェアを解除する（解除後、既存の共有先はアクセスできなくなります）"
             title={"シェアを解除する"}
             control={
@@ -228,7 +223,7 @@ export default function BookForm({
           <InputLabel htmlFor="enable-public-book">
             ブックを公開する
             <Typography
-              className={classes.labelDescription}
+              sx={labelDescriptionSx}
               variant="caption"
               component="span"
             >
@@ -268,7 +263,7 @@ export default function BookForm({
                   <>
                     公開期限
                     <Typography
-                      className={classes.labelDescription}
+                      sx={labelDescriptionSx}
                       variant="caption"
                       component="span"
                     >
@@ -286,7 +281,7 @@ export default function BookForm({
             <DomainsInput {...domainsInputProps} />
           </div>
           <Alert severity="info">
-            保存後、ブック一覧の <PublicIcon className={classes.inlineIcon} />{" "}
+            保存後、ブック一覧の <PublicIcon sx={inlineIconSx} />{" "}
             をクリックすると、公開用URLをコピーできます。
           </Alert>
         </>
@@ -320,7 +315,7 @@ export default function BookForm({
             disabled={released}
           />
           <Typography
-            className={classes.labelDescription}
+            sx={labelDescriptionSx}
             variant="caption"
             component="span"
           >
@@ -339,7 +334,7 @@ export default function BookForm({
 
       {variant !== "other" && (
         <>
-          <Divider className={classes.divider} />
+          <Divider sx={dividerSx} />
           <Button
             variant="contained"
             color="primary"
@@ -350,7 +345,7 @@ export default function BookForm({
           </Button>
           {!linked && (
             <FormControlLabel
-              className={classes.marginLeft}
+              sx={marginLeftSx}
               label="コースへ配信"
               title={
                 hasLtiTargetLinkUri

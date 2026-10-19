@@ -1,20 +1,14 @@
-import TreeItem from "@mui/lab/TreeItem";
-import makeStyles from "@mui/styles/makeStyles";
+import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem";
 import PreviewButton from "$atoms/PreviewButton";
 import EditButton from "$atoms/EditButton";
 import CourseChip from "$atoms/CourseChip";
 import SharedIndicator from "$atoms/SharedIndicator";
 import SectionsTree from "$molecules/SectionsTree";
-import useTreeItemStyle from "$styles/treeItem";
+import treeItemLabel from "$styles/treeItem";
+
 import type { BookSchema } from "$server/models/book";
 import type { IsContentEditable } from "$server/models/content";
 import type { LtiResourceLinkSchema } from "$server/models/ltiResourceLink";
-
-const useStyles = makeStyles((theme) => ({
-  shared: {
-    margin: theme.spacing(0, 0.5),
-  },
-}));
 
 type Props = {
   book: BookSchema;
@@ -44,8 +38,6 @@ export default function BookTree(props: Props) {
     selectedIndexes,
     isContentEditable,
   } = props;
-  const classes = useStyles();
-  const treeItemClasses = useTreeItemStyle();
   const nodeId = `${book.id}`;
   const handle =
     (handler?: (book: BookSchema) => void) =>
@@ -60,8 +52,8 @@ export default function BookTree(props: Props) {
   */
   return (
     <TreeItem
-      nodeId={nodeId}
-      classes={treeItemClasses}
+      itemId={nodeId}
+      sx={{ [`& .${treeItemClasses.label}`]: treeItemLabel }}
       label={
         <>
           {/* TODO: ブック単位での再利用の実装
@@ -77,9 +69,7 @@ export default function BookTree(props: Props) {
           />
           )*/}
           {book.name}
-          {book.release?.shared && (
-            <SharedIndicator className={classes.shared} />
-          )}
+          {book.release?.shared && <SharedIndicator sx={{ mx: 0.5 }} />}
           <PreviewButton variant="book" onClick={handle(onBookPreviewClick)} />
           {onBookEditClick && (
             <EditButton variant="book" onClick={handle(onBookEditClick)} />

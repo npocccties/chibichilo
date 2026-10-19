@@ -3,71 +3,45 @@ import { useRef } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
-import TreeView from "@mui/lab/TreeView";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import Alert from "@mui/material/Alert";
 import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControlLabel, {
+  formControlLabelClasses,
+} from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddIcon from "@mui/icons-material/Add";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import SectionsTree from "$molecules/SectionsTree";
 import DraggableSections from "$molecules/DraggableSections";
 import type { SectionSchema } from "$server/models/book/section";
 import type { TopicSchema } from "$server/models/topic";
 import type { IsContentEditable } from "$server/models/content";
-import useCardStyles from "$styles/card";
+import card from "$styles/card";
 import useSortableSectionsProps from "$utils/useSortableSectionsProps";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    overflow: "visible",
-  },
-  divider: {
-    margin: theme.spacing(0, -3, 2),
-  },
-  label: {
-    display: "flex",
-    alignItems: "center",
-  },
-  items: {
-    margin: theme.spacing(0, -1),
-    "& > *": {
-      marginRight: theme.spacing(1.75),
-      marginBottom: theme.spacing(1),
-    },
-  },
-  icon: {
-    marginRight: theme.spacing(0.5),
-  },
-  alert: {
-    marginBottom: theme.spacing(2),
-  },
-  footer: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    bottom: "0px",
-    zIndex: 1,
-    margin: theme.spacing(2, -3, -2),
-    padding: theme.spacing(0, 3, 2),
-    borderRadius: "0 0 12px 12px",
-    "& > :not(hr)": {
-      marginRight: theme.spacing(1.75),
-    },
-  },
-  placeholder: {
-    margin: 0,
-  },
-}));
-
-const useFormControlLabelStyles = makeStyles({
-  labelPlacementStart: {
-    marginLeft: 0,
-  },
-});
+const dividerSx: SxProps<Theme> = { m: (theme) => theme.spacing(0, -3, 2) };
+const iconSx: SxProps<Theme> = { mr: 0.5 };
+const itemsSx: SxProps<Theme> = {
+  mx: -1,
+  "& > *": { mr: 1.75, mb: 1 },
+};
+const footerSx: SxProps<Theme> = {
+  backgroundColor: "#fff",
+  position: "sticky",
+  bottom: "0px",
+  zIndex: 1,
+  m: (theme) => theme.spacing(2, -3, -2),
+  p: (theme) => theme.spacing(0, 3, 2),
+  borderRadius: "0 0 12px 12px",
+  "& > :not(hr)": { mr: 1.75 },
+};
+const rootSx: SxProps<Theme> = { ...card, overflow: "visible" };
 
 type Props = {
   sections: SectionSchema[];
@@ -92,9 +66,6 @@ export default function SectionsEdit(props: Props) {
     isContentEditable,
     noedit,
   } = props;
-  const cardClasses = useCardStyles();
-  const classes = useStyles();
-  const formControlLabelClasses = useFormControlLabelStyles();
   const handleItem =
     (handler?: (topic: TopicSchema) => void) =>
     ([sectionIndex, topicIndex]: ItemIndex) =>
@@ -111,17 +82,17 @@ export default function SectionsEdit(props: Props) {
   } = useSortableSectionsProps(sections, onSectionsUpdate);
   const dragBoundaryRef = useRef<HTMLDivElement>(null);
   return (
-    <Card classes={cardClasses} className={clsx(className, classes.root)}>
+    <Card sx={rootSx} className={clsx(className)}>
       {!noedit && (
         <>
-          <div className={classes.items}>
+          <Box sx={itemsSx}>
             <Button
               size="small"
               color="primary"
               disabled={sortable}
               onClick={props.onBookImportClick}
             >
-              <GetAppIcon className={classes.icon} />
+              <GetAppIcon sx={iconSx} />
               ブックの再利用
             </Button>
             <Button
@@ -130,7 +101,7 @@ export default function SectionsEdit(props: Props) {
               disabled={sortable}
               onClick={props.onTopicImportClick}
             >
-              <GetAppIcon className={classes.icon} />
+              <GetAppIcon sx={iconSx} />
               トピックの再利用
             </Button>
             <Button
@@ -139,11 +110,13 @@ export default function SectionsEdit(props: Props) {
               disabled={sortable}
               onClick={props.onTopicNewClick}
             >
-              <AddIcon className={classes.icon} />
+              <AddIcon sx={iconSx} />
               トピックの作成
             </Button>
             <FormControlLabel
-              classes={formControlLabelClasses}
+              sx={{
+                [`&.${formControlLabelClasses.labelPlacementStart}`]: { ml: 0 },
+              }}
               control={
                 <Switch
                   size="small"
@@ -154,7 +127,7 @@ export default function SectionsEdit(props: Props) {
               }
               label={
                 <Typography
-                  className={classes.label}
+                  sx={{ display: "flex", alignItems: "center" }}
                   variant="button"
                   color="primary"
                 >
@@ -164,12 +137,12 @@ export default function SectionsEdit(props: Props) {
               }
               labelPlacement="start"
             />
-          </div>
-          <Divider className={classes.divider} />
+          </Box>
+          <Divider sx={dividerSx} />
         </>
       )}
       {inProgress && (
-        <Alert className={classes.alert} severity="info">
+        <Alert sx={{ mb: 2 }} severity="info">
           トピック順の編集内容が未保存です。反映する場合はトピック順の編集中に保存ボタンをクリックしてください
         </Alert>
       )}
@@ -181,8 +154,8 @@ export default function SectionsEdit(props: Props) {
             onSectionCreate={handleSectionCreate}
             boundaryRef={dragBoundaryRef}
           />
-          <div className={classes.footer}>
-            <Divider className={classes.divider} />
+          <Box sx={footerSx}>
+            <Divider sx={dividerSx} />
             <Button
               color="primary"
               variant="text"
@@ -197,20 +170,22 @@ export default function SectionsEdit(props: Props) {
             >
               保存
             </Button>
-          </div>
+          </Box>
         </div>
       )}
       {!sortable && sections.length === 0 && (
-        <p className={classes.placeholder}>
+        <Typography component="p" sx={{ m: 0 }}>
           動画は「トピック」という名前の単位で登録されています。
           <br />
           既存のトピックを再利用する、あるいは新たにトピック作成し、ここにトピックを追加してブックを完成してください。
-        </p>
+        </Typography>
       )}
       {!sortable && sections.length > 0 && (
-        <TreeView
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
+        <SimpleTreeView
+          slots={{
+            collapseIcon: ExpandMoreIcon,
+            expandIcon: ChevronRightIcon,
+          }}
           disableSelection
         >
           <SectionsTree
@@ -219,7 +194,7 @@ export default function SectionsEdit(props: Props) {
             onItemEditClick={handleItem(onTopicEditClick)}
             isContentEditable={isContentEditable}
           />
-        </TreeView>
+        </SimpleTreeView>
       )}
     </Card>
   );
