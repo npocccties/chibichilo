@@ -45,7 +45,7 @@ API の接続先の情報を変更する場合 .env を適宜書き換える必�
 
 2026-05-21 現在、以下の環境でビルドを確認。
 
-- Node.js 26.2 以上、24.x LTS（24.16.0 以上）、または 22.x LTS（22.22.3 以上）（[package.json](package.json) の `engines` に合わせる）
+- Node.js 26.12.1 以上、24.x LTS（24.22.1 以上）、または 22.x LTS（22.23.4 以上）（[package.json](package.json) の `engines` に合わせる）
 - pnpm 11.1.2（[package.json](package.json) の `packageManager` に合わせる）
 
 ## pnpm をインストールする

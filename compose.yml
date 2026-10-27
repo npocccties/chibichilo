@@ -40,7 +40,7 @@ services:
     volumes:
       - postgres_data_v17:/var/lib/postgresql/data
   app:
-    image: "node:26.2.0"
+    image: "node:26.12.1"
     environment:
       HOME: /tmp
       FRONTEND_ORIGIN: "http://localhost:3000"

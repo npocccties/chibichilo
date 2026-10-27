@@ -61,7 +61,7 @@
     "strict-uri-encode": "^2.0.0",
     "thread-stream": "^4.2.0",
     "tsx": "^4.22.3",
-    "undici": "^8.3.0",
+    "undici": "^8.12.2",
     "yauzl": "^3.3.1",
     "yn": "^5.1.0"
   },
