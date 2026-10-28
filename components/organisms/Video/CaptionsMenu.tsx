@@ -16,7 +16,7 @@ function CaptionsMenuContent() {
       <CaptionsRadioGroup.Root label="字幕">
         <Menu.Trigger
           render={
-            <CaptionsButton className="media-button media-captions-button video-controls-captions-button">
+            <CaptionsButton className="media-button media-captions-button">
               <CaptionsOffIcon className="media-button-icon media-captions-button-off-icon" />
               <CaptionsOnIcon className="media-button-icon media-captions-button-on-icon" />
             </CaptionsButton>

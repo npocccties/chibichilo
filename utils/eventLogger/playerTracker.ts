@@ -3,7 +3,6 @@ import { EventEmitter } from "events";
 import type { VideoProviderType } from "$types/videoInstance";
 import type { VideoMedia } from "$utils/video/media";
 import { getMediaTextTracks } from "$utils/video/media";
-import { SEEK_BUTTON_SECONDS } from "$utils/video/seekSeconds";
 
 const basicEventsMap = [
   "ended",
@@ -83,14 +82,16 @@ export class PlayerTracker extends (EventEmitter as {
     this.emit("nextvideo", { ...this.stats, video });
   }
 
+  seekButton(seconds: number) {
+    this.emit(seconds < 0 ? "back" : "forward", this.stats);
+  }
+
   get stats(): PlayerStats {
     const { providerUrl, url, currentTime, firstPlay, topicId } = this;
     return { providerUrl, url, currentTime, firstPlay, topicId };
   }
 
   private intoMedia(player: VideoMedia) {
-    let seekFromTime = 0;
-
     player.addEventListener("timeupdate", () => {
       this.currentTime = player.currentTime ?? NaN;
     });
@@ -118,19 +119,6 @@ export class PlayerTracker extends (EventEmitter as {
         ...this.stats,
         language: showingSubtitle?.language,
       });
-    });
-
-    player.addEventListener("seeking", () => {
-      seekFromTime = player.currentTime ?? 0;
-    });
-
-    player.addEventListener("seeked", () => {
-      const delta = (player.currentTime ?? 0) - seekFromTime;
-      if (Math.abs(delta - SEEK_BUTTON_SECONDS) < 1) {
-        this.emit("forward", this.stats);
-      } else if (Math.abs(delta + SEEK_BUTTON_SECONDS) < 1) {
-        this.emit("back", this.stats);
-      }
     });
 
     player.addEventListener("durationchange", () => {

@@ -13,8 +13,9 @@ import {
 
 /** 動画プレイヤー準備完了かどうかの取得処理 */
 function getReady(media: VideoMedia): boolean {
-  // NOTE: 埋め込み系メディアはバッファリング完了まで誤った値が得られうるため待機
-  return media.readyState === 4; // HaveEnoughData
+  // NOTE: YouTube / Vimeo のアダプタは readyState が 3 までしか上がらないことがある。
+  //       duration はアダプタが実プレイヤーの音量等を読み込んだ後に確定する
+  return media.readyState >= 1 && !Number.isNaN(media.duration);
 }
 
 /** イベント発火の間隔を間引くための遅延時間 (ms) */
@@ -48,9 +49,11 @@ function useReady(media: VideoMedia | null): boolean {
 
     setReady(false);
     id = setInterval(update, interval);
+    media.addEventListener("loadedmetadata", update);
 
     return () => {
       if (id !== undefined) clearInterval(id);
+      media.removeEventListener("loadedmetadata", update);
     };
   }, [media]);
 
@@ -123,6 +126,9 @@ async function getPlayerTextTrack(
   if (textTracks.length === 0) return;
 
   let textTrack = textTracks.find(({ mode }) => mode === "showing");
+  // 字幕メニューの操作では showing / disabled のみになる。hidden は読み込み直後の状態
+  if (!textTrack && Array.from(trackList).some(({ mode }) => mode === "hidden"))
+    return;
   textTrack ??= textTracks[0];
 
   return {
@@ -182,8 +188,11 @@ export function usePlayerState(media: VideoMedia | null) {
     };
   }, [media, ready, onVolumeChange]);
 
+  const [textTrackCount, setTextTrackCount] = useState(0);
+
   const onTextTrackChange = useCallback(async () => {
     if (!media) return;
+    setTextTrackCount(getMediaTextTracks(media).length);
     const data = await getPlayerTextTrack(media);
     if (data) setTextTrack(data);
   }, [media, setTextTrack]);
@@ -191,7 +200,7 @@ export function usePlayerState(media: VideoMedia | null) {
   useEffect(() => {
     if (!media || !ready) return;
     setPlayerTextTrack(media, textTrack);
-  }, [media, ready, textTrack]);
+  }, [media, ready, textTrack, textTrackCount]);
 
   useEffect(() => {
     if (!media || !ready) return;

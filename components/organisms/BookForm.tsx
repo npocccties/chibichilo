@@ -150,10 +150,12 @@ export default function BookForm({
   };
   const keywordsInputProps = useKeywordsInput(defaultKeywords);
   const domainsInputProps = useDomainsInput(defaultValues.domains);
-  const { handleSubmit, register, setValue, getValues, formState } =
+  const { handleSubmit, register, setValue, watch, formState } =
     useForm<FormProps>({
       values: defaultValues,
     });
+  const enablePublicBook = watch("enablePublicBook");
+  const expireAt = watch("expireAt");
 
   // 更新が必要かどうか、状態を管理する
   useEffect(() => {
@@ -242,7 +244,7 @@ export default function BookForm({
         </div>
       )}
 
-      {getValues("enablePublicBook") && (
+      {enablePublicBook && (
         <>
           <div>
             <LocalizationProvider
@@ -272,7 +274,7 @@ export default function BookForm({
                   </>
                 }
                 format="yyyy年MM月dd日 HH時mm分"
-                value={getValues("expireAt")}
+                value={expireAt}
                 onChange={handleExpireAtChange}
               />
             </LocalizationProvider>

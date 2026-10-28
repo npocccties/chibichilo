@@ -1,16 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ReplayIcon from "@mui/icons-material/Replay";
-import { SeekButton } from "@videojs/react";
+import { SeekButton, useMedia } from "@videojs/react";
 import { SEEK_BUTTON_SECONDS } from "$utils/video/seekSeconds";
+import { usePlayerTrackerAtom } from "$store/playerTracker";
 
 function SeekControl({ seconds }: { seconds: number }) {
   const backward = seconds < 0;
+  const media = useMedia();
+  const tracker = usePlayerTrackerAtom();
+  const handleClick = () => {
+    if (tracker && tracker.player === media) tracker.seekButton(seconds);
+  };
 
   return (
     <SeekButton
       seconds={seconds}
       className="media-button chibichilo-seek-button"
+      onClick={handleClick}
     >
       <ReplayIcon
         className={

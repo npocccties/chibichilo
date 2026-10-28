@@ -29,6 +29,10 @@ const containerSx: SxProps<Theme> = {
     width: "100%",
     height: "100%",
   },
+  // iframe がクリック・タップを吸収するとスキンのジェスチャー（再生/停止、コントロール表示）が働かない
+  "& iframe": {
+    pointerEvents: "none",
+  },
   // HLS ネイティブ <track> も v8 デフォルト見た目に寄せる
   "& video::cue": {
     color: "rgba(255, 255, 255, 1)",

@@ -162,6 +162,7 @@ const SectionTopDropZone = styled("div")({
   left: 0,
   right: 0,
   height: TOP_INSERT_MARGIN,
+  pointerEvents: "none",
 });
 
 function SectionTopDroppable({ section }: { section: SectionSchema }) {
