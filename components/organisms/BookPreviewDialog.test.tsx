@@ -1,7 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-// @ts-expect-error: Ignored because there is no type definition.
-import { renderToString } from "react-dom/server"; // 標準モジュールを使用
+import { renderToString } from "react-dom/server";
 import BookPreviewDialog from "./BookPreviewDialog";
 import { useSessionAtom, useLtiContextAtom } from "$store/session";
 import type { BookSchema } from "$server/models/book";

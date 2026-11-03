@@ -46,7 +46,7 @@ async function findClient(clientId: string, redirectUris?: string[]) {
     },
     clientAuth
   );
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   useIdTokenResponseType(config);
 
   if (process.env.NODE_ENV !== "production") {

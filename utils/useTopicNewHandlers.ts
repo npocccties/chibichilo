@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { BookSchema } from "$server/models/book";
 import type { TopicSchema } from "$server/models/topic";
 import type { ResourceProps } from "$server/models/resource";
@@ -19,7 +19,7 @@ function useTopicNewHandlers(
   book?: BookSchema,
   targetTopic?: TopicSchema
 ) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { handleAuthorsUpdate, handleAuthorSubmit } = useAuthorsHandler();
   const bookEditQuery = useMemo(
     () => ({
@@ -74,14 +74,10 @@ function useTopicNewHandlers(
           if (targetTopic) await replaceTopicInBook(book, targetTopic, topic);
           else await addTopicToBook(book, topic);
         }
-        await router.replace(
-          {
-            pathname: "./edit",
-            query: { ...bookEditQuery, topicId: topic.id },
-          },
-          undefined,
-          { shallow: true }
-        );
+        await router.replace({
+          pathname: "./edit",
+          query: { ...bookEditQuery, topicId: topic.id },
+        });
         return back();
       } catch (e) {
         const response = e as Response;
@@ -89,7 +85,7 @@ function useTopicNewHandlers(
         const statusText = response.statusText;
         try {
           setSubmitResult((await response.json()).message);
-        } catch (e) {
+        } catch {
           setSubmitResult(`${status} ${statusText}`);
         }
         return undefined;

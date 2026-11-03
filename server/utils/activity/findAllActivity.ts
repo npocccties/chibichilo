@@ -48,7 +48,7 @@ async function findLtiMembers(
 
   const bookActivityScope = { bookId: { in: bookIds } };
   const activityScope =
-    currentLtiContextOnly ?? true
+    (currentLtiContextOnly ?? true)
       ? {
           ltiConsumerId: consumerId,
           ltiContextId: contextId,

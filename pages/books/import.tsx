@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { ContentSchema } from "$server/models/content";
 import type {
   BooksImportParams,
@@ -9,14 +9,14 @@ import BooksImport from "$templates/BooksImport";
 import Book from "$templates/Book";
 import BookPreviewDialog from "$organisms/BookPreviewDialog";
 import importBooks from "$utils/importBooks";
-import { pagesPath } from "$utils/$path";
+import { contextUrl, paths } from "$utils/routes";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import useDialogProps from "$utils/useDialogProps";
 
 export type Query = { context?: "books" };
 
 function Import({ context }: Query) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { handleAuthorSubmit } = useAuthorsHandler();
   const [importResult, setImportResult] = useState<BooksImportResult>({});
   const {
@@ -28,9 +28,9 @@ function Import({ context }: Query) {
   const back = () => {
     switch (context) {
       case "books":
-        return router.push(pagesPath[context].$url());
+        return router.push(contextUrl(context));
       default:
-        return router.push(pagesPath.books.$url());
+        return router.push(paths.books);
     }
   };
   const handleSubmit = async (props: BooksImportParams) => {
@@ -64,7 +64,7 @@ function Import({ context }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const { context }: Pick<Query, "context"> = router.query;
   return <Import context={context} />;
 }

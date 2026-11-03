@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import BookNew from "$templates/BookNew";
 import useBookNewHandlers from "$utils/useBookNewHandlers";
 import { useTopics } from "$utils/topic";
@@ -16,7 +16,7 @@ function New({ context, topics: topicIds }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const { context, topics }: Pick<Query, "context" | "topics"> = router.query;
 
   return <New context={context} topics={topics} />;

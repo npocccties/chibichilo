@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import MuiTreeItem from "@mui/lab/TreeItem";
+import { TreeItem as MuiTreeItem } from "@mui/x-tree-view/TreeItem";
 
 type Props = ComponentProps<typeof MuiTreeItem>;
 
