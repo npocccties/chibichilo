@@ -92,12 +92,11 @@ export class PlayerTracker extends (EventEmitter as {
   }
 
   private intoMedia(player: VideoMedia) {
-    player.addEventListener("timeupdate", () => {
-      this.currentTime = player.currentTime ?? NaN;
-    });
-
     for (const event of basicEventsMap) {
-      player.addEventListener(event, () => this.emit(event, this.stats));
+      player.addEventListener(event, () => {
+        this.currentTime = player.currentTime ?? NaN;
+        this.emit(event, this.stats);
+      });
     }
 
     player.addEventListener("play", () => {

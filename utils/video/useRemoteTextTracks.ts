@@ -239,7 +239,12 @@ export function useRemoteTextTracks(tracks: VideoJsTextTrackList | undefined): {
       window.clearInterval(disableTimer);
       setLoadedTracks([]);
 
-      engine?.removeEventListener?.("onApiChange", onProviderApiChange);
+      try {
+        engine?.removeEventListener?.("onApiChange", onProviderApiChange);
+      } catch {
+        // React の ref 解除で iframe が先に破棄されると YouTube API は例外を投げる。
+        // textTracks の復元と字幕ホストの削除は引き続き実行する。
+      }
       media.removeEventListener("play", onProviderApiChange);
 
       host.textTracks.removeEventListener("change", onHostTrackListEvent);

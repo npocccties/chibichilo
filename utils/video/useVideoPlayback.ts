@@ -72,7 +72,17 @@ function useMediaEvents(
   useEffect(() => {
     if (!media) return;
 
-    const handleEnded = () => handlersRef.current.onEnded?.();
+    let active = true;
+    let endedPending = false;
+    const handleEnded = () => {
+      if (endedPending) return;
+      endedPending = true;
+      // 次のトピックへの遷移で tracker が切り替わる前に終了ログを処理する。
+      queueMicrotask(() => {
+        endedPending = false;
+        if (active) handlersRef.current.onEnded?.();
+      });
+    };
     const handleDurationChange = () => {
       const duration = media.duration;
       if (Number.isFinite(duration) && duration > 0) {
@@ -90,6 +100,7 @@ function useMediaEvents(
     media.addEventListener("durationchange", handleDurationChange);
     media.addEventListener("timeupdate", handleTimeUpdate);
     return () => {
+      active = false;
       media.removeEventListener("ended", handleEnded);
       media.removeEventListener("durationchange", handleDurationChange);
       media.removeEventListener("timeupdate", handleTimeUpdate);
