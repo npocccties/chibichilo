@@ -3,6 +3,7 @@ import type { SxProps } from "@mui/system";
 import type { VideoInstance } from "$types/videoInstance";
 import type { VideoMedia } from "$utils/video/media";
 import { useVideoPlayback } from "$utils/video/useVideoPlayback";
+import { useYouTubeBlockedPlaybackFix } from "$utils/video/useYouTubeBlockedPlaybackFix";
 import Box from "@mui/material/Box";
 import type { VideoMediaKind } from "./Video";
 
@@ -47,6 +48,7 @@ export default function VideoPlayer({
     [videoInstance]
   );
 
+  useYouTubeBlockedPlaybackFix(media, videoInstance.type === "youtube");
   useVideoPlayback({
     media,
     videoInstance,
