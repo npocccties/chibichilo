@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { I18nProvider } from "@videojs/react/i18n";
@@ -11,6 +11,7 @@ import type { VideoMedia } from "$utils/video/media";
 import { useMediaBind } from "$utils/video/useMediaBind";
 import CaptionsLanguageAnnouncer from "./CaptionsLanguageAnnouncer";
 import CaptionsMenu from "./CaptionsMenu";
+import FullWindowButton, { FALLBACK_ATTR } from "./FullWindowButton";
 import PlaybackRateMenu from "./PlaybackRateMenu";
 import RemoteSubtitles from "./RemoteSubtitles";
 import SeekButtons from "./SeekButtons";
@@ -33,6 +34,12 @@ const containerSx: SxProps<Theme> = {
   "& iframe": {
     pointerEvents: "none",
   },
+  // タッチ端末では YouTube 側の再生/停止ボタンを使えるよう、タップを iframe へ通す
+  "@media (hover: none) and (pointer: coarse)": {
+    "& .chibichilo-youtube iframe": {
+      pointerEvents: "auto",
+    },
+  },
   // HLS ネイティブ <track> も v8 デフォルト見た目に寄せる
   "& video::cue": {
     color: "rgba(255, 255, 255, 1)",
@@ -53,8 +60,24 @@ const containerSx: SxProps<Theme> = {
   "& .chibichilo-seek-button-icon-forward": {
     scale: "-1 1",
   },
-  "& .chibichilo-captions-slot, & .chibichilo-playback-rate-slot": {
-    display: "contents",
+  "& .chibichilo-captions-slot, & .chibichilo-playback-rate-slot, & .chibichilo-full-window-slot":
+    {
+      display: "contents",
+    },
+  [`& [${FALLBACK_ATTR}] .media-fullscreen-button`]: {
+    display: "none",
+  },
+  "&.chibichilo-full-window": {
+    position: "fixed",
+    inset: 0,
+    zIndex: "modal",
+    width: "auto",
+    aspectRatio: "auto",
+    backgroundColor: "black",
+    "& .video-skin": {
+      width: "100%",
+      height: "100%",
+    },
   },
   // 0.75x / 1.75x でも窮屈にならないよう小さめ・固定幅で統一
   "& .chibichilo-playback-rate-button": {
@@ -149,19 +172,31 @@ function MediaBinder({
 /** Video.js プレイヤー本体 */
 function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
   const needsRemoteSubtitles = kind === "youtube" || kind === "vimeo";
+  const [fullWindow, setFullWindow] = useState(false);
 
   return (
-    <Box sx={containerSx}>
+    <Box
+      sx={containerSx}
+      className={fullWindow ? "chibichilo-full-window" : undefined}
+    >
       <I18nProvider locale="ja">
         <VideoJsPlayer poster={poster}>
           <MediaBinder onMediaChange={onMediaChange} />
-          <VideoSkin>
+          <VideoSkin
+            className={kind === "youtube" ? "chibichilo-youtube" : undefined}
+          >
             <ProviderMedia kind={kind} src={src} tracks={tracks} />
             {needsRemoteSubtitles && <RemoteSubtitles tracks={tracks} />}
             <CaptionsLanguageAnnouncer />
             <SeekButtons />
             <CaptionsMenu />
             <PlaybackRateMenu />
+            {kind !== "hls" && (
+              <FullWindowButton
+                active={fullWindow}
+                onToggle={() => setFullWindow((active) => !active)}
+              />
+            )}
           </VideoSkin>
         </VideoJsPlayer>
       </I18nProvider>
