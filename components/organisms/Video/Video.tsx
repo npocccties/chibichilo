@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { usePlayer } from "@videojs/react";
 import { I18nProvider } from "@videojs/react/i18n";
 import { VideoPlayer as VideoJsPlayer, VideoSkin } from "@videojs/react/video";
 import { HlsJsVideo } from "@videojs/react/media/hlsjs-video";
@@ -34,11 +36,29 @@ const containerSx: SxProps<Theme> = {
   "& iframe": {
     pointerEvents: "none",
   },
-  // タッチ端末では YouTube 側の再生/停止ボタンを使えるよう、タップを iframe へ通す
+  "& .chibichilo-youtube-tap-shield": {
+    display: "none",
+    position: "absolute",
+    inset: 0,
+    // 中央だけ穴を開け、YouTube が中央に出す停止ボタンへのタップを iframe へ通す
+    clipPath: `polygon(
+      0 0, 0 100%,
+      calc(50% - 2.5rem) 100%, calc(50% - 2.5rem) calc(50% - 2.5rem),
+      calc(50% + 2.5rem) calc(50% - 2.5rem), calc(50% + 2.5rem) calc(50% + 2.5rem),
+      calc(50% - 2.5rem) calc(50% + 2.5rem), calc(50% - 2.5rem) 100%,
+      100% 100%, 100% 0
+    )`,
+  },
+  // タッチ端末では YouTube 側のボタン（自動再生ブロック時の再生ボタン、再生直後の停止ボタン）を押せるよう、タップを iframe へ通す。
+  // 再生中は中央以外を覆い、タップでコントロールバーを出せるようにする
   "@media (hover: none) and (pointer: coarse)": {
     "& .chibichilo-youtube iframe": {
       pointerEvents: "auto",
     },
+    "& .chibichilo-youtube:not(.chibichilo-youtube-paused) .chibichilo-youtube-tap-shield":
+      {
+        display: "block",
+      },
   },
   // HLS ネイティブ <track> も v8 デフォルト見た目に寄せる
   "& video::cue": {
@@ -169,6 +189,30 @@ function MediaBinder({
   return null;
 }
 
+function Skin({
+  kind,
+  children,
+}: {
+  kind: VideoMediaKind;
+  children: ReactNode;
+}) {
+  const paused = usePlayer((state) => state.paused !== false);
+
+  if (kind !== "youtube") return <VideoSkin>{children}</VideoSkin>;
+
+  return (
+    <VideoSkin
+      className={
+        paused
+          ? "chibichilo-youtube chibichilo-youtube-paused"
+          : "chibichilo-youtube"
+      }
+    >
+      {children}
+    </VideoSkin>
+  );
+}
+
 /** Video.js プレイヤー本体 */
 function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
   const needsRemoteSubtitles = kind === "youtube" || kind === "vimeo";
@@ -182,10 +226,11 @@ function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
       <I18nProvider locale="ja">
         <VideoJsPlayer poster={poster}>
           <MediaBinder onMediaChange={onMediaChange} />
-          <VideoSkin
-            className={kind === "youtube" ? "chibichilo-youtube" : undefined}
-          >
+          <Skin kind={kind}>
             <ProviderMedia kind={kind} src={src} tracks={tracks} />
+            {kind === "youtube" && (
+              <div className="chibichilo-youtube-tap-shield" />
+            )}
             {needsRemoteSubtitles && <RemoteSubtitles tracks={tracks} />}
             <CaptionsLanguageAnnouncer />
             <SeekButtons />
@@ -197,7 +242,7 @@ function Video({ src, kind, poster, tracks, onMediaChange }: Props) {
                 onToggle={() => setFullWindow((active) => !active)}
               />
             )}
-          </VideoSkin>
+          </Skin>
         </VideoJsPlayer>
       </I18nProvider>
     </Box>
