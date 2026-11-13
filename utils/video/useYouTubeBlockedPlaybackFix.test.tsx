@@ -26,6 +26,17 @@ class FakeAdapter extends EventTarget {
   #playFired = false;
   constructor() {
     super();
+    this.#bind();
+  }
+  /** iframe の作り直し。古いプレイヤーは破棄される */
+  recreate() {
+    this.engine = new FakeYouTubePlayer();
+    this.#paused = true;
+    this.#playFired = false;
+    this.#bind();
+    this.dispatchEvent(new Event("loadstart"));
+  }
+  #bind() {
     this.engine.addEventListener("onStateChange", ({ data }) => {
       if ((data === 1 || data === 3) && !this.#playFired) {
         this.#playFired = true;
@@ -90,6 +101,31 @@ describe("useYouTubeBlockedPlaybackFix", () => {
     adapter.engine.emit(5);
     expect(media.paused).toBe(true);
     expect(events).toEqual([]);
+  });
+
+  it("unmounts cleanly even if YouTube was destroyed before cleanup", () => {
+    const { adapter, media } = setup();
+    adapter.engine.emit(3);
+    adapter.engine.emit(-1);
+    vi.spyOn(adapter.engine, "removeEventListener").mockImplementation(() => {
+      throw new TypeError("Cannot read properties of null (reading 'src')");
+    });
+    expect(() => act(() => root.unmount())).not.toThrow();
+    root = createRoot(container);
+    expect(Object.hasOwn(media, "paused")).toBe(false);
+  });
+
+  it("follows a recreated player even if the old one was destroyed", () => {
+    const { adapter, media, events } = setup();
+    const destroyed = adapter.engine;
+    vi.spyOn(destroyed, "removeEventListener").mockImplementation(() => {
+      throw new TypeError("Cannot read properties of null (reading 'src')");
+    });
+    expect(() => adapter.recreate()).not.toThrow();
+    adapter.engine.emit(3);
+    adapter.engine.emit(-1);
+    expect(media.paused).toBe(true);
+    expect(events).toEqual(["play", "pause"]);
   });
 
   it("restores the adapter's paused on unmount", () => {

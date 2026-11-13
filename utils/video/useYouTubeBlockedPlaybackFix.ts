@@ -68,10 +68,17 @@ export function useYouTubeBlockedPlaybackFix(
     };
 
     let engine: YouTubePlayerLike | null = null;
+    const detach = () => {
+      try {
+        engine?.removeEventListener("onStateChange", onStateChange);
+      } catch {
+        // 破棄済みのプレイヤーでは iframe が null になり、YouTube API が例外を投げる
+      }
+    };
     const attach = () => {
       const next = (media as YouTubeMedia).engine ?? null;
       if (next === engine) return;
-      engine?.removeEventListener("onStateChange", onStateChange);
+      detach();
       engine = next;
       blocked = false;
       engine?.addEventListener("onStateChange", onStateChange);
@@ -82,7 +89,7 @@ export function useYouTubeBlockedPlaybackFix(
 
     return () => {
       attachEvents.forEach((type) => media.removeEventListener(type, attach));
-      engine?.removeEventListener("onStateChange", onStateChange);
+      detach();
       delete (media as { paused?: boolean }).paused;
     };
   }, [media, enabled]);
