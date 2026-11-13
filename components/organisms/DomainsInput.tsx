@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import gray from "theme/colors/gray";
 import DomainChip from "$atoms/DomainChip";
 import IconButton from "$atoms/IconButton";
@@ -14,12 +14,10 @@ import Input from "$atoms/Input";
 import InputLabel from "$atoms/InputLabel";
 import { remove } from "$utils/reorder";
 
-const useStyles = makeStyles((theme) => ({
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
-  },
-}));
+const labelDescriptionSx: SxProps<Theme> = {
+  ml: 0.75,
+  color: gray[600],
+};
 
 const Domains = styled("div")(({ theme }) => ({
   marginBottom: theme.spacing(1.5),
@@ -48,7 +46,6 @@ export default function DomainsInput({
   onDomainsUpdate,
   onDomainSubmit,
 }: Props) {
-  const classes = useStyles();
   const handleDomainRemove = (delDomain: string) => () => {
     const index = domains.findIndex((domain) => domain === delDomain);
     onDomainsUpdate(remove(domains, index));
@@ -69,11 +66,7 @@ export default function DomainsInput({
       <InputLabel htmlFor={id} sx={{ mb: 1 }}>
         公開範囲
         <br />
-        <Typography
-          className={classes.labelDescription}
-          variant="caption"
-          component="span"
-        >
+        <Typography sx={labelDescriptionSx} variant="caption" component="span">
           * 指定しない場合は制限なしになります
         </Typography>
       </InputLabel>

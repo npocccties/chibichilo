@@ -1,16 +1,16 @@
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { Query as BookEditQuery } from "$pages/book/edit";
 import Placeholder from "$templates/Placeholder";
-import { pagesPath } from "$utils/$path";
+import { bookImportUrl } from "$utils/routes";
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   useEffect(() => {
     const bookId = Number(router.query.bookId);
     const { context }: Pick<BookEditQuery, "context"> = router.query;
     const query = { bookId, ...(context && { context }) };
-    void router.replace(pagesPath.book.import.$url({ query }));
+    void router.replace(bookImportUrl(query));
   }, [router]);
   return <Placeholder />;
 }

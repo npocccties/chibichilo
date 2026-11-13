@@ -1,7 +1,6 @@
 import Emoji from "$atoms/Emoji";
 import type { BookmarkSchema } from "$server/models/bookmark";
 import { useBookmarksByTopicId } from "$utils/bookmark/useBookmarks";
-import { css } from "@emotion/css";
 import { Box } from "@mui/material";
 import { useMemo } from "react";
 
@@ -9,10 +8,6 @@ type Props = {
   topicId: number;
   bookId?: number | undefined;
 };
-
-const text = css({
-  fontSize: "12px",
-});
 
 export default function TagCount({ topicId, bookId }: Props) {
   const { bookmarks } = useBookmarksByTopicId({
@@ -69,7 +64,9 @@ export default function TagCount({ topicId, bookId }: Props) {
           }}
         >
           <Emoji emoji={tag.emoji} />
-          <p className={text}>{tag.count}</p>
+          <Box component="p" sx={{ fontSize: "12px" }}>
+            {tag.count}
+          </Box>
         </Box>
       ))}
     </Box>

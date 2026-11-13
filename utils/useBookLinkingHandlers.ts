@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import { useAtomValue, useSetAtom } from "jotai";
 import type { ContentSchema } from "$server/models/content";
 import type { BookSchema } from "$server/models/book";
@@ -16,7 +16,7 @@ import {
   updateLtiResourceLink,
 } from "$utils/ltiResourceLink";
 import { revalidateContents } from "./useContents";
-import { pagesPath } from "./$path";
+import { bookLinkingUrl } from "$utils/routes";
 import type { TopicSchema } from "$server/models/topic";
 
 function getLtiResourceLink(
@@ -42,7 +42,7 @@ function getLtiResourceLink(
 }
 
 function useBookLinkingHandlers() {
-  const router = useRouter();
+  const router = useAppRouter();
   const ltiContext = useLtiContextAtom();
   const baseLtiContext = useAtomValue(baseLtiContextAtom);
   const setBaseLtiContext = useSetAtom(updateBaseLtiContextAtom);
@@ -60,9 +60,7 @@ function useBookLinkingHandlers() {
       topicId?: TopicSchema["id"]
     ) => {
       if (ltiContext?.ltiMessageType === "LtiDeepLinkingRequest") {
-        await router.push(
-          pagesPath.book.linking.$url({ query: { bookId, topicId } })
-        );
+        await router.push(bookLinkingUrl({ bookId, topicId }));
         return;
       }
 

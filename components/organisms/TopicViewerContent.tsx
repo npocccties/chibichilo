@@ -52,9 +52,11 @@ export default function TopicViewerContent({
 
   useLoggerInit(topic.id);
 
+  const hasVideoResource = isVideoResource(topic.resource);
+
   return (
     <>
-      {isVideoResource(topic.resource) && (
+      {hasVideoResource && (
         <Video
           className={sticky}
           // NOTE:親要素の領域幅いっぱいに表示するため、マイナスマージンを設定している

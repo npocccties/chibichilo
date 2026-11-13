@@ -1,23 +1,14 @@
 export default { title: "atoms/Item" };
 
 import Item from "./Item";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    "& > :not(:last-child)": {
-      marginRight: theme.spacing(1.75),
-    },
-  },
-}));
+import Box from "@mui/material/Box";
 
 export const Default = () => {
-  const classes = useStyles();
   return (
-    <div className={classes.margin}>
+    <Box sx={{ "& > :not(:last-child)": { mr: 1.75 } }}>
       <Item itemKey="作成日" value="2020.11.19" />
       <Item itemKey="更新日" value="2020.11.19" />
       <Item itemKey="著者" value="山田太郎" />
-    </div>
+    </Box>
   );
 };
