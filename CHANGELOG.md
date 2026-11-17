@@ -13,12 +13,15 @@ All notable changes to this project will be documented in this file.
 - Stored AGS line item URL in LTI resource link for grade submission without active LTI session (OU)
 - Topic-level direct access and LTI Deep Linking support (NII)
 - Configurable access control for learning analytics dashboard (NII)
+- Per-book on/off setting for tag management viewing, shown in the book list (OU)
+- Visual distinction between books opened from tag management and from a course (OU)
 
 ### Changed
 
 - Pass LTI context via client-side session storage when accessing from tag management screen (OU)
 - Grade submission supports broadcasting to multiple LTI contexts when accessing from tag management screen (OU)
 - Improved player settings retention across topic switches (NII)
+- LTI grade submission on the regular delivery screen now supports multiple tabs (OU)
 
 ## [2025]
 
