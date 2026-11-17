@@ -6,7 +6,7 @@
 # downloads.bitnami.com/files/stacksmith with SHA-256 verification.
 #
 # Source: https://github.com/bitnami/containers/tree/main/bitnami/moodle/5.3/debian-12
-# Commit: 6d240f83a943eac9879af6e289cd51d5111caeb1
+# Commit: 646ff60e45ccc895d66d9d5efe830b359839c712
 #
 # To bump versions, update BITNAMI_CONTAINERS_REF, COMPONENTS, and the
 # display LABEL / APP_VERSION. Mismatched COMPONENTS fail sha256sum -c.
