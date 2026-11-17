@@ -1,26 +1,25 @@
 import type { ReactNode } from "react";
-import { css } from "@emotion/css";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import type { BookmarkSchema, BookmarkTagMenu } from "$server/models/bookmark";
 import type { BookSchema } from "$server/models/book";
 import Emoji from "$atoms/Emoji";
 
-const listClass = css({
+const listSx = {
   listStyle: "none",
-});
+};
 
-const titleClass = css({
+const titleSx = {
   fontSize: "20px",
   margin: "0 0 8px 0",
-});
+};
 
-const ulClass = css({
+const ulSx = {
   padding: 0,
   display: "flex",
   justifyContent: "center",
-});
+};
 
-const tagListClass = css({
+const tagListSx = {
   listStyle: "none",
   marginBottom: "8px",
   marginLeft: "8px",
@@ -28,9 +27,9 @@ const tagListClass = css({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-});
+};
 
-const tagClass = css({
+const tagSx = {
   listStyle: "none",
   display: "flex",
   justifyContent: "flex-start",
@@ -44,14 +43,18 @@ const tagClass = css({
   "> :first-child": {
     marginRight: "4px",
   },
-});
+};
 
-const text = css({
+const textSx = {
   fontSize: "12px",
-});
+};
 
 function List(props: { children: ReactNode }) {
-  return <ul>{props.children}</ul>;
+  return (
+    <Box component="ul" sx={{ padding: 0, margin: 0 }}>
+      {props.children}
+    </Box>
+  );
 }
 
 function ListItem(props: {
@@ -61,26 +64,32 @@ function ListItem(props: {
   bookmarkTagMenu: BookmarkTagMenu;
 }) {
   return (
-    <li className={listClass}>
-      <h3 className={titleClass}>{props.name}</h3>
-      <ul className={ulClass}>
+    <Box component="li" sx={listSx}>
+      <Box component="h3" sx={titleSx}>
+        {props.name}
+      </Box>
+      <Box component="ul" sx={ulSx}>
         {props.bookmarkTagMenu.map((t) => {
           const count = props.bookmarks.filter(
             (b) => b.tagId === t.id && b.bookId === props.bookId
           ).length;
 
           return (
-            <li key={t.id} className={tagListClass}>
-              <div className={tagClass}>
+            <Box key={t.id} component="li" sx={tagListSx}>
+              <Box component="div" sx={tagSx}>
                 <Emoji emoji={t.emoji} />
-                <p className={text}>{count}</p>
-              </div>
-              <p className={text}>{t.label}</p>
-            </li>
+                <Box component="p" sx={textSx}>
+                  {count}
+                </Box>
+              </Box>
+              <Box component="p" sx={textSx}>
+                {t.label}
+              </Box>
+            </Box>
           );
         })}
-      </ul>
-    </li>
+      </Box>
+    </Box>
   );
 }
 

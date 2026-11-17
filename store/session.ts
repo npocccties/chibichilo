@@ -171,43 +171,43 @@ export const updateOverrideLtiContextAtom = atom<
       ltiConsumerId:
         update.ltiConsumerId !== undefined
           ? update.ltiConsumerId
-          : current?.ltiConsumerId ?? null,
+          : (current?.ltiConsumerId ?? null),
       ltiContextId:
         update.ltiContextId !== undefined
           ? update.ltiContextId
-          : current?.ltiContextId ?? null,
+          : (current?.ltiContextId ?? null),
       ltiContext:
         update.ltiContext !== undefined
           ? update.ltiContext
-          : current?.ltiContext ?? null,
+          : (current?.ltiContext ?? null),
       ltiTargetLinkUri:
         update.ltiTargetLinkUri !== undefined
           ? update.ltiTargetLinkUri
-          : current?.ltiTargetLinkUri ?? null,
+          : (current?.ltiTargetLinkUri ?? null),
       ltiResourceLink:
         update.ltiResourceLink !== undefined
           ? update.ltiResourceLink
-          : current?.ltiResourceLink ?? null,
+          : (current?.ltiResourceLink ?? null),
       ltiDlSettings:
         update.ltiDlSettings !== undefined
           ? update.ltiDlSettings
-          : current?.ltiDlSettings ?? null,
+          : (current?.ltiDlSettings ?? null),
       ltiMessageType:
         update.ltiMessageType !== undefined
           ? update.ltiMessageType
-          : current?.ltiMessageType ?? null,
+          : (current?.ltiMessageType ?? null),
       ltiLaunchPresentation:
         update.ltiLaunchPresentation !== undefined
           ? update.ltiLaunchPresentation
-          : current?.ltiLaunchPresentation ?? null,
+          : (current?.ltiLaunchPresentation ?? null),
       ltiResourceLinkRequest:
         update.ltiResourceLinkRequest !== undefined
           ? update.ltiResourceLinkRequest
-          : current?.ltiResourceLinkRequest ?? null,
+          : (current?.ltiResourceLinkRequest ?? null),
       pathname:
         update.pathname !== undefined
           ? update.pathname
-          : current?.pathname ?? null,
+          : (current?.pathname ?? null),
     });
   }
 });

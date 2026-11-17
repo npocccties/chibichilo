@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type {
   BooksImportParams,
   BooksImportResult,
@@ -11,7 +11,7 @@ import BookNotFoundProblem from "$templates/BookNotFoundProblem";
 export type Query = { bookId?: number };
 
 function Import({ bookId }: Query) {
-  const router = useRouter();
+  const router = useAppRouter();
   const [importResult, setImportResult] = useState<BooksImportResult>();
   const back = () => {
     return router.back();
@@ -47,7 +47,7 @@ function Import({ bookId }: Query) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
 
   if (!Number.isFinite(bookId)) return <BookNotFoundProblem />;

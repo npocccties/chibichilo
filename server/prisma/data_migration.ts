@@ -362,7 +362,7 @@ async function main() {
     exitCode = 0;
   } catch (error) {
     console.error(
-      error instanceof Error ? error.stack ?? error.message : error
+      error instanceof Error ? (error.stack ?? error.message) : error
     );
   } finally {
     await prisma.$disconnect();

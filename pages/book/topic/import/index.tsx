@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import TopicImport from "$templates/TopicImport";
 import Placeholder from "$templates/Placeholder";
 import BookNotFoundProblem from "$templates/BookNotFoundProblem";
@@ -7,7 +7,7 @@ import { updateBook, useBook } from "$utils/book";
 import useTopics from "$utils/useTopics";
 import type { TopicSchema } from "$server/models/topic";
 import type { Query as BookEditQuery } from "$pages/book/edit";
-import { pagesPath } from "$utils/$path";
+import { bookEditUrl, bookTopicImportEditUrl } from "$utils/routes";
 
 export type Query = BookEditQuery;
 
@@ -15,14 +15,10 @@ function Import({ bookId, context }: BookEditQuery) {
   const { isContentEditable } = useSessionAtom();
   const { book, error } = useBook(bookId, isContentEditable);
   const topicsProps = useTopics();
-  const router = useRouter();
+  const router = useAppRouter();
   const bookEditQuery = { bookId, ...(context && { context }) };
   function back() {
-    return router.push(
-      pagesPath.book.edit.$url({
-        query: bookEditQuery,
-      })
-    );
+    return router.push(bookEditUrl(bookEditQuery));
   }
   async function handleSubmit(topics: TopicSchema[]) {
     if (!book) return;
@@ -40,9 +36,7 @@ function Import({ bookId, context }: BookEditQuery) {
   }
   function onContentEditClick(topic: Pick<TopicSchema, "id" | "authors">) {
     return router.push(
-      pagesPath.book.topic.import.edit.$url({
-        query: { ...bookEditQuery, topicId: topic.id },
-      })
+      bookTopicImportEditUrl({ ...bookEditQuery, topicId: topic.id })
     );
   }
   const handlers = {
@@ -59,7 +53,7 @@ function Import({ bookId, context }: BookEditQuery) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const bookId = Number(router.query.bookId);
   const { context }: Pick<Query, "context"> = router.query;
 

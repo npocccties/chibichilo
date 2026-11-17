@@ -13,7 +13,7 @@ type Props = {
 };
 
 const Chip = styled(MuiChip)({
-  borderRadius: 4,
+  borderRadius: "4px",
   maxWidth: "100%",
 });
 

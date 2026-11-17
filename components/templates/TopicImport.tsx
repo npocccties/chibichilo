@@ -97,6 +97,7 @@ export default function TopicImport(props: Props) {
               isContentEditable(content) ? onContentEditClick : undefined
             }
             onKeywordClick={searchProps.onKeywordClick}
+            onRelatedBookClick={searchProps.onRelatedBookClick}
           />
         ))}
         {loading &&

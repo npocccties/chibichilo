@@ -1,4 +1,6 @@
-import { Box, Button, Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import SectionsEdit from "$organisms/SectionsEdit";
@@ -12,7 +14,13 @@ import { useLtiContextAtom } from "$store/session";
 import useDialogProps from "$utils/useDialogProps";
 import ReleaseForm from "$organisms/ReleaseForm";
 import Placeholder from "./Placeholder";
-import { useStyles, type Props } from "./BookEdit";
+import {
+  containerSx,
+  titleSx,
+  contentSx,
+  subtitleSx,
+  type Props,
+} from "./BookEdit";
 import useReleaseBooks from "$utils/useReleaseBooks";
 import ReleaseItemList from "$organisms/ReleaseItemList";
 import MetainfoForm from "$organisms/MetainfoForm";
@@ -39,7 +47,6 @@ export default function BookEditReleased({
   onContextAccessUpdate,
 }: Props) {
   const ltiContext = useLtiContextAtom();
-  const classes = useStyles();
   const confirm = useConfirm();
   const {
     data: previewTopic,
@@ -75,54 +82,56 @@ export default function BookEditReleased({
   const editable = isContentEditable?.(book);
 
   return (
-    <Container className={classes.container} maxWidth="md">
+    <Container sx={containerSx} maxWidth="md">
       <BackButton onClick={onCancel}>戻る</BackButton>
-      <Typography className={classes.title} variant="h4">
+      <Typography className="book-edit-title" sx={titleSx} variant="h4">
         ブック「{book.name}」の編集
       </Typography>
-      <Typography className={classes.subtitle} variant="h5">
+      <Typography sx={subtitleSx} variant="h5">
         リリース
       </Typography>
       <ReleaseForm
         release={book.release}
         onSubmit={editable ? onReleaseUpdate : undefined}
       />
-      <Typography className={classes.subtitle} variant="h5">
+      <Typography sx={subtitleSx} variant="h5">
         トピック
       </Typography>
-      <SectionsEdit
-        className={classes.content}
-        sections={book.sections}
-        onTopicPreviewClick={handleTopicPreviewClick}
-        onTopicEditClick={onTopicEditClick}
-        onTopicImportClick={onTopicImportClick}
-        onTopicNewClick={onTopicNewClick}
-        onBookImportClick={onBookImportClick}
-        onSectionsUpdate={onSectionsUpdate}
-        isContentEditable={isContentEditable}
-        noedit={true}
-      />
-      <Typography className={classes.subtitle} variant="h5">
+      <Box className="book-edit-content" sx={contentSx}>
+        <SectionsEdit
+          sections={book.sections}
+          onTopicPreviewClick={handleTopicPreviewClick}
+          onTopicEditClick={onTopicEditClick}
+          onTopicImportClick={onTopicImportClick}
+          onTopicNewClick={onTopicNewClick}
+          onBookImportClick={onBookImportClick}
+          onSectionsUpdate={onSectionsUpdate}
+          isContentEditable={isContentEditable}
+          noedit={true}
+        />
+      </Box>
+      <Typography sx={subtitleSx} variant="h5">
         基本情報
       </Typography>
-      <BookForm
-        className={classes.content}
-        book={book}
-        linked={linked}
-        hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
-        variant={editable ? "update" : "other"}
-        onSubmit={onSubmit}
-        onAuthorsUpdate={onAuthorsUpdate}
-        onAuthorSubmit={onAuthorSubmit}
-      />
+      <Box className="book-edit-content" sx={contentSx}>
+        <BookForm
+          book={book}
+          linked={linked}
+          hasLtiTargetLinkUri={Boolean(ltiContext?.ltiTargetLinkUri)}
+          variant={editable ? "update" : "other"}
+          onSubmit={onSubmit}
+          onAuthorsUpdate={onAuthorsUpdate}
+          onAuthorSubmit={onAuthorSubmit}
+        />
+      </Box>
       {book.ltiResourceLinks &&
         book.ltiResourceLinks.length > 0 &&
         onContextAccessUpdate && (
           <>
-            <Typography className={classes.subtitle} variant="h5">
+            <Typography sx={subtitleSx} variant="h5">
               コース別配信設定
             </Typography>
-            <Box className={classes.content}>
+            <Box className="book-edit-content" sx={contentSx}>
               <BookContextAccessEdit
                 book={book}
                 onChange={onContextAccessUpdate}
@@ -130,7 +139,7 @@ export default function BookEditReleased({
             </Box>
           </>
         )}
-      <Typography className={classes.subtitle} variant="h5">
+      <Typography sx={subtitleSx} variant="h5">
         メタ情報
       </Typography>
       <MetainfoForm
@@ -139,7 +148,7 @@ export default function BookEditReleased({
       />
       {releases && (
         <>
-          <Typography className={classes.subtitle} variant="h5">
+          <Typography sx={subtitleSx} variant="h5">
             リリース一覧
           </Typography>
           <ReleaseItemList
