@@ -1,8 +1,8 @@
-import { css } from "@emotion/css";
+import Box from "@mui/material/Box";
 import type { BookmarkSchema, TagSchema } from "$server/models/bookmark";
 import Emoji from "./Emoji";
 
-const tagClass = css({
+const tagSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -17,14 +17,14 @@ const tagClass = css({
   "> :first-child": {
     marginRight: "8px",
   },
-});
+};
 
-const text = css({
+const textSx = {
   lineHeight: "1.1",
   fontSize: "12px",
   marginRight: "8px",
   whiteSpace: "nowrap",
-});
+};
 
 type Props = {
   tag?: TagSchema;
@@ -35,14 +35,14 @@ export default function Tag({ tag, memoContent }: Props) {
   if (!tag && !memoContent) return null;
 
   return (
-    <div className={tagClass}>
+    <Box sx={tagSx}>
       <Emoji emoji={tag?.emoji || "💬"} />
-      <p className={text}>
+      <Box component="p" sx={textSx}>
         {tag?.label ||
           (memoContent && memoContent?.length > 5
             ? memoContent?.substring(0, 5) + "..."
             : memoContent)}
-      </p>
-    </div>
+      </Box>
+    </Box>
   );
 }

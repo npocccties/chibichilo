@@ -1,13 +1,6 @@
 import type { ComponentProps } from "react";
 import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(1),
-  },
-}));
 
 type Props = Pick<ComponentProps<typeof Button>, "onClick" | "className"> & {
   children: React.ReactNode;
@@ -15,7 +8,6 @@ type Props = Pick<ComponentProps<typeof Button>, "onClick" | "className"> & {
 
 export default function BackButton(props: Props) {
   const { children, onClick, className } = props;
-  const classes = useStyles();
   return (
     <Button
       size="small"
@@ -24,7 +16,7 @@ export default function BackButton(props: Props) {
       onClick={onClick}
       className={className}
     >
-      <ArrowBackIcon className={classes.icon} />
+      <ArrowBackIcon sx={{ mr: 1 }} />
       {children}
     </Button>
   );

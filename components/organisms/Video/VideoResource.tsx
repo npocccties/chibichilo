@@ -30,6 +30,7 @@ export default function VideoResource({
   thumbnailUrl,
   ...other
 }: Props) {
+  const { registerVideo } = useVideoAtom();
   const videoInstance = useMemo(() => {
     return getVideoInstance(
       { providerUrl, url, accessToken, tracks },
@@ -37,10 +38,9 @@ export default function VideoResource({
     );
   }, [providerUrl, url, accessToken, tracks, thumbnailUrl]);
 
-  const { video } = useVideoAtom();
   useEffect(() => {
-    video.set(identifier, videoInstance);
-  }, [video, identifier, videoInstance]);
+    registerVideo({ identifier, videoInstance });
+  }, [registerVideo, identifier, videoInstance]);
 
   return (
     <VideoPlayer videoInstance={videoInstance} autoplay={autoplay} {...other} />

@@ -2,40 +2,36 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { Controller, useForm } from "react-hook-form";
 import TextField from "$atoms/TextField";
 import type { ReleaseProps, ReleaseSchema } from "$server/models/book/release";
 import gray from "$theme/colors/gray";
-import useCardStyles from "styles/card";
+import card from "styles/card";
 import DescriptionList from "$atoms/DescriptionList";
 import getLocaleDateString from "$utils/getLocaleDateString";
 import InputLabel from "$atoms/InputLabel";
 import Checkbox from "@mui/material/Checkbox";
-import makeStyles from "@mui/styles/makeStyles";
 
 export type ReleaseFormProps = {
   release: ReleaseSchema;
   onSubmit?(release: ReleaseProps): void;
 };
 
-const useStyles = makeStyles((theme) => ({
-  labelDescription: {
-    marginLeft: theme.spacing(0.75),
-    color: gray[600],
-  },
-}));
+const labelDescriptionSx: SxProps<Theme> = {
+  ml: 0.75,
+  color: gray[600],
+};
 
 export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
   const { register, handleSubmit, formState, reset, control } =
     useForm<ReleaseProps>({
       values: release,
     });
-  const cardClasses = useCardStyles();
   const releasedAt = release.releasedAt
     ? getLocaleDateString(release.releasedAt, "ja")
     : "不明";
   const update = Boolean(onSubmit);
-  const classes = useStyles();
   async function submitHandler(release: ReleaseProps) {
     if (onSubmit) {
       await onSubmit(release);
@@ -44,15 +40,15 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
   }
   return (
     <Card
-      classes={cardClasses}
-      sx={
+      sx={[
+        card,
         {
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
           rowGap: 2.5,
-        } as const
-      }
+        },
+      ]}
       component="form"
       onSubmit={handleSubmit(submitHandler)}
     >
@@ -85,7 +81,7 @@ export default function ReleaseForm({ release, onSubmit }: ReleaseFormProps) {
         <InputLabel htmlFor="shared">
           ブックを共有する
           <Typography
-            className={classes.labelDescription}
+            sx={labelDescriptionSx}
             variant="caption"
             component="span"
           >

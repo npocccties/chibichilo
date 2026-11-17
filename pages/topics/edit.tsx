@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useAppRouter } from "$utils/useAppRouter";
 import type { TopicSubmitValues } from "$types/topicSubmitValues";
 import type { TopicSchema } from "$server/models/topic";
 import type { ResourceProps } from "$server/models/resource";
@@ -23,7 +23,7 @@ import {
 import { destroyVideoTrack, uploadVideoTrack } from "$utils/videoTrack";
 import useAuthorsHandler from "$utils/useAuthorsHandler";
 import { useWowzaUpload } from "$utils/wowza/useWowzaUplooad";
-import { pagesPath } from "$utils/$path";
+import { topicsEditUrl, topicsImportUrl } from "$utils/routes";
 import type { MetainfoProps } from "$server/models/metainfo";
 
 export type Query =
@@ -32,11 +32,11 @@ export type Query =
 
 type EditProps = {
   topicId: TopicSchema["id"];
-  back(): Promise<unknown>;
+  back(): void | Promise<unknown>;
 };
 
 function Edit({ topicId, back }: EditProps) {
-  const router = useRouter();
+  const router = useAppRouter();
   const topic = useTopic(topicId);
   const { addVideoTrack, deleteVideoTrack } = useVideoTrackAtom();
   const { handleAuthorsUpdate, handleAuthorSubmit } = useAuthorsHandler(
@@ -68,7 +68,7 @@ function Edit({ topicId, back }: EditProps) {
       const statusText = response.statusText;
       try {
         setSubmitResult((await response.json()).message);
-      } catch (e) {
+      } catch {
         setSubmitResult(`${status} ${statusText}`);
       }
     }
@@ -91,10 +91,10 @@ function Edit({ topicId, back }: EditProps) {
     return back();
   }
   const handleImportClick = () => {
-    return router.push(pagesPath.topics.import.$url({ query: { topicId } }));
+    return router.push(topicsImportUrl({ topicId }));
   };
   const handleItemEditClick = async (topicId: TopicSchema["id"]) => {
-    return router.push(pagesPath.topics.edit.$url({ query: { topicId } }));
+    return router.push(topicsEditUrl({ topicId }));
   };
   async function handleMetainfoUpdate(metainfo: MetainfoProps) {
     if (topic) {
@@ -121,7 +121,7 @@ function Edit({ topicId, back }: EditProps) {
 }
 
 function Router() {
-  const router = useRouter();
+  const router = useAppRouter();
   const topicId = Number(router.query.topicId);
   const bookId = router.query.bookId && Number(router.query.bookId);
   const { context }: Pick<BookEditQuery, "context"> = router.query;

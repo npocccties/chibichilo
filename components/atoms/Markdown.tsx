@@ -3,7 +3,7 @@ import type { Components } from "react-markdown";
 import gfm from "remark-gfm";
 import breaks from "remark-breaks";
 import Link from "@mui/material/Link";
-import { css } from "@emotion/css";
+import Box from "@mui/material/Box";
 
 const components = {
   a({ href, children }) {
@@ -15,7 +15,7 @@ const components = {
   },
 } satisfies Components;
 
-const root = css({
+const rootSx = {
   minWidth: 0,
   maxWidth: "100%",
   overflowWrap: "anywhere",
@@ -32,16 +32,16 @@ const root = css({
   "> :last-child": {
     marginBottom: 0,
   },
-});
+};
 
 type Props = Pick<Parameters<typeof ReactMarkdown>[0], "children">;
 
 export default function Markdown({ children }: Props) {
   return (
-    <div className={root}>
+    <Box sx={rootSx}>
       <ReactMarkdown remarkPlugins={[gfm, breaks]} components={components}>
         {children}
       </ReactMarkdown>
-    </div>
+    </Box>
   );
 }

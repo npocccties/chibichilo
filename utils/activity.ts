@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react";
 import throttle from "$utils/throttle";
-import usePrevious from "$utils/usePrevious";
 import type { TopicSchema } from "$server/models/topic";
 import type { BookSchema } from "$server/models/book";
 import { useLtiContextAtom, useSessionAtom } from "$store/session";
@@ -50,12 +49,10 @@ export function useActivityTracking() {
   const loggedin = Boolean(session?.user?.id);
   const topic = itemExists(itemIndex);
   const playerTracker = usePlayerTrackerAtom();
-  const unchanged = playerTracker === usePrevious(playerTracker);
 
   const updateHandler = useMemo(() => {
     if (!loggedin) return;
     if (isInstructor) return;
-    if (unchanged) return;
     if (!topic) return;
     if (!book) return;
     if (!playerTracker) return;
@@ -69,7 +66,6 @@ export function useActivityTracking() {
     );
   }, [
     isInstructor,
-    unchanged,
     topic,
     book,
     playerTracker,
@@ -85,6 +81,10 @@ export function useActivityTracking() {
     [updateHandler]
   );
   useEffect(() => {
-    if (throttled) playerTracker?.on("timeupdate", throttled);
+    if (!throttled || !playerTracker) return;
+    playerTracker.on("timeupdate", throttled);
+    return () => {
+      playerTracker.off("timeupdate", throttled);
+    };
   }, [playerTracker, throttled]);
 }

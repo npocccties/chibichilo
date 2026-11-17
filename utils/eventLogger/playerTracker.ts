@@ -1,8 +1,8 @@
 import type { StrictEventEmitter } from "strict-event-emitter-types";
 import { EventEmitter } from "events";
-import type { VideoJsPlayer } from "$types/videoJsPlayer";
-import VimeoPlayer from "@vimeo/player";
-import youtubePlayedShims from "$utils/youtubePlayedShims";
+import type { VideoProviderType } from "$types/videoInstance";
+import type { VideoMedia } from "$utils/video/media";
+import { getMediaTextTracks } from "$utils/video/media";
 
 const basicEventsMap = [
   "ended",
@@ -36,14 +36,18 @@ export type PlayerEvents = {
   texttrackchange: PlayerStats & { language?: string };
 } & CustomEvents;
 
-const youtubeType = "video/youtube";
+const providerUrlByType: Record<VideoProviderType, string> = {
+  youtube: "https://www.youtube.com/",
+  vimeo: "https://vimeo.com/",
+  wowza: "",
+};
 
 /** プレイヤーのトラッキング用 */
 export class PlayerTracker extends (EventEmitter as {
   new (): StrictEventEmitter<EventEmitter, PlayerEvents>;
 }) {
   /** 動画プレイヤーオブジェクト */
-  readonly player: VideoJsPlayer | VimeoPlayer;
+  readonly player: VideoMedia;
   /** 動画プロバイダーの識別子 */
   readonly providerUrl: string;
   /** ビデオURL */
@@ -57,41 +61,29 @@ export class PlayerTracker extends (EventEmitter as {
   /** 再生した時間範囲の取得 */
   readonly getPlayed: () => Promise<[number, number][]>;
 
-  constructor(player: VideoJsPlayer | VimeoPlayer, url = "") {
+  constructor(player: VideoMedia, url = "", type?: VideoProviderType) {
     super();
     this.player = player;
-
-    if (player instanceof VimeoPlayer) {
-      // NOTE: getVideoUrl() はプライバシー設定によって URL の取得を行えないことがあるので使わない
-      //  see also https://github.com/vimeo/player.js/#getvideourl-promisestring-privacyerrorerror
-      this.url = url;
-      this.providerUrl = "https://vimeo.com/";
-      this.getPlayed = player.getPlayed.bind(player);
-      this.intoVimeo(player);
-    } else {
-      // NOTE: YouTube Player API に存在しない API の再現
-      youtubePlayedShims(player);
-
-      this.url = url || player.src();
-      this.providerUrl =
-        player.currentType() === youtubeType
-          ? "https://www.youtube.com/"
-          : `${new URL(player.src()).origin}/`;
-
-      this.getPlayed = async () => {
-        const timeRanges = player.played() as TimeRanges;
-        return [...Array(timeRanges.length)].map((_, i) => [
-          timeRanges.start(i),
-          timeRanges.end(i),
-        ]);
-      };
-
-      this.intoVideoJs(player);
-    }
+    this.url = url;
+    this.providerUrl = resolveProviderUrl(type, url);
+    // YouTube / Vimeo: @videojs adapters の MediaPlayedRangesMixin.played
+    // Wowza (HLS): HTMLVideoAdapter → ネイティブ HTMLMediaElement.played
+    this.getPlayed = async () => {
+      const timeRanges = player.played ?? createEmptyTimeRanges();
+      return [...Array(timeRanges.length)].map((_, i) => [
+        timeRanges.start(i),
+        timeRanges.end(i),
+      ]);
+    };
+    this.intoMedia(player);
   }
 
   next(video: number) {
     this.emit("nextvideo", { ...this.stats, video });
+  }
+
+  seekButton(seconds: number) {
+    this.emit(seconds < 0 ? "back" : "forward", this.stats);
   }
 
   get stats(): PlayerStats {
@@ -99,29 +91,27 @@ export class PlayerTracker extends (EventEmitter as {
     return { providerUrl, url, currentTime, firstPlay, topicId };
   }
 
-  private intoVideoJs(player: VideoJsPlayer) {
-    player.on("timeupdate", () => {
-      this.currentTime = player.currentTime() ?? NaN;
-    });
-
+  private intoMedia(player: VideoMedia) {
     for (const event of basicEventsMap) {
-      player.on(event, () => this.emit(event, this.stats));
+      player.addEventListener(event, () => {
+        this.currentTime = player.currentTime ?? NaN;
+        this.emit(event, this.stats);
+      });
     }
 
-    player.on("play", () => {
+    player.addEventListener("play", () => {
       this.firstPlay = false;
     });
 
-    player.on("ratechange", () => {
+    player.addEventListener("ratechange", () => {
       this.emit("playbackratechange", {
         ...this.stats,
-        playbackRate: player.playbackRate() ?? NaN,
+        playbackRate: player.playbackRate ?? NaN,
       });
     });
 
-    // NOTE: texttrackchange イベントは表示の都度発火されるため使用しない
-    player.remoteTextTracks().addEventListener("change", () => {
-      const showingSubtitle = Array.from(player.remoteTextTracks()).find(
+    getMediaTextTracks(player).addEventListener("change", () => {
+      const showingSubtitle = Array.from(getMediaTextTracks(player)).find(
         ({ kind, mode }) => kind === "subtitles" && mode === "showing"
       );
       this.emit("texttrackchange", {
@@ -130,49 +120,31 @@ export class PlayerTracker extends (EventEmitter as {
       });
     });
 
-    // @ts-expect-error NOTE: videojs-seek-buttons 由来
-    const { seekForward, seekBack } = player.controlBar;
-    seekForward.on("click", () => this.emit("forward", this.stats));
-    seekBack.on("click", () => this.emit("back", this.stats));
-  }
-
-  private intoVimeo(player: VimeoPlayer) {
-    player.on("timeupdate", ({ seconds }: { seconds: number }) => {
-      this.currentTime = seconds;
-    });
-
-    for (const event of basicEventsMap) {
-      player.on(event, () => this.emit(event, this.stats));
-    }
-
-    player.on("play", () => {
-      this.firstPlay = false;
-    });
-
-    player.on("playbackratechange", (data: { playbackRate: number }) => {
-      this.emit("playbackratechange", {
-        ...this.stats,
-        playbackRate: data.playbackRate,
-      });
-    });
-    player.on(
-      "texttrackchange",
-      (data: {
-        kind: "captions" | "subtitles";
-        label: string;
-        language: string;
-      }) => {
-        if (data.kind !== "subtitles") return;
-        this.emit("texttrackchange", {
-          ...this.stats,
-          language: data.language,
-        });
+    player.addEventListener("durationchange", () => {
+      const duration = player.duration;
+      if (Number.isFinite(duration) && duration > 0) {
+        this.emit("durationchange", { ...this.stats, duration });
       }
-    );
-    void player
-      .getDuration()
-      .then((duration) =>
-        this.emit("durationchange", { ...this.stats, duration })
-      );
+    });
   }
+}
+
+function resolveProviderUrl(
+  type: VideoProviderType | undefined,
+  srcUrl: string
+): string {
+  if (type && providerUrlByType[type]) return providerUrlByType[type];
+  try {
+    return srcUrl ? `${new URL(srcUrl).origin}/` : "";
+  } catch {
+    return "";
+  }
+}
+
+function createEmptyTimeRanges(): TimeRanges {
+  return {
+    length: 0,
+    start: () => 0,
+    end: () => 0,
+  };
 }

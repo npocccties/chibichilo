@@ -2,7 +2,8 @@ import type { ActivityTimeRangeCountProps } from "$server/validators/activityTim
 import useActivityTimeRangeCountByTopic from "$utils/useActivityTimeRangeCountByTopic";
 import React, { useRef, useEffect } from "react";
 import type { FromSchema } from "json-schema-to-ts";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 import * as d3 from "d3";
 
@@ -14,13 +15,12 @@ import {
 } from "$utils/env";
 import { NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD } from "$utils/env";
 import { NEXT_PUBLIC_ACTIVITY_COUNT_INTERVAL } from "$utils/env";
-const useStyles = makeStyles(() => ({
-  outilerDescriptionArea: {
-    textAlign: "right",
-    fontSize: "75%",
-    marginBottom: "0.5em",
-  },
-}));
+
+const outilerDescriptionAreaSx: SxProps<Theme> = {
+  textAlign: "right",
+  fontSize: "75%",
+  marginBottom: "0.5em",
+};
 
 type Props = {
   scope: boolean;
@@ -289,7 +289,6 @@ export default function ActivityRewatchGraph(props: Props) {
   const { scope, topicId, topicTimeRequired, topicStartTime, topicStopTime } =
     props;
   const { data: counts } = useActivityTimeRangeCountByTopic(topicId, scope);
-  const classes = useStyles();
   if (!NEXT_PUBLIC_ENABLE_TOPIC_VIEW_RECORD) {
     return <></>;
   }
@@ -325,12 +324,12 @@ export default function ActivityRewatchGraph(props: Props) {
         <div>
           <PlotAndLineChart plot={plot} average={average} />
         </div>
-        <div className={classes.outilerDescriptionArea}>
+        <Box component="div" sx={outilerDescriptionAreaSx}>
           <p>
             ※ 視聴回数が {NEXT_PUBLIC_REWATCH_GRAPH_COUNT_THRESHOLD}{" "}
             回を超えるものは、外れ値として除去しています。
           </p>
-        </div>
+        </Box>
       </div>
     </>
   );
