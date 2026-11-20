@@ -32,13 +32,13 @@ services:
       - moodle_data_v5:/bitnami/moodle
       - moodledata_data_v5:/bitnami/moodledata
   db:
-    image: "postgres:17.2-alpine3.21"
+    image: "postgres:19.0-alpine3.24"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports: ["5432:5432"]
     volumes:
-      - postgres_data_v17:/var/lib/postgresql/data
+      - postgres_data_v19:/var/lib/postgresql
   app:
     image: "node:26.13.1"
     environment:
@@ -66,4 +66,4 @@ volumes:
   mariadb_data_v11:
   moodle_data_v5:
   moodledata_data_v5:
-  postgres_data_v17:
+  postgres_data_v19:
